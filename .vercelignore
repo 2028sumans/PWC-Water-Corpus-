@@ -1,0 +1,15 @@
+# Vercel build context exclusions — keep the upload focused on the Next.js app.
+# The Python preprocessing pipeline runs locally before deploy (its outputs in
+# public/data/ ship as static assets), not on Vercel.
+
+# Python preprocessing pipeline
+*.py
+__pycache__/
+*.pyc
+
+# Documentation (read on GitHub, not deployed)
+docs/
+
+# Local-only scratch
+/tmp/
+*.jsonl
