@@ -22,7 +22,7 @@
  *   memo.generate({ facilityId, mode: "memo", facilityContext });
  *   // memo.text grows incrementally; memo.citations populates after header parse
  */
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface MemoCitation {
   id: number;
@@ -49,18 +49,22 @@ export interface FacilityContext {
 
 export interface MemoRequest {
   facilityId: string;
-  mode: "memo" | "counter" | "qa" | "verdict";
+  mode: "memo" | "qa" | "verdict";
   facilityContext: FacilityContext;
   /**
-   * Deterministic "what would narrow this estimate" drivers computed
-   * client-side from indirect_water_footprint.py's output fields. Only
-   * consumed by the "counter" mode prompt; ignored otherwise.
+   * The deterministic disclosure audit computed client-side from the
+   * facility record + indirect_water_footprint.py's output. Passed into the
+   * memo prompt so the narrative cites these exact findings by [U#] rather
+   * than re-deriving (and potentially misstating) them.
    */
-  uncertaintyDrivers?: Array<{
+  unresolved?: Array<{
     id: string;
     title: string;
-    detail: string;
-    plausibility: "high" | "medium" | "low";
+    severity: "structural" | "high" | "moderate";
+    onRecord: string;
+    gap: string;
+    impact: string | null;
+    wouldResolve: string;
   }>;
   question?: string;
 }
@@ -82,6 +86,11 @@ export function useMemoStream() {
     error: null,
   });
   const abortRef = useRef<AbortController | null>(null);
+
+  // Callers reset this hook by remounting (RightPanel is keyed on the
+  // selected facility), so cancel any in-flight stream on unmount rather
+  // than leaving it to run against a discarded component.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const reset = useCallback(() => {
     abortRef.current?.abort();

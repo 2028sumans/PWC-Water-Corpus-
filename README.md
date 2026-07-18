@@ -11,8 +11,9 @@ dossier and the water-footprint estimate, full stop.
 | Surface | Backed by |
 |---|---|
 | **Facilities view** — virtualized table of every DC building/campus, sorted by total Scope 1+2+3 MGD descending | `facility_profiles.json` |
-| **Right Panel** — Scope 1/2/3 breakdown, power-estimate audit, facility dossier (permits/BZA/pending cases), water & site context, "what would narrow this estimate" | `build_facility_profiles.py` + `indirect_water_footprint.py` |
-| **LLM Memo / Counter-Memo / Q&A / Verdict** — streamed Llama 3.3 70B output with BM25-retrieved citations | `/api/memo` → Groq Cloud + `rag_chunks.json` (871 chunks, 15 docs) |
+| **Right Panel** — Scope 1/2/3 breakdown, power-estimate audit, facility dossier (permits/BZA/pending cases), water & site context | `build_facility_profiles.py` + `indirect_water_footprint.py` |
+| **What's Unresolved** — the disclosure audit: a per-facility, deterministically computed list of what's on record, what's dark, its effect on the estimate, and what would close it | computed client-side in `RightPanel.tsx` from the facility record — **no LLM** |
+| **LLM Memo / Q&A / Verdict** — streamed Llama 3.3 70B output with BM25-retrieved citations | `/api/memo` → Groq Cloud + `rag_chunks.json` (871 chunks, 15 docs) |
 
 ## The methodology
 
@@ -42,10 +43,20 @@ list. Summary:
 - **Total**: the envelope sum of each scope's independent minimum and
   maximum — a conservative bound, not a statistical confidence interval.
 
-The right panel's "What Would Narrow This Estimate" section and the
-counter-memo's `[U#]` citations are computed client-side, straight from
-these same fields (`power.basis`, `power.hv_plausibility`, etc.) — nothing
-in that section is LLM-invented.
+### The disclosure audit is deterministic, not generated
+
+"What's Unresolved" is computed in code from the facility's own record and
+the estimator's inputs (`power.basis`, `pue_class`, `has_npdes`,
+`n_wqp_stations_1mi`, the scope range widths, …). It is always visible —
+there is no "Generate" button and no RAG round-trip — because these gaps
+are structural and already fully known to the pipeline. Routing them
+through an LLM would add latency and risk paraphrasing numbers we computed
+exactly. Each item states four things: what is **on record**, what is
+**dark**, its **effect on the estimate**, and what **would resolve** it.
+
+The memo endpoint receives this same audit and is instructed to restate it
+verbatim under `[U#]` markers rather than re-derive it. For the same
+reason there is deliberately no adversarial "counter-memo" mode.
 
 ## Local dev
 
@@ -121,14 +132,18 @@ endpoints.
    with each scope's own methodology line, the facility dossier (status,
    year built, permits, matched case history), and water/site context
    badges (watershed, NPDES status, RPA/wetland/dam flags).
-3. **Click Generate Memo.** Llama 3.3 70B streams an 8-section narrative
+3. **Scroll to "What's Unresolved."** No button, no waiting — the
+   disclosure audit is already there, computed for this specific facility:
+   `[U1]` no metered withdrawal anywhere in the record, `[U2]` undisclosed
+   cooling technology and the exact share of the range width it accounts
+   for, `[U3]` whether the power estimate was cross-checked by two methods
+   or rests on one, and so on. This is the argument the tool exists to
+   make, so it is stated rather than generated.
+4. **Click Generate Memo.** Llama 3.3 70B streams an 8-section narrative
    (Executive Summary through Recommendation for Further Diligence) — every
    factual claim carries a `[N]` citation chip linking back to the actual
-   policy document that supports it.
-4. **Click Generate under "What's Unresolved."** Same RAG corpus,
-   adversarial framing, required to cite the facility's own computed
-   uncertainty drivers (`[U1]`–`[U4]`) — e.g. undisclosed cooling
-   technology, a single-source (not cross-checked) power estimate.
+   policy document that supports it, and its "What's Unresolved" section
+   restates the audit above under `[U#]` markers rather than improvising.
 5. **Ask a question** in the Q&A box — free-form, grounded in the same
    facility context and policy corpus.
 
@@ -139,8 +154,8 @@ Before any live demo session:
 - [ ] `npm run dev` is running in a Terminal window the demoer controls
       directly (don't rely on a backgrounded process)
 - [ ] `.env.local` has `GROQ_API_KEY=gsk_…`
-- [ ] One trial memo + counter-memo + Q&A generated end-to-end against a
-      built data center — confirms the LLM round-trip is warm
+- [ ] One trial memo + Q&A generated end-to-end against a built data
+      center — confirms the LLM round-trip is warm
 - [ ] Browser opened to `http://localhost:3000`
 - [ ] Search bar starts cleared, no rows pre-selected (clean slate)
 - [ ] Devtools / Console closed, terminal in another window or hidden
@@ -148,6 +163,6 @@ Before any live demo session:
       suggestions)
 
 During the demo, the 5-step walkthrough above takes under two minutes. If
-the LLM stream stalls (rare with Groq), say "let's flip to the adversarial
-view while it warms up" — the counter-memo button works independently and
-gives you a second LLM call against the same corpus.
+the LLM stream stalls (rare with Groq), fall back to step 3 — "What's
+Unresolved" needs no network call at all, and it carries the argument on
+its own.

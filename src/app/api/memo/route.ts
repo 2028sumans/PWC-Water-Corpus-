@@ -1,13 +1,17 @@
 /**
- * Memo generation endpoint. Three narrative modes plus a one-line verdict:
+ * Memo generation endpoint. Two narrative modes plus a one-line verdict:
  *   - "memo":    Scope 1/2/3 water-footprint narrative for a single facility,
  *                grounded entirely in indirect_water_footprint.py's output
  *                (WUE envelope, grid-mix consumption factor, proportional
- *                Scope 3 anchor) — no parcel scoring of any kind.
- *   - "counter": adversarial "what's unresolved" — same RAG, flipped framing,
- *                required to cite the client-computed uncertainty drivers.
+ *                Scope 3 anchor) — no parcel scoring of any kind. Receives
+ *                the client's deterministic disclosure audit and must
+ *                restate it verbatim rather than re-deriving the gaps.
  *   - "qa":      free-form question against the facility + corpus.
  *   - "verdict": one-sentence summary.
+ *
+ * Note there is deliberately no adversarial "counter" mode: the disclosure
+ * gaps are fully known to the pipeline and rendered directly in the panel,
+ * so routing them through an LLM would only risk paraphrasing exact numbers.
  *
  * Architecture: BM25 retrieves top-K chunks from /data/rag_chunks.json,
  * we build a structured prompt with the facility context + retrieved
@@ -37,13 +41,16 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "qwen2.5:7b-instruct-q4_K_M";
 type Backend = "groq" | "together" | "ollama";
 const BACKEND: Backend = GROQ_API_KEY ? "groq" : TOGETHER_API_KEY ? "together" : "ollama";
 
-type Mode = "memo" | "counter" | "qa" | "verdict";
+type Mode = "memo" | "qa" | "verdict";
 
-interface UncertaintyDriverPayload {
+interface UnresolvedItemPayload {
   id: string;
   title: string;
-  detail: string;
-  plausibility: "high" | "medium" | "low";
+  severity: "structural" | "high" | "moderate";
+  onRecord: string;
+  gap: string;
+  impact: string | null;
+  wouldResolve: string;
 }
 
 interface FacilityContext {
@@ -65,7 +72,7 @@ interface MemoRequest {
   facilityId: string;
   mode: Mode;
   facilityContext: FacilityContext;
-  uncertaintyDrivers?: UncertaintyDriverPayload[];
+  unresolved?: UnresolvedItemPayload[];
   question?: string;
 }
 
@@ -130,24 +137,8 @@ Rules:
 - If you cannot cite a source for a claim, omit the claim.
 - Use the facility's actual attributes verbatim, including the exact MGD ranges given.
 - Never state a single-point water-consumption number — always the range, with its basis.
+- The "What's Unresolved" section MUST be built from the supplied DISCLOSURE AUDIT items, cited by their [U#] markers. These were computed deterministically from the facility record — restate them faithfully; do NOT invent additional gaps or alter their numbers.
 - Total length: 500-800 words. No fluff.`,
-  counter: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia, writing the adversarial "what's unresolved" companion to the main Scope 1/2/3 memo.
-
-${DOMAIN_PRIMER}
-
-Identify the 3-5 most significant unresolved or dark aspects of this facility's ACTUAL water footprint versus this tool's modeled estimate.
-
-Output structure:
-  Top Unresolved Questions (3-5 enumerated, ranked by significance)
-  Disclosure Gaps (what regulatory regime SHOULD but doesn't capture this)
-  What Would Narrow This Estimate — REQUIRED to integrate the uncertainty drivers listed under "UNCERTAINTY DRIVERS" using their [U#] markers. Lead with the highest-likelihood-of-resolution driver.
-  Verdict (one paragraph: how legible is this facility's actual water footprint, honestly?)
-
-Rules:
-- Cite every policy/document claim with [N] for chunk ID.
-- Cite every uncertainty driver with its [U#] marker — do NOT invent numbers; use the supplied detail verbatim.
-- Be rigorous but honest — surface what genuinely cannot be known from public data today.
-- Total length: 400-600 words.`,
   qa: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia.
 Answer the user's question about the facility using ONLY the facility context and retrieved policy chunks below.
 
@@ -171,10 +162,21 @@ Rules:
 - Maximum 35 words.`,
 };
 
-function uncertaintyBlock(drivers: UncertaintyDriverPayload[] | undefined): string {
-  if (!drivers || drivers.length === 0) return "";
-  const lines = drivers.map((d) => `[${d.id}] ${d.title}: ${d.detail} Likelihood of resolution: ${d.plausibility}.`);
-  return lines.join("\n");
+function unresolvedBlock(items: UnresolvedItemPayload[] | undefined): string {
+  if (!items || items.length === 0) return "";
+  return items
+    .map((u) =>
+      [
+        `[${u.id}] ${u.title} (${u.severity})`,
+        `  On record: ${u.onRecord}`,
+        `  Dark: ${u.gap}`,
+        u.impact ? `  Effect on estimate: ${u.impact}` : null,
+        `  Would resolve: ${u.wouldResolve}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    )
+    .join("\n\n");
 }
 
 function buildPrompt(req: MemoRequest, chunks: Array<{ chunk: RagChunk; score: number }>): { system: string; user: string } {
@@ -187,22 +189,20 @@ function buildPrompt(req: MemoRequest, chunks: Array<{ chunk: RagChunk; score: n
   let task = "";
   if (req.mode === "memo") {
     task = "Generate the Scope 1/2/3 water-footprint narrative for this facility.";
-  } else if (req.mode === "counter") {
-    task = "Generate the 'what's unresolved' companion for this facility.";
   } else if (req.mode === "qa") {
     task = `User's question: ${req.question ?? "(no question)"}`;
   }
 
-  const uncBlock = req.mode === "counter" ? uncertaintyBlock(req.uncertaintyDrivers) : "";
-  const uncertaintySection = uncBlock
-    ? `\n\nUNCERTAINTY DRIVERS (computed; cite as [U#] in the "What Would Narrow This Estimate" section):\n${uncBlock}`
+  const audit = unresolvedBlock(req.unresolved);
+  const auditSection = audit
+    ? `\n\nDISCLOSURE AUDIT (computed deterministically from the facility record — restate faithfully, cite as [U#] in the "What's Unresolved" section, do not invent additional gaps):\n${audit}`
     : "";
 
   const user = `FACILITY CONTEXT:
 ${ctxBlock}
 
 RETRIEVED POLICY CHUNKS (cite by [id]):
-${chunksBlock}${uncertaintySection}
+${chunksBlock}${auditSection}
 
 TASK:
 ${task}`;
@@ -217,9 +217,7 @@ function buildQuery(req: MemoRequest): string {
   tokens.push("NPDES water discharge permit data center");
   tokens.push("data center water use evaporative cooling WUE PUE electricity generation mix");
   if (req.mode === "memo") {
-    tokens.push("water supply consumption disclosure monitoring watershed");
-  } else if (req.mode === "counter") {
-    tokens.push("unresolved unknown undisclosed withdrawal consumption gap");
+    tokens.push("water supply consumption disclosure monitoring watershed unresolved undisclosed withdrawal gap");
   }
   if (req.question) tokens.push(req.question);
   return tokens.join(" ");

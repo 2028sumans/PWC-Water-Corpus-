@@ -10,6 +10,7 @@ import { RightPanel } from "./RightPanel";
 
 export function AppShell() {
   const rightPanelOpen = useViraStore((s) => s.rightPanelOpen);
+  const selectedGpin = useViraStore((s) => s.selectedGpin);
   const closeRightPanel = useViraStore((s) => s.closeRightPanel);
   const setSelectedGpin = useViraStore((s) => s.setSelectedGpin);
 
@@ -164,7 +165,9 @@ export function AppShell() {
         <div className="flex-1 overflow-hidden">
           <FacilitiesView />
         </div>
-        {rightPanelOpen && <RightPanel />}
+        {/* Keyed on the selection so switching facilities remounts the panel
+            with fresh per-facility state (memo/Q&A streams, open popovers). */}
+        {rightPanelOpen && <RightPanel key={selectedGpin} />}
       </div>
 
       {/* Status footer */}
