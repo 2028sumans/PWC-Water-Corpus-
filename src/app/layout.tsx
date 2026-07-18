@@ -8,9 +8,9 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "PWC Water Atlas — Data Center Water Legibility",
+  title: "PWC Water Atlas — Data Center Scope 1/2/3 Water Footprint",
   description:
-    "How knowable is each Prince William County parcel's water relationship to data center infrastructure?",
+    "What is the defensible Scope 1/2/3 water footprint of every named data-center building and campus in Prince William County?",
 };
 
 export default function RootLayout({

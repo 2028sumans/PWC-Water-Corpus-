@@ -2,40 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useViraStore } from "@/store/useViraStore";
-import { useScoredParcels } from "@/lib/useScoredParcels";
+import { useFacilityProfiles } from "@/lib/useFacilityProfiles";
 import { usePolicyIndex } from "@/lib/usePolicyIndex";
 import { useUrlStateSync } from "@/lib/useUrlStateSync";
-import { parcelReadinessAt } from "@/lib/parcelReadiness";
-import { usePortfolioAlerts } from "@/lib/portfolio/useAlerts";
-import { AlertsFeed } from "./AlertsFeed";
-import { ViewToggle } from "./ViewToggle";
-import { DecisionTerminal } from "./DecisionTerminal";
-import { SpatialMap } from "./SpatialMap";
+import { FacilitiesView } from "./FacilitiesView";
 import { RightPanel } from "./RightPanel";
 
 export function AppShell() {
-  const view = useViraStore((s) => s.view);
-  const setView = useViraStore((s) => s.setView);
   const rightPanelOpen = useViraStore((s) => s.rightPanelOpen);
   const closeRightPanel = useViraStore((s) => s.closeRightPanel);
-  const setSelectedParcel = useViraStore((s) => s.setSelectedParcel);
-  const subScoreWeights = useViraStore((s) => s.subScoreWeights);
+  const setSelectedGpin = useViraStore((s) => s.setSelectedGpin);
 
-  // Preload the scored parcels at app start so map clicks resolve immediately
-  // regardless of whether the user visited the Terminal first.
-  const { parcels: allParcels } = useScoredParcels();
-  // Mount the centralized alerts hook at the root.
-  usePortfolioAlerts();
+  // Preload facility dossiers at app start so clicks resolve immediately.
+  const data = useFacilityProfiles();
   // Bidirectional URL ↔ store sync so refreshes preserve the session.
   useUrlStateSync();
   // Preload policy-corpus index so the right panel can show citation counts.
   usePolicyIndex();
-  // Warm the PMTiles route handler's in-memory buffer cache.
-  useEffect(() => {
-    fetch("/api/tiles/parcels.pmtiles", { method: "HEAD" }).catch(() => {
-      /* ignore — the map will trigger a real GET when shown */
-    });
-  }, []);
 
   // Single-letter keyboard shortcuts.
   useEffect(() => {
@@ -46,33 +29,20 @@ export function AppShell() {
 
       if (e.key === "Escape") {
         closeRightPanel();
-        setSelectedParcel(null);
+        setSelectedGpin(null);
         return;
       }
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (typing) return;
 
-      if (key === "t") {
-        e.preventDefault();
-        setView("terminal");
-      } else if (key === "m") {
-        e.preventDefault();
-        setView("map");
-      } else if (key === "/") {
-        e.preventDefault();
-        const el = document.getElementById("vira-search") as HTMLInputElement | null;
-        if (el) {
-          setView("terminal");
-          setTimeout(() => el.focus(), 50);
-        }
-      } else if (key === "g") {
+      if (key === "g") {
         e.preventDefault();
         window.dispatchEvent(new CustomEvent("vira:generate-memo"));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [setView, closeRightPanel, setSelectedParcel]);
+  }, [closeRightPanel, setSelectedGpin]);
 
   // Live clock.
   const [clock, setClock] = useState<string | null>(null);
@@ -92,47 +62,49 @@ export function AppShell() {
     return () => clearInterval(id);
   }, []);
 
-  // Rotating mini-tickers — derived live from the canonical pipeline
-  // (parcelReadinessAt) so the headline numbers always match what the
-  // analyst sees when they click a parcel.
+  // Rotating mini-tickers — derived live from the same Scope 1/2/3 water
+  // footprint estimates (indirect_water_footprint.py) the right panel shows,
+  // so the headline numbers always match what the analyst sees on click.
   const tickerStats = useMemo(() => {
-    if (!allParcels) return null;
-    let topGpin = "";
-    let topR = -1;
-    let topAcres = -1;
-    let topWatershed: string | null = null;
-    let noNpdesDcCount = 0;
-    let npdesDcCount = 0;
-    for (const p of allParcels) {
-      if (!p.GPIN || p.GPIN === "9999-99-9999") continue;
-      const r = parcelReadinessAt(p, subScoreWeights);
-      if (r == null) continue;
-      if (p.in_dc_building === 1) {
-        if (p.has_npdes === 1) npdesDcCount++;
-        else noNpdesDcCount++;
-      }
-      if (r > topR || (r === topR && p.acres > topAcres)) {
-        topR = r;
-        topAcres = p.acres;
-        topGpin = p.GPIN;
-        topWatershed = p.watershed_name ?? null;
+    if (!data) return null;
+    let topName = "";
+    let topHi = -1;
+    let totalLo = 0;
+    let totalHi = 0;
+    let noNpdesCount = 0;
+    let npdesCount = 0;
+    let n = 0;
+    for (const f of [...data.buildings, ...data.campuses]) {
+      const swf = f.scope_water_footprint;
+      if (!swf) continue;
+      n++;
+      totalLo += swf.total_mgd_range[0];
+      totalHi += swf.total_mgd_range[1];
+      if (f.water_context?.has_npdes === 1) npdesCount++;
+      else noNpdesCount++;
+      if (swf.total_mgd_range[1] > topHi) {
+        topHi = swf.total_mgd_range[1];
+        topName = f.name ?? (f.kind === "building" ? "Unnamed building" : "Unnamed campus");
       }
     }
-    return { topGpin, topR, topWatershed, noNpdesDcCount, npdesDcCount };
-  }, [allParcels, subScoreWeights]);
+    return { topName, topHi, totalLo, totalHi, noNpdesCount, npdesCount, n };
+  }, [data]);
 
-  const topCandidateValue = tickerStats && tickerStats.topGpin
-    ? `${tickerStats.topGpin} · legibility=${tickerStats.topR}${tickerStats.topWatershed ? ` · ${tickerStats.topWatershed}` : ""}`
+  const topCandidateValue = tickerStats && tickerStats.topName
+    ? `${tickerStats.topName} · up to ${tickerStats.topHi.toFixed(2)} MGD`
     : "loading…";
   const npdesValue = tickerStats
-    ? `${tickerStats.noNpdesDcCount} DC buildings with NO NPDES coverage · ${tickerStats.npdesDcCount} with permits`
+    ? `${tickerStats.noNpdesCount} of ${tickerStats.n} facilities with NO NPDES coverage · ${tickerStats.npdesCount} with permits`
+    : "loading…";
+  const totalValue = tickerStats
+    ? `${tickerStats.totalLo.toFixed(1)}–${tickerStats.totalHi.toFixed(1)} MGD across ${tickerStats.n} facilities`
     : "loading…";
 
   const TICKERS: Array<{ label: string; value: string; tone?: "good" | "bad" | "neutral" }> = [
-    { label: "MOST LEGIBLE PARCEL", value: topCandidateValue, tone: "good" },
-    { label: "PHDI APR-2026", value: "-5.30 · EXTREME DROUGHT", tone: "bad" },
+    { label: "LARGEST ESTIMATED FOOTPRINT", value: topCandidateValue, tone: "bad" },
+    { label: "COUNTYWIDE SCOPE 1+2+3 ENVELOPE", value: totalValue },
     { label: "NPDES COVERAGE", value: npdesValue, tone: "bad" },
-    { label: "RAG CORPUS", value: "15 water-policy docs" },
+    { label: "RAG CORPUS", value: "policy + methodology docs" },
     { label: "HEADLINE FINDING", value: "0 of 203 DC buildings hold NPDES water discharge permits", tone: "bad" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);
@@ -155,10 +127,8 @@ export function AppShell() {
               PWC WATER ATLAS
             </span>
           </div>
-          <ViewToggle />
         </div>
         <div className="flex items-center gap-3 text-xs text-neutral-400">
-          <AlertsFeed />
           <span className="text-neutral-300 tabular-nums">
             PRINCE WILLIAM COUNTY, VA
           </span>
@@ -168,9 +138,7 @@ export function AppShell() {
       {/* Function bar */}
       <div className="flex items-center justify-between border-b border-neutral-900 bg-black px-6 py-1 text-[10px] uppercase tracking-wider text-neutral-500">
         <div className="flex items-center gap-3 tabular-nums min-w-0">
-          <span className="text-amber-400/70 shrink-0">
-            ▸ {view === "terminal" ? "DECISION TERMINAL" : "SPATIAL MAP"}
-          </span>
+          <span className="text-amber-400/70 shrink-0">▸ FACILITIES</span>
           <span className="text-neutral-800 shrink-0">·</span>
           <span className="text-neutral-600 shrink-0">{currentTicker.label}</span>
           <span
@@ -194,7 +162,7 @@ export function AppShell() {
       {/* Main content area */}
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-hidden">
-          {view === "terminal" ? <DecisionTerminal /> : <SpatialMap />}
+          <FacilitiesView />
         </div>
         {rightPanelOpen && <RightPanel />}
       </div>

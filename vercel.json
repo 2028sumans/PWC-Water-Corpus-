@@ -5,15 +5,11 @@
   "functions": {
     "src/app/api/memo/route.ts": {
       "maxDuration": 60
-    },
-    "src/app/api/tiles/[file]/route.ts": {
-      "maxDuration": 15,
-      "memory": 256
     }
   },
   "headers": [
     {
-      "source": "/data/parcels_scored.json.gz",
+      "source": "/data/facility_profiles.json",
       "headers": [
         {
           "key": "Cache-Control",

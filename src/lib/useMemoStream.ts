@@ -19,7 +19,7 @@
  *
  * Usage:
  *   const memo = useMemoStream();
- *   memo.generate({ gpin, mode: "memo", parcelContext });
+ *   memo.generate({ facilityId, mode: "memo", facilityContext });
  *   // memo.text grows incrementally; memo.citations populates after header parse
  */
 import { useCallback, useRef, useState } from "react";
@@ -32,26 +32,34 @@ export interface MemoCitation {
   score: number;
 }
 
+export interface FacilityContext {
+  name: string;
+  kind: "building" | "campus";
+  status: string | null;
+  yearBuilt: number | null;
+  gfaSqft: number | null;
+  powerMwRange: [number, number];
+  powerBasis: string;
+  scope1MgdRange: [number, number];
+  scope2MgdRange: [number, number];
+  scope3MgdRange: [number, number];
+  totalMgdRange: [number, number];
+  flags: string[];
+}
+
 export interface MemoRequest {
-  gpin: string;
+  facilityId: string;
   mode: "memo" | "counter" | "qa" | "verdict";
-  parcelContext: Record<string, unknown>;
+  facilityContext: FacilityContext;
   /**
-   * Sensitivity thresholds computed by lib/sensitivity/findThresholds.ts.
-   * Only consumed by the "counter" mode prompt; ignored otherwise.
+   * Deterministic "what would narrow this estimate" drivers computed
+   * client-side from indirect_water_footprint.py's output fields. Only
+   * consumed by the "counter" mode prompt; ignored otherwise.
    */
-  sensitivity?: Array<{
+  uncertaintyDrivers?: Array<{
     id: string;
-    subScore: string;
-    currentScore: number;
-    targetScore: number;
-    lever: string;
-    currentValue: string;
-    targetValue: string;
-    byYear: number | null;
-    rationale: string;
-    source: string;
-    pointsRecovered: number;
+    title: string;
+    detail: string;
     plausibility: "high" | "medium" | "low";
   }>;
   question?: string;

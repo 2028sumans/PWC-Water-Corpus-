@@ -1,14 +1,17 @@
 /**
- * Memo generation endpoint. Three modes:
- *   - "memo":    water-legibility narrative (observable / inferable /
- *                unresolved taxonomy for this parcel's water relationship
- *                to data-center infrastructure)
- *   - "counter": adversarial "what's unresolved" — same RAG, flipped framing
- *   - "qa":      free-form question against the parcel + corpus
+ * Memo generation endpoint. Three narrative modes plus a one-line verdict:
+ *   - "memo":    Scope 1/2/3 water-footprint narrative for a single facility,
+ *                grounded entirely in indirect_water_footprint.py's output
+ *                (WUE envelope, grid-mix consumption factor, proportional
+ *                Scope 3 anchor) — no parcel scoring of any kind.
+ *   - "counter": adversarial "what's unresolved" — same RAG, flipped framing,
+ *                required to cite the client-computed uncertainty drivers.
+ *   - "qa":      free-form question against the facility + corpus.
+ *   - "verdict": one-sentence summary.
  *
  * Architecture: BM25 retrieves top-K chunks from /data/rag_chunks.json,
- * we build a structured prompt with the parcel context + retrieved chunks,
- * stream the response back to the client via SSE-style text/event-stream.
+ * we build a structured prompt with the facility context + retrieved
+ * chunks, stream the response back to the client.
  *
  * Backend selection (set via env, priority order):
  *   1. GROQ_API_KEY → Groq Cloud (default, FREE tier no card, fastest).
@@ -36,134 +39,117 @@ const BACKEND: Backend = GROQ_API_KEY ? "groq" : TOGETHER_API_KEY ? "together" :
 
 type Mode = "memo" | "counter" | "qa" | "verdict";
 
-interface SensitivityThresholdPayload {
+interface UncertaintyDriverPayload {
   id: string;
-  subScore: string;
-  currentScore: number;
-  targetScore: number;
-  lever: string;
-  currentValue: string;
-  targetValue: string;
-  byYear: number | null;
-  rationale: string;
-  source: string;
-  pointsRecovered: number;
+  title: string;
+  detail: string;
   plausibility: "high" | "medium" | "low";
 }
 
+interface FacilityContext {
+  name: string;
+  kind: "building" | "campus";
+  status?: string | null;
+  yearBuilt?: number | null;
+  gfaSqft?: number | null;
+  powerMwRange: [number, number];
+  powerBasis: string;
+  scope1MgdRange: [number, number];
+  scope2MgdRange: [number, number];
+  scope3MgdRange: [number, number];
+  totalMgdRange: [number, number];
+  flags?: string[];
+}
+
 interface MemoRequest {
-  gpin: string;
+  facilityId: string;
   mode: Mode;
-  parcelContext: {
-    address?: string;
-    acres: number;
-    zoning?: string | null;
-    watershed?: string | null;
-    hasNpdes?: 0 | 1;
-    inDcBuilding?: 0 | 1;
-    inDcCampus?: 0 | 1;
-    nDcBuildings?: number;
-    waterLegibility: number;
-    dataDepth: number;
-    /** Per-sub-score breakdown */
-    subScores?: Record<string, number>;
-    /** Free-text summary of badges/flags */
-    flags?: string[];
-  };
-  sensitivity?: SensitivityThresholdPayload[];
+  facilityContext: FacilityContext;
+  uncertaintyDrivers?: UncertaintyDriverPayload[];
   question?: string;
 }
 
-function parcelContextBlock(ctx: MemoRequest["parcelContext"]): string {
+function fmtRange(r: [number, number], unit: string, digits = 3): string {
+  return `${r[0].toFixed(digits)}–${r[1].toFixed(digits)} ${unit}`;
+}
+
+function facilityContextBlock(ctx: FacilityContext): string {
   const lines: string[] = [];
-  if (ctx.address) lines.push(`Address: ${ctx.address}`);
-  lines.push(`Acreage: ${ctx.acres.toFixed(2)} acres`);
-  lines.push(`Zoning: ${ctx.zoning ?? "—"}`);
-  if (ctx.watershed) lines.push(`Watershed: ${ctx.watershed}`);
-  if (ctx.inDcBuilding) {
-    const n = ctx.nDcBuildings ?? 1;
-    lines.push(`Data center building(s) on parcel: ${n}.`);
-    lines.push(
-      ctx.hasNpdes
-        ? "NPDES water discharge permit: ON FILE — this is one of only a handful of data centers in Virginia with a federal water discharge permit."
-        : "NPDES water discharge permit: NONE ON RECORD — this is the norm, not the exception. Data centers consume water primarily via evaporative cooling loss from municipal supply, which the NPDES surface-discharge regime does not capture.",
-    );
-  } else if (ctx.inDcCampus) {
-    lines.push("Inside a planned/under-construction data center campus footprint — no building placed on this specific parcel yet.");
-  }
-  lines.push(`Water Legibility Score: ${ctx.waterLegibility}/100 (Data Depth ${ctx.dataDepth}/100)`);
-  if (ctx.subScores) {
-    const subs = Object.entries(ctx.subScores).map(([k, v]) => `${k}=${v}`).join(", ");
-    lines.push(`Sub-scores (0-100): ${subs}`);
-  }
-  if (ctx.flags && ctx.flags.length) {
-    lines.push(`Flags: ${ctx.flags.join(", ")}`);
-  }
+  lines.push(`Facility: ${ctx.name} (${ctx.kind})`);
+  if (ctx.status) lines.push(`Status: ${ctx.status}`);
+  if (ctx.yearBuilt) lines.push(`Year built: ${ctx.yearBuilt}`);
+  if (ctx.gfaSqft) lines.push(`Gross floor area: ${ctx.gfaSqft.toLocaleString()} sqft`);
+  lines.push(`Estimated facility power: ${fmtRange(ctx.powerMwRange, "MW", 1)} (basis: ${ctx.powerBasis.replace("_", " ")})`);
+  lines.push(`Scope 1 (on-site cooling): ${fmtRange(ctx.scope1MgdRange, "MGD")}`);
+  lines.push(`Scope 2 (electricity-driven): ${fmtRange(ctx.scope2MgdRange, "MGD")}`);
+  lines.push(`Scope 3 (embodied / supply-chain): ${fmtRange(ctx.scope3MgdRange, "MGD")}`);
+  lines.push(`Total Scope 1+2+3 envelope: ${fmtRange(ctx.totalMgdRange, "MGD")}`);
+  if (ctx.flags && ctx.flags.length) lines.push(`Flags: ${ctx.flags.join(", ")}`);
   return lines.join("\n");
 }
 
 // Domain knowledge primer prepended to every system prompt.
 const DOMAIN_PRIMER = `Domain knowledge you MUST treat as authoritative:
 
-KEY EMPIRICAL FINDING: 203 data center buildings exist in Prince William County, but ZERO hold NPDES (National Pollutant Discharge Elimination System) water discharge permits. This is not evidence of good environmental performance — it means the primary federal water disclosure regime structurally cannot see them, because data centers consume water primarily via evaporative cooling loss from municipal supply, not surface discharge. NPDES only regulates discharge, not consumption. A parcel with "no NPDES permit" is therefore DARK, not clean.
+KEY EMPIRICAL FINDING: 203 data center buildings exist in Prince William County, but ZERO hold NPDES (National Pollutant Discharge Elimination System) water discharge permits. This is not evidence of good environmental performance — it means the primary federal water disclosure regime structurally cannot see them, because data centers consume water primarily via evaporative cooling loss from municipal supply, not surface discharge. NPDES only regulates discharge, not consumption. A facility with "no NPDES permit" is therefore DARK, not clean.
 
-OBSERVABLE / INFERABLE / UNRESOLVED taxonomy — every claim about a parcel's water relationship falls into one of three buckets:
-- OBSERVABLE: directly present in an institutional record (NPDES permit status, DEQ permit, watershed membership, stormwater infrastructure, dam-break hazard classification).
-- INFERABLE: recoverable from a public proxy (Palmer drought indices as a countywide stress signal, cooling-degree-days as a demand proxy, PW Water's disclosed percentage of peak demand attributable to data centers).
-- UNRESOLVED: dark under current disclosure — actual water consumption per facility, actual withdrawal volumes, actual return-flow characteristics. This is the largest bucket for data center parcels specifically.
+METHODOLOGY — this tool estimates a facility's water footprint in three scopes, exactly as defined by indirect_water_footprint.py, and NEVER invents a single-point water-consumption number:
 
-Watershed Vulnerability: higher score = more vulnerable (cumulative stress from multiple data centers sharing a small basin, worsened by drought).
-Facility–Water Proximity: higher score = more water-proximate risk (closer to streams/springs/RPA, especially when a built data center is nearby).
-Drought Exposure: countywide Palmer drought index severity — same for every parcel, because that is honestly what the data supports (no parcel-level drought data exists).
-Disclosure Legibility: higher score = MORE legible / better disclosed. This is the inverse of "risk" — a parcel with an NPDES permit is MORE legible, not more dangerous. A built data center with no NPDES coverage scores near zero here specifically because almost nothing about its water use is disclosed.
-Community Observation Density: higher score = more independent monitoring coverage (WQP/DEQ stations, iNaturalist observations) nearby — a proxy for how quickly an anomaly would be noticed.
-Municipal Supply Headroom: higher score = more slack in the utility's peak capacity relative to data-center draw — countywide constant from Prince William Water's own disclosure.
-Stormwater Burden: higher score = more stormwater infrastructure burden (segments, detention basins, structures, dam-break hazard, impervious cover).
+- Scope 1 (on-site cooling): water evaporated at the facility itself via cooling towers / adiabatic humidification. Governed by Water Usage Effectiveness (WUE, L water per kWh of IT equipment energy; The Green Grid). Cooling technology (dry/closed-loop vs. hybrid vs. open evaporative) is NOT disclosed per facility in any PWC public dataset, so Scope 1 is always reported as the FULL published WUE envelope (0.0-2.4 L/kWh), never narrowed by an unstated assumption. A "climate-weighted point" (from trailing cooling-degree-days) may accompany the range as a plausibility signal for evaporative/hybrid systems specifically — it never replaces the range.
+- Scope 2 (electricity-driven): water consumed at the power plants generating the facility's electricity, computed from estimated facility power draw x Dominion's generation-mix-blended consumption factor (~318 gal/MWh, NREL Macknick et al. 2011) x assumed 90% utilization. This is a system-average grid factor, not marginal-generator attribution (no such public dataset exists).
+- Scope 3 (embodied / supply-chain): water used to fabricate chips, servers, and construction materials before the facility ever draws power. NOT attributable to a specific PWC facility (chip fabs are not in Virginia) — modeled as a 5-15% proportional anchor on top of the Scope 1+2 operational total, per corporate embodied-vs-operational disclosure ratios (Privette et al., AGU Advances 2026). This is a floor-level anchor, not a physical per-facility estimate — at least one hyperscaler has disclosed embodied water exceeding 99% of its corporate total under a different accounting boundary, which is evidence the 5-15% anchor is conservative, not a contradiction.
 
-NEVER frame "no NPDES permit" as good news. Never invent a specific water-consumption number for any facility — none is disclosed. Assess, don't advocate.
+POWER ESTIMATION: two independent methods are cross-checked — (A) GFA-based: floor area x IT power density benchmark x PUE range selected by building vintage; (B) operator-keyword match against interconnection.fyi's public interconnection-queue MW ranges. When both exist and overlap, the range narrows to their intersection (the strongest evidence this tool can produce). When they disagree, both bounds are kept and the disagreement is flagged rather than silently resolved. When only one exists, that one is reported alone.
 
-GOLDEN RULE: the headline Water Legibility Score always equals the weighted sum of the visible sub-score bars. There are no hidden adjustments.`;
+OBSERVABLE / MODELED / UNRESOLVED taxonomy — every claim about a facility's water footprint falls into one of three buckets:
+- OBSERVABLE: directly present in an institutional record (GFA, permit status, year built, NPDES/DEQ permit status, watershed membership).
+- MODELED: derived from the methodology above using observable inputs (Scope 1/2/3 MGD ranges, facility power range) — defensible but not a disclosed measurement.
+- UNRESOLVED: dark under current disclosure — actual cooling technology, actual metered water withdrawal, actual disclosed PUE, actual facility-specific embodied-water footprint. This is the largest bucket for data center facilities specifically.
+
+GOLDEN RULE: the total Scope 1+2+3 envelope is the sum of each scope's independent minimum and maximum — a conservative bound, not a statistical confidence interval (the three scopes are not assumed to co-vary). NEVER report a single point water-consumption figure for any facility — none is disclosed, and this tool's job is to make that gap visible, not paper over it. NEVER frame "no NPDES permit" as good news.`;
 
 const SYSTEM_PROMPTS: Record<Mode, string> = {
-  memo: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia. You assess what is knowable about each parcel's water relationship to data center development from public data. You categorize each attribute as observable (directly present in institutional records), inferable (recoverable from public proxies), or unresolved (dark under current disclosure). Use the retrieved policy documents to ground your analysis. Be neutral — assess, don't advocate.
+  memo: `You are a water-risk analyst estimating data-center water footprints in Prince William County, Virginia, using the Scope 1/2/3 methodology below. You categorize each attribute as observable (directly present in institutional records), modeled (derived via the stated methodology), or unresolved (dark under current disclosure). Use the retrieved policy documents to ground your analysis. Be neutral — assess, don't advocate.
 
 ${DOMAIN_PRIMER}
 
-Generate a water-legibility narrative for the parcel described below.
+Generate a Scope 1/2/3 water-footprint narrative for the facility described below.
 
 Output structure (use these exact headers):
   Executive Summary
-  Site & Watershed Context
-  Disclosure Status
+  Power & Scope 2 Basis
+  Scope 1 — On-Site Cooling
+  Scope 3 — Embodied / Supply-Chain
   What's Observable
-  What's Inferable
+  What's Modeled
   What's Unresolved
   Recommendation for Further Diligence
 
 Rules:
 - Cite every factual claim with [N] where N is a chunk ID from the retrieved context.
 - If you cannot cite a source for a claim, omit the claim.
-- Use the parcel's actual attributes verbatim.
+- Use the facility's actual attributes verbatim, including the exact MGD ranges given.
+- Never state a single-point water-consumption number — always the range, with its basis.
 - Total length: 500-800 words. No fluff.`,
-  counter: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia, writing the adversarial "what's unresolved" companion to the main memo.
+  counter: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia, writing the adversarial "what's unresolved" companion to the main Scope 1/2/3 memo.
 
 ${DOMAIN_PRIMER}
 
-Identify the 3-5 most significant unresolved or dark aspects of this parcel's water relationship to data-center infrastructure.
+Identify the 3-5 most significant unresolved or dark aspects of this facility's ACTUAL water footprint versus this tool's modeled estimate.
 
 Output structure:
   Top Unresolved Questions (3-5 enumerated, ranked by significance)
   Disclosure Gaps (what regulatory regime SHOULD but doesn't capture this)
-  What Would Resolve This — REQUIRED to integrate the sensitivity thresholds listed under "SENSITIVITY THRESHOLDS" using their [S#] markers (e.g. [S1], [S2]). Lead with the highest-plausibility lever.
-  Verdict (one paragraph: how legible is this parcel's actual water footprint, honestly?)
+  What Would Narrow This Estimate — REQUIRED to integrate the uncertainty drivers listed under "UNCERTAINTY DRIVERS" using their [U#] markers. Lead with the highest-likelihood-of-resolution driver.
+  Verdict (one paragraph: how legible is this facility's actual water footprint, honestly?)
 
 Rules:
 - Cite every policy/document claim with [N] for chunk ID.
-- Cite every sensitivity threshold with its [S#] marker — do NOT invent numbers; use the supplied current/target values verbatim.
+- Cite every uncertainty driver with its [U#] marker — do NOT invent numbers; use the supplied detail verbatim.
 - Be rigorous but honest — surface what genuinely cannot be known from public data today.
 - Total length: 400-600 words.`,
   qa: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia.
-Answer the user's question about the parcel using ONLY the parcel context and retrieved policy chunks below.
+Answer the user's question about the facility using ONLY the facility context and retrieved policy chunks below.
 
 ${DOMAIN_PRIMER}
 
@@ -172,13 +158,12 @@ Rules:
 - If the question cannot be answered from the provided context, say so explicitly — that itself is often the answer ("this is unresolved under current disclosure").
 - Be direct. No filler.`,
   verdict: `You are a water-risk analyst for data center infrastructure in Prince William County, Virginia.
-Produce exactly ONE sentence (no more) summarizing what is and isn't knowable about this parcel's water relationship to data-center infrastructure.
+Produce exactly ONE sentence (no more) summarizing what is modeled and what remains unresolved about this facility's water footprint.
 
-Format: "<what's observable>; <what's unresolved>."
+Format: "<what's modeled/observable>; <what's unresolved>."
 Examples:
-  "NPDES permit on file and DEQ-monitored, but actual withdrawal volumes remain undisclosed."
-  "Built data center with zero NPDES coverage — nothing about its water consumption is publicly legible."
-  "Outside any watershed under cumulative DC stress, but no community monitoring station sits within a mile."
+  "Est. 0.8-1.6 MGD total footprint from a GFA-and-operator-agreeing power estimate, but actual cooling technology and metered withdrawal remain undisclosed."
+  "Power estimate rests on GFA alone with no operator cross-check, and Scope 1 spans the full WUE envelope — this facility's real footprint could sit anywhere in a wide range."
 
 Rules:
 - ONE SENTENCE. No bullets, no headers, no citations.
@@ -186,41 +171,38 @@ Rules:
 - Maximum 35 words.`,
 };
 
-function sensitivityBlock(thresholds: SensitivityThresholdPayload[] | undefined): string {
-  if (!thresholds || thresholds.length === 0) return "";
-  const lines = thresholds.map((t) => {
-    const yearStr = t.byYear ? ` by ${t.byYear}` : "";
-    return `[${t.id}] ${t.subScore} (${t.currentScore} → ≥${t.targetScore}): ${t.lever} from ${t.currentValue} → ${t.targetValue}${yearStr}. Plausibility ${t.plausibility}. Source: ${t.source}. Rationale: ${t.rationale}`;
-  });
+function uncertaintyBlock(drivers: UncertaintyDriverPayload[] | undefined): string {
+  if (!drivers || drivers.length === 0) return "";
+  const lines = drivers.map((d) => `[${d.id}] ${d.title}: ${d.detail} Likelihood of resolution: ${d.plausibility}.`);
   return lines.join("\n");
 }
 
 function buildPrompt(req: MemoRequest, chunks: Array<{ chunk: RagChunk; score: number }>): { system: string; user: string } {
   const system = SYSTEM_PROMPTS[req.mode];
-  const ctxBlock = parcelContextBlock(req.parcelContext);
+  const ctxBlock = facilityContextBlock(req.facilityContext);
   const chunksBlock = chunks
     .map(({ chunk, score }) => formatChunkForPrompt(chunk, score))
     .join("\n\n---\n\n");
 
   let task = "";
   if (req.mode === "memo") {
-    task = "Generate the water-legibility narrative for this parcel.";
+    task = "Generate the Scope 1/2/3 water-footprint narrative for this facility.";
   } else if (req.mode === "counter") {
-    task = "Generate the 'what's unresolved' companion for this parcel.";
+    task = "Generate the 'what's unresolved' companion for this facility.";
   } else if (req.mode === "qa") {
     task = `User's question: ${req.question ?? "(no question)"}`;
   }
 
-  const senseBlock = req.mode === "counter" ? sensitivityBlock(req.sensitivity) : "";
-  const sensitivitySection = senseBlock
-    ? `\n\nSENSITIVITY THRESHOLDS (computed; cite as [S#] in the "What Would Resolve This" section):\n${senseBlock}`
+  const uncBlock = req.mode === "counter" ? uncertaintyBlock(req.uncertaintyDrivers) : "";
+  const uncertaintySection = uncBlock
+    ? `\n\nUNCERTAINTY DRIVERS (computed; cite as [U#] in the "What Would Narrow This Estimate" section):\n${uncBlock}`
     : "";
 
-  const user = `PARCEL CONTEXT:
+  const user = `FACILITY CONTEXT:
 ${ctxBlock}
 
 RETRIEVED POLICY CHUNKS (cite by [id]):
-${chunksBlock}${sensitivitySection}
+${chunksBlock}${uncertaintySection}
 
 TASK:
 ${task}`;
@@ -229,12 +211,11 @@ ${task}`;
 }
 
 function buildQuery(req: MemoRequest): string {
-  const ctx = req.parcelContext;
+  const ctx = req.facilityContext;
   const tokens: string[] = [];
-  if (ctx.zoning) tokens.push(ctx.zoning);
-  if (ctx.watershed) tokens.push(ctx.watershed);
+  tokens.push(ctx.kind === "building" ? "data center building" : "data center campus rezoning");
   tokens.push("NPDES water discharge permit data center");
-  if (ctx.inDcBuilding) tokens.push("data center building water use cooling");
+  tokens.push("data center water use evaporative cooling WUE PUE electricity generation mix");
   if (req.mode === "memo") {
     tokens.push("water supply consumption disclosure monitoring watershed");
   } else if (req.mode === "counter") {
@@ -255,8 +236,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  if (!body.gpin || !body.mode || !body.parcelContext) {
-    return new Response(JSON.stringify({ error: "Missing gpin/mode/parcelContext" }), {
+  if (!body.facilityId || !body.mode || !body.facilityContext) {
+    return new Response(JSON.stringify({ error: "Missing facilityId/mode/facilityContext" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });

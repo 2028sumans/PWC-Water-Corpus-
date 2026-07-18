@@ -13,3 +13,8 @@ docs/
 # Local-only scratch
 /tmp/
 *.jsonl
+
+# preprocess_score_parcels.py's output — a local intermediate consumed by
+# build_facility_profiles.py, never served by the app itself.
+public/data/parcels_scored.json
+public/data/parcels_scored.geojson
