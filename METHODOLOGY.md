@@ -650,7 +650,7 @@ Every substantive finding, in one place. Sections 6–7 grew chronologically and
 | # | Finding | Status |
 |---|---|---|
 | 1 | **The validation was circular.** ICPRB derived 309 gal/MW/day *by dividing* PWC's 0.42 MGD by its own power estimate, so comparing back to 0.42 cancels the water figure and returns −7.4% either way. It tested the power spine, not water use. | Withdrawn from the module docstring, the UI headline, the U1 audit item and the `/api/memo` prompt |
-| 2 | **8,818 sqft/MW is run backwards.** ICPRB uses it once, to convert Loudoun's 0.017 gal/day/sqft into the 150 gal/MW/day tier. Power in their Eq. 6-3 comes from air-permit generator capacity, never floor area. | Documented; largest remaining swing |
+| 2 | **8,818 sqft/MW is run backwards.** ICPRB uses it once, to convert Loudoun's 0.017 gal/day/sqft into the 150 gal/MW/day tier. Power in their Eq. 6-3 comes from air-permit generator capacity, never floor area. | **Validated (§15)** — the 45 permit-backed PWC buildings measure a median 8,638 sqft/MW, reproducing 8,818 within 2% by an independent method; still the largest swing, now shown to be real fleet heterogeneity (2.2×), not error |
 | 3 | **Scope 2 used national medians.** Nuclear at 700 gal/MWh blended Surry (once-through saline, 0 consumption) with North Anna (Lake Anna, 417). | Fixed — VA-specific USGS values; swing 54% → 12% |
 | 4 | **Campus profiles never ran `permit_conditions_for()`**, silently dropping proffer cooling conditions for all 51. | Fixed |
 | 5 | **Campus entitlement GFA duplicated onto smaller campuses.** Manassas Point PRA implied FAR 3.34, Battlefield Business Park 2.68 — both share a GFA with a larger campus. | Flagged via `implied_far` / `far_flag`, not silently corrected |
@@ -979,3 +979,71 @@ This compounds §13 rather than duplicating it. Two independent mechanisms move 
 Neither is fraud, and neither operator behaviour is unusual — both are what the standard frameworks prescribe. The point is that the frameworks were built for carbon, where a tonne is a tonne wherever and whenever it is emitted, and **water is not fungible across basins or across seasons**. Annual, contract-based, location-blind accounting is a defensible carbon method and a poor water method, and this county is a clean demonstration of the difference: peak local draw is 9.9× the annual average (§12) and 96% of consumption happens somewhere the buildings' regulator cannot see (§13).
 
 That is the paper's thesis, and it is now supported by three independent numbers rather than an argument.
+
+---
+
+## 15. Resolving density with power density — the natural experiment
+
+The largest remaining swing factor (52%) is infrastructure density, the sqft/MW constant that converts floor area to IT load. The standard way to attack it is a **power-density** figure — IT load (kW) ÷ floor area (sqft). Acting on that led somewhere better than a literature lookup.
+
+### 15.1 The denominator is the whole problem
+
+Power density is meaningless without stating what floor area is in the denominator. The same 100 kW reads as three different numbers (Silverback 2023):
+
+| Denominator | W/sqft |
+|---|---|
+| Rack footprint only | 240 |
+| Production space (racks + aisles + in-row gear) | 113 |
+| Room envelope (the data-hall enclosure) | 78 |
+
+A 3× spread from a definitional choice alone. And published W/sqft figures are almost always quoted on **white space** — the raised-floor data hall — while white space is only **40–50% of a data centre's gross internal area** (RICS 2024; the project's own ePortal record MEC2025-00037 shows 26,000 sqft of hall to 12,000 sqft of adjacent gallery). This model runs on **gross** floor area from the county assessor. Dropping a literature "150 W/sqft" onto GFA would roughly double the implied load. The attachment that prompted this — "divide IT load by the physical size of the equipment room" — is describing white space, not GFA, and the two are not interchangeable.
+
+The conclusion is that a generic W/sqft cannot be imported at all without a basis conversion the source usually does not give. So the model's decision to carry a GFA-basis sqft/MW directly, calibrated on Virginia data, is the correct one — provided that calibration is sound. §15.2 tests it.
+
+### 15.2 The 45 permit-backed buildings are a natural experiment
+
+The buildings whose power comes from a VADEQ air permit do not use the density constant at all — their MW is generator capacity run through ICPRB Equation 6-3. But their **gross floor area is known independently** from the assessor. So `permit_MW ÷ GFA` is an *empirical* power density for real Prince William buildings that never touches the 8,818 assumption. Measured across all 45:
+
+| | sqft/MW | W/sqft GFA | W/sqft white space (÷0.45) |
+|---|---|---|---|
+| Median | **8,638** | 116 | 257 |
+| p10–p90 | 6,293 – 13,759 | 73 – 159 | 162 – 353 |
+
+Two results, both material:
+
+1. **The permit-backed median (8,638) reproduces ICPRB's 8,818 within 2%.** These are fully independent methods — PWC backup-generator capacity versus ICPRB's division of Loudoun Water billing by an air-permit power estimate — and they land on the same constant. That is the strongest validation of the density figure in the project, and it is not circular (§0's circularity was about the *water* figure; this is the *power* figure, derived from generator capacity, not water at all).
+
+2. **The fleet genuinely spans 2.2×.** Density is not a constant with measurement noise around it; PWC data centres really do range from 73 to 159 W/sqft GFA. That reframes the 52% swing: it is **real heterogeneity, not ignorance.** No single density can be "correct" for a fleet this varied.
+
+### 15.3 The heterogeneity is operator-structured
+
+The 2.2× spread is not random — it sorts cleanly by operator and design generation:
+
+| Operator | n | median sqft/MW | W/sqft GFA | W/sqft white space |
+|---|---|---|---|---|
+| Stack | 1 | 5,478 | 183 | 406 |
+| Digital Realty | 4 | 6,289 | 159 | 353 |
+| Corscale | 5 | 7,177 | 139 | 310 |
+| NTT | 2 | 7,509 | 133 | 296 |
+| Amazon AWS | 18 | 8,627 | 116 | 258 |
+| QTS | 6 | 9,376 | 107 | 237 |
+| Microsoft | 2 | 11,942 | 84 | 186 |
+| Iron Mountain | 7 | 13,769 | 73 | 161 |
+
+These white-space figures fall squarely inside the published envelope — 100–150 W/sqft for standard builds, 250–450 for modern AI-class (Uptime/LBNL). The densest PWC operators (Stack, DLR) sit in the AI-class band; colocation and retrofit stock (Iron Mountain, ~2× less dense) sits at the bottom. **Build year predicts this poorly** (retrofits and colo carry recent assessor dates on old bones), which is exactly why the earlier vintage banding was noisy. **Operator predicts it well.**
+
+### 15.4 What changed in the model
+
+Density for a GFA-only building is now calibrated to **its own operator's permit-backed buildings** in the county, wherever ≥3 such calibrators exist (`build_operator_density_index`). This reaches **32 of 198** GFA-only buildings — all Amazon and Iron Mountain, the two operators with both enough calibrators and unbuilt stock. The rest keep the vintage band.
+
+Effect on the county central total: **51.42 → 50.30 MGD (−2.2%)**. The correction is downward because the model had been assigning unbuilt Amazon buildings the `new_build` band (7,070 sqft/MW), denser than Amazon's *actual* built estate (8,627) — i.e. it was over-crediting future AWS buildings with AI-class density they have not, on the evidence, been building to.
+
+Density remains ~52% of the swing, and that is now a deliberate statement rather than an unresolved gap: the sweep reflects genuine fleet heterogeneity, and the only thing that zeroes a single building's density uncertainty is a permit — which is why the 45 permit-backed buildings carry none. `validate_power_density.py` reproduces this whole chain.
+
+### 15.5 Sources
+
+- Silverback Data Center Solutions, *Watts per Square Foot* — room/production/rack denominators.
+- RICS Construction Journal (2024), *Data centre growth* — white space = 40–50% of gross internal area; ~1:1 white-to-grey.
+- JLARC, *Data Centers in Virginia* (Dec 2024) — ~5,050 MW across ~340 built Virginia buildings.
+- Uptime Institute / LBNL benchmarking — 100–150 W/sqft standard, 250–450 W/sqft modern AI-class.
+- ICPRB 2025 WMA Water Supply Study, §6.2 — 8,818 sqft/MW fleet average.

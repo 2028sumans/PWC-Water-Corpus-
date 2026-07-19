@@ -31,6 +31,7 @@ import pandas as pd
 from indirect_water_footprint import (
     SQFT_PER_EFFECTIVE_MW,
     build_proffer_group_sizes,
+    effective_power_from_permit,
     estimate_scope_water_footprint,
     resolve_gfa,
 )
@@ -478,6 +479,72 @@ for _k, _v in _operator_index.items():
     _permit_power_index.setdefault(_k, _v)
 t(f"  buildings with permit-derived power: {len(_permit_power_index)} of {len(dc_buildings)}")
 
+
+def build_operator_density_index(buildings_df, permit_index, min_calibrators=3):
+    """Empirical sqft/MW per operator, measured from that operator's own
+    permit-backed buildings in this county.
+
+    The permit-backed buildings are a natural experiment: their MW comes from
+    VADEQ generator capacity (ICPRB Eq 6-3), and their GFA is known
+    independently, so permit_MW / GFA is a density that never touches the 8,818
+    assumption. An operator's built estate predicts an unbuilt same-operator
+    building's density far better than a build-year guess does, so this band
+    supersedes the vintage band where >=min_calibrators exist.
+
+    Returns {operator: {central, low, high, class, source, n}} with central =
+    median and low/high = the operator's own observed min/max (widened to at
+    least +/-12% so a two-building operator is not spuriously tight).
+    """
+    import statistics as _st
+
+    obs = {}
+    for _, b in buildings_df.iterrows():
+        nm = clean(b.get("BuildingName"))
+        pw = permit_index.get(nm)
+        op = _operator(nm)
+        if not pw or not op:
+            continue
+        eff = effective_power_from_permit(pw.get("site_generator_mw"), pw.get("gfa_share"))
+        g, _f, _q = resolve_gfa(b, _proffer_group_sizes)
+        if not eff or not g:
+            continue
+        mw = eff[0]
+        if mw > 0:
+            obs.setdefault(op, []).append(g / mw)
+
+    index = {}
+    for op, vals in obs.items():
+        if len(vals) < min_calibrators:
+            continue
+        vals = sorted(vals)
+        med = _st.median(vals)
+        low = min(min(vals), med * 0.88)      # denser end (more MW)
+        high = max(max(vals), med * 1.12)     # sparser end (less MW)
+        index[op] = {
+            "central": round(med),
+            "low": round(low),
+            "high": round(high),
+            "class": f"operator_{op}",
+            "n": len(vals),
+            "source": (
+                f"{op}'s {len(vals)} permit-backed buildings in PWC measure "
+                f"{round(min(vals)):,}-{round(max(vals)):,} sqft/MW (median {round(med):,}); "
+                f"generator-capacity power / known GFA, independent of the 8,818 constant"
+            ),
+        }
+    return index
+
+
+# Only apply the operator band to GFA-only buildings (permit-backed ones already
+# have measured power); the index is keyed by operator and consulted per building
+# below when no permit power exists.
+_operator_density_index = build_operator_density_index(dc_buildings, _permit_power_index)
+_odesc = ", ".join(
+    "{} (n={}, {:,} sqft/MW)".format(k, v["n"], v["central"])
+    for k, v in _operator_density_index.items()
+) or "none"
+t(f"  operator-conditioned density calibrated for: {_odesc}")
+
 building_profiles = []
 for _, b in dc_buildings.iterrows():
     geom = b.geometry
@@ -537,6 +604,11 @@ for _, b in dc_buildings.iterrows():
             pue_cap=pue_cap, cooling_disclosure=cooling_disc,
             permit_power=_permit_power_index.get(clean(b.get("BuildingName"))),
             status=clean(b.get("BuildingStatus")),
+            operator_density=(
+                None
+                if _permit_power_index.get(clean(b.get("BuildingName")))
+                else _operator_density_index.get(_operator(b.get("BuildingName")))
+            ),
         ),
     }
     building_profiles.append(profile)

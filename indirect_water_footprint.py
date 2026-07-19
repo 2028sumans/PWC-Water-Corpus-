@@ -458,23 +458,39 @@ def density_class(year_built, status=None):
     return _vintage_class(year_built, status)
 
 
-def effective_power_from_gfa(gfa_sqft, year_built=None, status=None):
+def effective_power_from_gfa(gfa_sqft, year_built=None, status=None,
+                             operator_density=None):
     """Effective IT power (MW) from gross floor area.
 
     Density is banded by build era rather than fixed at ICPRB's fleet average,
     because that average spans two decades of construction and the county's
     permit records show modern builds roughly 1.5x denser.
+
+    operator_density -- an optional {central, low, high, class} band measured
+    from the SAME operator's permit-backed buildings in this county. When
+    present it supersedes the vintage band: an operator's own built estate is a
+    far better predictor of an unbuilt building's density than a build-year
+    guess (build year is noisy for retrofits and colo), and it is empirical
+    rather than assumed. Only used where >=3 same-operator calibrators exist.
     """
     if not gfa_sqft or gfa_sqft <= 0:
         return None
-    cls = density_class(year_built, status)
-    central_d, low_d, high_d = DENSITY_SQFT_PER_MW[cls]
+    src = None
+    if operator_density:
+        central_d = operator_density["central"]
+        low_d = operator_density["low"]
+        high_d = operator_density["high"]
+        cls = operator_density["class"]
+        src = operator_density.get("source")
+    else:
+        cls = density_class(year_built, status)
+        central_d, low_d, high_d = DENSITY_SQFT_PER_MW[cls]
     # Dividing by the SMALLEST sqft/MW gives the LARGEST power, so low/high
     # invert relative to the density figures.
     central = gfa_sqft / central_d
     hi = gfa_sqft / low_d
     lo = gfa_sqft / high_d
-    return round(central, 1), round(lo, 1), round(hi, 1), cls, central_d
+    return round(central, 1), round(lo, 1), round(hi, 1), cls, central_d, src
 
 
 # Uncertainty on permit-derived power comes from ICPRB's own conversion factors
@@ -866,6 +882,7 @@ def estimate_scope_water_footprint(
     cooling_disclosure=None,
     permit_power=None,
     status=None,
+    operator_density=None,
 ):
     """
     Returns the Scope 1/2/3 estimate for one facility, or None if there is no
@@ -891,12 +908,12 @@ def estimate_scope_water_footprint(
         if eff:
             power_basis = "permit_generator_capacity"
             permit_meta = permit_power
-    density_cls = density_used = None
+    density_cls = density_used = density_src = None
     if eff is None:
-        g = effective_power_from_gfa(gfa_sqft, year_built, status)
+        g = effective_power_from_gfa(gfa_sqft, year_built, status, operator_density)
         if g:
             eff = g[:3]
-            density_cls, density_used = g[3], g[4]
+            density_cls, density_used, density_src = g[3], g[4], g[5]
     if eff is None:
         return None
     eff_mw, eff_lo, eff_hi = eff
@@ -964,7 +981,7 @@ def estimate_scope_water_footprint(
             "permit": permit_meta,
             "density_class": density_cls,
             "density_sqft_per_mw_used": density_used,
-            "density_source": DENSITY_SOURCE_NOTE.get(density_cls) if density_cls else None,
+            "density_source": density_src or (DENSITY_SOURCE_NOTE.get(density_cls) if density_cls else None),
             "note": (
                 (
                     f"VADEQ air permit {permit_meta['registration_no']} covers this site with "
@@ -978,9 +995,15 @@ def estimate_scope_water_footprint(
                 )
                 if permit_meta else
                 f"{gfa_sqft:,.0f} sqft / {density_used:,} sqft per effective MW = {eff_mw} MW "
-                f"effective IT load. Density is banded by build era ({density_cls}) rather than "
-                f"fixed at ICPRB's {SQFT_PER_EFFECTIVE_MW:,} fleet average, which spans two decades "
-                f"of construction: {DENSITY_SOURCE_NOTE.get(density_cls, '')}."
+                f"effective IT load. "
+                + (
+                    f"Density is calibrated to this operator's own permit-backed buildings in "
+                    f"the county rather than to a build-era band: {density_src}"
+                    if density_src else
+                    f"Density is banded by build era ({density_cls}) rather than fixed at "
+                    f"ICPRB's {SQFT_PER_EFFECTIVE_MW:,} fleet average, which spans two decades of "
+                    f"construction: {DENSITY_SOURCE_NOTE.get(density_cls, '')}."
+                )
             ),
             "operator_cross_check": xcheck,
             "hv_plausibility": hv_plausibility_note(eff_hi, d_hv_transmission_ft),

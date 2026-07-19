@@ -228,18 +228,27 @@ function unresolvedItems(
     });
   }
 
-  // ── U3. Power draw — now floor-area derived, cross-checked not widened ─
+  // ── U3. Power draw — permit-measured, or floor-area derived ─
   const xc = pw.operator_cross_check;
+  const isPermitPower = pw.basis === "permit_generator_capacity";
+  const densityUsed = pw.density_sqft_per_mw_used ?? pw.sqft_per_effective_mw;
   items.push({
     id: "U3",
-    title: "Facility power draw is inferred from floor area, not metered",
-    severity: xc && !xc.agrees ? "high" : "moderate",
-    onRecord: `${pw.gfa_sqft.toLocaleString()} sqft (${pw.gfa_quality ?? "unknown"} source: ${pw.gfa_field_used ?? "n/a"}) ÷ ${pw.sqft_per_effective_mw.toLocaleString()} sqft per effective MW = ${pw.effective_it_mw_central} MW effective IT load. The density is ICPRB's, measured across the Virginia fleet via the JLARC/VADEQ air-permit database.${xc ? ` ${xc.note}` : ""}`,
-    gap:
-      pw.gfa_quality === "proffer_split"
+    title: isPermitPower
+      ? "Facility power is measured from a permit, not floor area"
+      : "Facility power draw is inferred from floor area, not metered",
+    severity: isPermitPower ? "moderate" : xc && !xc.agrees ? "high" : "moderate",
+    onRecord: isPermitPower
+      ? `${swf.power.note}`
+      : `${pw.gfa_sqft.toLocaleString()} sqft (${pw.gfa_quality ?? "unknown"} source: ${pw.gfa_field_used ?? "n/a"}) ÷ ${densityUsed.toLocaleString()} sqft per effective MW = ${pw.effective_it_mw_central} MW effective IT load. ${pw.density_source ?? "Density is ICPRB's fleet average."}${xc ? ` ${xc.note}` : ""}`,
+    gap: isPermitPower
+      ? "Power is apportioned from the site's permitted backup-generator capacity by floor-area share; the split assumes generators are sized in proportion to each building's floor area."
+      : pw.gfa_quality === "proffer_split"
         ? "This building has no assessed or permitted floor area of its own — only a site-wide proffered entitlement, divided evenly across the buildings sharing it. The split is even, but real buildings on a site are not equally sized."
-        : "A fleet-average density is not a site measurement. Actual rack density and mechanical layout vary building to building, and no metered load figure is published for any individual facility.",
-    impact: `Propagates proportionally into both Scope 1 and Scope 2. The ±25% density tolerance is the main reason the total is a range rather than a point.`,
+        : "A density band is not a site measurement. Actual rack density and mechanical layout vary building to building, and no metered load figure is published for any individual facility.",
+    impact: isPermitPower
+      ? "Power for this building rests on measured generator capacity, so it carries no density uncertainty — only the floor-area apportionment among buildings on the same permit."
+      : `Propagates proportionally into both Scope 1 and Scope 2. Density is the single largest driver of the range (~52% of the county-wide swing).`,
     wouldResolve:
       "The per-facility backup-generator capacity in the VADEQ air permit for this site, or a utility load filing — either replaces the floor-area inference with a facility-specific figure.",
   });

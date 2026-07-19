@@ -124,7 +124,15 @@ export interface ScopePowerEstimate {
   /** Build-era band actually used for this building's density, and the figure
    *  it resolved to. Null when power came from a permit, which bypasses
    *  density entirely. */
-  density_class: "new_build" | "modern" | "standard" | "legacy" | "unknown" | null;
+  /**
+   * A build-era band (new_build/modern/standard/legacy/unknown), OR an
+   * `operator_<name>` label when the density was calibrated to that operator's
+   * own permit-backed buildings in the county rather than to a build year —
+   * which is a better predictor and is empirical rather than assumed.
+   */
+  density_class:
+    | "new_build" | "modern" | "standard" | "legacy" | "unknown"
+    | `operator_${string}` | null;
   density_sqft_per_mw_used: number | null;
   density_source: string | null;
   gfa_sqft: number;
