@@ -1,51 +1,94 @@
 {
-  "source": "Prince William County Development Services ePortal (Tyler EnerGov), public permit search",
-  "source_url": "https://egcss.pwcgov.org/SelfService#/search",
-  "retrieved": "2026-07-19",
-  "note": "Permit descriptions that state a data centre's floor area and/or electrical load in the applicant's own words. These are the only per-building statements of the GFA-to-MW relationship found anywhere in this project, and they bear directly on the 8,818 sqft/MW ICPRB constant, which is the largest remaining swing factor in the estimator (46%).",
-  "statements": [
-    {
-      "permit_no": "MEC2025-01801",
-      "parcel": "7596-55-9338",
-      "status": "Issued",
-      "gross_sqft": 339744,
-      "critical_load_mw": 60,
-      "implied_sqft_per_mw": 5662,
-      "in_model": false,
-      "quote": "THE PROJECT IS A TWO-STORY DATA CENTER AND OFFICE BUILDING AT AN APPROXIMATE 339,744 SF GROSS AREA. CONSTRUCTION WILL INCLUDE CORE AND SHELL OF THE BUILDING; (2) DATA HALLS AT LEVEL 1 AND (2) DATA HALLS AT LEVEL 2 WITH SUPPORTING ELECTRICAL AND MECHANICAL ROOMS, EXTERIOR SERVICE YARD, AND ROOF EQUIPMENT PLATFORM TO SUPPORT THE 60 MW CRITICAL LOAD PLANNED",
-      "why_it_matters": "The only record in the corpus stating BOTH floor area and load for the same building. 'Critical load' is IT load, the same quantity ICPRB's Effective (IT) Power Demand denotes, so the two are directly comparable."
-    },
-    {
-      "permit_no": "MEC2025-01881",
-      "parcel": "7397-56-8403",
-      "status": "Issued",
-      "gross_sqft": null,
-      "critical_load_mw": 96,
-      "implied_sqft_per_mw": null,
-      "in_model": true,
-      "model_buildings": ["NTT Grove at Gainesville VA10", "VA11", "VA12", "VA13"],
-      "quote": "NEW STRUCTURE DATA CENTER PERMIT PATHWAY. THE PROJECT IS A NEW TWO-STORY 96 MW DATA CENTER BUILDING THAT CONSISTS OF 12 DATA SERVER VAULTS, OFFICE AND ASSOCIATED SITE AND UTILITY INFRASTRUCTURE.",
-      "why_it_matters": "Which of the four NTT buildings on this parcel the 96 MW refers to is not stated, so it cannot be assigned. For scale, the model's permit-derived figures are 74.7 MW (VA10) and 77.3 MW (VA11); a GFA-derived VA10 would be 63.6 MW. The permit-derived path is the closer of the two to a stated 96 MW."
-    },
-    {
-      "permit_no": "MEC2023-01041",
-      "parcel": "7696-31-7330",
-      "status": "Finaled",
-      "gross_sqft": 270000,
-      "critical_load_mw": null,
-      "in_model": false,
-      "quote": "2-story, 270,000 SF Data Center Building consisting of a steel building structure with precast insulated concrete skin."
-    },
-    {
-      "permit_no": "MEC2025-00037",
-      "parcel": "7695-39-0644",
-      "status": "Pending",
-      "gross_sqft": 38000,
-      "critical_load_mw": null,
-      "in_model": true,
-      "model_buildings": ["QTS Manassas DC5"],
-      "quote": "Approx. 26,000 SF Data Hall with associated Mechanical and Electrical Gallery spaces (additional 12,000 SF) built in the existing East Shell space of Level Two in the existing QTS MAN1-DC5 Data Center.",
-      "why_it_matters": "Gives the data-hall-to-support-space ratio directly: 26,000 SF of hall to 12,000 SF of mechanical and electrical gallery, so roughly 68% of the fitted-out area is white space."
-    }
-  ]
+ "source": "Prince William County Development Services ePortal (Tyler EnerGov), public permit search",
+ "source_url": "https://egcss.pwcgov.org/SelfService#/search",
+ "retrieved": "2026-07-19",
+ "note": "Permit descriptions that state a data centre's floor area and/or electrical load in the applicant's own words. These are the only per-building statements of the GFA-to-MW relationship found anywhere in this project, and they bear directly on the 8,818 sqft/MW ICPRB constant, which is the largest remaining swing factor in the estimator (46%).",
+ "statements": [
+  {
+   "permit_no": "MEC2025-01801",
+   "parcel": "7596-55-9338",
+   "status": "Issued",
+   "gross_sqft": 339744,
+   "critical_load_mw": 60,
+   "implied_sqft_per_mw": 5662,
+   "in_model": false,
+   "quote": "THE PROJECT IS A TWO-STORY DATA CENTER AND OFFICE BUILDING AT AN APPROXIMATE 339,744 SF GROSS AREA. CONSTRUCTION WILL INCLUDE CORE AND SHELL OF THE BUILDING; (2) DATA HALLS AT LEVEL 1 AND (2) DATA HALLS AT LEVEL 2 WITH SUPPORTING ELECTRICAL AND MECHANICAL ROOMS, EXTERIOR SERVICE YARD, AND ROOF EQUIPMENT PLATFORM TO SUPPORT THE 60 MW CRITICAL LOAD PLANNED",
+   "why_it_matters": "The only record in the corpus stating BOTH floor area and load for the same building. 'Critical load' is IT load, the same quantity ICPRB's Effective (IT) Power Demand denotes, so the two are directly comparable."
+  },
+  {
+   "permit_no": "MEC2025-01881",
+   "parcel": "7397-56-8403",
+   "status": "Issued",
+   "gross_sqft": null,
+   "critical_load_mw": 96,
+   "implied_sqft_per_mw": null,
+   "in_model": true,
+   "model_buildings": [
+    "NTT Grove at Gainesville VA10",
+    "VA11",
+    "VA12",
+    "VA13"
+   ],
+   "quote": "NEW STRUCTURE DATA CENTER PERMIT PATHWAY. THE PROJECT IS A NEW TWO-STORY 96 MW DATA CENTER BUILDING THAT CONSISTS OF 12 DATA SERVER VAULTS, OFFICE AND ASSOCIATED SITE AND UTILITY INFRASTRUCTURE.",
+   "why_it_matters": "Which of the four NTT buildings on this parcel the 96 MW refers to is not stated, so it cannot be assigned. For scale, the model's permit-derived figures are 74.7 MW (VA10) and 77.3 MW (VA11); a GFA-derived VA10 would be 63.6 MW. The permit-derived path is the closer of the two to a stated 96 MW."
+  },
+  {
+   "permit_no": "MEC2023-01041",
+   "parcel": "7696-31-7330",
+   "status": "Finaled",
+   "gross_sqft": 270000,
+   "critical_load_mw": null,
+   "in_model": false,
+   "quote": "2-story, 270,000 SF Data Center Building consisting of a steel building structure with precast insulated concrete skin."
+  },
+  {
+   "permit_no": "MEC2025-00037",
+   "parcel": "7695-39-0644",
+   "status": "Pending",
+   "gross_sqft": 38000,
+   "critical_load_mw": null,
+   "in_model": true,
+   "model_buildings": [
+    "QTS Manassas DC5"
+   ],
+   "quote": "Approx. 26,000 SF Data Hall with associated Mechanical and Electrical Gallery spaces (additional 12,000 SF) built in the existing East Shell space of Level Two in the existing QTS MAN1-DC5 Data Center.",
+   "why_it_matters": "Gives the data-hall-to-support-space ratio directly: 26,000 SF of hall to 12,000 SF of mechanical and electrical gallery, so roughly 68% of the fitted-out area is white space."
+  },
+  {
+   "permit_no": "BLD2023-06335",
+   "parcel": "7397-65-0198",
+   "status": "Issued",
+   "gross_sqft": null,
+   "critical_load_mw": 84,
+   "data_server_vaults": 14,
+   "in_model": false,
+   "quote": "The project consists of a new two-story 84MW data center building that consists (14) data server vaults",
+   "why_it_matters": "Second stated per-building load. 84 MW over 14 vaults is 6.0 MW per vault, against 96 MW over 12 vaults (8.0 MW per vault) at the NTT parcel -- same order, so 'data server vault' is a roughly consistent unit and a possible future scaling handle."
+  }
+ ],
+ "convergence": {
+  "note": "Three independent readings of modern new-build density cluster far below ICPRB's fleet average.",
+  "points": [
+   {
+    "source": "MEC2025-01801, both figures stated for one building",
+    "sqft_per_mw": 5662,
+    "confidence": "high"
+   },
+   {
+    "source": "96 MW attributed to NTT VA10 (560,942 sqft)",
+    "sqft_per_mw": 5843,
+    "confidence": "medium \u2014 which of four NTT buildings the 96 MW names is not stated"
+   },
+   {
+    "source": "96 MW attributed to NTT VA11 (580,498 sqft)",
+    "sqft_per_mw": 6047,
+    "confidence": "medium \u2014 same ambiguity"
+   }
+  ],
+  "comparison": {
+   "ICPRB_fleet_average": 8818,
+   "ICPRB_Fairfax_implied": 12722
+  },
+  "interpretation": "ICPRB's 8,818 is a fleet average over the whole Virginia estate, including older and less dense buildings. A 2025-26 new build coming in at ~5,700-6,000 sqft/MW is consistent with that rather than contradicting it, and implies the constant should be VINTAGE-DEPENDENT rather than single-valued."
+ }
 }

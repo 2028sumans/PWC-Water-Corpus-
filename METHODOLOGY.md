@@ -129,12 +129,17 @@ Surry consumes nothing in USGS's model because heat discharges to a tidal estuar
 ### 3.3 PUE ranges
 
 ```python
-PUE_RANGE = {"modern": (1.08, 1.15),    # year_built >= 2020
-             "standard": (1.20, 1.60),  # year_built < 2020
-             "unknown": (1.10, 1.50)}   # year_built missing
+OPERATOR_DISCLOSED_PUE = {"META": 1.08, "GOOGLE": 1.09, "AWS": 1.14, "MICROSOFT": 1.16}
+DISCLOSED_PUE_TOLERANCE = 0.06          # site-vs-fleet spread
+
+PUE_RANGE = {"new_build": (1.15, 1.35), # unbuilt: current design practice
+             "modern":    (1.15, 1.40), # completed 2020+
+             "standard":  (1.30, 1.55), # completed 2010-2019
+             "legacy":    (1.45, 1.80), # completed pre-2010
+             "unknown":   (1.15, 1.54)} # floor to the Uptime industry average
 ```
 
-As shipped: **146 `unknown`**, 34 `modern`, 22 `standard`.
+Anchored on the Uptime Institute 2025 survey (industry weighted average **1.54**, flat six years) and 2024–25 operator fleet disclosures. As shipped: **115 `new_build`, 61 `operator_disclosed`, 19 `modern`, 4 `standard`, 3 `legacy`, 0 `unknown`.**
 
 ### 3.4 Assumptions
 
@@ -633,3 +638,89 @@ Circulation rate (gpm) is recorded but deliberately **not** converted to a water
 | 8 | **Facility-specific PUE** | Now the #2 swing factor at 29% |
 | 9 | **Per-building GFA** replacing the 89 proffer-splits | Retires the even-split assumption |
 | 10 | **Basin water-stress weighting** | Makes consumptive gallons comparable rather than merely summable |
+
+---
+
+## 8. Findings ledger
+
+Every substantive finding, in one place. Sections 6–7 grew chronologically and their numbering is out of order; this is the index.
+
+### 8.1 Errors found in this model (all fixed or flagged)
+
+| # | Finding | Status |
+|---|---|---|
+| 1 | **The validation was circular.** ICPRB derived 309 gal/MW/day *by dividing* PWC's 0.42 MGD by its own power estimate, so comparing back to 0.42 cancels the water figure and returns −7.4% either way. It tested the power spine, not water use. | Withdrawn from the module docstring, the UI headline, the U1 audit item and the `/api/memo` prompt |
+| 2 | **8,818 sqft/MW is run backwards.** ICPRB uses it once, to convert Loudoun's 0.017 gal/day/sqft into the 150 gal/MW/day tier. Power in their Eq. 6-3 comes from air-permit generator capacity, never floor area. | Documented; largest remaining swing |
+| 3 | **Scope 2 used national medians.** Nuclear at 700 gal/MWh blended Surry (once-through saline, 0 consumption) with North Anna (Lake Anna, 417). | Fixed — VA-specific USGS values; swing 54% → 12% |
+| 4 | **Campus profiles never ran `permit_conditions_for()`**, silently dropping proffer cooling conditions for all 51. | Fixed |
+| 5 | **Campus entitlement GFA duplicated onto smaller campuses.** Manassas Point PRA implied FAR 3.34, Battlefield Business Park 2.68 — both share a GFA with a larger campus. | Flagged via `implied_far` / `far_flag`, not silently corrected |
+| 6 | **Suspected PUE double-count.** | **Retracted** — Eq. 6-3 says "Effective **(IT)** Power Demand", so multiplying by PUE is right |
+| 7 | **`unknown` PUE applied to 147 unbuilt buildings.** Their vintage is not unknown; they are being built now. | Fixed — `new_build` class; `unknown` now empty |
+| 8 | **Withdrawal and consumption are summed.** Scope 1 is delivered water, Scope 2 is consumed water. The 0.75 factor exists to reconcile them and is computed but unused. | Open |
+| 9 | **Peak-day ignores narrowing** — always uses 3,060 gal/MW/day, giving a 20× peak:average ratio on narrowed facilities. | Open |
+| 10 | **The estimator could only narrow one way.** Evidence could lower Scope 1 but never raise it. | Fixed — `disclosed_cooling_evaporative` basis added |
+| 11 | Three join bugs: codenames not unique across operators (`VA-10`), substring matching (`IAD-7` → `IAD-74`), dedupe on `gpin` when GPIN is the **parcel**. | All fixed |
+| 12 | **Non-emergency generator fleets break ICPRB's 0.5 redundancy rationale**, which assumes 2N emergency backup. 74262 is 100% non-emergency. | Flagged per building, factor unchanged |
+
+### 8.2 Findings about the world (the paper's material)
+
+| Finding | Evidence |
+|---|---|
+| **The county's land-use review has no field for water quantity.** Every data centre staff report contains a *Potable Water Plan Analysis*; across all of them it asks only whether public water is available and who pays to connect. No gallons anywhere. | §7.2a |
+| **Cooling type is never made enforceable.** It appears only as a menu item — 15 of 16 with 8 required (REZ2025-00003), 17 of 19 with 8 required (SUP2025-00016). The 1.5 PUE cap is the same. | §7.3, §7.2a |
+| **The only enforceable water condition in the entire corpus is a TDS limit** in an *air* permit (74216, 2,500 ppm), regulating chemistry for drift purposes and bounding consumption only as a side effect. | §7.3a |
+| **Prince William data centres permit chillers, not cooling towers** — 1 vs 38 on other parcels, against 33 chiller/igloo records. Independently corroborates ICPRB's ~11% water-cooled share for this county. | §7.3c |
+| **10 of 16 published staff-report links are placeholders** reading "currently unavailable". | §7.2a |
+| **Applicants do state load and floor area** — just in trade permits, not in land-use review. | §7.1e |
+
+### 8.3 What the model still cannot see
+
+| | Count |
+|---|---|
+| Buildings with power from a document | 44 / 202 |
+| Buildings with PUE from an operator report | 61 / 202 |
+| Buildings with cooling type from evidence | **0 / 202** |
+| Buildings with metered water | **0 / 202** |
+
+---
+
+## 9. Resolving density — a concrete route
+
+Density is 46% of the swing and now has evidence pointing **both ways** (§7.1e vs §7.2b). It is the one term whose resolution would materially change the tool. The route below is demonstrated, not speculative — every step has been executed at least once.
+
+### 9.1 The insight
+
+ICPRB's 8,818 sqft/MW is a **fleet average** across the whole Virginia estate, including older, lower-density buildings. Modern new builds are far denser. Three independent readings now cluster together:
+
+| Source | sqft/MW |
+|---|---|
+| `MEC2025-01801` — both figures stated, one building | **5,662** |
+| 96 MW attributed to NTT VA10 (560,942 sqft) | 5,843 |
+| 96 MW attributed to NTT VA11 (580,498 sqft) | 6,047 |
+| *ICPRB fleet average* | *8,818* |
+| *ICPRB Fairfax-implied* | *12,722* |
+
+That spread is not noise — it is **vintage**. The constant should not be single-valued.
+
+### 9.2 The harvest
+
+Applicants state building load in county trade permits. The searches that surface them, all confirmed working on `egcss.pwcgov.org`:
+
+- `"critical load"` → 4 records, one building
+- `"data hall"` → 5 records, two buildings at 84 MW and 96 MW
+- `"data server vaults"` → the same building family
+- `"MW data center"` → 4 records
+
+Each hit gives a stated MW. Pairing it with the assessed GFA already in this model yields one density point. **A dozen such pairs would replace the single fleet constant with a vintage-banded distribution** — and unlike every other route tried, this data is public, free, and already reachable.
+
+Two further handles found in the same corpus: **"data server vault"** appears to be a roughly consistent unit (6.0 and 8.0 MW per vault across two buildings), and `MEC2025-00037` states the white-space ratio outright — 26,000 SF hall to 12,000 SF mechanical/electrical gallery, so ~68% of fitted-out area is hall.
+
+### 9.3 What to change once the pairs exist
+
+1. **Band the constant by vintage** rather than using one value: a modern-build density near 5,700–6,000 and a legacy density above 8,818, selected on `year_built` / build status exactly as PUE now is.
+2. **Keep permit-derived power first.** It already beats the bridge — against a stated 96 MW, the permit path gives 74.7 MW where the bridge gives 63.6.
+3. **Widen the band honestly.** The current ±25% is contradicted from both directions and understates real uncertainty.
+
+### 9.4 Method note
+
+None of §9.1's figures are reachable by keyword search over the fields a normal query returns. They sit mid-paragraph inside permits whose stated subject is HVAC or electrical scope. They surfaced only from reading every record.
