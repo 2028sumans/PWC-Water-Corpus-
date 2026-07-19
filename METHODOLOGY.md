@@ -310,7 +310,29 @@ Two moves, in order:
 
    Two cautions for whoever picks this up. One permit typically covers **several** buildings, so any capacity read from a permit document is a *site* total that must be split across the listed buildings — the same aggregation trap that makes interconnection.fyi unusable per-building. And permitted generator capacity is an entitlement ceiling, so it is `inferable`, not `observable`.
 
-   Remaining routes to the capacity figure: the permit documents themselves (via DEQ's air permit records or the FOIA process the page links), or the JLARC consultant dataset directly.
+   **Follow-up attempted 2026-07-18 — capacity is not publicly downloadable.** Every route was checked:
+
+   | Route | Result |
+   |---|---|
+   | DEQ data-center permit table | No capacity column |
+   | DEQ PEEP / Virginia Permit Transparency | Permit *processing metrics* only — no permit content |
+   | DEQ "active air permit applications" document | 403 to scripted clients |
+   | JLARC Report 598 full text | Prose only; no per-facility table |
+   | JLARC study landing page | **Seven PDFs, zero data files** — no facility dataset published |
+
+   ICPRB's per-facility capacity came from a **JLARC consultant dataset** compiled from VADEQ permits and never published. The two remaining routes are both requests, not downloads: a **FOIA to DEQ** (the data-center page explicitly invites one) or a direct request to **ICPRB or JLARC** for the compiled dataset. Statewide context for scale: roughly 9,000 permitted data-center generators at 2–4 MW each.
+
+### 7.1b Why the density constant cannot be repaired by tuning
+
+Three half-measures were quantified before concluding this. None works:
+
+| Option | Effect |
+|---|---|
+| **A — widen the band** to the cross-source envelope (7,253–12,722) | Span goes 1.67× → 1.75×. The existing ±25% judgment already spans nearly the entire cross-source disagreement. **A 5% change — effectively a no-op.** |
+| **B — recentre** on the geometric mean of the two checks (9,606) | Shifts every MW figure −8.2%; county total 33.17 → 30.45 MGD. But averaging two *contradictory* checks is not a principled estimate, it just splits a disagreement. |
+| **C — clamp MW to the interconnection bucket** where one exists | Covers 26 of 202 buildings (13%), and 8 of 10 already sit *below* the bucket floor, so an upper clamp binds on almost nothing. |
+
+The reason none works is structural: the disagreement is not noise around a true constant that better centring would find. Interconnection floors imply ~7,253 sqft/MW and ICPRB's own Fairfax figures imply 12,722 — a 1.75× spread between two independent sources, with the shipped 8,818 sitting between them. Meanwhile observed site-to-site spread is 10.6×. **A single fleet-average density is the wrong shape of object for this job**, and no choice of value fixes that. Only per-facility power does.
 
 Note the ±25% tolerance is already contradicted by ICPRB's own Fairfax figures (§1.3), which imply 12,722 sqft/MW.
 
