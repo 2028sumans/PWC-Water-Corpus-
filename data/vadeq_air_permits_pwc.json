@@ -1,0 +1,338 @@
+{
+ "source": "Virginia DEQ, Issued Air Permits for Data Centers, as of 7/13/2026",
+ "source_url": "https://www.deq.virginia.gov/permits/air/issued-air-permits-for-data-centers",
+ "retrieved": "2026-07-18",
+ "note": "The published DEQ table carries NO generator capacity column -- capacity lives in the individual permit documents, which are not linked from that page. This file is the key for that follow-up: registration numbers plus, where the site name discloses them, the specific building codenames each permit covers. Note that one permit typically covers SEVERAL buildings, so any capacity obtained from a permit document is a site total that must be split across the buildings listed here, not assigned to each of them.",
+ "permits": [
+  {
+   "site_name": "Oath, Inc.",
+   "registration_no": "72368-4",
+   "issued": "08/28/2009",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Comcast Cablevision of Virginia Incorporated",
+   "registration_no": "72374-4",
+   "issued": "03/27/2014",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Digital Realty - Porpoise Ventures LLC (VA4)",
+   "registration_no": "73180-4",
+   "issued": "08/07/2008",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "VA-4"
+   ]
+  },
+  {
+   "site_name": "Equinix, LLC - DC 14",
+   "registration_no": "73200-2",
+   "issued": "10/19/2006",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Equinix, LLC - DC 14",
+   "registration_no": "73200-3",
+   "issued": "10/18/2007",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Corporate Office Properties Trust (COPT - DC6)",
+   "registration_no": "73683-12",
+   "issued": "08/24/2021",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-7 IAD-11 IAD-24",
+   "registration_no": "73741-23",
+   "issued": "01/20/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-7",
+    "IAD-11",
+    "IAD-24"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-14 IAD-52 IAD-59",
+   "registration_no": "73995-5",
+   "issued": "05/08/2014",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-14",
+    "IAD-52",
+    "IAD-59"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-55 IAD-64 IAD-84",
+   "registration_no": "74052-9",
+   "issued": "04/25/2023",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-55",
+    "IAD-64",
+    "IAD-84"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-73 IAD-74 IAD-602 IAD-193 IAD-194",
+   "registration_no": "74081-4",
+   "issued": "07/08/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-73",
+    "IAD-74",
+    "IAD-602",
+    "IAD-193",
+    "IAD-194"
+   ]
+  },
+  {
+   "site_name": "Cloud HQ",
+   "registration_no": "74107-6",
+   "issued": "07/26/2021",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Iron Mountain Information Management LLC",
+   "registration_no": "74112-5",
+   "issued": "04/18/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-75 IAD-85 IAD-95 IAD-96",
+   "registration_no": "74115-4",
+   "issued": "10/21/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-75",
+    "IAD-85",
+    "IAD-95",
+    "IAD-96"
+   ]
+  },
+  {
+   "site_name": "Cashvad Ventures LLC",
+   "registration_no": "74118-3",
+   "issued": "04/27/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Manassas City",
+   "building_codes": []
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-100 IAD-101 IAD-102 IAD-103",
+   "registration_no": "74129-3",
+   "issued": "06/28/2021",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-100",
+    "IAD-101",
+    "IAD-102",
+    "IAD-103"
+   ]
+  },
+  {
+   "site_name": "QTS Investment Properties Manassas LLC",
+   "registration_no": "74161-5",
+   "issued": "03/26/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Amazon Data Services, Inc. IAD-132 IAD-133",
+   "registration_no": "74167-5",
+   "issued": "08/05/2022",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-132",
+    "IAD-133"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services (IAD-130, IAD-131, IAD-313 and DCA-072)",
+   "registration_no": "74171-4",
+   "issued": "03/30/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-130",
+    "IAD-131",
+    "IAD-313",
+    "DCA-072"
+   ]
+  },
+  {
+   "site_name": "Nova Mango Farms LLC",
+   "registration_no": "74216-4",
+   "issued": "02/27/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "SI NVA02D, LLC",
+   "registration_no": "74224-3",
+   "issued": "10/16/2023",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "NVA-02D"
+   ]
+  },
+  {
+   "site_name": "Microsoft - Gainesville Data Center - MNZ03",
+   "registration_no": "74236-1",
+   "issued": "08/05/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "MNZ-03"
+   ]
+  },
+  {
+   "site_name": "Microsoft - Manassas Data Center - MNZ01",
+   "registration_no": "74237-1",
+   "issued": "01/17/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "MNZ-01"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services Inc - IAD-104/105/106",
+   "registration_no": "74240-3",
+   "issued": "03/08/2024",
+   "program": "Article 6 - mNSR",
+   "locality": "Manassas City",
+   "building_codes": [
+    "IAD-104",
+    "IAD-105",
+    "IAD-106"
+   ]
+  },
+  {
+   "site_name": "Gainesville Crossing Data Campus - GCDC",
+   "registration_no": "74241-3",
+   "issued": "11/21/2025",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "SI NVA05A, LLC and SI NVA05D, LLC",
+   "registration_no": "74246-2",
+   "issued": "02/24/2025",
+   "program": "Article 6 - mNSR",
+   "locality": "Manassas City",
+   "building_codes": [
+    "NVA-05A",
+    "NVA-05D"
+   ]
+  },
+  {
+   "site_name": "NTT Global Data Centers VA10 LLC",
+   "registration_no": "74260-2",
+   "issued": "04/03/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "VA-10"
+   ]
+  },
+  {
+   "site_name": "Digital Third Second Manassas, LLC & Digital Carver Brickyard, LLC",
+   "registration_no": "74262-4",
+   "issued": "06/24/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": []
+  },
+  {
+   "site_name": "Amazon Data Services Inc IAD-195/196/197/198",
+   "registration_no": "74277-2",
+   "issued": "08/21/2025",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-195",
+    "IAD-196",
+    "IAD-197",
+    "IAD-198"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services Inc IAD-210/211",
+   "registration_no": "74278-1",
+   "issued": "10/31/2023",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-210",
+    "IAD-211"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services Inc IAD-205/307/317/612/612x",
+   "registration_no": "74317-1",
+   "issued": "08/28/2025",
+   "program": "Article 6 - mNSR",
+   "locality": "Manassas City",
+   "building_codes": [
+    "IAD-205",
+    "IAD-307",
+    "IAD-317",
+    "IAD-612",
+    "IAD-612X"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services Inc IAD-45",
+   "registration_no": "74333-1",
+   "issued": "03/26-2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-45"
+   ]
+  },
+  {
+   "site_name": "Amazon Data Services Inc IAD-110/111/112/113",
+   "registration_no": "74342-1",
+   "issued": "06/12/2026",
+   "program": "Article 6 - mNSR",
+   "locality": "Prince William Co.",
+   "building_codes": [
+    "IAD-110",
+    "IAD-111",
+    "IAD-112",
+    "IAD-113"
+   ]
+  }
+ ]
+}
