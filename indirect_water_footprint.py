@@ -199,26 +199,35 @@ OPERATOR_CLOSED_LOOP_COMMITMENT = {
 #
 #   Surry (EIA 3806)      once-through saline, James River estuary
 #                         consumption 0.0 Mgal/d ->     0 gal/MWh
-#   North Anna (EIA 6168) "complex" -- Lake Anna cooling reservoir
-#                         consumption 18.6 Mgal/d ->  417 gal/MWh
+#   North Anna (EIA 6168) Lake Anna cooling reservoir
+#                         consumption ~31.7 Mgal/d ->  737 gal/MWh (2018-2020)
 #
-# Generation-weighted across the two: 242 gal/MWh, 65% below the national median.
-# Surry consumes no water in USGS's model because heat is discharged to a large
-# tidal estuary; its 1,220 Mgal/d WITHDRAWAL is enormous but non-consumptive, and
-# is saline rather than fresh. That distinction is invisible in a single blended
-# national constant and is the whole reason this fix moves the answer so much.
+# Generation-weighted across the two: 391 gal/MWh (USGS 2008-2020 reanalysis,
+# pooled 2018-2020). Surry consumes no fresh water because heat is discharged to
+# a large tidal estuary; its ~1,480 Mgal/d WITHDRAWAL is enormous but
+# non-consumptive and saline rather than fresh. That distinction is invisible in
+# a single blended national constant and is why splitting the two moves the
+# answer so much. (The old 2015 v1.2 release implied North Anna ~417 / fleet 242;
+# the reanalysis's heat-and-water budget puts North Anna far higher and stable.)
+# Refreshed 19 July 2026 from the USGS 2008-2020 REANALYSIS (Galanter et al.,
+# 2023), pooled over 2018-2020, generation-weighted. Supersedes the 2015 v1.2
+# release. The nuclear jump (242 -> 391) is the consequential change: the
+# reanalysis puts North Anna at ~737 gal/MWh (stable across all 13 years) where
+# the old release implied ~417; generation-weighted with Surry's zero that is
+# 391, not 242. See usgs_va_factors.py and METHODOLOGY.md section 18.
 CONSUMPTION_FACTORS_GAL_PER_MWH = {
-    "natural_gas_cc": 213,   # VA NGCC fleet, 11.2M MWh
-    "nuclear": 242,          # VA nuclear fleet (Surry + North Anna), 28.1M MWh
-    "coal": 451,             # VA coal fleet, 7.2M MWh
+    "natural_gas_cc": 196,   # VA NGCC/gas fleet (fresh-consuming plants), 58.0M MWh
+    "nuclear": 391,          # VA nuclear (North Anna 737 + Surry 0), 88.9M MWh pooled
+    "coal": 474,             # VA coal fleet, 6.3M MWh
     "renewable": 0,          # see RENEWABLE_FACTOR_CAVEAT
 }
 
-# Low/high bounds from USGS MIN_CONSUMPTION / MAX_CONSUMPTION, same weighting.
+# Low/high bounds from the reanalysis's own cu_lower_mgd / cu_upper_mgd columns,
+# same generation weighting.
 CONSUMPTION_FACTOR_BOUNDS_GAL_PER_MWH = {
-    "natural_gas_cc": (210, 225),
-    "nuclear": (189, 289),
-    "coal": (440, 474),
+    "natural_gas_cc": (160, 231),
+    "nuclear": (305, 477),
+    "coal": (389, 560),
     "renewable": (0, 0),
 }
 
@@ -826,11 +835,12 @@ def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None,
             f"{BLENDED_CONSUMPTION_GAL_PER_MWH:.0f} gal/MWh (Dominion generation-mix-blended "
             f"consumption factor) = consumptive water at the generating plant. Dominion's 2025 "
             f"mix is 58% gas / 25% nuclear / 14% renewable / 3% coal. Per-technology factors are "
-            f"VIRGINIA-SPECIFIC, generation-weighted from USGS plant-level model estimates "
-            f"(2015 release v1.2, July 2024) rather than national medians -- nuclear is "
-            f"{CONSUMPTION_FACTORS_GAL_PER_MWH['nuclear']} gal/MWh here against a national median "
-            f"of {NREL_NATIONAL_FACTORS_GAL_PER_MWH['nuclear']}, because Surry discharges to a "
-            f"tidal estuary and consumes nothing while North Anna evaporates from Lake Anna."
+            f"VIRGINIA-SPECIFIC, generation-weighted from the USGS 2008-2020 thermoelectric "
+            f"reanalysis (Galanter et al. 2023), pooled 2018-2020, rather than national medians "
+            f"-- nuclear is {CONSUMPTION_FACTORS_GAL_PER_MWH['nuclear']} gal/MWh here (North Anna "
+            f"evaporates ~737 from its cooling lake while Surry discharges to a tidal estuary and "
+            f"consumes nothing), against a national median of "
+            f"{NREL_NATIONAL_FACTORS_GAL_PER_MWH['nuclear']}."
         ),
         "note": (
             "System-average grid intensity, not marginal-generator attribution -- no published "

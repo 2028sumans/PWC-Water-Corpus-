@@ -5,6 +5,8 @@
 
 This document exists to be attacked. Section 6 lists the errors and soft spots found so far — including one retraction, one circular validation, and one constant that the source document uses in the opposite direction from this tool.
 
+> **Current headline (as of the §18 refresh, 19 July 2026).** County-wide total: **60.0 MGD, 90% credible interval 53.9–66.6** (Monte Carlo median, average grid mix; plug-in central 57.1 MGD). Marginal-mix median 46.8 MGD. Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
+
 ---
 
 ## 0. What the model is, in one paragraph
@@ -12,10 +14,11 @@ This document exists to be attacked. Section 6 lists the errors and soft spots f
 Every estimate descends from a single physical input — **gross floor area** — converted to **effective electrical load** by one constant, then multiplied by scope-specific water intensities. There is no per-facility water measurement anywhere in the chain. Following the July 2026 USGS pull, the Scope 2 intensities are Virginia-specific measured values; the power spine is not, and it is now the only remaining dominant assumption.
 
 ```
-GFA (sqft) ──÷ 8,818──> effective MW ──┬── × WUP (gal/MW/day) ─────────> Scope 1
-                                       ├── × PUE × 24h × 198 gal/MWh ──> Scope 2
-                                       └── (Scope 1 + Scope 2) × 5–15% ─> Scope 3
+GFA (sqft) ──÷ density──> effective MW ──┬── × WUP (gal/MW/day) ─────────> Scope 1
+   (density banded by operator/vintage,  ├── × PUE × 24h × ~226 gal/MWh ─> Scope 2
+    §15; or permit MW where available)   └── (Scope 1 + Scope 2) × 5–15% ─> Scope 3
 ```
+*(Blended Scope 2 intensity ~226 gal/MWh on the refreshed §18 factors; older sections show the pre-refresh 198.)*
 
 ---
 
@@ -876,52 +879,53 @@ Two source strings resolve to no basin and are recorded as such rather than gues
 
 | Receiving watershed | Buildings | IT MW | Annual avg (MGD) | Summer peak (MGD) | Watershed acres | Peak gal/acre/day |
 |---|---|---|---|---|---|---|
-| Broad Run | 166 | 6,117 | 1.651 | 16.35 | 2,476 | **6,604** |
+| Broad Run | 166 | 5,981 | 1.621 | 16.05 | 2,476 | **6,484** |
 | Bull Run | 61 | 1,160 | 0.344 | 3.40 | 1,716 | 1,983 |
-| Powells Creek | 14 | 328 | 0.066 | 0.66 | 1,781 | 371 |
+| Powells Creek | 14 | 289 | 0.060 | 0.60 | 1,781 | 338 |
 | Quantico Creek | 2 | 29 | 0.009 | 0.09 | 1,316 | 67 |
 
-The concentration is the finding. **Broad Run carries 80% of the county's local data-centre draw** — 166 of 243 buildings — and on a summer peak day that is 6,604 gallons per watershed acre per day, 3.3× Bull Run and 18× Powells Creek. Whatever the county-wide number is, the stress is not county-wide.
+The concentration is the finding. **Broad Run carries 80% of the county's local data-centre draw** — 166 of 243 buildings — and on a summer peak day that is ~6,500 gallons per watershed acre per day, 3.3× Bull Run and 19× Powells Creek. Whatever the county-wide number is, the stress is not county-wide.
 
 ### 13.3 Scope 2 — consumed in basins the county has no standing in
 
+*(Figures below use the refreshed USGS 2008–2020 factors of §18; the earlier draft of this section used the 2015 release.)*
+
 | Basin | MGD | % of Scope 2 |
 |---|---|---|
-| James | 19.35 | 43.3% |
-| **York (Lake Anna / North Anna)** | **13.68** | **30.6%** |
-| *unresolved — purchased municipal water* | 8.60 | 19.2% |
-| Roanoke | 2.49 | 5.6% |
-| Rappahannock | 0.27 | 0.6% |
-| Tennessee/Clinch | 0.23 | 0.5% |
-| *unresolved — groundwater* | 0.04 | 0.1% |
-| New/Kanawha | 0.02 | 0.0% |
+| **York (Lake Anna / North Anna)** | **21.62** | **43.3%** |
+| James | 10.99 | 22.0% |
+| *unresolved — purchased municipal water* | 8.42 | 16.9% |
+| Potomac | 4.10 | 8.2% |
+| Roanoke | 2.77 | 5.5% |
+| Tennessee/Clinch | 1.63 | 3.3% |
+| Rappahannock | 0.38 | 0.8% |
 
-The James total is gas combined cycle — chiefly Tenaska (11.89 MGD) and Bear Garden (7.44 MGD). The York total is essentially **North Anna alone**: Virginia's other nuclear station, Surry, reports zero consumption because it is once-through cooled on the tidal James, so the entire nuclear share of Prince William's electricity lands on Lake Anna.
+The York total is essentially **North Anna alone**: Virginia's other nuclear station, Surry, reports zero consumption because it is once-through cooled on the tidal James, so the entire nuclear share of Prince William's electricity lands on Lake Anna — and with the refreshed nuclear factor (391 gal/MWh, §18) that share is now the largest single basin by a wide margin. The James total is the older fresh-consuming gas plants (Tenaska, Bear Garden); the Potomac line is Possum Point (gas). Dominion's three largest *modern* gas plants consume reclaimed water and appear in no basin here (§18.4).
 
 ### 13.4 The headline
 
 | | MGD | % of total |
 |---|---|---|
-| Total footprint | 51.42 | — |
-| Consumed **in** the Potomac basin | 2.07 | **4.0%** |
-| Consumed in **other** basins | 44.68 | **86.9%** |
-| Scope 3, basin not locatable | 4.67 | 9.1% |
+| Total footprint (plug-in central) | 57.13 | — |
+| Consumed **in** the Potomac basin | 6.14 | **10.7%** |
+| Consumed in **other** basins | 45.80 | **80.2%** |
+| Scope 3, basin not locatable | 5.19 | 9.1% |
 
-**About 96% of the consumptive water footprint of Prince William County's data centres is consumed outside the basin the buildings occupy.**
+**About 88% of the *locatable* consumptive water footprint of Prince William County's data centres is consumed outside the basin the buildings occupy** (45.80 of 51.94 MGD; the Potomac in-basin share rose after the §18 refresh moved Possum Point's gas consumption onto the Potomac).
 
 Two consequences follow, and they are the paper's argument:
 
-1. **North Anna alone gives up 13.68 MGD to serve these buildings — 6.6× the entire local Scope 1 draw of 2.07 MGD.** A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres, and it is affected roughly seven times more than the streams the buildings actually sit on.
+1. **North Anna alone gives up 21.62 MGD to serve these buildings — 10.6× the entire local Scope 1 draw of 2.03 MGD.** A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres, and it is affected roughly *eleven times* more than the streams the buildings actually sit on.
 
-2. **The reviewing body and the affected basin do not overlap.** Every one of these facilities was approved through Prince William County land-use review — rezonings, special use permits, site plans, all Potomac-basin instruments. That process has authority over the 4% and none whatsoever over the 96%. The Lake Anna shoreline had no standing in any of the hearings recorded in §8.
+2. **The reviewing body and the affected basin do not overlap.** Every one of these facilities was approved through Prince William County land-use review — rezonings, special use permits, site plans, all Potomac-basin instruments. That process has authority over the ~11% and almost none over the ~88%. The Lake Anna shoreline had no standing in any of the hearings recorded in §8.
 
 This is why the local-versus-total framing common to data-centre water reporting is not merely incomplete but misdirected: it scrutinises the small share that is visible to the permitting authority and is silent on the large share that is not.
 
 ### 13.5 What would sharpen it
 
-- **19.2% of Scope 2 is unattributed** (`Municipality` / `Wells`). Resolving which utilities supply Hopewell and the other purchased-water plants would move ~8.6 MGD onto a named basin — likely James, which would push that basin past 60%.
-- The plant-level split uses **2015** USGS consumption as the allocation weight. Dominion's fleet has changed since; a newer EIA-923/860 pull would re-weight it.
-- Marginal versus average dispatch. The attribution here is average-mix. A **marginal** analysis — which plant actually turns up when a Loudoun/Prince William data centre adds load — would plausibly shift weight toward gas and away from nuclear, since nuclear runs baseload regardless. That is the single most defensible improvement available and is the natural next piece of work.
+- **~17% of Scope 2 is unattributed** (`Municipality` / `Wells`). Resolving which utilities supply Hopewell and the other purchased-water plants would move ~8.4 MGD onto a named basin.
+- ~~The plant-level split uses 2015 USGS consumption.~~ **Done (§18):** refreshed to the USGS 2008–2020 reanalysis, pooled 2018–2020.
+- ~~Marginal versus average dispatch.~~ **Done (§16):** marginal analysis added; nuclear drops out entirely, confirming the York attribution is an average-mix artifact.
 
 ---
 
@@ -1062,28 +1066,31 @@ But that is not the causal question. A **new** data-centre load is served at the
 
 ### 16.2 The marginal mix
 
-From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **61.7%** of hours, peaking gas ~**17.2%**, coal **10.0%**, wind **11.1%**; nuclear essentially never. Applying the same Virginia-specific water factors (peaking simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **~180 gal/MWh**, against the average-mix **~198**.
+From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **61.7%** of hours, peaking gas ~**17.2%**, coal **10.0%**, wind **11.1%**; nuclear essentially never. Applying the same Virginia-specific water factors (peaking simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **~172 gal/MWh**, against the average-mix **~225** (both on the refreshed §18 factors).
 
 ### 16.3 The result
 
+*(Refreshed to the USGS 2008–2020 factors, §18.)*
+
 | | Average-mix MGD | Marginal MGD |
 |---|---|---|
-| James (gas fleet) | 18.9 | 20.7 |
-| **York — North Anna / Lake Anna** | **13.4** | **0.0** |
-| Roanoke (coal) | 2.4 | 8.1 *(see caveat)* |
+| **York — North Anna / Lake Anna** | **21.6** | **0.0** |
+| James (gas fleet) | 11.0 | 12.0 |
 | purchased municipal (unresolved) | 8.4 | 9.2 |
-| other basins | 0.5 | 1.8 |
-| **Scope 2 total** | **43.7** | **39.8** |
+| Potomac (Possum Point gas) | 4.1 | 4.5 |
+| Roanoke (coal) | 2.8 | 9.2 *(see caveat)* |
+| other basins | 2.0 | 3.0 |
+| **Scope 2 total** | **~50** | **~46** |
 
 Two findings:
 
-1. **The total barely moves (−9%), but the basin allocation transforms.** The York-basin attribution — 13.4 MGD, the single largest water body in the whole study, 6.6× the entire local Scope 1 — **falls to essentially zero under marginal accounting.** The Lake Anna displacement identified in §13 is, to first order, an *artifact of average-mix accounting.* The water a new Prince William data centre actually causes is consumed in the **James** gas fleet, not at North Anna.
+1. **The total barely moves, but the basin allocation transforms.** The York-basin attribution — 21.6 MGD, the single largest water body in the whole study, 10.6× the entire local Scope 1 — **falls to exactly zero under marginal accounting.** The Lake Anna displacement identified in §13 is, to first order, an *artifact of average-mix accounting.* The water a new Prince William data centre actually causes is consumed in the **James** gas fleet, not at North Anna. The §18 refresh, by raising the nuclear factor, makes this gap larger, not smaller: ~22 MGD now hinges entirely on the average-vs-marginal choice.
 
 2. This is a **third, independent mechanism** by which the footprint escapes view, and it completes the paper's argument:
 
 | Mechanism | Section | What it hides | Under scrutiny |
 |---|---|---|---|
-| **Spatial** | §13 | consumption is in a different basin than the buildings | 96% out-of-basin |
+| **Spatial** | §13 | consumption is in a different basin than the buildings | ~88% out-of-basin |
 | **Contractual** | §14 | consumption is netted away by annual REC matching | 20% of Scope 2 |
 | **Temporal / causal** | §16 | *which* basin depends on average-vs-marginal framing | the entire York attribution |
 
@@ -1113,20 +1120,22 @@ The range shipped through §16 was an **envelope**: the sum of each scope's inde
 
 Better evidence → narrower prior → narrower interval, **per building**.
 
-**Correlation.** Parameters shared across buildings are drawn **once per iteration** and applied to all: the grid's water intensity (one grid), the ICPRB WUP calibration (one scale), the Scope 3 proportion (one assumption), the Eq 6-3 factor (one ICPRB standard), and per-operator / per-class density and PUE calibration offsets. If these were drawn independently per building, 243 independent errors would cancel and the county interval would collapse to a spuriously tight number. Idiosyncratic, building-specific variation *is* drawn independently and correctly averages down. The result is visible in the numbers: per-building intervals are wide (median **±22%**) but the county interval is much tighter (**±8%**) — because the idiosyncratic part averages out while the systematic part does not. An estimator that reported ±8% per building would be lying; one that reported ±22% for the county would be double-counting.
+**Correlation.** Parameters shared across buildings are drawn **once per iteration** and applied to all: the grid's water intensity (one grid), the ICPRB WUP calibration (one scale), the Scope 3 proportion (one assumption), the Eq 6-3 factor (one ICPRB standard), and per-operator / per-class density and PUE calibration offsets. If these were drawn independently per building, 243 independent errors would cancel and the county interval would collapse to a spuriously tight number. Idiosyncratic, building-specific variation *is* drawn independently and correctly averages down. The result is visible in the numbers: per-building intervals are wide (median **±22%**) but the county interval is tighter (**±11%**) — because the idiosyncratic part averages out while the systematic part does not. An estimator that reported ±11% per building would be lying; one that reported ±22% for the county would be double-counting. *(The county interval widened from ±8% to ±11% with the §18 refresh, because the new nuclear factor carries a large systematic uncertainty that, being grid-wide, cannot average away.)*
 
 ### 17.2 The result
 
+*(Refreshed to the USGS 2008–2020 factors, §18.)*
+
 | | Median | 90% credible interval | Envelope (min/max) |
 |---|---|---|---|
-| County total, average mix | **53.5 MGD** | **49.6 – 57.8** | 33.6 – 87.6 |
-| County total, marginal mix | 49.5 MGD | 46.2 – 52.9 | — |
+| County total, average mix | **60.0 MGD** | **53.9 – 66.6** | 39 – 100 |
+| County total, marginal mix | 46.8 MGD | 42.0 – 52.0 | — |
 
-The 90% CI is roughly **±8%**, against the envelope's ±45%. This is the number to quote in a paper.
+The 90% CI is roughly **±11%**, against the envelope's ±50%. This is the number to quote in a paper.
 
 ### 17.3 A real convexity correction
 
-The Monte Carlo median (53.5) sits **~6% above the plug-in central (50.3 MGD)**. This is not a bug and not noise — it is Jensen's inequality. Water scales with **1/density**, density is uncertain, and the operators' measured density bands are **right-skewed** (e.g. Amazon's permit-backed buildings run 7,259–12,735 sqft/MW around a median of 8,627). The expectation of `1/density` therefore exceeds `1/median density`, so the probability-weighted total is higher than the figure you get by plugging in the central density. **A point estimate built on central density systematically understates the expected footprint.** The Monte Carlo median is the better central estimate, and is recommended as the headline figure going forward; the plug-in central is retained and labelled as such.
+The Monte Carlo median (60.0) sits **~5% above the plug-in central (57.1 MGD)**. This is not a bug and not noise — it is Jensen's inequality. Water scales with **1/density**, density is uncertain, and the operators' measured density bands are **right-skewed** (e.g. Amazon's permit-backed buildings run 7,259–12,735 sqft/MW around a median of 8,627). The expectation of `1/density` therefore exceeds `1/median density`, so the probability-weighted total is higher than the figure you get by plugging in the central density. **A point estimate built on central density systematically understates the expected footprint.** The Monte Carlo median is the better central estimate, and is recommended as the headline figure going forward; the plug-in central is retained and labelled as such.
 
 ### 17.4 What the intervals reveal about evidence
 
@@ -1140,3 +1149,57 @@ Per-building 90% interval widths: narrowest **29%**, median **43%**, widest **62
 - Distributions are triangular (min/mode/max), chosen for defensibility over a fitted shape no data supports.
 - Correlations are handled at the group level (systematic vs idiosyncratic), not as a full covariance matrix; cross-parameter correlations (e.g. dense buildings also running low PUE) are not modelled.
 - The priors inherit every limitation of the underlying evidence — most importantly that **0 of 243 buildings have metered water or a confirmed cooling type**, so the intervals quantify *parameter* uncertainty, not the structural gap that no facility discloses its consumption.
+
+---
+
+## 18. Refreshing the generating-side data — USGS 2008–2020 reanalysis
+
+Every Scope 2 number rested on the USGS **2015 v1.2** thermoelectric release. The single-year, nine-year-old snapshot was the oldest link in the chain. It is now replaced by the USGS **2008–2020 reanalysis** (Galanter et al., 2023; FEWSR + TOWER heat-and-water budget models), pooled over **2018–2020** and generation-weighted. Derivation: [`usgs_va_factors.py`](usgs_va_factors.py); vendored Virginia slice: `data/usgs_te_water_2008-2020_VA.csv`.
+
+### 18.1 The factors moved — nuclear most of all
+
+| Fuel | Old (2015 v1.2) | New (2018–2020 reanalysis) | Bounds (reanalysis cu_lower/upper) |
+|---|---|---|---|
+| **nuclear** | 242 | **391** | 305–477 |
+| natural gas CC | 213 | **196** | 160–231 |
+| coal | 451 | **474** | 389–560 |
+
+The nuclear jump drives everything. The reanalysis puts **North Anna at ~737 gal/MWh — and it is stable to ±1% across all thirteen years (2008–2020)**, so this is a robust model estimate, not a spike. The old release implied ~417. Generation-weighted with Surry's zero (once-through tidal saline, unchanged), Virginia nuclear rises from 242 to 391. Notably, 737 is now *consistent* with NREL's 700 national nuclear median — the old 242 had made Virginia nuclear look anomalously dry, when in fact North Anna's cooling lake evaporates at roughly the national rate and it was Surry's zero, averaged in, that pulled the fleet figure down.
+
+Bounds now come from the reanalysis's own `cu_lower_mgd` / `cu_upper_mgd` columns rather than the old MIN/MAX, and feed the Monte Carlo (§17) directly.
+
+### 18.2 Effect on the headline
+
+| | Before refresh | After refresh |
+|---|---|---|
+| Blended average intensity | ~198 gal/MWh | **~225 gal/MWh** |
+| County total (plug-in central) | 50.3 MGD | **57.1 MGD** |
+| County total (MC median, 90% CI) | 53.5 [49.6, 57.8] | **60.0 [53.9, 66.6]** |
+| County total (marginal-mix, MC median) | 49.5 | **46.8 [42.0, 52.0]** |
+
+Scope 2 rises ~14% and now dominates the total even more heavily. The Monte Carlo interval **widens from ±8% to ±11%**, correctly: the refreshed nuclear factor carries a wide systematic uncertainty (305–477), and because nuclear is a large, correlated share of Scope 2, that uncertainty does not average away.
+
+### 18.3 Effect on the basin finding — it gets stronger
+
+The refresh amplifies the paper's core result. North Anna's larger factor pushes the **York-basin (Lake Anna) attribution from 13.4 to 21.6 MGD — now 10.6× the entire local Scope 1 draw** (was 6.6×). Under marginal dispatch it still falls to **0.0** (nuclear is never marginal), so the average-vs-marginal divergence of §16 is now even more dramatic: the refresh widens the gap between the two accountings from ~13 MGD to ~22 MGD, all of it on one out-of-basin reservoir.
+
+### 18.4 A finding hiding in the absences — reclaimed water
+
+Three plants are **conspicuously missing** from the freshwater model, and their absence is itself a result. Dominion's three largest and newest combined-cycle stations —
+
+| Plant | Capacity | Online | Cooling water |
+|---|---|---|---|
+| Greensville County | 1,605 MW | 2018 | reclaimed municipal |
+| Brunswick County | 1,376 MW | 2016 | reclaimed municipal |
+| Warren County | 1,350 MW | 2014 | reclaimed municipal |
+
+— together **~4.3 GW, roughly a third of Dominion's gas capacity** — consume essentially no fresh basin water and are therefore absent from a *freshwater* model. Two consequences:
+
+1. **The 196 gal/MWh gas factor is for the older, fresh-consuming plants** (Tenaska, Bear Garden, Possum Point). The fleet-average *freshwater* intensity of a Dominion gas MWh is lower than 196, because a large and growing share of gas generation comes from plants that touch no fresh basin water. The 196 is therefore an upper bound on Scope 2's gas contribution — the refresh, if anything, still *over*-attributes freshwater to gas.
+2. **This is a water-sourcing shift worth stating in its own right:** Virginia's newest thermoelectric capacity is deliberately built on reclaimed municipal water, moving consumption off fresh surface water and onto treated wastewater. It is the generating-side analogue of the data centres' own closed-loop trend, and it means the marginal gas unit that answers a new data-centre load (§16) may consume even less fresh water than the marginal figure assumes.
+
+### 18.5 Remaining limits
+
+- **The window ends in 2020.** Chesterfield's coal units retired in 2023 and are still present (as multi-fuel) in the data; the coal factor is therefore slightly more coal-weighted than today's fleet. Immaterial to the total (coal is 3% of the mix) but noted.
+- **Generation weights are 2018–2020**, not 2025. The factors are intensities (gal/MWh), so this matters far less than for an absolute total, but the Dominion mix shares (§3) remain a separate 2025 estimate layered on top.
+- The reclaimed-water plants above are a genuine data gap, not a modelling choice — closing it needs EIA-923 Schedule 8 cooling-water records for those specific plants, the natural next pull.

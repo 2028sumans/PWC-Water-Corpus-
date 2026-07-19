@@ -67,9 +67,12 @@ def main():
     # 0.7-0.9) give 0.28-0.54, i.e. a ratio of 0.70-1.35 about the 0.40 central.
     permit_factor = tri(0.70, 1.00, 1.35)
 
-    cf_nuc = tri(189, 242, 289)
-    cf_gas = tri(210, 213, 225)
-    cf_coal = tri(440, 451, 474)
+    # Consumption factors drawn from the estimator's own central + reanalysis
+    # bounds, so the Monte Carlo can never drift from the deterministic constants.
+    cfc, cfb = m.CONSUMPTION_FACTORS_GAL_PER_MWH, m.CONSUMPTION_FACTOR_BOUNDS_GAL_PER_MWH
+    cf_nuc = tri(cfb["nuclear"][0], cfc["nuclear"], cfb["nuclear"][1])
+    cf_gas = tri(cfb["natural_gas_cc"][0], cfc["natural_gas_cc"], cfb["natural_gas_cc"][1])
+    cf_coal = tri(cfb["coal"][0], cfc["coal"], cfb["coal"][1])
     mix = m.DOMINION_GENERATION_MIX
     blended_avg = mix["natural_gas_cc"] * cf_gas + mix["nuclear"] * cf_nuc + mix["coal"] * cf_coal
     mm = m.PJM_MARGINAL_FUEL_MIX

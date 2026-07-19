@@ -22,7 +22,10 @@ import json
 from collections import defaultdict
 
 PROFILES = "public/data/facility_profiles.json"
-USGS = "data/Version_1.2_2015_TE_Model_Estimates.csv"
+# USGS 2008-2020 reanalysis, Virginia slice, pooled over the recent years so a
+# plant's basin weight reflects its typical recent consumption, not one year.
+USGS = "data/usgs_te_water_2008-2020_VA.csv"
+POOL_YEARS = {"2018", "2019", "2020"}
 
 # USGS water-source strings mapped to major basin. "Municipality" means the
 # plant buys treated water rather than withdrawing directly; the consumption is
@@ -46,7 +49,14 @@ BASIN_OF_SOURCE = {
     "Wells": "unresolved (groundwater)",
 }
 
-FUEL_OF_USGS_TYPE = {"NUCLEAR": "nuclear", "NGCC": "natural_gas_cc", "COAL": "coal"}
+def _fuel_key(dom_fuel, mover):
+    if dom_fuel == "nuclear":
+        return "nuclear"
+    if dom_fuel == "coal":
+        return "coal"
+    if mover == "NGCC" or dom_fuel == "gas":
+        return "natural_gas_cc"
+    return None
 
 
 def _num(s):
@@ -57,22 +67,31 @@ def _num(s):
 
 
 def load_plants():
-    rows = list(csv.reader(open(USGS, encoding="latin-1")))
-    ix = {c: i for i, c in enumerate(rows[2])}
+    """Per-plant consumption by fuel, pooled (summed) over POOL_YEARS. The pooled
+    sum is used only as a relative weight for distributing each fuel's Scope 2
+    across its plants, so summing rather than averaging is fine."""
+    agg = defaultdict(lambda: defaultdict(lambda: {"cons": 0.0, "source": None}))
+    for r in csv.DictReader(open(USGS, encoding="latin-1")):
+        if r.get("State") != "VA" or r.get("YEAR") not in POOL_YEARS:
+            continue
+        fuel = _fuel_key(r.get("Plant.level_dom_fuel"), r.get("general_mover"))
+        cons = _num(r.get("cu_mgd"))
+        if not fuel or cons is None:
+            continue
+        cell = agg[fuel][r["Plant.Name"]]
+        cell["cons"] += cons
+        cell["source"] = r["Name.of.Water.Source"]
     out = defaultdict(list)
-    for r in rows[3:]:
-        if len(r) <= ix["NET_GENERATION"] or r[ix["STATE"]] != "VA":
-            continue
-        fuel = FUEL_OF_USGS_TYPE.get(r[ix["GENERATION_TYPE"]])
-        gen, cons = _num(r[ix["NET_GENERATION"]]), _num(r[ix["CONSUMPTION"]])
-        if not fuel or not gen or cons is None:
-            continue
-        out[fuel].append({
-            "plant": r[ix["PLANT_NAME"]],
-            "source": r[ix["NAME_OF_WATER_SOURCE"]],
-            "basin": BASIN_OF_SOURCE.get(r[ix["NAME_OF_WATER_SOURCE"]], "unclassified"),
-            "consumption_mgd": cons,
-        })
+    for fuel, plants in agg.items():
+        for name, d in plants.items():
+            if d["cons"] <= 0:
+                continue
+            out[fuel].append({
+                "plant": name,
+                "source": d["source"],
+                "basin": BASIN_OF_SOURCE.get(d["source"], "unclassified"),
+                "consumption_mgd": d["cons"],
+            })
     return out
 
 

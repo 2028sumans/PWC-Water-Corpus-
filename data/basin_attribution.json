@@ -30,30 +30,28 @@
   }
  },
  "scope2_by_generating_basin": {
-  "unresolved (purchased municipal water)": 8.410101107475732,
-  "James": 18.922319765537853,
-  "York (Lake Anna)": 13.380308245178913,
-  "Tennessee/Clinch": 0.22450803267539335,
-  "New/Kanawha": 0.016754330796671144,
-  "Roanoke": 2.436079697835984,
-  "unresolved (groundwater)": 0.04021039391201074,
-  "Rappahannock": 0.2647184265874041
+  "Tennessee/Clinch": 1.627884148335224,
+  "James": 10.994578527603338,
+  "Potomac": 4.102693493715719,
+  "unresolved (purchased municipal water)": 8.416285425736856,
+  "York (Lake Anna)": 21.618366607578153,
+  "Roanoke": 2.766166961630367,
+  "Rappahannock": 0.3787248354004387
  },
  "scope2_marginal_by_generating_basin": {
-  "unresolved (purchased municipal water)": 9.180983408115148,
-  "James": 20.679302906639638,
-  "Tennessee/Clinch": 0.7483759740577861,
-  "New/Kanawha": 0.055848953287894486,
-  "Roanoke": 8.120437808059858,
-  "unresolved (groundwater)": 0.13403748789094674,
-  "Rappahannock": 0.8824134619487328
+  "Tennessee/Clinch": 1.7810460302294722,
+  "James": 12.029019669894659,
+  "Potomac": 4.488701464230947,
+  "unresolved (purchased municipal water)": 9.208144057497144,
+  "Roanoke": 9.2208345911046,
+  "Rappahannock": 1.2624541870431771
  },
- "scope2_marginal_total_mgd": 39.8014,
+ "scope2_marginal_total_mgd": 37.9902,
  "totals_mgd": {
   "scope1": 2.0338999999999996,
-  "scope2": 43.694999999999965,
-  "scope3": 4.573300000000004,
-  "total": 50.30219999999997
+  "scope2": 49.9047000000001,
+  "scope3": 5.192700000000006,
+  "total": 57.13130000000011
  },
  "summer_peak_local_mgd": 20.1444
 }
