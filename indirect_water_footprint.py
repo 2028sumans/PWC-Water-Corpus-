@@ -502,7 +502,20 @@ def scope1_onsite_cooling(eff_mw, eff_lo, eff_hi, operator_commitment=None, cool
     narrowed_by = None
     wup_lo, wup_hi, wup_central = air, water, pwc
 
-    if cooling_disclosure and cooling_disclosure.get("air_or_closed_loop"):
+    if cooling_disclosure and cooling_disclosure.get("evaporative"):
+        # Evidence that the facility IS water-cooled -- cooling towers listed as
+        # permitted equipment in its VADEQ air permit.
+        #
+        # Until this path existed the model was ASYMMETRIC: it could narrow a
+        # facility down toward the air-cooled floor on an operator commitment,
+        # but had no way to represent evidence pointing the other way, so every
+        # facility was implicitly presumed no-worse-than-average. Confirmed
+        # evaporative cooling now lifts the floor off the air-cooled tier and
+        # centres the estimate on ICPRB's basin-representative intensity.
+        wup_lo, wup_hi, wup_central = pwc, water, WUP_GAL_PER_MW_DAY["basin_medium"]
+        basis = "disclosed_cooling_evaporative"
+        narrowed_by = cooling_disclosure.get("source")
+    elif cooling_disclosure and cooling_disclosure.get("air_or_closed_loop"):
         # Binding: water-cooled prohibited -> air-cooled tier.
         wup_lo, wup_hi, wup_central = air, round(air * 1.5), air
         basis = "disclosed_cooling"

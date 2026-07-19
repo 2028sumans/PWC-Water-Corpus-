@@ -4,6 +4,7 @@
   "registration_no": "74262",
   "location": "Prince William County and City of Manassas",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "previously_permitted",
@@ -98,6 +99,7 @@
   "registration_no": "74241",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "previously_permitted",
@@ -155,6 +157,7 @@
    "VA-10",
    "VA-11"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -219,6 +222,7 @@
    "VA-9",
    "VA-10"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -337,6 +341,7 @@
   "registration_no": "74161",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -414,6 +419,23 @@
   "registration_no": "74216",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": {
+   "cooling_type": "evaporative",
+   "evidence": "cooling towers listed as permitted equipment",
+   "towers": [
+    {
+     "n_units": 10,
+     "gpm_each": 6000,
+     "source_line": "10 \u2013 Cooling Towers (each unit) None 2/27/2024"
+    },
+    {
+     "n_units": 21,
+     "gpm_each": 6000,
+     "source_line": "21- Cooling Towers None 9/8/2021"
+    }
+   ],
+   "note": "Cooling towers appear in this permit's equipment list, which is direct evidence of evaporative cooling. The circulation rate (gpm) is a design rating, not a consumption figure -- evaporative loss is a small fraction of circulation and varies with load and weather -- so it is recorded but deliberately NOT converted into a water estimate."
+  },
   "rows": [
    {
     "section": "to_be_constructed",
@@ -485,6 +507,7 @@
    "IAD-192",
    "IAD-214"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -599,6 +622,7 @@
    "IAD-112",
    "IAD-113"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -687,6 +711,7 @@
    "IAD-197",
    "IAD-198"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -737,6 +762,7 @@
    "IAD-313",
    "DCA-072"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -826,6 +852,7 @@
    "IAD-102",
    "IAD-103"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -909,6 +936,7 @@
    "IAD-75",
    "IAD-85"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -963,6 +991,7 @@
    "IAD-193",
    "IAD-194"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1042,6 +1071,7 @@
    "IAD-133",
    "IAD-607"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1129,6 +1159,7 @@
    "IAD-84",
    "IAD-94"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "previously_permitted",
@@ -1196,6 +1227,7 @@
   "registration_no": "74107",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1256,6 +1288,7 @@
    "IAD-122",
    "IAD-619"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1317,6 +1350,7 @@
    "VA-0A",
    "IAD-1"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1420,6 +1454,7 @@
   "building_codes": [
    "NVA-02D"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1487,6 +1522,7 @@
    "IAD-210",
    "IAD-211"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1536,6 +1572,7 @@
    "IAD-11",
    "IAD-24"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1884,6 +1921,7 @@
   "building_codes": [
    "IAD-45"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1931,6 +1969,7 @@
   "building_codes": [
    "MNZ-03"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1969,6 +2008,7 @@
   "building_codes": [
    "MNZ-01"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -1996,6 +2036,7 @@
   "registration_no": "73683",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -2087,6 +2128,7 @@
   "registration_no": "73180",
   "location": null,
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "unknown",
@@ -2253,6 +2295,7 @@
   "registration_no": "72368",
   "location": null,
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "unknown",
@@ -2366,6 +2409,7 @@
   "building_codes": [
    "VA-1"
   ],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -2393,6 +2437,7 @@
   "registration_no": "72374",
   "location": "Prince William County",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [
    {
     "section": "to_be_constructed",
@@ -2433,6 +2478,7 @@
   "registration_no": "73200",
   "location": "Manassas, VA",
   "building_codes": [],
+  "cooling_evidence": null,
   "rows": [],
   "mw_by_section": {},
   "total_generator_mw": 0,

@@ -132,7 +132,17 @@ export interface Scope1Onsite {
   wup_gal_per_mw_day: { low: number; central: number; high: number };
   wup_reference_tiers: Record<string, number>;
   /** How the technology envelope was narrowed, best evidence first. */
-  basis: "disclosed_cooling" | "operator_closed_loop_commitment" | "technology_envelope";
+  /**
+   * "disclosed_cooling_evaporative" is evidence pointing the OTHER way from the
+   * narrowing cases: cooling towers listed as permitted equipment in the
+   * facility's VADEQ air permit, which lifts the estimate off the air-cooled
+   * floor rather than pulling it down to one.
+   */
+  basis:
+    | "disclosed_cooling"
+    | "disclosed_cooling_evaporative"
+    | "operator_closed_loop_commitment"
+    | "technology_envelope";
   narrowed_by: string | null;
   methodology: string;
   note: string;

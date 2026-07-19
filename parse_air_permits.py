@@ -213,6 +213,60 @@ def parse_rows_count_anchored(lines, sec_start, sec_end):
     return rows
 
 
+# Cooling-type evidence in air permits.
+#
+# BEWARE THE FALSE FRIEND. Every permit in this corpus contains the phrase
+# "closed loop", and in all 30 of them it refers to closed-loop SELECTIVE
+# CATALYTIC REDUCTION -- a NOx emissions control bolted to the generators --
+# not to closed-loop building cooling. Keying cooling type on "closed loop"
+# would have misclassified at least four facilities (74262, 74171, 73180,
+# 74260) as air-cooled on the strength of a diesel exhaust treatment system.
+#
+# The only trustworthy positive signal is cooling equipment appearing in the
+# permit's own equipment list, because a cooling tower is a permitted emission
+# unit in its own right. Absence is NOT evidence of air cooling: most data
+# centre cooling equipment needs no air permit and so never appears.
+COOLING_TOWER_RE = re.compile(r'cooling\s+tower', re.I)
+SCR_FALSE_FRIEND_RE = re.compile(r'closed\s+loop\s+selective|closed\s+loop\s+SCR|'
+                                 r'controlled\s+by\s+closed\s+loop', re.I)
+GPM_RE = re.compile(r'([\d,]{3,7})\s*gpm', re.I)
+
+
+def parse_cooling_evidence(lines, sec_start, sec_end):
+    """Extract cooling-type evidence from the permit equipment list.
+
+    Returns None when the permit says nothing about cooling equipment, which is
+    the common case and must not be read as evidence of air cooling.
+    """
+    towers = []
+    for i in range(sec_start, sec_end):
+        if not COOLING_TOWER_RE.search(lines[i]):
+            continue
+        window = " ".join(lines[max(sec_start, i - 3):min(sec_end, i + 3)])
+        if SCR_FALSE_FRIEND_RE.search(window):
+            continue
+        counts = COUNT_RE.findall(window) or DASH_COUNT_RE.findall(window)
+        gpm = GPM_RE.findall(window)
+        towers.append({
+            "n_units": _int(counts[0]) if counts else None,
+            "gpm_each": _int(gpm[0]) if gpm else None,
+            "source_line": " ".join(lines[i].split())[:140],
+        })
+    if not towers:
+        return None
+    return {
+        "cooling_type": "evaporative",
+        "evidence": "cooling towers listed as permitted equipment",
+        "towers": towers,
+        "note": (
+            "Cooling towers appear in this permit's equipment list, which is direct evidence of "
+            "evaporative cooling. The circulation rate (gpm) is a design rating, not a consumption "
+            "figure -- evaporative loss is a small fraction of circulation and varies with load and "
+            "weather -- so it is recorded but deliberately NOT converted into a water estimate."
+        ),
+    }
+
+
 def find_section(line, current):
     for rx, name in SECTION_PATTERNS:
         if rx.search(line):
@@ -254,13 +308,17 @@ def parse_permit(path):
             codes.append(f"{p}-{t}".upper())
     codes = list(dict.fromkeys(codes))
 
-    rows = parse_rows_count_anchored(lines, *equipment_section(lines))
+    _s, _e = equipment_section(lines)
+    cooling = parse_cooling_evidence(lines, _s, _e)
+
+    rows = parse_rows_count_anchored(lines, _s, _e)
     if rows:
         return {
             "file": os.path.basename(path),
             "registration_no": reg,
             "location": loc,
             "building_codes": codes,
+            "cooling_evidence": cooling,
             "rows": rows,
         }
 
@@ -356,6 +414,7 @@ def parse_permit(path):
         "registration_no": reg,
         "location": loc,
         "building_codes": codes,
+        "cooling_evidence": cooling,
         "rows": deduped,
     }
 

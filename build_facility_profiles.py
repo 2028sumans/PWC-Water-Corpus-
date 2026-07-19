@@ -297,6 +297,7 @@ def build_permit_power_index(buildings_df):
                 "gfa_share": (r["gfa"] / total_gfa) / scale,
                 "n_buildings_on_permit": len(pcodes),
                 "n_buildings_matched": len(hits),
+                "cooling_evidence": p.get("cooling_evidence"),
             }
     return index
 
@@ -388,6 +389,7 @@ def build_operator_permit_index(buildings_df, already_matched, permit_index):
                 "n_buildings_matched": len(hits),
                 "match_basis": "operator_single_permit",
                 "coverage_ratio": round(ratio, 2),
+                "cooling_evidence": permit.get("cooling_evidence"),
             }
     return index
 
@@ -416,6 +418,21 @@ for _, b in dc_buildings.iterrows():
     bza_here = matched_cases(geom, bza, ["BZACaseNumber", "BZACaseType", "BZACaseName"])
     pending_here = matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"])
     pue_cap, cooling_disc = permit_conditions_for(use_permits_here + bza_here + pending_here)
+
+    # A VADEQ permit that lists cooling towers as permitted equipment is direct
+    # evidence of evaporative cooling. It is merged in only where a county
+    # proffer has not already spoken, so a binding local condition still wins.
+    _pp = _permit_power_index.get(clean(b.get("BuildingName"))) or {}
+    _ce = _pp.get("cooling_evidence")
+    if _ce and not cooling_disc:
+        cooling_disc = {
+            "evaporative": True,
+            "air_or_closed_loop": False,
+            "source": (
+                f"VADEQ air permit {_pp['registration_no']} lists cooling towers as permitted "
+                f"equipment ({_ce['evidence']})."
+            ),
+        }
 
     profile = {
         "kind": "building",
