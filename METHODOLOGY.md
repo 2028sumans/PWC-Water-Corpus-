@@ -375,6 +375,27 @@ The reason none works is structural: the disagreement is not noise around a true
 
 Note the ±25% tolerance is already contradicted by ICPRB's own Fairfax figures (§1.3), which imply 12,722 sqft/MW.
 
+### 7.2b A substation figure that questions the CAMPUS estimates
+
+A Public Facility Review staff report (SUP2026-00011, NOVEC) states twice:
+
+> *"a 300-MW electric utility substation with a collocated Dominion Energy switching station... intended to provide reliable electric service to data center development on the subject parcel and adjacent parcel to the west"* — 13301 Casey Lane, **GPIN 7496-43-8199**
+
+This model's campus entitlement estimates on that same GPIN:
+
+| Campus | Effective IT MW |
+|---|---|
+| Hunter Property Rezoning (REZ2020-00022) | **454.8** |
+| Devlin Technology Park (REZ2022-00022) | **400.3** |
+
+Either campus alone exceeds the substation built to serve the parcel — and effective *IT* load still has to be multiplied by PUE to reach facility load, so 454.8 MW IT implies roughly 570 MW at the meter against a 300 MW substation. That is about 1.9× over.
+
+**Why this does not contradict §7.1a.** The permit comparison that corroborated the density constant at a median ratio of 1.02 was run on **buildings**, whose floor area is assessed or permit-derived. Campus figures use **entitlement** GFA — the full proffered build-out, the weakest GFA tier in the model — and this is the first external check ever run against them. The two results are consistent: the constant looks sound where floor area is measured, and the *campus inputs* look inflated where it is an entitlement ceiling.
+
+**Caveats that keep this a flag rather than a correction.** The report does not say which campus the substation serves, and both share the GPIN; a site may draw from more than one substation; and a substation is often built for a phase rather than for full entitlement, which would explain much of the gap without any error in the model.
+
+No value is changed on the strength of one data point of uncertain scope. It is recorded because it is the only independent check on campus entitlement figures that exists, and because it points the same direction as ICPRB's Fairfax density (§1.3): campus-level power may be overstated.
+
 ### 7.3 Cooling type — four routes tried, all closed
 
 Cooling type is the third-largest swing factor (17%) and the only remaining one that is *physically real* rather than a modelling artifact. The 6.7× Prince William / Loudoun WUP spread is cooling type; it maps to roughly 11% vs 60–70% water-cooled share. Four routes were attempted.
