@@ -238,6 +238,13 @@ export interface CampusProfile {
   remaining_gfa_sqft: number | null;
   planned_gfa_sqft: number | null;
   gis_acreage: number | null;
+  /** Entitlement GFA / (acres x 43,560). Prince William transects cap FAR at
+   *  0.57 (I-3 transect 3) and 1.38 (highest); approved data centres cluster at
+   *  0.50-0.55. A campus above those cannot physically fit its stated floor
+   *  area — usually because an entitlement figure was repeated from a larger
+   *  site. */
+  implied_far: number | null;
+  far_flag: "exceeds_i3_transect" | "exceeds_all_transects" | null;
   n_parcels: number;
   gpins: string[];
   built_buildings_on_site: string[];

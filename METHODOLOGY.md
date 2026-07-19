@@ -393,6 +393,39 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.2c Floor Area Ratio — a physical check on campus entitlements
+
+Reading the staff reports in full supplied something no dataset had: a **physical constraint on floor area**. Prince William's transects cap FAR, and approved data centres cluster tightly just below the cap.
+
+| Source | FAR |
+|---|---|
+| REZ2026-00022 | **0.50** — proffered as a binding maximum |
+| REZ2022-00031 | 0.52 proposed |
+| SUP2023-00006 | 0.55 |
+| I-3, transect 3 | **0.57 maximum** |
+| T-4 (highest in county) | **1.38 maximum** |
+
+Dividing each campus's entitlement GFA by its acreage gives an implied FAR, now emitted as `implied_far` with a `far_flag`:
+
+| | Campuses |
+|---|---|
+| Plausible (≤0.57) | **41 of 51** |
+| Above the I-3 transect | 8 |
+| **Above every transect in the county** | **2** |
+
+**Median implied FAR is 0.35** — *below* the observed approved range. This is an important correction to §7.2b: campus entitlements are **not** systematically inflated. Most are conservative. The substation discrepancy is specific, not structural, and is at least as likely to reflect a substation built for one phase as an error in the model.
+
+The two impossible cases share a root cause:
+
+| Campus | Acres | Implied FAR | Shares its GFA with |
+|---|---|---|---|
+| Manassas Point PRA | 39.9 | **3.34** | BOCS (234.4 ac, FAR 0.57) |
+| Battlefield Business Park | 7.3 | **2.68** | Manassas Corporate Center 8 (23.0 ac, FAR 0.86) |
+
+In each pair a site-wide entitlement figure has been repeated onto a **smaller** campus it does not describe — the campus-level form of the proffer duplication that `resolve_gfa()` already fixes for buildings, and which campus records never went through because they use `coalesce_gfa()`.
+
+The figures are **flagged, not silently corrected**. A wrong number that announces itself is more useful than a quietly adjusted one, and capping them would change the headline campus ordering on the strength of an inference rather than a source. Manassas Point PRA currently carries 5.8M sqft of entitlement it cannot physically hold; anyone quoting that row should see the flag first.
+
 ### 7.2b A substation figure that questions the CAMPUS estimates
 
 A Public Facility Review staff report (SUP2026-00011, NOVEC) states twice:

@@ -511,6 +511,36 @@ for _, c in dc_projects.iterrows():
     ]
     campus_gfa_val, campus_gfa_field = coalesce_gfa(c, fields=["PlannedGFA", "RemainingGFA"])
 
+    # FLOOR AREA RATIO SANITY CHECK on campus entitlement GFA.
+    #
+    # Campus figures use entitlement floor area -- the weakest input in the
+    # model -- and nothing checked them until staff reports supplied a physical
+    # constraint. Prince William's transects cap FAR: I-3 transect 3 allows a
+    # maximum of 0.57, and the highest (T-4) allows 1.38. Actual approved data
+    # centre FARs cluster tightly just below the I-3 cap: 0.50 proffered as a
+    # binding maximum (REZ2026-00022), 0.52 (REZ2022-00031), 0.55
+    # (SUP2023-00006).
+    #
+    # Dividing entitlement GFA by site acreage exposes campuses whose floor area
+    # cannot physically fit. Two do: Manassas Point PRA at FAR 3.34 and
+    # Battlefield Business Park at 2.68. Both share their GFA value with a
+    # LARGER campus (BOCS and Manassas Corporate Center 8 respectively) -- the
+    # campus-level form of the proffer-entitlement duplication that resolve_gfa
+    # already fixes for buildings, where one site-wide figure is repeated onto a
+    # record it does not belong to.
+    #
+    # The figure is flagged, not silently corrected: a wrong number that
+    # announces itself is more useful than a quietly adjusted one.
+    campus_acres = clean(c.get("GISAcreage"))
+    implied_far = None
+    far_flag = None
+    if campus_gfa_val and campus_acres and campus_acres > 0:
+        implied_far = round(campus_gfa_val / (campus_acres * 43560), 3)
+        if implied_far > 1.38:
+            far_flag = "exceeds_all_transects"
+        elif implied_far > 0.57:
+            far_flag = "exceeds_i3_transect"
+
     # Campuses were never run through permit_conditions_for(), so a proffer
     # cooling condition attached to a REZONING case was silently dropped for all
     # 51 of them -- REZ2025-00003's cooling and PUE menu items sit on the Aura
@@ -527,7 +557,9 @@ for _, c in dc_projects.iterrows():
         "zoning_district": clean(c.get("ZoningDistrict")),
         "remaining_gfa_sqft": clean(c.get("RemainingGFA")),
         "planned_gfa_sqft": clean(c.get("PlannedGFA")),
-        "gis_acreage": clean(c.get("GISAcreage")),
+        "gis_acreage": campus_acres,
+        "implied_far": implied_far,
+        "far_flag": far_flag,
         "n_parcels": len(gpins),
         "gpins": gpins[:50],  # cap for payload size; full list rarely needed client-side
         "built_buildings_on_site": buildings_here,
