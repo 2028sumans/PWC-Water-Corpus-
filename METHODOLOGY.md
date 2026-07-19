@@ -921,3 +921,60 @@ This is why the local-versus-total framing common to data-centre water reporting
 - **19.2% of Scope 2 is unattributed** (`Municipality` / `Wells`). Resolving which utilities supply Hopewell and the other purchased-water plants would move ~8.6 MGD onto a named basin — likely James, which would push that basin past 60%.
 - The plant-level split uses **2015** USGS consumption as the allocation weight. Dominion's fleet has changed since; a newer EIA-923/860 pull would re-weight it.
 - Marginal versus average dispatch. The attribution here is average-mix. A **marginal** analysis — which plant actually turns up when a Loudoun/Prince William data centre adds load — would plausibly shift weight toward gas and away from nuclear, since nuclear runs baseload regardless. That is the single most defensible improvement available and is the natural next piece of work.
+
+---
+
+## 14. Two errors of basis, both now reported explicitly
+
+### 14.1 The county total was summing two different quantities
+
+Flagged in the §8 ledger and left open; closed here.
+
+`total_mgd_central` added Scope 1 to Scope 2 as if they measured the same thing. They do not:
+
+- **Scope 1 is delivered water.** ICPRB's WUP intensities are derived from *utility billing records* — what the building buys. Some of that returns to the basin as cooling-tower blowdown discharged to sewer. ICPRB's own **0.75 consumptive-use factor** exists precisely to convert delivered volume to consumed volume, and this model computed it per building and then never used it.
+- **Scope 2 is consumption.** USGS reports withdrawal and consumption in separate columns; the factors here are the consumption column.
+
+So the headline number answered neither question cleanly. Both are now reported:
+
+| Basis | County total |
+|---|---|
+| Delivered (Scope 1 as billed) | **51.42 MGD** |
+| Consumptive (0.75 applied to Scope 1) | **50.85 MGD** |
+
+The gap is small — 0.57 MGD, ~1% — because Scope 1 is only 4% of the total, so the factor has little to bite on. That is worth stating: **the delivered-vs-consumptive distinction, which dominates conventional water-use reporting, is nearly irrelevant to a data centre's total footprint precisely because so little of that footprint is local.** It is the right correction to make and it changes almost nothing, and both halves of that sentence are findings.
+
+Use the **delivered** figure against utility supply and capacity planning; use the **consumptive** figure against basin water balance and the §13 attribution.
+
+### 14.2 Market-based Scope 2 was missing
+
+The GHG Protocol requires **dual reporting**: a location-based figure (the grid you physically draw from) and a market-based figure (what you contracted for). Only the location-based figure existed. Since every hyperscaler in the dataset claims 100% renewable matching, the market-based figure is the one those operators would publish, and its absence made the model easy to dismiss as not speaking the operators' language.
+
+Contracted renewables are carried at **15 gal/MWh** — not zero. Solar PV consumes water for panel washing (~26 gal/MWh in NREL's tables) and wind is effectively nil; Dominion's contracted build is predominantly solar, so 15 is a midpoint rather than the 0 used for the renewable slice of the grid mix.
+
+| | MGD |
+|---|---|
+| Scope 2, location-based | **44.68** |
+| Scope 2, market-based | **35.55** |
+| Accounted away by contract | **9.13 (20%)** |
+
+**Only 57 of 243 buildings carry a matching claim** — the hyperscalers. The colocation operators (QTS, Digital Realty, Aligned, STACK, CloudHQ) have renewable commitments of their own that are not encoded here, so 35.55 MGD is an *upper* bound on the market-based total; the real published-figure sum would be lower still.
+
+### 14.3 Why the gap is the finding
+
+The market-based figure is reported because the protocol requires it and operators quote it. It is not reported because it describes anything physical.
+
+**A REC retired against a wind farm does not stop Lake Anna evaporating.** The water consumed to serve a building in Broad Run was consumed at the plant that actually served it, at the hour it served it. Annual contractual matching is netted over a year and over a continent; evaporation is neither.
+
+The 9.13 MGD gap is therefore **the volume of real, physical, Virginia-basin water consumption that disappears from operators' published water accounting through contractual instruments alone** — roughly 4.4× the entire local Scope 1 draw of 2.07 MGD.
+
+This compounds §13 rather than duplicating it. Two independent mechanisms move the same water out of view:
+
+| Mechanism | What it hides | Volume |
+|---|---|---|
+| **Spatial** (§13) | consumption occurs outside the reviewing basin | 44.68 MGD, 87% of total |
+| **Contractual** (§14.2) | consumption is netted away by annual REC matching | 9.13 MGD, 20% of Scope 2 |
+
+Neither is fraud, and neither operator behaviour is unusual — both are what the standard frameworks prescribe. The point is that the frameworks were built for carbon, where a tonne is a tonne wherever and whenever it is emitted, and **water is not fungible across basins or across seasons**. Annual, contract-based, location-blind accounting is a defensible carbon method and a poor water method, and this county is a clean demonstration of the difference: peak local draw is 9.9× the annual average (§12) and 96% of consumption happens somewhere the buildings' regulator cannot see (§13).
+
+That is the paper's thesis, and it is now supported by three independent numbers rather than an argument.

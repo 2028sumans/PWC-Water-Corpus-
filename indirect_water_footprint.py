@@ -245,6 +245,32 @@ DOMINION_GENERATION_MIX = {
     "coal": 0.03,
 }
 
+# --- Market-based Scope 2 -------------------------------------------------
+# The GHG Protocol requires dual reporting: a LOCATION-based figure using the
+# grid the facility physically draws from, and a MARKET-based figure reflecting
+# what the operator contracted for. Every hyperscaler here claims 100% renewable
+# matching, so their market-based figure collapses to the renewable factor.
+#
+# This is reported because the protocol requires it and because operators quote
+# it, NOT because it describes anything physical. A REC retired against a Texas
+# wind farm does not stop Lake Anna evaporating; the water consumed to serve a
+# Prince William building is consumed at the plant that actually served it, on
+# the hour it served it. The gap between the two numbers is the point -- see
+# METHODOLOGY.md section 14.
+OPERATOR_RENEWABLE_MATCHING = {
+    "GOOGLE": (1.00, "Google: 100% annual renewable matching since 2017; 24/7 carbon-free by 2030"),
+    "META": (1.00, "Meta: 100% renewable matching since 2020"),
+    "FACEBOOK": (1.00, "Meta: 100% renewable matching since 2020"),
+    "AMAZON": (1.00, "AWS: 100% renewable matching claimed from 2023"),
+    "AWS": (1.00, "AWS: 100% renewable matching claimed from 2023"),
+    "MICROSOFT": (1.00, "Microsoft: 100% renewable matching since 2025 target, PPA-backed"),
+}
+# Contracted renewables are not zero-water. Solar PV consumes water for panel
+# washing; wind is effectively nil. Dominion's contracted renewable build is
+# predominantly solar, so the market-based factor is a small positive number
+# rather than the 0 used for the renewable slice of the grid mix.
+CONTRACTED_RENEWABLE_GAL_PER_MWH = 15      # midpoint of ~0 (wind) to ~26 (PV washing)
+
 BLENDED_CONSUMPTION_GAL_PER_MWH = sum(
     DOMINION_GENERATION_MIX[f] * CONSUMPTION_FACTORS_GAL_PER_MWH[f]
     for f in DOMINION_GENERATION_MIX
@@ -554,6 +580,17 @@ def match_disclosed_pue(name):
     return None
 
 
+def match_renewable_matching(name):
+    """Operator's contracted-renewable claim, for the market-based Scope 2."""
+    if not name:
+        return None
+    upper = name.upper()
+    for kw in sorted(OPERATOR_RENEWABLE_MATCHING.keys(), key=len, reverse=True):
+        if kw in upper:
+            return OPERATOR_RENEWABLE_MATCHING[kw]
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Scope 1 - on-site cooling, from measured WUP intensities
 # ---------------------------------------------------------------------------
@@ -679,12 +716,36 @@ def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None,
         capped = True
     pue_central = (pue_lo + pue_hi) / 2
 
-    def mgd(mw, pue):
-        return mw * pue * HOURS_PER_DAY * BLENDED_CONSUMPTION_GAL_PER_MWH / 1e6
+    def mgd(mw, pue, factor=BLENDED_CONSUMPTION_GAL_PER_MWH):
+        return mw * pue * HOURS_PER_DAY * factor / 1e6
+
+    # GHG Protocol dual reporting. The market-based figure is what the operator
+    # would publish; it is reported alongside, never instead of, the physical one.
+    market = None
+    matched = match_renewable_matching(name)
+    if matched:
+        share, claim = matched
+        eff_factor = (share * CONTRACTED_RENEWABLE_GAL_PER_MWH
+                      + (1 - share) * BLENDED_CONSUMPTION_GAL_PER_MWH)
+        market = {
+            "mgd_central": round(mgd(eff_mw, pue_central, eff_factor), 4),
+            "renewable_matched_share": share,
+            "effective_gal_per_mwh": round(eff_factor, 1),
+            "claim": claim,
+            "caveat": (
+                "Contractual, not physical. Annual REC/PPA matching does not change which "
+                "plant served this building at 3pm in August, and the water consumed there "
+                "was consumed there. Reported because the GHG Protocol requires dual "
+                "reporting and operators quote this figure; the location-based value above "
+                "is the one that corresponds to water actually leaving a Virginia basin."
+            ),
+        }
 
     return {
         "mgd_range": [round(mgd(eff_lo, pue_lo), 4), round(mgd(eff_hi, pue_hi), 4)],
         "mgd_central": round(mgd(eff_mw, pue_central), 4),
+        "accounting_basis": "location_based",
+        "market_based": market,
         "pue_class": vclass,
         "pue_range": [round(pue_lo, 2), round(pue_hi, 2)],
         "pue_capped_by_proffer": capped,
@@ -852,6 +913,21 @@ def estimate_scope_water_footprint(
     total_hi = s1["mgd_range"][1] + s2["mgd_range"][1] + s3["mgd_range"][1]
     total_central = s1["mgd_central"] + s2["mgd_central"] + s3["mgd_central"]
 
+    # The three scopes are not on the same basis. Scope 1 is DELIVERED water --
+    # ICPRB's WUP figures come from utility billing records, so they are what the
+    # building buys, part of which returns to the basin as blowdown. Scope 2 is
+    # CONSUMPTION at the generating plant: USGS reports withdrawal and
+    # consumption separately and the factors used here are the consumption
+    # column. Summing them without saying so answers neither "how much do these
+    # buildings draw" nor "how much water is lost", so both totals are reported
+    # and the difference is stated rather than buried.
+    s1_consumptive = s1["consumptive_mgd_central"]
+    s3_consumptive = s3["mgd_central"] * (
+        (s1_consumptive + s2["mgd_central"]) / (s1["mgd_central"] + s2["mgd_central"])
+        if (s1["mgd_central"] + s2["mgd_central"]) else 0
+    )
+    total_consumptive = s1_consumptive + s2["mgd_central"] + s3_consumptive
+
     # Cross-check the GFA-derived power against the operator's interconnection
     # span. This can CONFIRM or FLAG, but never widen -- the operator figure is
     # portfolio-wide and less specific than this building's own floor area.
@@ -914,6 +990,15 @@ def estimate_scope_water_footprint(
         "scope3_embodied": s3,
         "total_mgd_range": [round(total_lo, 4), round(total_hi, 4)],
         "total_mgd_central": round(total_central, 4),
+        "total_consumptive_mgd_central": round(total_consumptive, 4),
+        "total_basis_note": (
+            f"total_mgd_central mixes bases: Scope 1 is DELIVERED water (ICPRB's WUP figures are "
+            f"utility billing records, so blowdown returning to the basin is included), while "
+            f"Scope 2 is CONSUMPTION at the generating plant. total_consumptive_mgd_central puts "
+            f"all three on a consumption basis by applying ICPRB's {CONSUMPTIVE_USE_FACTOR} "
+            f"consumptive-use factor to Scope 1. Use the delivered figure against utility supply "
+            f"and the consumptive figure against basin water balance."
+        ),
         "total_note": (
             "Envelope sum of independent scope minima and maxima -- a conservative bound, not a "
             "statistical confidence interval (the three scopes are not assumed to co-vary). The "
