@@ -171,6 +171,42 @@ t(f"  proffer-entitlement GFA values shared across multiple buildings: {len(_pro
 #    water-cooled alternatives"  <- MENU: 8 of 19 required, so xvi/xvii are
 #    NOT guaranteed. Recorded as available-but-unconfirmed, never as fact.
 PERMIT_COOLING_CONDITIONS = {
+    # REZ2025-00003 ("Project Industry" / Aura Development), proffer statement
+    # dated April 24, 2026. Same menu structure as SUP2025-00016 below, and the
+    # same conclusion: cooling appears as item 15 of 16 in a sustainability
+    # menu from which only EIGHT must be implemented, so it is not guaranteed.
+    #
+    #   "15. Use of air or closed loop cooling rather than water-cooled
+    #    alternatives; or"
+    #   "14. Design the data center building to operate below an annualized
+    #    1.5 PUE (Power Utilization Effectiveness) standard;"
+    #
+    # A separate MANDATORY proffer is suggestive but does not bind cooling type:
+    #
+    #   "D. Noise Mitigation: All air-cooled chiller equipment installed on the
+    #    Property, whether ground-mounted or roof-mounted, shall include ...
+    #    low noise emission fans ... magnetic bearing compressors"
+    #
+    # That governs air-cooled chillers IF installed; it does not require that
+    # cooling be air-cooled. An applicant does not usually write a noise proffer
+    # for equipment it has no plan to install, so this is real evidence of
+    # intent -- but it is inferable, not binding, and does not narrow the
+    # estimate.
+    "REZ2025-00003": {
+        "mandatory_no_ground_or_surface_water_cooling": False,
+        "menu_includes_air_or_closed_loop": True,
+        "menu_includes_pue_cap": 1.5,
+        "menu_required_count": 8,
+        "menu_total_count": 16,
+        "anticipates_air_cooled_chillers": True,
+        "source": (
+            "REZ2025-00003 (Project Industry) proffer statement dated April 24, 2026: air or "
+            "closed-loop cooling appears as item 15 of 16 in a sustainability menu from which the "
+            "applicant must implement at least 8, so it is available but not guaranteed. A separate "
+            "mandatory noise proffer regulates 'all air-cooled chiller equipment installed on the "
+            "Property', which indicates air-cooled chillers are anticipated but does not require them."
+        ),
+    },
     "SUP2025-00016": {
         "mandatory_no_ground_or_surface_water_cooling": True,
         "menu_includes_air_or_closed_loop": True,
@@ -475,6 +511,15 @@ for _, c in dc_projects.iterrows():
     ]
     campus_gfa_val, campus_gfa_field = coalesce_gfa(c, fields=["PlannedGFA", "RemainingGFA"])
 
+    # Campuses were never run through permit_conditions_for(), so a proffer
+    # cooling condition attached to a REZONING case was silently dropped for all
+    # 51 of them -- REZ2025-00003's cooling and PUE menu items sit on the Aura
+    # Development CAMPUS record, not on any building, and so never surfaced.
+    campus_use = matched_cases(geom, use_permits, ["ZoningCaseNumber", "UsePermitType", "ZoningCaseName", "DateApproved", "DateExpired", "UsePermitStatus"])
+    campus_bza = matched_cases(geom, bza, ["BZACaseNumber", "BZACaseType", "BZACaseName"])
+    campus_pending = matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"])
+    campus_pue_cap, campus_cooling = permit_conditions_for(campus_use + campus_bza + campus_pending)
+
     profile = {
         "kind": "campus",
         "case_number": clean(c.get("CaseNumber")),
@@ -486,15 +531,18 @@ for _, c in dc_projects.iterrows():
         "n_parcels": len(gpins),
         "gpins": gpins[:50],  # cap for payload size; full list rarely needed client-side
         "built_buildings_on_site": buildings_here,
-        "use_permits": matched_cases(geom, use_permits, ["ZoningCaseNumber", "UsePermitType", "ZoningCaseName", "DateApproved", "DateExpired", "UsePermitStatus"]),
-        "bza_cases": matched_cases(geom, bza, ["BZACaseNumber", "BZACaseType", "BZACaseName"]),
-        "pending_cases": matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"]),
+        "use_permits": campus_use,
+        "bza_cases": campus_bza,
+        "pending_cases": campus_pending,
+        "permit_cooling_conditions": campus_cooling,
         "water_context": water_ctx,
         "scope_water_footprint": estimate_scope_water_footprint(
             c.get("CaseName"), gfa_sqft=campus_gfa_val, gfa_source=campus_gfa_field,
             gfa_quality="entitlement", year_built=None,
             d_hv_transmission_ft=(water_ctx or {}).get("d_hv_transmission_ft"),
             cdd=(water_ctx or {}).get("cdd"),
+            pue_cap=campus_pue_cap, cooling_disclosure=campus_cooling,
+            status="Planned",
         ),
     }
     campus_profiles.append(profile)

@@ -385,7 +385,27 @@ Twelve of thirty permits mention cooling-ish language. **In all thirty, every "c
 
 The only trustworthy positive signal is cooling equipment in a permit's own equipment list, since a cooling tower is a permitted emission unit in its own right. **Exactly one permit has it:** 74216 (Nova Mango Farms), 31 cooling towers at 6,000 gpm. That facility has no building in this dataset and no parcel in the county GIS, so it changes nothing today. Absence of cooling equipment is **not** evidence of air cooling — most data centre cooling needs no air permit and never appears.
 
-**2. County staff reports — blocked.** 16 distinct `StaffReportLink` PDFs are referenced from the case records. All return **403 behind Cloudflare** to every available route: WebFetch, curl with browser user-agent and referer, and the in-app browser (which gets a download dialog rather than a render). These are downloadable by hand from a normal browser session.
+**2. County staff reports — retrieved, and mostly empty.**
+
+All 16 `StaffReportLink` PDFs were obtained by hand (they return 403 behind Cloudflare to every scripted route). Two findings:
+
+**Ten of the sixteen are placeholder pages.** They are 1-page PDFs reading *"The staff report for this case is currently unavailable."* The county's own case records link to reports that were never posted or have since been withdrawn — so the `StaffReportLink` field is not a reliable indicator that a report exists. Only five distinct reports carry real content.
+
+**One of the five mentions cooling: REZ2025-00003** ("Project Industry" / Aura Development), and it repeats the pattern already seen in SUP2025-00016 rather than breaking it:
+
+> *"15. Use of air or closed loop cooling rather than water-cooled alternatives; or"*
+
+That is item **15 of 16** in a sustainability menu from which the applicant must implement **at least 8**. Item 14 is the 1.5 annualized PUE. Neither is guaranteed, so neither narrows the estimate.
+
+A separate **mandatory** proffer is more interesting but still does not bind cooling type:
+
+> *"D. Noise Mitigation: All air-cooled chiller equipment installed on the Property, whether ground-mounted or roof-mounted, shall include ... low noise emission fans ... magnetic bearing compressors"*
+
+This governs air-cooled chillers **if installed**; it does not require that cooling be air-cooled. An applicant does not usually write a noise proffer for equipment it has no plan to install, so it is real evidence of intent — recorded as `anticipates_air_cooled_chillers`, treated as inferable, and not used to narrow.
+
+**A bug this surfaced.** Campus profiles never ran `permit_conditions_for()`, so a cooling condition attached to a **rezoning case** was silently dropped for all 51 campuses. REZ2025-00003 sits on the Aura Development *campus* record, not on any building, and so would never have surfaced no matter what the report said. Campuses now run the same condition matching as buildings; two campuses (Aura Development, Hornbaker Road) carry conditions as a result.
+
+The two remaining routes for the ten missing reports: the county ePortal case pages, or the Planning Office directly (703-792-7615 / planning@pwcgov.org), which the placeholder page itself suggests.
 
 **3. Mechanical permits — not attempted.** PWC Building Development issues them and they list HVAC equipment. 96 buildings carry a `PermitCase` (e.g. `BLD2017-00581`) that would key the request. This is a *county* records request, not a DEQ FOIA.
 

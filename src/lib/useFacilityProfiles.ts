@@ -203,6 +203,9 @@ export interface ScopeWaterFootprint {
 export interface PermitCoolingConditions {
   air_or_closed_loop: boolean;
   mandatory_source_restriction: boolean;
+  /** True when the proffer regulates air-cooled chillers without requiring
+   *  them — evidence the applicant anticipates air cooling, not a commitment. */
+  anticipates_air_cooled_chillers?: boolean;
   source: string;
 }
 
@@ -241,6 +244,7 @@ export interface CampusProfile {
   use_permits: FacilityCaseRecord[];
   bza_cases: FacilityCaseRecord[];
   pending_cases: FacilityCaseRecord[];
+  permit_cooling_conditions: PermitCoolingConditions | null;
   water_context: FacilityWaterContext | null;
   scope_water_footprint: ScopeWaterFootprint | null;
 }
