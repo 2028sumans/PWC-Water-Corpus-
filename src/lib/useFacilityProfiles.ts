@@ -103,6 +103,11 @@ export interface ScopePermitPower {
   gfa_share: number;
   n_buildings_on_permit: number;
   n_buildings_matched: number;
+  /** Fraction of permitted capacity that is NON-EMERGENCY. ICPRB's 0.5
+   *  redundancy factor assumes 2N emergency backup, so a high share here means
+   *  the halving is weakly justified for this site. */
+  non_emergency_share?: number | null;
+  redundancy_assumption_note?: string | null;
 }
 
 export interface ScopePowerEstimate {

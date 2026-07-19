@@ -393,6 +393,30 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.1d Non-emergency generators break ICPRB's redundancy rationale
+
+Reading the permits **in full**, rather than parsing only their equipment tables, surfaced a problem with the permit-derived power path itself.
+
+ICPRB's Equation 6-3 applies a 0.5 redundancy factor, and states exactly why:
+
+> *"A redundancy factor of 0.5 is assumed to reflect that permitted generator capacity typically represents twice the actual IT power load (i.e. 2N backup systems)"*
+
+That rationale is specific to **emergency backup**. Several permits here list large **non-emergency** fleets, and the permits themselves treat the two classes differently — hour limits apply only to the emergency units:
+
+> 74342: *"Each emergency diesel engine gen-set (Ref. Nos. 53, 54, 99 through 101, T1 and T2) shall not operate more than 500 hours per year"* — while Ref. Nos. 1–52 and 55–98, the non-emergency units, carry no equivalent cap.
+
+Non-emergency capacity by permit:
+
+| Reg | Non-emergency share | Affects |
+|---|---|---|
+| 74262 | **100%** | DLR IAD-50, IAD-51, Digital Realty VA4 |
+| 74333 | 93% | IAD-45 |
+| 74342 | 52% | IAD-110/111/112/113 |
+
+A fleet that is 100% non-emergency is not 2N redundancy — it is generation, permitted to run. **Halving its capacity is not supported by the reason the halving exists.**
+
+The factor is **not changed**. What those units actually serve — peak shaving, grid services, primary supply — is not something these documents establish, and guessing would replace a stated assumption with an unstated one. The exposure is recorded per building as `non_emergency_share` and `redundancy_assumption_note` so it is visible wherever the figure is used. Three buildings currently carry a 100% flag.
+
 ### 7.2c Floor Area Ratio — a physical check on campus entitlements
 
 Reading the staff reports in full supplied something no dataset had: a **physical constraint on floor area**. Prince William's transects cap FAR, and approved data centres cluster tightly just below the cap.

@@ -449,6 +449,30 @@ def summarise(p):
     p["n_units"] = sum(r["n_units"] for r in p["rows"])
     p["flagged_rows"] = sum(1 for r in p["rows"] if r["flags"])
 
+    # EMERGENCY vs NON-EMERGENCY capacity.
+    #
+    # ICPRB's Equation 6-3 applies a 0.5 redundancy factor "to reflect that
+    # permitted generator capacity typically represents twice the actual IT
+    # power load (i.e. 2N backup systems)". That rationale is specific to
+    # EMERGENCY backup. Several permits here list large NON-EMERGENCY fleets,
+    # which are not 2N redundancy at all -- and the permits treat them
+    # differently, capping emergency units at 500 hours per year while leaving
+    # non-emergency units without the equivalent limit (74342 caps only Ref.
+    # Nos. 53/54/99-101/T1/T2; 74262 only BPPBB1/BYPBB1/BYPBB2/BYPBB1MW).
+    #
+    # Where a site is mostly non-emergency, halving its capacity is not
+    # supported by the reason the halving exists. Recorded so the exposure is
+    # visible; the factor is NOT changed, because what those units actually
+    # serve is not something these documents establish.
+    ne = sum(r["mw"] for r in p["rows"] if "non-emergency" in (r["source_line"] or "").lower())
+    p["non_emergency_mw"] = round(ne, 2)
+    p["non_emergency_share"] = round(ne / p["total_generator_mw"], 3) if p["total_generator_mw"] else 0.0
+    p["redundancy_assumption_note"] = (
+        f"{p['non_emergency_share']:.0%} of permitted capacity is NON-EMERGENCY. ICPRB's 0.5 "
+        f"redundancy factor assumes 2N emergency backup, so it is weakly supported here."
+        if p["non_emergency_share"] > 0.5 else None
+    )
+
     # The old detect_alternative_models() heuristic -- "any unit count that
     # recurs with different ratings" -- was far too crude and false-positived on
     # clean permits. 74342 legitimately lists (2) gen-sets at 750 ekW and (2)

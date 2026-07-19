@@ -91,6 +91,9 @@
   "effective_it_mw": 315.7,
   "n_units": 266,
   "flagged_rows": 2,
+  "non_emergency_mw": 786.0,
+  "non_emergency_share": 0.996,
+  "redundancy_assumption_note": "100% of permitted capacity is NON-EMERGENCY. ICPRB's 0.5 redundancy factor assumes 2N emergency backup, so it is weakly supported here.",
   "confidence": "high",
   "review_reasons": []
  },
@@ -146,6 +149,9 @@
   "effective_it_mw": 226.76,
   "n_units": 228,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -205,6 +211,9 @@
   "effective_it_mw": 152.0,
   "n_units": 118,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -333,6 +342,9 @@
   "effective_it_mw": 148.07,
   "n_units": 128,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -411,6 +423,9 @@
   "effective_it_mw": 144.84,
   "n_units": 159,
   "flagged_rows": 2,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -492,6 +507,9 @@
   "effective_it_mw": 134.1,
   "n_units": 133,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -609,6 +627,9 @@
   "effective_it_mw": 114.88,
   "n_units": 119,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -698,6 +719,9 @@
   "effective_it_mw": 109.38,
   "n_units": 103,
   "flagged_rows": 1,
+  "non_emergency_mw": 143.0,
+  "non_emergency_share": 0.523,
+  "redundancy_assumption_note": "52% of permitted capacity is NON-EMERGENCY. ICPRB's 0.5 redundancy factor assumes 2N emergency backup, so it is weakly supported here.",
   "confidence": "high",
   "review_reasons": []
  },
@@ -749,6 +773,9 @@
   "effective_it_mw": 106.56,
   "n_units": 110,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -839,6 +866,9 @@
   "effective_it_mw": 93.24,
   "n_units": 90,
   "flagged_rows": 1,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -923,6 +953,9 @@
   "effective_it_mw": 92.0,
   "n_units": 92,
   "flagged_rows": 3,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -977,6 +1010,9 @@
   "effective_it_mw": 88.0,
   "n_units": 88,
   "flagged_rows": 1,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1057,6 +1093,9 @@
   "effective_it_mw": 86.0,
   "n_units": 86,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1146,6 +1185,9 @@
   "effective_it_mw": 82.72,
   "n_units": 85,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1219,6 +1261,9 @@
   "effective_it_mw": 74.3,
   "n_units": 86,
   "flagged_rows": 2,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1275,6 +1320,9 @@
   "effective_it_mw": 61.1,
   "n_units": 67,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1336,6 +1384,9 @@
   "effective_it_mw": 54.72,
   "n_units": 57,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1444,6 +1495,9 @@
   "effective_it_mw": 48.2,
   "n_units": 55,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1511,6 +1565,9 @@
   "effective_it_mw": 51.3,
   "n_units": 44,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1560,6 +1617,9 @@
   "effective_it_mw": 42.08,
   "n_units": 44,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1911,6 +1971,9 @@
   "effective_it_mw": 35.52,
   "n_units": 39,
   "flagged_rows": 1,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -1959,6 +2022,9 @@
   "effective_it_mw": 26.1,
   "n_units": 25,
   "flagged_rows": 0,
+  "non_emergency_mw": 60.5,
+  "non_emergency_share": 0.927,
+  "redundancy_assumption_note": "93% of permitted capacity is NON-EMERGENCY. ICPRB's 0.5 redundancy factor assumes 2N emergency backup, so it is weakly supported here.",
   "confidence": "high",
   "review_reasons": []
  },
@@ -1998,6 +2064,9 @@
   "effective_it_mw": 25.1,
   "n_units": 21,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2028,6 +2097,9 @@
   "effective_it_mw": 24.8,
   "n_units": 20,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2120,6 +2192,9 @@
   "effective_it_mw": 18.4,
   "n_units": 21,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2287,6 +2362,9 @@
   "effective_it_mw": 9.6,
   "n_units": 13,
   "flagged_rows": 13,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2399,6 +2477,9 @@
   "effective_it_mw": 8.0,
   "n_units": 10,
   "flagged_rows": 1,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2429,6 +2510,9 @@
   "effective_it_mw": 8.0,
   "n_units": 32,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2470,6 +2554,9 @@
   "effective_it_mw": 1.2,
   "n_units": 2,
   "flagged_rows": 2,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "high",
   "review_reasons": []
  },
@@ -2486,6 +2573,9 @@
   "effective_it_mw": 0.0,
   "n_units": 0,
   "flagged_rows": 0,
+  "non_emergency_mw": 0,
+  "non_emergency_share": 0.0,
+  "redundancy_assumption_note": null,
   "confidence": "needs_review",
   "review_reasons": [
    "no_equipment_rows_parsed"

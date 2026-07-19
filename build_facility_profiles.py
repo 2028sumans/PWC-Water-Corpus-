@@ -334,6 +334,8 @@ def build_permit_power_index(buildings_df):
                 "n_buildings_on_permit": len(pcodes),
                 "n_buildings_matched": len(hits),
                 "cooling_evidence": p.get("cooling_evidence"),
+                "non_emergency_share": p.get("non_emergency_share"),
+                "redundancy_assumption_note": p.get("redundancy_assumption_note"),
             }
     return index
 
@@ -426,6 +428,8 @@ def build_operator_permit_index(buildings_df, already_matched, permit_index):
                 "match_basis": "operator_single_permit",
                 "coverage_ratio": round(ratio, 2),
                 "cooling_evidence": permit.get("cooling_evidence"),
+                "non_emergency_share": permit.get("non_emergency_share"),
+                "redundancy_assumption_note": permit.get("redundancy_assumption_note"),
             }
     return index
 
