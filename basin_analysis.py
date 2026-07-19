@@ -127,6 +127,42 @@ def main():
     for b_, v in sorted(by_basin.items(), key=lambda kv: -kv[1]):
         print(f"{b_:<40}{v:>9.2f}{100*v/s2:>13.1f}%")
 
+    # ---- Scope 2 under MARGINAL dispatch, by basin ----------------------------
+    # Same plant-level attribution, but weighting fuels by the marginal mix (what
+    # a new load turns on) rather than the average mix. Nuclear drops out because
+    # it is baseload and ~never marginal, so the York basin nearly empties.
+    mmix = m.PJM_MARGINAL_FUEL_MIX
+    mcf = m.MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH
+    mblended = sum(mmix[f] * mcf[f] for f in mmix)
+    s2_marginal = sum(
+        b["scope_water_footprint"]["scope2_electricity"]["marginal_based"]["mgd_central"]
+        for b in bs
+    )
+    marg_basin = defaultdict(float)
+    for fuel in mmix:
+        # CC and CT both draw from the gas fleet's plants/basins; CT adds little
+        # water but sits in the same basins.
+        plant_fuel = "natural_gas_cc" if fuel.startswith("natural_gas") else fuel
+        if plant_fuel not in plants:
+            continue
+        fuel_mgd = s2_marginal * (mmix[fuel] * mcf[fuel]) / mblended
+        tot_cons = sum(p["consumption_mgd"] for p in plants[plant_fuel]) or 1
+        for p in plants[plant_fuel]:
+            marg_basin[p["basin"]] += fuel_mgd * p["consumption_mgd"] / tot_cons
+
+    print(f"\n\nSCOPE 2 under MARGINAL dispatch (a new load turns on gas, not nuclear)\n")
+    print(f"{'basin':<40}{'avg MGD':>10}{'marginal MGD':>14}")
+    print("-" * 64)
+    allb = sorted(set(by_basin) | set(marg_basin),
+                  key=lambda k: -(by_basin.get(k, 0) + marg_basin.get(k, 0)))
+    for b_ in allb:
+        print(f"{b_:<40}{by_basin.get(b_,0):>10.2f}{marg_basin.get(b_,0):>14.2f}")
+    york_avg = by_basin.get("York (Lake Anna)", 0.0)
+    york_marg = marg_basin.get("York (Lake Anna)", 0.0)
+    print(f"\n  York basin (North Anna): {york_avg:.2f} MGD average  ->  {york_marg:.2f} MGD marginal")
+    print(f"  i.e. {1-york_marg/york_avg:.0%} of the Lake Anna attribution is an average-mix artifact;")
+    print(f"  the water a NEW data centre actually causes is consumed in the James gas fleet.")
+
     # ---- the displacement ------------------------------------------------------
     total = s1 + s2 + s3
     potomac = s1 + by_basin.get("Potomac", 0.0)
@@ -144,6 +180,8 @@ def main():
 
     json.dump({"scope1_by_watershed": {k: dict(v) for k, v in local.items()},
                "scope2_by_generating_basin": dict(by_basin),
+               "scope2_marginal_by_generating_basin": dict(marg_basin),
+               "scope2_marginal_total_mgd": s2_marginal,
                "totals_mgd": {"scope1": s1, "scope2": s2, "scope3": s3, "total": total},
                "summer_peak_local_mgd": peak},
               open("data/basin_attribution.json", "w"), indent=1)

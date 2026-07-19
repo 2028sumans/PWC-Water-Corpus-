@@ -245,6 +245,41 @@ DOMINION_GENERATION_MIX = {
     "coal": 0.03,
 }
 
+# --- Marginal generation mix (the generator that answers an added MW) -------
+# The average mix above describes the grid's whole output. But a NEW data-centre
+# load is served at the MARGIN -- by whatever unit is next in the dispatch
+# stack -- and in PJM that is overwhelmingly gas, never the nuclear baseload.
+# From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit
+# 61.7% of hours, coal 10.0%, wind 11.1%; the remaining ~17% is peaking gas
+# (simple-cycle CT) and other. Nuclear is ~never marginal.
+#
+# This matters enormously for the BASIN question. Average-mix accounting assigns
+# 25% of every data-centre's electricity to nuclear, i.e. to North Anna and the
+# York basin (Lake Anna). But adding a data centre does not make North Anna
+# consume more water -- it runs flat out regardless. The marginal generator is a
+# gas plant, in the James basin. So the York-basin displacement in section 13 is
+# partly an ARTIFACT of average-mix accounting; the marginal reality is even more
+# concentrated on gas and the James. See METHODOLOGY.md section 16.
+PJM_MARGINAL_FUEL_MIX = {
+    "natural_gas_cc": 0.617,
+    "natural_gas_ct": 0.172,   # remaining marginal hours: peaking/other, ~dry
+    "coal": 0.100,
+    "wind": 0.111,
+}
+# Simple-cycle combustion turbines consume almost no water (no steam cycle, no
+# cooling tower); carried at a small positive value for inlet cooling / NOx.
+MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH = {
+    "natural_gas_cc": CONSUMPTION_FACTORS_GAL_PER_MWH["natural_gas_cc"],  # 213
+    "natural_gas_ct": 20,
+    "coal": CONSUMPTION_FACTORS_GAL_PER_MWH["coal"],                       # 451
+    "wind": 0,
+}
+MARGINAL_CONSUMPTION_GAL_PER_MWH = sum(
+    PJM_MARGINAL_FUEL_MIX[f] * MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH[f]
+    for f in PJM_MARGINAL_FUEL_MIX
+)  # ~180 gal/MWh -- close to the average because dropping nuclear's contribution
+   # roughly offsets the heavier gas weighting
+
 # --- Market-based Scope 2 -------------------------------------------------
 # The GHG Protocol requires dual reporting: a LOCATION-based figure using the
 # grid the facility physically draws from, and a MARKET-based figure reflecting
@@ -757,11 +792,29 @@ def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None,
             ),
         }
 
+    # Marginal-mix figure. The average-mix mgd_central above answers "what share
+    # of the grid's water is this building's share of demand"; the marginal
+    # figure answers the causal question "how much MORE water is consumed because
+    # this building exists", which is served by the marginal (gas) unit, not the
+    # nuclear baseload. Reported alongside; the basin split diverges far more than
+    # the total does (METHODOLOGY.md section 16).
+    marginal = {
+        "mgd_central": round(mgd(eff_mw, pue_central, MARGINAL_CONSUMPTION_GAL_PER_MWH), 4),
+        "marginal_gal_per_mwh": round(MARGINAL_CONSUMPTION_GAL_PER_MWH, 1),
+        "basis": (
+            "PJM marginal-fuel mix (2022): combined-cycle gas 61.7% of marginal hours, "
+            "peaking gas 17.2%, coal 10.0%, wind 11.1%; nuclear ~never marginal. A new "
+            "load turns on gas, not the nuclear baseload, so this reallocates consumption "
+            "off the York basin (North Anna) and onto the James (gas fleet)."
+        ),
+    }
+
     return {
         "mgd_range": [round(mgd(eff_lo, pue_lo), 4), round(mgd(eff_hi, pue_hi), 4)],
         "mgd_central": round(mgd(eff_mw, pue_central), 4),
         "accounting_basis": "location_based",
         "market_based": market,
+        "marginal_based": marginal,
         "pue_class": vclass,
         "pue_range": [round(pue_lo, 2), round(pue_hi, 2)],
         "pue_capped_by_proffer": capped,

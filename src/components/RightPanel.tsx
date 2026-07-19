@@ -697,6 +697,25 @@ export function RightPanel() {
                   </div>
                 </div>
               )}
+              {swf.scope2_electricity.marginal_based && (
+                <div className="mt-1 ml-3 border-l border-neutral-800 pl-3 py-1.5">
+                  <div className="flex items-baseline gap-2 text-[11px]">
+                    <span className="text-neutral-500">Marginal-mix Scope 2</span>
+                    <span className="tabular-nums text-neutral-300">
+                      {swf.scope2_electricity.marginal_based.mgd_central.toFixed(3)} MGD
+                    </span>
+                    <span className="text-neutral-600">
+                      ({swf.scope2_electricity.marginal_based.marginal_gal_per_mwh} gal/MWh)
+                    </span>
+                  </div>
+                  <div className="mt-1 text-[10px] leading-relaxed text-neutral-500">
+                    The water a <em>new</em> load actually causes: served by the marginal gas
+                    unit, not the nuclear baseload. The total barely moves, but it reallocates
+                    consumption off the York basin (North Anna, ~never marginal) and onto the
+                    James gas fleet — see methodology §16.
+                  </div>
+                </div>
+              )}
               <ScopeRow
                 label="Scope 3 — embodied / supply-chain"
                 tone="violet"

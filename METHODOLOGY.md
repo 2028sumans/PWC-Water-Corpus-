@@ -1047,3 +1047,50 @@ Density remains ~52% of the swing, and that is now a deliberate statement rather
 - JLARC, *Data Centers in Virginia* (Dec 2024) — ~5,050 MW across ~340 built Virginia buildings.
 - Uptime Institute / LBNL benchmarking — 100–150 W/sqft standard, 250–450 W/sqft modern AI-class.
 - ICPRB 2025 WMA Water Supply Study, §6.2 — 8,818 sqft/MW fleet average.
+
+---
+
+## 16. Average vs marginal dispatch — the third way the water hides
+
+The largest weakness left in the estimator was that Scope 2 — **87% of the total** — used Dominion's *average* generation mix. Fixing it produced the paper's most consequential single result.
+
+### 16.1 The distinction
+
+Average-mix accounting asks: *what share of the grid's total water is this building's share of demand?* On that basis 25% of every data centre's electricity is nuclear, so 25% of its Scope 2 water lands on North Anna and the York basin (Lake Anna).
+
+But that is not the causal question. A **new** data-centre load is served at the **margin** — by whatever unit is next in the dispatch stack — and **nuclear never moves.** North Anna runs flat out regardless of whether a data centre in Broad Run switches on; it is baseload. The unit that actually spins up is a gas plant. So the marginal question — *how much more water is consumed because this building exists?* — has a completely different basin answer.
+
+### 16.2 The marginal mix
+
+From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **61.7%** of hours, peaking gas ~**17.2%**, coal **10.0%**, wind **11.1%**; nuclear essentially never. Applying the same Virginia-specific water factors (peaking simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **~180 gal/MWh**, against the average-mix **~198**.
+
+### 16.3 The result
+
+| | Average-mix MGD | Marginal MGD |
+|---|---|---|
+| James (gas fleet) | 18.9 | 20.7 |
+| **York — North Anna / Lake Anna** | **13.4** | **0.0** |
+| Roanoke (coal) | 2.4 | 8.1 *(see caveat)* |
+| purchased municipal (unresolved) | 8.4 | 9.2 |
+| other basins | 0.5 | 1.8 |
+| **Scope 2 total** | **43.7** | **39.8** |
+
+Two findings:
+
+1. **The total barely moves (−9%), but the basin allocation transforms.** The York-basin attribution — 13.4 MGD, the single largest water body in the whole study, 6.6× the entire local Scope 1 — **falls to essentially zero under marginal accounting.** The Lake Anna displacement identified in §13 is, to first order, an *artifact of average-mix accounting.* The water a new Prince William data centre actually causes is consumed in the **James** gas fleet, not at North Anna.
+
+2. This is a **third, independent mechanism** by which the footprint escapes view, and it completes the paper's argument:
+
+| Mechanism | Section | What it hides | Under scrutiny |
+|---|---|---|---|
+| **Spatial** | §13 | consumption is in a different basin than the buildings | 96% out-of-basin |
+| **Contractual** | §14 | consumption is netted away by annual REC matching | 20% of Scope 2 |
+| **Temporal / causal** | §16 | *which* basin depends on average-vs-marginal framing | the entire York attribution |
+
+All three are the same underlying failure: **carbon accounting conventions — annual, location-blind, average-mix, fungible — applied to water, which is none of those things.** A tonne of CO₂ is a tonne wherever, whenever, and from whichever plant. A gallon is not: it matters which basin, which season, and which generator on the margin. This county demonstrates all three divergences quantitatively.
+
+### 16.4 Caveats and the route to sharpen it
+
+- **The marginal mix is PJM-wide, not Dominion-zone-specific.** Virginia has nearly retired its coal (3% of generation), so the 10% marginal-coal share overstates coal's local role — the **Roanoke figure (8.1 MGD) is an upper bound**, and the true Dominion-zone marginal is *even more* gas-and-James-concentrated than shown. The York→0 result is robust to this; the coal reallocation is not.
+- **Marginal fuel *frequency* is used as a proxy for marginal *energy* share.** A Data Miner pull of hourly marginal MW by fuel for the Dominion zone (2023–24) would replace both approximations and is the clean next step.
+- Neither average nor marginal is "the" right number — GHG Protocol reports average (location-based) and this study keeps that as the headline, with marginal reported alongside as the causal complement. The point is that **for water they disagree about the receiving basin entirely**, which no carbon framework would ever surface.

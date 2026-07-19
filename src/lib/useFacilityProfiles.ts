@@ -202,6 +202,16 @@ export interface Scope2Electricity {
     claim: string;
     caveat: string;
   } | null;
+  /**
+   * Marginal-mix figure: the water a NEW load actually causes, served by the
+   * marginal (gas) generator rather than the nuclear baseload. Diverges from the
+   * average-mix figure far more in basin allocation than in total — see §16.
+   */
+  marginal_based: {
+    mgd_central: number;
+    marginal_gal_per_mwh: number;
+    basis: string;
+  } | null;
   methodology: string;
   note: string;
 }
