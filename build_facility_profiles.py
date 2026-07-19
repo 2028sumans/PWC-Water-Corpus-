@@ -434,6 +434,42 @@ def build_operator_permit_index(buildings_df, already_matched, permit_index):
     return index
 
 
+# ---------------------------------------------------------------------------
+# County ePortal trade permits naming cooling equipment
+# ---------------------------------------------------------------------------
+# Harvested from Prince William's Development Services ePortal (Tyler EnerGov)
+# by keyword, then joined on MainParcel. Unlike VADEQ air permits, whose
+# descriptions are project-level, these name equipment: "IGLOO/CHILLER
+# ADDITIONS - IAD 52", "IMDC VA1 CHILLER ADDITON", "BACKFLOW PREVENTER IN THE
+# CHILLER PLANT SPRINKLER ROOM".
+#
+# Attached as EVIDENCE ONLY -- it does not narrow the Scope 1 estimate. A
+# chiller is the cold-side machine; what matters for water is how heat is
+# finally rejected, and a chiller permit does not say whether that is a cooling
+# tower or a dry cooler.
+_EPORTAL_PATH = os.path.join(_SCRIPT_DIR, "data", "eportal_cooling_permits.json")
+
+
+def build_eportal_index():
+    if not os.path.exists(_EPORTAL_PATH):
+        return {}
+    idx = {}
+    for r in json.load(open(_EPORTAL_PATH)):
+        par = (r.get("parcel") or "").split(".")[0]
+        if par:
+            idx.setdefault(par, []).append({
+                "permit_no": r.get("no"),
+                "permit_type": r.get("type"),
+                "status": r.get("status"),
+                "description": r.get("desc"),
+                "matched_term": r.get("term"),
+            })
+    return idx
+
+
+_eportal_index = build_eportal_index()
+t(f"  ePortal cooling-equipment permits indexed on {len(_eportal_index)} parcels")
+
 _permit_power_index = build_permit_power_index(dc_buildings)
 t(f"  buildings matched to a permit by BUILDING CODENAME: {len(_permit_power_index)}")
 _operator_index = build_operator_permit_index(dc_buildings, set(_permit_power_index), _permit_power_index)
@@ -491,6 +527,7 @@ for _, b in dc_buildings.iterrows():
         "bza_cases": bza_here,
         "pending_cases": pending_here,
         "permit_cooling_conditions": cooling_disc,
+        "eportal_cooling_permits": _eportal_index.get((gpin or "").split(".")[0], []),
         "water_context": water_ctx,
         "scope_water_footprint": estimate_scope_water_footprint(
             b.get("BuildingName"), gfa_sqft=gfa_val, gfa_source=gfa_field,

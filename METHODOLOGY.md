@@ -393,6 +393,31 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.3c Harvested: data centres permit chillers, not cooling towers
+
+The ePortal harvest is done. **185 records** captured across the keyword set (`chiller`, `igloo`, `cooling tower`, `dry cooler`, `evaporative`, `condenser water`), joined on `MainParcel` and saved to [`data/eportal_cooling_permits.json`](data/eportal_cooling_permits.json). **76 land on data centre parcels**, covering 75 parcels overall, and are attached per building as `eportal_cooling_permits`.
+
+The distribution is the finding:
+
+| Equipment | On data-centre parcels | On other parcels |
+|---|---|---|
+| **Cooling towers** | **1** | **38** |
+| **Chillers / "igloo" containers** | **33** | 22 |
+
+Cooling towers in Prince William are permitted at **hospitals** (2300 Opitz Blvd), **schools** (Panther Pride Dr), **county buildings** (1 County Complex Ct) and **Dominion's Possum Point** power station. They are almost entirely absent from data centre parcels, which instead permit chillers and containerised cooling units:
+
+> `PLB2020-00815` — *"IGLOO/CHILLER ADDITIONS - IAD 52"*
+> `MEC2025-00404` — *"IMDC VA1 CHILLER ADDITON"* (Iron Mountain VA-1)
+> `PLB2019-00827` — *"BACKFLOW PREVENTER IN THE CHILLER PLANT SPRINKLER ROOM"* (Innovation/Power Loft)
+
+Ten data centre buildings now carry a chiller or igloo record: AWS IAD-52, IAD-55, IAD-73, IAD-74, IAD-77, Bethlehem DC18/19/20/23, and Iron Mountain VA-1.
+
+**The single exception is worth naming.** `LND2023-00088` — *"SITE DEVELOPMENT PERMIT FOR INNOVATION - POWER LOFT - MINOR SITE PLAN FOR COOLING TOWER ADDITION"*, 9651 Hornbaker Rd. One cooling-tower addition across the entire data centre estate.
+
+**Why this matters.** It is the first independent corroboration of ICPRB's Prince William WUP. Inverting 309 gal/MW/day on the physical tiers implies roughly **11% water-cooled share** in this county, against Loudoun's ~60–70% at 1,006 gal/MW/day (§2.2). That was a number this model consumed on trust. The county's own trade-permit record, assembled from a completely different regulatory system, points the same way: Prince William data centres are overwhelmingly not evaporatively cooled.
+
+**What it is not.** This is attached as **evidence only and does not narrow any estimate.** A chiller is the cold-side machine; what determines water use is how heat is finally rejected, and a chiller permit does not say whether that is a cooling tower or a dry cooler. Absence of a cooling-tower permit is also not proof of absence — rooftop equipment replaced in kind may not generate a separately searchable record. The signal is strong because the county clearly *does* permit cooling towers when they exist, 38 times, just not at these facilities.
+
 ### 7.3b County trade permits DO carry cooling equipment — route reopened
 
 The cooling-type search was closed in §7.3 on the basis that air permits name equipment only once and imagery cannot be validated. That conclusion was **too early**: it never tested the county's trade-permit system.

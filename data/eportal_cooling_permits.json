@@ -1,0 +1,1539 @@
+[
+ {
+  "no": "UGS2026-00028",
+  "type": "Storage Tanks Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "7493-86-8825",
+  "addr": "12109 ADEN RD NOKESVILLE VA 20181",
+  "desc": "Chiller and boiler plant replacement and upgrade"
+ },
+ {
+  "no": "PLB2026-00158",
+  "type": "Plumbing Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "7493-86-8825",
+  "addr": "12109 ADEN RD NOKESVILLE VA 20181",
+  "desc": "Chiller and boiler plant replacement and upgrade"
+ },
+ {
+  "no": "PLB2023-00818",
+  "type": "Plumbing Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7596-46-3308",
+  "addr": "11825 LEXINGTON VALLEY DR MANASSAS VA 20109",
+  "desc": "**TARGETED**CONSTRUCTION OF A NEW FREESTANDING BUILDING FOR THE PRODUCTION OF DONUTS AND BAKED GOODS FOR DISTRIBUTION TO DUNKIN' STORES."
+ },
+ {
+  "no": "PLB2020-00815",
+  "type": "Plumbing Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 52"
+ },
+ {
+  "no": "PLB2020-00775",
+  "type": "Plumbing Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7298-51-5907",
+  "addr": "15395 JOHN MARSHALL HWY Unit: UCH001 HAYMARKET VA 20169",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 55"
+ },
+ {
+  "no": "PLB2020-00742",
+  "type": "Plumbing Commercial Addition",
+  "status": "Voided",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 52"
+ },
+ {
+  "no": "PLB2020-00480",
+  "type": "Plumbing Commercial Addition",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH002 MANASSAS VA 20109",
+  "desc": "THREE NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "PLB2020-00478",
+  "type": "Plumbing Commercial Addition",
+  "status": "Abandoned",
+  "parcel": "7596-17-3979",
+  "addr": "7070 WELLINGTON RD Unit: UCH003 MANASSAS UT 20109",
+  "desc": "TWO NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "PLB2019-00827",
+  "type": "Plumbing Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7595-96-0662",
+  "addr": "9651 HORNBAKER RD MANASSAS VA 20109",
+  "desc": "BACKFLOW PREVENTER IN THE CHILLER PLANT SPRINKLER ROOM THAT SERVES THE BUILDING."
+ },
+ {
+  "no": "PLB2019-00084",
+  "type": "Plumbing Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "8289-27-5937.00",
+  "addr": "17020 JEFFERSON DAVIS HWY Unit: 109 DUMFRIES VA 22026",
+  "desc": "TENANT LAYOUT FOR DUNKIN DONUTS - NEW INTERIOR NON LOAD BEARING PARTITIONS, NEW FLOOR/WALL FINISHES/MILLWORK, EQUPMENTA ND NEW CEILING SYSTESM. NEW MEP WORK."
+ },
+ {
+  "no": "PLB2018-00250",
+  "type": "Plumbing Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7695-18-7540",
+  "addr": "9441 INNOVATION DR MANASSAS VA 20110",
+  "desc": "PUTTING A NEW CHILLER INTO UTRON BUSINESS"
+ },
+ {
+  "no": "PLB2017-01687",
+  "type": "Plumbing Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "8293-25-1320",
+  "addr": "12419 HEDGES RUN DR WOODBRIDGE VA 22192",
+  "desc": "Address Validation for a New Tenant, Little Caesar's Pizza."
+ },
+ {
+  "no": "PLB2016-02647",
+  "type": "Plumbing Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7397-01-5715",
+  "addr": "7820 BALTUSROL BL GAINESVILLE VA 20155",
+  "desc": "NEW 107,936 SQ FT ASSISTED LIVING FACILITY"
+ },
+ {
+  "no": "PLB2011-00882",
+  "type": "Plumbing Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7595-96-0662",
+  "addr": "9651 HORNBAKER RD Unit: UCH001",
+  "desc": "NEW STRUCTURE"
+ },
+ {
+  "no": "PLB2010-03183",
+  "type": "Plumbing Commercial New Structure",
+  "status": "Abandoned",
+  "parcel": "7891-77-7701",
+  "addr": "14605 DUMFRIES RD",
+  "desc": "NS"
+ },
+ {
+  "no": "OCC2012-00058",
+  "type": "Certificate of Occupancy Commercial New Structure",
+  "status": "Retired",
+  "parcel": "7595-96-0662",
+  "addr": "9651 HORNBAKER RD Unit: UCH001",
+  "desc": "TARGETED PROJECT NS PM CDP 07/15/2011 \"OK\" to issue Certificate of Occupancy, no site release letter is needed. Approved by Ray Jackson."
+ },
+ {
+  "no": "MEC2027-00005",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Pending",
+  "parcel": "7397-56-8403",
+  "addr": "7250 GROVE HILL BLVD GAINESVILLE VA 20155",
+  "desc": "**MODIFIED TARGETED** NEW DATA CENTER"
+ },
+ {
+  "no": "MEC2026-02522",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7695-53-9602.00",
+  "addr": "10051 BRICKYARD WAY Unit: 200 MANASSAS VA 20110",
+  "desc": "Alterations for Equipment Fit Out (EFO) in an existing Data Hall"
+ },
+ {
+  "no": "MEC2026-02401",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 105 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** DIGITAL SECOND MANASSAS LLC DBA: DIGITAL REALTY - UNIT 105 - SEE BLD2026-01285 FOR RELATED ACCESSORY STRUCTURE"
+ },
+ {
+  "no": "MEC2026-02399",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 100 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** DIGITAL SECOND MANASSAS LLC DBA: DIGITAL REALTY - UNIT 100 - SEE BLD2026-01287 FOR RELATED ACCESSORY STRUCTURE"
+ },
+ {
+  "no": "MEC2026-02398",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 200 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** DIGITAL SECOND MANASSAS LLC DBA: DIGITAL REALTY - UNIT 200 - SEE BLD2026-01289 FOR RELATED ACCESSORY STRUCTURE"
+ },
+ {
+  "no": "MEC2026-02305",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7695-53-9602.00",
+  "addr": "10051 BRICKYARD WAY Unit: 100 MANASSAS VA 20110",
+  "desc": "The scope of work contained in this package of drawings is the Equipment Fit Out"
+ },
+ {
+  "no": "MEC2026-02207",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7695-53-9602.00",
+  "addr": "10051 BRICKYARD WAY Unit: 110 MANASSAS VA 20110",
+  "desc": "The scope of work contained in this package of drawings is the Equipment Fit Out (EFO) in an existing Data Hall"
+ },
+ {
+  "no": "MEC2026-02156",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 210 MANASSAS VA 20110",
+  "desc": "*SEE HOLD* THE SCOPE OF WORK CONTAINED IN THIS PACKAGE OF DRAWINGS IS THE EQUIPMENT FIT OUT (EFO) IN AN EXISTING DATA HALL"
+ },
+ {
+  "no": "MEC2026-02088",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "INTERIOR BUILDING FOR DATAHALL 1140"
+ },
+ {
+  "no": "MEC2026-01982",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BLVD WOODBRIDGE VA 22191",
+  "desc": "THERE WILL BE TWO NEW CHILLERS WITH ASSOCIATED PUMPS AND A MATCHING COOLING TOWER.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2026-01924",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 225 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01923",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 220 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01922",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 215 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01920",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 125 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01919",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 120 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01918",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 115 MANASSAS VA 20110",
+  "desc": "**SUPERSEDED** New tenant layout"
+ },
+ {
+  "no": "MEC2026-01727",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "8392-12-2120",
+  "addr": "2201 YORK DR WOODBRIDGE VA 22191",
+  "desc": "Woodbridge Middle School Renovations"
+ },
+ {
+  "no": "MEC2026-00982",
+  "type": "Mechanical Demolition (Commercial or Residential)",
+  "status": "Abandoned",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BLVD WOODBRIDGE VA 22191",
+  "desc": "AND ATTACHED EMAIL FOR QCD INFO : Demolish and remove existing chillers #3 & #4 and the associated cooling",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2026-00979",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Pending",
+  "parcel": "7695-50-2997",
+  "addr": "10430 HARRY J PARRISH BLVD MANASSAS VA 20110",
+  "desc": "**MODIFIED TARGETED/SUPERSEDED** SUPERSTRUCTURE BUILDING FOOTING AND FOUNDATION ONLY PERMIT FOR A 2 STORY DATA CENTER WITH COMPLETE EXTERIOR PRECAST CONCRETE BUILDING ENVELOPE, PRECAST FLOORS AND UNDERGROUND UTILITIES ROUGH-INS."
+ },
+ {
+  "no": "MEC2026-00878",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "7493-85-8808",
+  "addr": "12375 ADEN RD NOKESVILLE VA 20181",
+  "desc": "Nokesville K-8 Renovation"
+ },
+ {
+  "no": "MEC2026-00629",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "8192-67-5545.01",
+  "addr": "4001 PRINCE WILLIAM PKWY Unit: 104 WOODBRIDGE VA 22192",
+  "desc": "Work associated with BLD2025-06138 - SEE PERMIT MEC2026-00125"
+ },
+ {
+  "no": "MEC2026-00600",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "8393-10-8542",
+  "addr": "12825 MINNIEVILLE RD WOODBRIDGE VA 22192",
+  "desc": "Direct Replace of Chiller Unit.- see MEC2025-02049"
+ },
+ {
+  "no": "MEC2026-00530",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 210 MANASSAS VA 20110",
+  "desc": "*SUPERSEDED* TLO - DIGITAL REALTY DBA: DIGITAL SECOND MANASSAS LLC - UNIT 210"
+ },
+ {
+  "no": "MEC2026-00519",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10050 BRICKYARD WAY Unit: 110 MANASSAS VA 20110",
+  "desc": "*SUPERSEDED* TLO - DIGITAL REALTY DBA: DIGITAL SECOND MANASSAS LLC - UNIT 110"
+ },
+ {
+  "no": "MEC2026-00114",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "7493-86-8825",
+  "addr": "12109 ADEN RD NOKESVILLE VA 20181",
+  "desc": "Chiller and boiler plant replacement and upgrade"
+ },
+ {
+  "no": "MEC2026-00013",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7397-93-1744",
+  "addr": "7454 LIMESTONE DR GAINESVILLE VA 20155",
+  "desc": "TLO - UVA CH GAINESVILLE IMAGING CENTER"
+ },
+ {
+  "no": "MEC2025-02274",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "8291-77-8389",
+  "addr": "14349 GIDEON DR Unit: 110 WOODBRIDGE VA 22192",
+  "desc": "TLO FOR FAIRFAX RADIOLOGY CENTERS"
+ },
+ {
+  "no": "MEC2025-02197",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 225 MANASSAS VA 20110",
+  "desc": "*SUPERSEDED* TLO - DIGITAL REALTY DBA: DIGITAL SECOND MANASSAS LLC"
+ },
+ {
+  "no": "MEC2025-02190",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 125 MANASSAS VA 20110",
+  "desc": "*SUPERSEDED* TLO - DIGITAL REALTY DBA: DIGITAL SECOND MANASSAS LLC"
+ },
+ {
+  "no": "MEC2025-02164",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "8389-52-2989",
+  "addr": "1720 THOROUGHGOOD DR DUMFRIES VA 22026",
+  "desc": "NEW STRUCTURE - POTOMAC SHORES ELEMENTARY SCHOOL"
+ },
+ {
+  "no": "MEC2025-02049",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8393-10-8542",
+  "addr": "12825 MINNIEVILLE RD Unit: 100 WOODBRIDGE VA 22192",
+  "desc": "INTERIOR MODIFICATIONS AND MRI EQUIPMENT REPLACEMENT WITHIN THE EXISTING LAKE RIDGE MRI SUITE."
+ },
+ {
+  "no": "MEC2025-01881",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "7397-56-8403",
+  "addr": "7251 GROVE HILL BLVD GAINESVILLE VA 20155",
+  "desc": "***EMAILED CONTRACTOR - FEES OVER 20K***TARGETED MODIFIED (10-10-10)** NEW STRUCTURE DATA CENTER PERMIT PATHWAY. THE PROJECT IS A NEW TWO-STORY 96 MW DATA CENTER BUILDING THAT CONSISTS OF 12 DATA SERVER VAULTS, OFFICE AND ASSOCIATED SITE AND UTILITY INFRASTRUCTURE."
+ },
+ {
+  "no": "MEC2025-01801",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "7596-55-9338",
+  "addr": "11530 ELEVATE DR MANASSAS VA 20109",
+  "desc": "***MODIFIED TARGETED 10/10/10*** THE PROJECT IS A TWO-STORY DATA CENTER AND OFFICE BUILDING AT AN APPROXIMATE 339,744 SF GROSS***WAITING ON CHECK*** AREA. CONSTRUCTION WILL INCLUDE CORE AND SHELL OF THE BUILDING; (2) DATA HALLS AT LEVEL 1 AND (2) DATA HALLS AT LEVEL 2 WITH SUPPORTING ELECTRICAL AND MECHANICAL ROOMS, EXTERIOR SERVICE YARD, AND ROOF EQUIPMENT PLATFORM TO SUPPORT THE 60 MW CRITICAL LOAD PLANNED; AND ADMIN AREAS INCLUDING LOBBY, SECURITY, LOADING DOCK, CONFERENCE ROOMS, BREAK AREAS, OFFICE AREAS, AND RESTROOMS WITH SUPPORTING MECHANICAL / ELECTRICAL AND NETWORK SPACES. THE BUILDING STRUCTURE IS PRECAST CONCRETE. THE DATA CENTER ENVELOPE IS INSULATED PRECAST CONCRETE AND THE OFFICE ENVELOPE IS A COMBINATION OF INSULATED METAL PANEL AND CURTAIN WALL."
+ },
+ {
+  "no": "MEC2025-01780",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "7697-61-1627",
+  "addr": "7797 GARNER DR MANASSAS VA 20109",
+  "desc": "TWO-STORY SINGLE-TENANT BUILDING FOR GLOBAL WELCOME CENTER"
+ },
+ {
+  "no": "MEC2025-01610",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 220 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-01603",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 120 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-01383",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "buildout for data hall 1200"
+ },
+ {
+  "no": "MEC2025-01200",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 205 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-01199",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 105 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-01120",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "8292-52-6689",
+  "addr": "2904 PRINCE WILLIAM PKWY WOODBRIDGE VA 22192",
+  "desc": "TLO FOR LIDL - REFRIGERATION / WALK IN COOLER/FREEZER ONLY"
+ },
+ {
+  "no": "MEC2025-01088",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 215 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR SR DESIGN MANAGER EAST REGION #215"
+ },
+ {
+  "no": "MEC2025-01086",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Issued",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 115 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR SR DESIGN MANAGER EAST REGION #115"
+ },
+ {
+  "no": "MEC2025-00911",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 200 MANASSAS VA 20110",
+  "desc": "****SUPERSEDED**** TLO - DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-00910",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 100 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-00735",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-53-7717",
+  "addr": "10051 BRICKYARD WAY Unit: 210 MANASSAS VA 20110",
+  "desc": "***SUPERSEDED*** TLO FOR DIGITAL REALTY"
+ },
+ {
+  "no": "MEC2025-00732",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "7695-28-5256",
+  "addr": "10795 UNIVERSITY BLVD MANASSAS VA 20110",
+  "desc": "***TARGETED*** ATCC RESEARCH FACILITY"
+ },
+ {
+  "no": "MEC2025-00546",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "8391-06-1497",
+  "addr": "2280 OPITZ BLVD Unit: 120 WOODBRIDGE VA 22191",
+  "desc": "**VOIDED - DUPLICATE OF MEC2025-00199** Building Renovation"
+ },
+ {
+  "no": "MEC2025-00417",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "8291-64-9081",
+  "addr": "14716 POTOMAC MILLS RD WOODBRIDGE VA 22192",
+  "desc": "HVAC only - see MEC2025-00416 for geothermal wells and piping THIS PROJECT INCLUDES NEW CONSTRUCTION OF A HOMELESS NAVIGATION CENTER EAST (HNCE) OWNED AND OPERATED BY PRINCE WILLIAM COUNTY."
+ },
+ {
+  "no": "MEC2025-00404",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7596-47-5780",
+  "addr": "11680 HAYDEN RD MANASSAS VA 20109",
+  "desc": "IMDC VA1 CHILLER ADDITON"
+ },
+ {
+  "no": "MEC2025-00370",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7497-45-9757",
+  "addr": "13720 UNIVERSITY BLVD GAINESVILLE VA 20155",
+  "desc": "HVAC systems only - see MEC2025-00369 for fuel oil systems ***MODIFIED TARGETED 10-10-10*** NEW DATA CENTER GCDC BUILDING 3"
+ },
+ {
+  "no": "MEC2025-00037",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Pending",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "Approx. 26,000 SF Data Hall with associated Mechanical and Electrical Gallery spaces (additional 12,000 SF) built in the existing East Shell space of Level Two in the existing QTS MAN1-DC5 Data Center."
+ },
+ {
+  "no": "MEC2024-02389",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7297-60-3580",
+  "addr": "7901 LAKE MANASSAS DR GAINESVILLE VA 20155",
+  "desc": "**chiller provided by vendor, installed by contractor per approved drawings*** INTERIOR RENOVATION AND"
+ },
+ {
+  "no": "MEC2024-02185",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7696-42-1559",
+  "addr": "8819 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "***MODIFIED TARGETED - 10-10-10/NDA*** STACK NVA05D"
+ },
+ {
+  "no": "MEC2024-02164",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7891-76-1847",
+  "addr": "14715 BRISTOW RD MANASSAS VA 20112",
+  "desc": "Replacement of (2) 225-ton chillers and associated piping/electrical connections."
+ },
+ {
+  "no": "MEC2024-02011",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8391-06-1497",
+  "addr": "2280 OPITZ BLVD Unit: 120 WOODBRIDGE VA 22191",
+  "desc": "THE PROJECT CONSISTS OF THE RENOVATION**SEE NOTES FOR SCOPE OF WORK**"
+ },
+ {
+  "no": "MEC2024-01311",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "project excalibur TLO"
+ },
+ {
+  "no": "MEC2024-01299",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Issued",
+  "parcel": "8393-70-4327",
+  "addr": "12915 OCCOQUAN RD WOODBRIDGE VA 22192",
+  "desc": "***does not include geothermal wells and site piping - see MEC2025-00269 for site piping **** Three-Story New Elementary School replacing existing Occoquan Elementary School on the same site"
+ },
+ {
+  "no": "MEC2024-01265",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Abandoned",
+  "parcel": "8193-13-4211",
+  "addr": "4 COUNTY COMPLEX CT WOODBRIDGE VA 22192",
+  "desc": "Remove (1) Existing Ground-Mounted Chiller. Furnish & Install (1) Replacement Chiller."
+ },
+ {
+  "no": "MEC2024-00555",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7795-48-2430",
+  "addr": "9311 LEE AVE MANASSAS VA 20110",
+  "desc": "**duplicate - see MEC2023-02299** HVAC equipment replacement within interior as well as replacement of rooftop cooling tower unit.",
+  "term": "dry cooler"
+ },
+ {
+  "no": "MEC2023-02299",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7795-48-2430",
+  "addr": "9311 LEE AVE MANASSAS VA 20110",
+  "desc": "JC-1 Cooling tower, pump and piping. JC-1 baseboard heat control valve modification and addition.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2023-02245",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Withdrawn",
+  "parcel": "7892-84-6119",
+  "addr": "7411 HOADLY RD MANASSAS VA 20112",
+  "desc": "**WITHDRAWN PER OWNER****** includes kitchen hood, make-up air unit, walk-in cooler and freezer**** FULL INTERIOR RENOVATION INCLUDING FINISHES AND UPGRADING MEP SYSTEMS."
+ },
+ {
+  "no": "MEC2023-02051",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7495-71-8380",
+  "addr": "12601 BRAEMAR PKWY BRISTOW VA 20136",
+  "desc": "A/R TO EXISTING SCHOOL"
+ },
+ {
+  "no": "MEC2023-01885",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "8392-62-6845",
+  "addr": "1550 PRINCE WILLIAM PKWY WOODBRIDGE VA 22191",
+  "desc": "NEW SCHOOL - WOODBRIDGE AREA ELEMENTARY SCHOOL"
+ },
+ {
+  "no": "MEC2023-01647",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8289-41-1336",
+  "addr": "17700 WAYSIDE DR DUMFRIES VA 22026",
+  "desc": "Renewal of existing school."
+ },
+ {
+  "no": "MEC2023-01264",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8092-82-1631",
+  "addr": "13900 LINDENDALE RD WOODBRIDGE VA 22193",
+  "desc": "**NEED MECHANICAL APPLICATION** REPLACEMENT IN KIND HVAC EQUIPMENT"
+ },
+ {
+  "no": "MEC2023-01056",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "8092-82-1631",
+  "addr": "13900 LINDENDALE RD WOODBRIDGE VA 22193",
+  "desc": "***REQUIRES M/E UNDER TEMPLATE. SEE BLD2023-03169*** Replacement in kind of unit ventilators and fan coils"
+ },
+ {
+  "no": "MEC2023-01041",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7696-31-7330",
+  "addr": "9101 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "*MODIFIED TARGETED (10-10) INDUSTRY* 2-story, 270,000 SF Data Center Building consisting of a steel building structure with precast insulated concrete skin."
+ },
+ {
+  "no": "MEC2022-02673",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7496-21-4898",
+  "addr": "8990 WORTHINGTON DR BRISTOW VA 20136",
+  "desc": "Renewal of Bristow Run Elementary School"
+ },
+ {
+  "no": "MEC2022-02635",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7895-57-7834",
+  "addr": "9553 BIRMINGHAM DR MANASSAS VA 20111",
+  "desc": "Renewal of Signal Hill Elementary School"
+ },
+ {
+  "no": "MEC2022-02549",
+  "type": "Mechanical Commercial Addition",
+  "status": "Finaled",
+  "parcel": "7596-57-0222",
+  "addr": "11660 HAYDEN RD MANASSAS VA 20109",
+  "desc": "2 story Addition to existing building. Drawing include the Aux and the Interior alteration as well but separate permits sharing the same set of drawings this is the 'lead' permit."
+ },
+ {
+  "no": "MEC2022-00575",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "TLO project excalibur"
+ },
+ {
+  "no": "MEC2022-00491",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7695-39-0644",
+  "addr": "9301 FREEDOM CENTER BLVD MANASSAS VA 20110",
+  "desc": "**duplicate-see MEC2021-02757**Bathroom, sink, hot/cold water piping for detached mail facility at address"
+ },
+ {
+  "no": "MEC2022-00359",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7596-57-0222",
+  "addr": "11660 HAYDEN RD MANASSAS VA 20109",
+  "desc": "**TARGETED** INTERIOR UPFIT OF THE EXISTING SHELL SPACE ON LEVEL ONE TO INCLUDE (2) DATA HALLS WITH SUPPORT SPACES"
+ },
+ {
+  "no": "MEC2022-00327",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7595-76-2307",
+  "addr": "9590 HORNBAKER RD MANASSAS VA 20109",
+  "desc": "**TARGETED** TWO STORY NEW STRUCTURE BLDG #3"
+ },
+ {
+  "no": "MEC2022-00245",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7696-89-9510",
+  "addr": "8031 URBANNA RD MANASSAS VA 20109",
+  "desc": "DIRECT REPLACEMENT OF A 120 TON CHILLER"
+ },
+ {
+  "no": "MEC2022-00244",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7696-53-0246",
+  "addr": "10400 KIM GRAHAM LN MANASSAS VA 20109",
+  "desc": "DIRECT REPLACEMENT OF A 120 TON CHILLER"
+ },
+ {
+  "no": "MEC2022-00094",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7497-56-0118",
+  "addr": "13760 UNIVERSITY BLVD GAINESVILLE VA 20155",
+  "desc": "NEW TWO-STORY STRUCTURE - DATA CENTER ; includes exterior generator fuel piping for remote station"
+ },
+ {
+  "no": "MEC2021-02834",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7397-19-1734",
+  "addr": "14600 WASHINGTON ST Unit: 150 HAYMARKET VA 20169",
+  "desc": "**Includes refrigeration** - Brewery Tenant Layout"
+ },
+ {
+  "no": "MEC2021-02145",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8092-12-4102",
+  "addr": "14051 SPRIGGS RD WOODBRIDGE VA 22193",
+  "desc": "Kitchen equip, shop equip, Chillers, HVAC replacements, etc."
+ },
+ {
+  "no": "MEC2021-02043",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7897-35-2875",
+  "addr": "7223 CENTREVILLE RD Unit: 105 MANASSAS VA 20111",
+  "desc": "NEW TENANT LAYOUT FOR A BREWING ONLY SPACE. NOT A TAP ROOM FOR PUBLIC CONSUMPTION."
+ },
+ {
+  "no": "MEC2021-01769",
+  "type": "Mechanical Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "7696-38-1356",
+  "addr": "8250 ASHTON AVE MANASSAS VA 20109",
+  "desc": "ROSEMONT ELEMENTARY SCHOOL - 3 STORY N/S - includes ktc equip"
+ },
+ {
+  "no": "MEC2021-01658",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7597-25-1404",
+  "addr": "7370 MERRITT PARK DR Unit: 110 MANASSAS VA 20109",
+  "desc": "**TARGETED AND SUPERSEDED** TLO - BETTERA BRANDS AND RACKING SYSTEM"
+ },
+ {
+  "no": "MEC2021-01046",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Withdrawn",
+  "parcel": "7596-56-3489",
+  "addr": "11660 HAYDEN RD MANASSAS VA 20109",
+  "desc": "New tenant layout- Iron Mountain"
+ },
+ {
+  "no": "MEC2021-00852",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8188-83-5056",
+  "addr": "18825 FULLER HEIGHTS RD TRIANGLE VA 22172",
+  "desc": "CHILLER REPLACEMENT"
+ },
+ {
+  "no": "PLB2020-00094",
+  "type": "Plumbing Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING"
+ },
+ {
+  "no": "PLB2018-00690",
+  "type": "Plumbing Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "ADDING IGLOOS CONTAINERS 5 & 6 LOCATED ON THE EXTERIOR OF 7060 WELLINGTON RD NEXT TO THE EXISTING IGLOO"
+ },
+ {
+  "no": "PLB2017-01958",
+  "type": "Plumbing Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7056 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "FOUR NEW IGLOO CONTAINERS ON FOURTEEN CONCRETE PIERS AND FOOTINGS WITH FIELD WELDING CONTAINERS TO PIER"
+ },
+ {
+  "no": "FPP2020-00729",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "FPP FO RFIRE ALARM - IGLOO/CHILLER ADDITIONS - IAD 52"
+ },
+ {
+  "no": "FPP2020-00673",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7298-51-5907",
+  "addr": "15395 JOHN MARSHALL HWY Unit: UCH001 HAYMARKET VA 20169",
+  "desc": "FPP FOR FIRE ALARM"
+ },
+ {
+  "no": "FPP2020-00518",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH002 MANASSAS VA 20109",
+  "desc": "FPP FOR FIRE ALARM - THREE NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "FPP2020-00323",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING"
+ },
+ {
+  "no": "FPP2020-00322",
+  "type": "Fire Protection - Sprinkler",
+  "status": "Voided",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING"
+ },
+ {
+  "no": "FPP2018-00758",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "FPP FOR FIRE ALARM"
+ },
+ {
+  "no": "FPP2017-00680",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "FIRE ALARM"
+ },
+ {
+  "no": "ELE2020-04308",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "//GBC LOW VOLTAGE PERMIT FOR FIRE ALARM"
+ },
+ {
+  "no": "ELE2020-03134",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH002 MANASSAS VA 20109",
+  "desc": "LOW VOLTAGE FOR FIRE ALARM"
+ },
+ {
+  "no": "ELE2020-01729",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING"
+ },
+ {
+  "no": "ELE2020-01562",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7298-51-5907",
+  "addr": "15395 JOHN MARSHALL HWY Unit: UCH001 HAYMARKET VA 20169",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 55"
+ },
+ {
+  "no": "ELE2020-01557",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 52"
+ },
+ {
+  "no": "ELE2020-00979",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Abandoned",
+  "parcel": "7596-17-3979",
+  "addr": "7070 WELLINGTON RD Unit: UCH003 MANASSAS UT 20109",
+  "desc": "TWO NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "ELE2020-00977",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH002 MANASSAS VA 20109",
+  "desc": "THREE NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "ELE2020-00272",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING ** REVISION APPROVED 9/25/19, NO"
+ },
+ {
+  "no": "ELE2019-04894",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7070 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS FOR ELECTRICAL REFEED TO IGLOO BUILDING"
+ },
+ {
+  "no": "ELE2018-04922",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "ADDING IGLOOS CONTAINERS 5 & 6 LOCATED ON THE EXTERIOR OF 7060 WELLINGTON RD NEXT TO THE EXISTING IGLOO"
+ },
+ {
+  "no": "ELE2018-01171",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "ADDING IGLOOS CONTAINERS 5 & 6 LOCATED ON THE EXTERIOR OF 7060 WELLINGTON RD NEXT TO THE EXISTING IGLOO"
+ },
+ {
+  "no": "ELE2017-03849",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "LOW VOLTAGE FOR FIRE ALARM-ACCESSORY STRUCTURES TO PULL STATION"
+ },
+ {
+  "no": "ELE2017-03361",
+  "type": "Electrical Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7056 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "FOUR NEW IGLOO CONTAINERS ON FOURTEEN CONCRETE PIERS AND FOOTINGS WITH FIELD WELDING CONTAINERS TO PIER"
+ },
+ {
+  "no": "BLD2020-01730",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7298-51-5907",
+  "addr": "15395 JOHN MARSHALL HWY Unit: UCH001 HAYMARKET VA 20169",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 55"
+ },
+ {
+  "no": "BLD2020-01729",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Abandoned",
+  "parcel": "7597-42-1456",
+  "addr": "11800 BREWERS SPRING RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "IGLOO/CHILLER ADDITIONS - IAD 52"
+ },
+ {
+  "no": "BLD2020-00998",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Abandoned",
+  "parcel": "7596-17-3979",
+  "addr": "7070 WELLINGTON RD Unit: UCH003 MANASSAS UT 20109",
+  "desc": "TWO NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "BLD2020-00997",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH002 MANASSAS VA 20109",
+  "desc": "THREE NEW IGLOO CONTAINERS"
+ },
+ {
+  "no": "BLD2020-00094",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-58-8732",
+  "addr": "8200 BETHLEHEM RD MANASSAS VA 20109",
+  "desc": "ALTERATION/REPAIRS TO BUILD (3) IGLOO ADDITION NEAR EXISITNG BUILDING"
+ },
+ {
+  "no": "BLD2019-06101",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7596-17-3979",
+  "addr": "7070 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "**WRONG PERMIT TYPE - OOPS** ALTERATION/REPAIRS FOR ELECTRICAL REFEED TO IGLOO BUILDING"
+ },
+ {
+  "no": "BLD2019-00428",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "**WRONG WORK CLASS** A/R ADDING INTERNAL C-CONTAINER/IGLOO NEXT TO THE PREEXISTING ONES"
+ },
+ {
+  "no": "BLD2018-01439",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD Unit: UCH001 MANASSAS VA 20109",
+  "desc": "ADDING IGLOOS CONTAINERS 5 & 6 LOCATED ON THE EXTERIOR OF 7060 WELLINGTON RD NEXT TO THE EXISTING IGLOO"
+ },
+ {
+  "no": "BLD2017-03576",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Abandoned",
+  "parcel": "7596-17-3979",
+  "addr": "7060 WELLINGTON RD MANASSAS VA 20109",
+  "desc": "FOUR NEW IGLOO CONTAINERS ON FOURTEEN CONCRETE PIERS AND FOOTINGS WITH FIELD WELDING CONTAINERS TO PIER"
+ },
+ {
+  "no": "MEC2023-00367",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "8393-20-3493",
+  "addr": "2070 TACKETTS VILLAGE SQ WOODBRIDGE VA 22192",
+  "desc": "Mount and install new 220KW Dry Cooler on Roof 2.",
+  "term": "dry cooler"
+ },
+ {
+  "no": "LND2022-00172",
+  "type": "Land - Site Development",
+  "status": "Issued",
+  "parcel": "7895-25-4620",
+  "addr": "9795 LIBERIA AVE MANASSAS VA 20110",
+  "desc": "SITE DEVELOPMENT PERMIT FOR PRINCE WILLIAM COMMERCE CENTER - DRY COOLER BUILDING C",
+  "term": "dry cooler"
+ },
+ {
+  "no": "BLD2022-03746",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Abandoned",
+  "parcel": "7895-25-4620",
+  "addr": "9795 LIBERIA AVE MANASSAS VA 20110",
+  "desc": "CMU and chain link fence enclosure for a future dry cooler",
+  "term": "dry cooler"
+ },
+ {
+  "no": "PLB2023-01031",
+  "type": "Plumbing Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7697-41-6415",
+  "addr": "7835 SUDLEY RD Unit: 101 MANASSAS VA 20109",
+  "desc": "ADD WALK-IN COOLER TO EXISTING SPACE",
+  "term": "cooling tower"
+ },
+ {
+  "no": "PLB2003-01886",
+  "type": "Plumbing Permit IMPORT - Plumbing Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "COOLING TOWER",
+  "term": "cooling tower"
+ },
+ {
+  "no": "PLB2002-06677",
+  "type": "Plumbing Permit IMPORT - Plumbing Permit IMPORT",
+  "status": "Abandoned",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "VOID KEM 6/12/03",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2026-00947",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Voided",
+  "parcel": "7697-61-1410",
+  "addr": "7797 GARNER DR MANASSAS VA 20109",
+  "desc": "**DUPLICATE - SEE MEC2025-01780** (1) DOAS1 - Dedicated Outdoor Air Unit (1) CT1 - Cooling Tower (1)",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2023-01013",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8392-12-2120",
+  "addr": "2201 YORK DR WOODBRIDGE VA 22191",
+  "desc": "1 for 1 LIKE KIND REPLACEMENT OF ONE COOLING TOWER AND SUPPORTS INCLUDING ELECTRICAL CONNECTIONS",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2022-01068",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8290-22-9052",
+  "addr": "3401 PANTHER PRIDE DR DUMFRIES VA 22026",
+  "desc": "Replacing in kind of a public High School Building Cooling Tower away from the building (SEE ELE2022-",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2018-00496",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Abandoned",
+  "parcel": "8193-02-7682",
+  "addr": "1 COUNTY COMPLEX CT Unit: UT001 WOODBRIDGE 22192",
+  "desc": "ROOFTOP COOLING TOWER REPLACEMENT",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2014-03084",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "8292-23-6078",
+  "addr": "13584 MINNIEVILLE RD WOODBRIDGE VA 22192",
+  "desc": "TLO",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2013-00124",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8293-35-7322",
+  "addr": "12350 MOHICAN RD",
+  "desc": "replace (2) 150 Ton chillers and 900gpm cooling tower",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2007-06427",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Canceled",
+  "parcel": "8291-77-3982",
+  "addr": "14139 POTOMAC MILLS RD",
+  "desc": "cooling tower replacement/fees under chiller, Abandonment of Work - Closed Without Required Inspections",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2005-05778",
+  "type": "Mechanical Permit IMPORT - Mechanical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7697-30-7845",
+  "addr": "7900 SUDLEY RD Unit: 614",
+  "desc": "Direct replacement of 1 chiller, 4 pumps, 1 cooling tower, and 1 exhaust fan.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2003-07933",
+  "type": "Mechanical Permit IMPORT - Mechanical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "COOLING TOWER",
+  "term": "cooling tower"
+ },
+ {
+  "no": "LND2023-00088",
+  "type": "Land - Site Development",
+  "status": "Issued",
+  "parcel": "7595-96-0662",
+  "addr": "9651 HORNBAKER RD MANASSAS VA 20109",
+  "desc": "SITE DEVELOPMENT PERMIT FOR INNOVATION - POWER LOFT - MINOR SITE PLAN FOR COOLING TOWER ADDITION",
+  "term": "cooling tower"
+ },
+ {
+  "no": "LND2009-00310",
+  "type": "Land - Site Development",
+  "status": "Issued",
+  "parcel": "8291-77-8389",
+  "addr": "14349 GIDEON DR",
+  "desc": "SITE DEVELOPMENT PERMIT FOR ADMIN REVIEW TO SHOW ADDITION OF COOLING TOWER",
+  "term": "cooling tower"
+ },
+ {
+  "no": "LND2000-00310",
+  "type": "Land - Site Development",
+  "status": "Issued",
+  "parcel": "7697-50-8005",
+  "addr": "10323 LOMOND DR",
+  "desc": "SDP - COOLING TOWER FOR NOVEC HDQTRS.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "GAS2024-00804",
+  "type": "Gas Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7795-48-2430",
+  "addr": "9311 LEE AVE MANASSAS VA 20110",
+  "desc": "JC-1 Cooling tower, pump and piping. JC-1 baseboard heat control valve modification and addition.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "FPP2012-00237",
+  "type": "Fire Protection - Sprinkler",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "REMOVE AND REPLACE 22 COOLING TOWER CELLS IN SAME LOCATION, PER ORIGINAL DRAWINGS",
+  "term": "cooling tower"
+ },
+ {
+  "no": "FPP2011-00325",
+  "type": "Fire Protection Permit IMPORT - Fire Protection IMPORT",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "REPLACEMENT OF 11 DELUGE VALVES IN COOLING TOWER 5-B FEE COVERS ONE DAY OF INSPECTIONS.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "FPP2011-00324",
+  "type": "Fire Protection Permit IMPORT - Fire Protection IMPORT",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "REPLACEMENT OF 11 DELUGE VALVES IN COOLING TOWER 5-A",
+  "term": "cooling tower"
+ },
+ {
+  "no": "FPP2003-00374",
+  "type": "Fire Protection - Fire Alarm",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "FIRE ALARM",
+  "term": "cooling tower"
+ },
+ {
+  "no": "FPP2003-00373",
+  "type": "Fire Protection - Sprinkler",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "SPRINKLER",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2026-04934",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Issued",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BLVD WOODBRIDGE VA 22191",
+  "desc": "THERE WILL BE TWO NEW CHILLERS WITH ASSOCAITED PUMPS AND A MATCHING COOLING TOWER.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2024-02399",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "7795-48-2430",
+  "addr": "9311 LEE AVE MANASSAS VA 20110",
+  "desc": "JC-1 Cooling tower, pump and piping. JC-1 baseboard heat control valve modification and addition.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2023-02703",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8392-12-2120",
+  "addr": "2201 YORK DR WOODBRIDGE VA 22191",
+  "desc": "1 for 1 LIKE KIND REPLACEMENT OF ONE COOLING TOWER AND SUPPORTS INCLUDING ELECTRICAL CONNECTIONS",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2022-02158",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8290-22-9052",
+  "addr": "3401 PANTHER PRIDE DR DUMFRIES VA 22026",
+  "desc": "COOLING TOWER REPLACEMENT AT POTOMAC HIGH SCHOOL. (SEE MEC2022-01068 FOR MECHANICAL)",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2013-00137",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8293-35-7322",
+  "addr": "12350 MOHICAN RD WOODBRIDGE VA 22192",
+  "desc": "direct replacement of (2) 150 Ton chillers and 900gpm cooling tower",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2008-00051",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Canceled",
+  "parcel": "8291-77-3982",
+  "addr": "14139 POTOMAC MILLS RD",
+  "desc": "elect. alt/rep , Abandonment of Work - Closed Without Required Inspections",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2005-05382",
+  "type": "Electrical - Electrical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7697-30-7845",
+  "addr": "7900 SUDLEY RD Unit: 614",
+  "desc": "Direct replacement of 1 chiller, 4 pumps, 1 cooling tower, and 1 exhaust fan.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2003-06898",
+  "type": "Electrical Permit IMPORT - Electrical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "COOLING TOWER",
+  "term": "cooling tower"
+ },
+ {
+  "no": "ELE2001-06641",
+  "type": "Electrical Permit IMPORT - Electrical Permit IMPORT",
+  "status": "Canceled",
+  "parcel": "8193-02-7175",
+  "addr": "1 COUNTY COMPLEX CT",
+  "desc": "COOLING TOWER REPLACEMENT, Abandonment of Work - Closed Without Required Inspections",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2026-05920",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Pending",
+  "parcel": "7892-84-6119",
+  "addr": "7411 HOADLY RD MANASSAS VA 20112",
+  "desc": "Replace Chiller, Cooling Tower, and pumps at Benton Middle School",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2026-04947",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Template",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BLVD WOODBRIDGE VA 22191",
+  "desc": "THERE WILL BE TWO NEW CHILLERS WITH ASSOCAITED PUMPS AND A MATCHING COOLING TOWER.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2026-00912",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Issued",
+  "parcel": "8190-14-7171",
+  "addr": "16108 DUMFRIES RD DUMFRIES VA 22025",
+  "desc": "Generator, Transformer and Cooling Tower Pads",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2024-03373",
+  "type": "Building Commercial Accessory Structure",
+  "status": "Finaled",
+  "parcel": "7695-28-5256",
+  "addr": "10801 UNIVERSITY BLVD MANASSAS VA 20110",
+  "desc": "EXPANSION OF EXISTING COOLING TOWER PLATFORM AT GRADE LEVEL AND ADD NEW FIXED STEEL LADDERS TO PROVIDE",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2023-07103",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Template",
+  "parcel": "7795-48-2430",
+  "addr": "9311 LEE AVE MANASSAS VA 20110",
+  "desc": "JC-1 Cooling tower, pump and piping. JC-1 baseboard heat control valve modification and addition.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2023-02484",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8392-12-2120",
+  "addr": "2201 YORK DR WOODBRIDGE VA 22191",
+  "desc": "1 for 1 LIKE KIND REPLACEMENT OF ONE COOLING TOWER AND SUPPORTS INCLUDING ELECTRICAL CONNECTIONS",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2022-02642",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Template",
+  "parcel": "8290-22-9052",
+  "addr": "3401 PANTHER PRIDE DR DUMFRIES VA 22026",
+  "desc": "**TEMPLATE BLD FOR TRACKING PURPOSES ONLY** COOLING TOWER REPLACEMENT AT POTOMAC HIGH SCHOOL.",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2006-10070",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Conversion/Import",
+  "parcel": "8291-77-3982",
+  "addr": "14139 POTOMAC MILLS RD",
+  "desc": "alt/rep - REPLACE COOLING TOWER & ADD COOLING TOWER - OK PER SIA FOR IBC 2000 REVIEW **MUST GET RELEASE",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2006-10044",
+  "type": "Building Permit IMPORT - Building Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7297-60-5227",
+  "addr": "7915 LAKE MANASSAS DR",
+  "desc": "COOLING TOWER ENCLOSURE",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2004-12964",
+  "type": "Building Commercial New Structure",
+  "status": "Finaled",
+  "parcel": "8292-13-5079",
+  "addr": "13600 MINNIEVILLE RD",
+  "desc": "NEW STRUCTURE COOLING TOWER ENCLOSER SEE BLD 2003-05005 PINK TAG, BIGGER ROOL",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2003-01736",
+  "type": "Building Commercial New Structure",
+  "status": "Conversion/Import",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "NS-COOLING TOWER WATER TREATMENT BLDG",
+  "term": "cooling tower"
+ },
+ {
+  "no": "BLD2002-12995",
+  "type": "Building Permit IMPORT - Building Permit IMPORT",
+  "status": "Conversion/Import",
+  "parcel": "8288-96-2368",
+  "addr": "19000 POSSUM POINT RD",
+  "desc": "Dominion Power-Cooling Tower Footing & Foundation #102",
+  "term": "cooling tower"
+ },
+ {
+  "no": "93100762P00",
+  "type": "Plumbing Permit IMPORT - Plumbing Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7797-13-8145",
+  "addr": "9744 COPELAND DR",
+  "desc": "SUDLEY ELEMENTARY / / / / /",
+  "term": "cooling tower"
+ },
+ {
+  "no": "93100762M00",
+  "type": "Mechanical Permit IMPORT - Mechanical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7797-13-8145",
+  "addr": "9744 COPELAND DR",
+  "desc": "SUDLEY ELEMENTARY / / / / /",
+  "term": "cooling tower"
+ },
+ {
+  "no": "93100762E00",
+  "type": "Electrical Permit IMPORT - Electrical Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7797-13-8145",
+  "addr": "9744 COPELAND DR",
+  "desc": "SUDLEY ELEMENTARY / / / / /",
+  "term": "cooling tower"
+ },
+ {
+  "no": "93100762B00",
+  "type": "Building Permit IMPORT - Building Permit IMPORT",
+  "status": "Finaled",
+  "parcel": "7797-13-8145",
+  "addr": "9744 COPELAND DR",
+  "desc": "SUDLEY ELEMENTARY / / / / /",
+  "term": "cooling tower"
+ },
+ {
+  "no": "MEC2016-03001",
+  "type": "Mechanical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BL WOODBRIDGE VA 22191",
+  "desc": "A/R CONDENSER WATER SYSTEM UPGRADE",
+  "term": "dry cooler"
+ },
+ {
+  "no": "MEC2009-01662",
+  "type": "Mechanical Commercial Tenant Layout",
+  "status": "Finaled",
+  "parcel": "7595-96-0662",
+  "addr": "9651 HORNBAKER RD",
+  "desc": "fuel oil system(pumps and piping), urea piping, heat exchangers, air compressor, chilled water and condenser",
+  "term": "dry cooler"
+ },
+ {
+  "no": "ELE2016-04773",
+  "type": "Electrical Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BL WOODBRIDGE VA 22191",
+  "desc": "A/R CONDENSER WATER SYSTEM UPGRADE",
+  "term": "dry cooler"
+ },
+ {
+  "no": "BLD2016-05333",
+  "type": "Building Commercial Alteration/Repair",
+  "status": "Finaled",
+  "parcel": "8391-06-1497",
+  "addr": "2300 OPITZ BL WOODBRIDGE VA 22191",
+  "desc": "A/R CONDENSER WATER SYSTEM UPGRADE",
+  "term": "dry cooler"
+ }
+]

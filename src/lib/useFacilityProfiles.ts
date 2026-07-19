@@ -214,6 +214,14 @@ export interface PermitCoolingConditions {
   source: string;
 }
 
+export interface EPortalCoolingPermit {
+  permit_no: string | null;
+  permit_type: string | null;
+  status: string | null;
+  description: string | null;
+  matched_term: string | null;
+}
+
 export interface BuildingProfile {
   kind: "building";
   id: string | null;
@@ -231,6 +239,10 @@ export interface BuildingProfile {
   bza_cases: FacilityCaseRecord[];
   pending_cases: FacilityCaseRecord[];
   permit_cooling_conditions: PermitCoolingConditions | null;
+  /** County ePortal trade permits naming cooling equipment on this parcel.
+   *  Evidence only — a chiller permit does not say how heat is finally
+   *  rejected, so it never narrows the Scope 1 estimate. */
+  eportal_cooling_permits: EPortalCoolingPermit[];
   water_context: FacilityWaterContext | null;
   scope_water_footprint: ScopeWaterFootprint | null;
 }
