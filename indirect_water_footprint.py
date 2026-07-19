@@ -367,15 +367,88 @@ def build_proffer_group_sizes(all_props) -> dict:
 DENSITY_TOLERANCE = 0.25
 
 
-def effective_power_from_gfa(gfa_sqft):
-    """Effective IT power (MW) from gross floor area, via ICPRB's measured
-    infrastructure density. Returns (central, lo, hi)."""
+# ---------------------------------------------------------------------------
+# Infrastructure density, banded by build era
+# ---------------------------------------------------------------------------
+# ICPRB's 8,818 sqft/MW is a FLEET AVERAGE across the whole Virginia estate,
+# including buildings two decades old. Applying it to a 2026 build assumes a
+# density the industry left behind, and the county's own permit records say so.
+#
+# Evidence for the modern band, from applicants' own words in county trade
+# permits (data/eportal_density_statements.json):
+#
+#   MEC2025-01801  339,744 SF gross / 60 MW critical load  = 5,662 sqft/MW
+#   MEC2025-01881  96 MW building on the NTT parcel, which if it names VA10
+#                  (560,942 sqft) implies 5,843, or VA11 (580,498) implies 6,047
+#
+# Cross-check against the literature, which quotes density over WHITE SPACE
+# rather than gross area. White space is 40-50% of gross internal area, so at
+# 45%:
+#
+#   5,662 sqft/MW gross = 177 W/sqft gross = ~392 W/sqft white space
+#   8,818 sqft/MW gross = 113 W/sqft gross = ~252 W/sqft white space
+#
+# Published ranges put modern data centres at 200-400 W/sqft of white space.
+# Both figures sit inside it -- the new build at the top, the fleet average mid.
+# The two sources agree once the gross/white-space distinction is respected,
+# which is the same distinction that broke this module's first version (see the
+# 100-450 W/sqft note in the header).
+#
+# CONFIDENCE IS NOT UNIFORM. The modern band rests on one building with both
+# figures stated plus two ambiguous attributions; the standard band is ICPRB's
+# published average; the legacy band is ICPRB's own Fairfax-implied figure
+# (section 1.3). Ranges are deliberately wide and overlapping.
+# The modern/new-build central is deliberately NOT the permit figure. It is the
+# geometric mean of the one solid measurement (5,662) and ICPRB's fleet average
+# (8,818), i.e. ~7,070. Adopting 5,662 outright would move the county total ~30%
+# on a single building's planned load stated over gross area including office
+# space -- too much weight for n=1. The mean keeps the direction the evidence
+# indicates without pretending the magnitude is settled, and the range spans
+# both endpoints so the uncertainty stays visible.
+#
+# Revisit once §9.2's harvest yields a dozen pairs; at that point the central
+# should come from the distribution, not from a hedge.
+DENSITY_SQFT_PER_MW = {
+    # class:      (central, low, high)   low sqft/MW = denser = more MW
+    "new_build":  (7_070, 5_200, 8_818),
+    "modern":     (7_070, 5_200, 8_818),
+    "standard":   (8_818, 6_500, 11_000),
+    "legacy":     (11_000, 8_818, 12_722),
+    "unknown":    (8_818, 5_662, 12_722),
+}
+
+DENSITY_SOURCE_NOTE = {
+    "new_build": "PWC trade permits for 2025-26 builds state 5,662-6,047 sqft/MW",
+    "modern": "PWC trade permits for 2025-26 builds state 5,662-6,047 sqft/MW",
+    "standard": "ICPRB fleet average for the Virginia estate (8,818 sqft/MW)",
+    "legacy": "ICPRB's own Fairfax figures imply 12,722 sqft/MW for older stock",
+    "unknown": "spans the full evidenced range, 5,662 (2025 build) to 12,722 (Fairfax-implied)",
+}
+
+
+def density_class(year_built, status=None):
+    """Pick a density band. Mirrors _vintage_class so a building's density and
+    its PUE are keyed off the same era judgement."""
+    return _vintage_class(year_built, status)
+
+
+def effective_power_from_gfa(gfa_sqft, year_built=None, status=None):
+    """Effective IT power (MW) from gross floor area.
+
+    Density is banded by build era rather than fixed at ICPRB's fleet average,
+    because that average spans two decades of construction and the county's
+    permit records show modern builds roughly 1.5x denser.
+    """
     if not gfa_sqft or gfa_sqft <= 0:
         return None
-    central = gfa_sqft / SQFT_PER_EFFECTIVE_MW
-    lo = gfa_sqft / (SQFT_PER_EFFECTIVE_MW * (1 + DENSITY_TOLERANCE))
-    hi = gfa_sqft / (SQFT_PER_EFFECTIVE_MW * (1 - DENSITY_TOLERANCE))
-    return round(central, 1), round(lo, 1), round(hi, 1)
+    cls = density_class(year_built, status)
+    central_d, low_d, high_d = DENSITY_SQFT_PER_MW[cls]
+    # Dividing by the SMALLEST sqft/MW gives the LARGEST power, so low/high
+    # invert relative to the density figures.
+    central = gfa_sqft / central_d
+    hi = gfa_sqft / low_d
+    lo = gfa_sqft / high_d
+    return round(central, 1), round(lo, 1), round(hi, 1), cls, central_d
 
 
 # Uncertainty on permit-derived power comes from ICPRB's own conversion factors
@@ -743,8 +816,12 @@ def estimate_scope_water_footprint(
         if eff:
             power_basis = "permit_generator_capacity"
             permit_meta = permit_power
+    density_cls = density_used = None
     if eff is None:
-        eff = effective_power_from_gfa(gfa_sqft)
+        g = effective_power_from_gfa(gfa_sqft, year_built, status)
+        if g:
+            eff = g[:3]
+            density_cls, density_used = g[3], g[4]
     if eff is None:
         return None
     eff_mw, eff_lo, eff_hi = eff
@@ -795,6 +872,9 @@ def estimate_scope_water_footprint(
             "gfa_field_used": gfa_source,
             "gfa_quality": gfa_quality,
             "permit": permit_meta,
+            "density_class": density_cls,
+            "density_sqft_per_mw_used": density_used,
+            "density_source": DENSITY_SOURCE_NOTE.get(density_cls) if density_cls else None,
             "note": (
                 (
                     f"VADEQ air permit {permit_meta['registration_no']} covers this site with "
@@ -807,10 +887,10 @@ def estimate_scope_water_footprint(
                     f"building."
                 )
                 if permit_meta else
-                f"{gfa_sqft:,.0f} sqft / {SQFT_PER_EFFECTIVE_MW:,} sqft per effective MW = "
-                f"{eff_mw} MW effective IT load (+/-{DENSITY_TOLERANCE:.0%} for facility-level "
-                f"variation around the fleet-average density). Density is ICPRB's, computed from "
-                f"the JLARC/VADEQ air-permit database of Virginia data centers."
+                f"{gfa_sqft:,.0f} sqft / {density_used:,} sqft per effective MW = {eff_mw} MW "
+                f"effective IT load. Density is banded by build era ({density_cls}) rather than "
+                f"fixed at ICPRB's {SQFT_PER_EFFECTIVE_MW:,} fleet average, which spans two decades "
+                f"of construction: {DENSITY_SOURCE_NOTE.get(density_cls, '')}."
             ),
             "operator_cross_check": xcheck,
             "hv_plausibility": hv_plausibility_note(eff_hi, d_hv_transmission_ft),

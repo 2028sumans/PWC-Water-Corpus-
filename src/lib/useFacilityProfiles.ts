@@ -121,6 +121,12 @@ export interface ScopePowerEstimate {
   basis: "gfa_icprb_density" | "permit_generator_capacity";
   permit: ScopePermitPower | null;
   sqft_per_effective_mw: number;
+  /** Build-era band actually used for this building's density, and the figure
+   *  it resolved to. Null when power came from a permit, which bypasses
+   *  density entirely. */
+  density_class: "new_build" | "modern" | "standard" | "legacy" | "unknown" | null;
+  density_sqft_per_mw_used: number | null;
+  density_source: string | null;
   gfa_sqft: number;
   gfa_field_used: string | null;
   gfa_quality: GfaQuality | null;

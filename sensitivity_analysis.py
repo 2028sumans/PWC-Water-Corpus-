@@ -41,7 +41,12 @@ def county_total(density=None, wup_pwc=None, wup_air=None, wup_water=None,
         if swf["power"].get("basis") == "permit_generator_capacity":
             mw = swf["power"]["effective_it_mw_central"]
         else:
-            mw = swf["power"]["gfa_sqft"] / density
+            # Density is now banded by build era, so the sweep scales each
+            # building's OWN band rather than substituting one global constant.
+            # Testing against 8,818 would misreport the sensitivity of buildings
+            # that no longer use it.
+            own = swf["power"].get("density_sqft_per_mw_used") or m.SQFT_PER_EFFECTIVE_MW
+            mw = swf["power"]["gfa_sqft"] / (own * (density / m.SQFT_PER_EFFECTIVE_MW))
 
         basis = swf["scope1_onsite_cooling"]["basis"]
         wup = wup_air if basis == "operator_closed_loop_commitment" else wup_pwc
@@ -71,7 +76,8 @@ BASE = county_total()
 CASES = [
     ("Infrastructure density (sqft/MW)",
      {"density": 12722}, {"density": 8818 * 0.75},
-     "8,818 (JLARC) vs 12,722 implied by ICPRB's own Fairfax figures; low end -25%"),
+     "each building's own era band scaled by the ratio 12,722/8,818 and 0.75, i.e. the "
+     "same relative spread applied to whichever band it sits in"),
     ("Nuclear consumption factor (gal/MWh)",
      {"nuclear_cf": 189}, {"nuclear_cf": 289},
      "USGS MIN/MAX_CONSUMPTION for Surry + North Anna, generation-weighted "

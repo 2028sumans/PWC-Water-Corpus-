@@ -724,3 +724,55 @@ Two further handles found in the same corpus: **"data server vault"** appears to
 ### 9.4 Method note
 
 None of §9.1's figures are reachable by keyword search over the fields a normal query returns. They sit mid-paragraph inside permits whose stated subject is HVAC or electrical scope. They surfaced only from reading every record.
+
+---
+
+## 10. Density banding — implemented
+
+§9 proposed banding the density constant by build era. That is now shipped.
+
+### 10.1 What changed
+
+`SQFT_PER_EFFECTIVE_MW = 8818` is no longer applied to every building. Density is selected from a band keyed on the same era judgement that already drives PUE:
+
+| Class | Central | Range | Source |
+|---|---|---|---|
+| `new_build` (unbuilt) | **7,070** | 5,200–8,818 | PWC trade permits for 2025–26 builds state 5,662–6,047 |
+| `modern` (2020+) | **7,070** | 5,200–8,818 | same |
+| `standard` (2010–19) | 8,818 | 6,500–11,000 | ICPRB fleet average |
+| `legacy` (pre-2010) | 11,000 | 8,818–12,722 | ICPRB's Fairfax-implied figure (§1.3) |
+| `unknown` | 8,818 | 5,662–12,722 | spans the full evidenced range |
+
+Buildings whose power comes from a VADEQ permit **bypass density entirely** and are unaffected.
+
+### 10.2 Why 7,070 and not 5,662
+
+The permit measurement is 5,662 sqft/MW. Adopting it outright moves the county total ~30%, on a **single building's planned load stated over gross area including office space**. That is too much weight for n=1.
+
+7,070 is the geometric mean of that measurement and ICPRB's fleet average — it keeps the direction the evidence indicates without pretending the magnitude is settled. The range spans both endpoints so the uncertainty stays visible rather than being hidden in a point estimate.
+
+**This is a hedge, and it is labelled as one in the code.** Once §9.2's harvest yields a dozen pairs, the central should come from the distribution instead.
+
+### 10.3 Literature cross-check
+
+Published density figures are quoted over **white space**, not gross area — the same distinction that broke this module's first version. White space is 40–50% of gross internal area. At 45%:
+
+| | sqft/MW gross | W/sqft gross | W/sqft white space |
+|---|---|---|---|
+| PWC permit, 2025 build | 5,662 | 177 | **392** |
+| ICPRB fleet average | 8,818 | 113 | **252** |
+| *Published range, modern data centres* | | | *200–400* |
+
+Both land inside the published range — the new build at the top, the fleet average mid. **The permit evidence and the literature agree once the gross/white-space distinction is respected**, which is the strongest support the modern band has beyond the single measurement itself.
+
+### 10.4 Effect
+
+County-wide central total: **32.51 → 37.84 MGD (+16%)**. Density remains the top swing factor at 48%, essentially unchanged — banding relocated the central estimate but did not narrow the uncertainty, because the band still spans the full evidenced range.
+
+Distribution: 132 `new_build`, 18 `modern`, 6 `standard`, 2 `legacy`, 44 permit-backed (no density).
+
+### 10.5 Honest status
+
+This is **not** density resolved. It is density *correctly framed*: the constant is no longer a single fleet average applied to buildings it does not describe, and each building now reports which band it used and why. The evidence base for the modern band is one solid measurement plus two ambiguous attributions plus a literature consistency check.
+
+The headline moved 16% on that. Anyone quoting the total should know the number is now era-adjusted and that the adjustment rests on thin evidence pending §9.2.
