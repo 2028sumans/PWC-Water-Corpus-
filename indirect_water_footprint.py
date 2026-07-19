@@ -250,10 +250,46 @@ BLENDED_CONSUMPTION_GAL_PER_MWH = sum(
     for f in DOMINION_GENERATION_MIX
 )  # ~317 gal/MWh
 
+# ---------------------------------------------------------------------------
+# PUE -- second-largest swing factor after the density bridge (29%)
+# ---------------------------------------------------------------------------
+# Anchors:
+#   Uptime Institute 2025 Global Data Center Survey -- industry weighted average
+#   annual PUE of 1.54, essentially flat for six consecutive years. That figure
+#   spans the whole installed base including legacy stock, so it is a ceiling
+#   for new construction rather than a typical value for it.
+#
+#   Operator-disclosed fleet averages (2024-2025 sustainability reporting):
+#   Meta 1.08, Google 1.09, AWS 1.14, Microsoft 1.16.
+#
+# A disclosed fleet PUE is a global average across every climate the operator
+# runs in, so it is applied with a band rather than as a point value. It is
+# still far better evidence than a vintage guess: it is the operator's own
+# measured number, on the same metric definition.
+OPERATOR_DISCLOSED_PUE = {
+    "META": (1.08, "Meta 2024 fleet average PUE 1.08"),
+    "FACEBOOK": (1.08, "Meta 2024 fleet average PUE 1.08"),
+    "GOOGLE": (1.09, "Google 2024 global fleet average PUE 1.09"),
+    "AMAZON": (1.14, "AWS 2025 global average PUE 1.14 (1.15 in 2024)"),
+    "AWS": (1.14, "AWS 2025 global average PUE 1.14 (1.15 in 2024)"),
+    "MICROSOFT": (1.16, "Microsoft 2024 global average PUE 1.16"),
+}
+# Spread applied around a disclosed fleet average, for site-versus-fleet
+# variation. Operators' best sites run ~0.05-0.10 below their fleet mean
+# (AWS best 1.04 vs fleet 1.14), so this is deliberately symmetric and modest.
+DISCLOSED_PUE_TOLERANCE = 0.06
+
 PUE_RANGE = {
-    "modern": (1.08, 1.15),
-    "standard": (1.20, 1.60),
-    "unknown": (1.10, 1.50),
+    # An UNBUILT building is not of unknown vintage -- it is being built now, to
+    # current design practice. Treating Planned / Under Construction / Pending
+    # facilities as "unknown" applied a 1.10-1.50 band to 147 buildings whose
+    # only real uncertainty is which operator standard they will meet. This band
+    # sits between hyperscaler best practice and the Uptime industry average.
+    "new_build": (1.15, 1.35),
+    "modern": (1.15, 1.40),       # completed 2020+
+    "standard": (1.30, 1.55),     # completed 2010-2019
+    "legacy": (1.45, 1.80),       # completed pre-2010
+    "unknown": (1.15, 1.54),      # no vintage and no status -- floor to Uptime average
 }
 
 # ---------------------------------------------------------------------------
@@ -406,10 +442,37 @@ def match_operator_commitment(name: str):
     return None
 
 
-def _vintage_class(year_built):
+UNBUILT_STATUSES = ("planned", "under construction", "pending")
+
+
+def _vintage_class(year_built, status=None):
+    """Classify a building for PUE purposes.
+
+    Status is consulted before vintage, because an unbuilt facility has no year
+    built and that absence is not ignorance -- it means the building is going up
+    now, to current practice.
+    """
     if year_built is None:
+        if status and status.strip().lower() in UNBUILT_STATUSES:
+            return "new_build"
         return "unknown"
-    return "modern" if year_built >= 2020 else "standard"
+    if year_built >= 2020:
+        return "modern"
+    if year_built >= 2010:
+        return "standard"
+    return "legacy"
+
+
+def match_disclosed_pue(name):
+    """Return (pue, source_note) if this building's operator publishes a fleet
+    PUE, else None."""
+    if not name:
+        return None
+    upper = name.upper()
+    for kw in sorted(OPERATOR_DISCLOSED_PUE.keys(), key=len, reverse=True):
+        if kw in upper:
+            return OPERATOR_DISCLOSED_PUE[kw]
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -494,9 +557,22 @@ def scope1_onsite_cooling(eff_mw, eff_lo, eff_hi, operator_commitment=None, cool
 # ---------------------------------------------------------------------------
 # Scope 2 - electricity-driven consumptive water
 # ---------------------------------------------------------------------------
-def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None):
-    vclass = _vintage_class(year_built)
-    pue_lo, pue_hi = PUE_RANGE[vclass]
+def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None,
+                       name=None, status=None):
+    # Operator-disclosed PUE supersedes any vintage class: it is the operator's
+    # own measured figure on the same metric definition, where the class is an
+    # inference from a build date.
+    disclosed = match_disclosed_pue(name)
+    if disclosed:
+        pue, note = disclosed
+        vclass = "operator_disclosed"
+        pue_lo = round(pue - DISCLOSED_PUE_TOLERANCE, 2)
+        pue_hi = round(pue + DISCLOSED_PUE_TOLERANCE, 2)
+        pue_source = note
+    else:
+        vclass = _vintage_class(year_built, status)
+        pue_lo, pue_hi = PUE_RANGE[vclass]
+        pue_source = None
     capped = False
     if pue_cap and pue_cap < pue_hi:
         pue_hi = pue_cap
@@ -512,9 +588,11 @@ def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None):
         "pue_class": vclass,
         "pue_range": [round(pue_lo, 2), round(pue_hi, 2)],
         "pue_capped_by_proffer": capped,
+        "pue_source": pue_source,
         "blended_consumption_gal_per_mwh": round(BLENDED_CONSUMPTION_GAL_PER_MWH, 1),
         "methodology": (
-            f"Effective IT MW x PUE ({pue_lo}-{pue_hi}, {vclass} vintage) x 24 h/day x "
+            f"Effective IT MW x PUE ({pue_lo}-{pue_hi}, "
+            f"{pue_source if pue_source else vclass + ' vintage'}) x 24 h/day x "
             f"{BLENDED_CONSUMPTION_GAL_PER_MWH:.0f} gal/MWh (Dominion generation-mix-blended "
             f"consumption factor) = consumptive water at the generating plant. Dominion's 2025 "
             f"mix is 58% gas / 25% nuclear / 14% renewable / 3% coal. Per-technology factors are "
@@ -626,6 +704,7 @@ def estimate_scope_water_footprint(
     pue_cap=None,
     cooling_disclosure=None,
     permit_power=None,
+    status=None,
 ):
     """
     Returns the Scope 1/2/3 estimate for one facility, or None if there is no
@@ -661,7 +740,8 @@ def estimate_scope_water_footprint(
     operator_match = match_operator(name)
 
     s1 = scope1_onsite_cooling(eff_mw, eff_lo, eff_hi, operator_commitment, cooling_disclosure)
-    s2 = scope2_electricity(eff_mw, eff_lo, eff_hi, year_built, pue_cap)
+    s2 = scope2_electricity(eff_mw, eff_lo, eff_hi, year_built, pue_cap,
+                            name=name, status=status)
     s3 = scope3_embodied(s1["mgd_range"], s2["mgd_range"], s1["mgd_central"], s2["mgd_central"])
 
     total_lo = s1["mgd_range"][0] + s2["mgd_range"][0] + s3["mgd_range"][0]

@@ -442,6 +442,7 @@ for _, b in dc_buildings.iterrows():
             cdd=(water_ctx or {}).get("cdd"),
             pue_cap=pue_cap, cooling_disclosure=cooling_disc,
             permit_power=_permit_power_index.get(clean(b.get("BuildingName"))),
+            status=clean(b.get("BuildingStatus")),
         ),
     }
     building_profiles.append(profile)

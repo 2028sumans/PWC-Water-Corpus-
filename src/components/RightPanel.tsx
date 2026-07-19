@@ -239,17 +239,25 @@ function unresolvedItems(
       "The per-facility backup-generator capacity in the VADEQ air permit for this site, or a utility load filing — either replaces the floor-area inference with a facility-specific figure.",
   });
 
-  // ── U4. PUE — assumed from vintage, never disclosed ────────────────────
+  // ── U4. PUE — disclosed at fleet level by some operators, inferred otherwise ──
   items.push({
     id: "U4",
     title: "Actual PUE (energy overhead above IT load)",
+    // Still "moderate" even when disclosed: a published fleet average is much
+    // better evidence than a vintage guess, but it remains a global figure
+    // rather than a measurement at this address.
     severity: "moderate",
     onRecord: s2.pue_capped_by_proffer
       ? `PUE bounded above by a binding proffer commitment (${s2.pue_range[1]}), with ${s2.pue_range[0]} as the modern-build floor.`
-      : s2.pue_class === "unknown"
-        ? `No build year on record, so PUE falls back to the widest published band (${s2.pue_range[0]}–${s2.pue_range[1]}) rather than a vintage-specific one.`
-        : `PUE inferred from a ${building?.year_built ?? s2.pue_class} build vintage (${s2.pue_class} class, ${s2.pue_range[0]}–${s2.pue_range[1]}).`,
-    gap: "No PWC facility discloses a measured PUE. It is a benchmark assumption keyed to build year, not a site measurement.",
+      : s2.pue_class === "operator_disclosed"
+        ? `${s2.pue_source}. Applied as ${s2.pue_range[0]}–${s2.pue_range[1]} to allow for site-versus-fleet variation.`
+        : s2.pue_class === "new_build"
+          ? `Not yet built, so there is no build year — PUE is taken as current design practice (${s2.pue_range[0]}–${s2.pue_range[1]}), between hyperscaler best practice and Uptime Institute's 1.54 industry average.`
+          : `PUE inferred from a ${building?.year_built ?? s2.pue_class} build vintage (${s2.pue_class} class, ${s2.pue_range[0]}–${s2.pue_range[1]}).`,
+    gap:
+      s2.pue_class === "operator_disclosed"
+        ? "The disclosed figure is a GLOBAL FLEET average across every climate the operator runs in, not a measurement at this address. Northern Virginia's cooling load is above that fleet mean."
+        : "No PWC facility discloses a measured PUE. It is a benchmark assumption keyed to build status or year, not a site measurement.",
     impact: `Scales Scope 2 linearly across a ${(s2.pue_range[1] / s2.pue_range[0]).toFixed(2)}x band.`,
     wouldResolve: "Operator PUE disclosure at site rather than fleet granularity, or a proffered PUE cap made enforceable and reported.",
   });
@@ -632,7 +640,13 @@ export function RightPanel() {
                 tone="sky"
                 mgdRange={swf.scope2_electricity.mgd_range}
                 central={swf.scope2_electricity.mgd_central}
-                detail={`PUE ${swf.scope2_electricity.pue_range[0]}–${swf.scope2_electricity.pue_range[1]} (${swf.scope2_electricity.pue_class} vintage) × ${swf.scope2_electricity.blended_consumption_gal_per_mwh} gal/MWh Dominion generation-mix-blended consumption factor.`}
+                detail={`PUE ${swf.scope2_electricity.pue_range[0]}–${swf.scope2_electricity.pue_range[1]} (${
+                  swf.scope2_electricity.pue_class === "operator_disclosed"
+                    ? "operator-disclosed fleet PUE"
+                    : swf.scope2_electricity.pue_class === "new_build"
+                      ? "new build, current design practice"
+                      : `${swf.scope2_electricity.pue_class} vintage`
+                }) × ${swf.scope2_electricity.blended_consumption_gal_per_mwh} gal/MWh Dominion generation-mix-blended consumption factor.`}
                 methodology={swf.scope2_electricity.methodology}
               />
               <ScopeRow

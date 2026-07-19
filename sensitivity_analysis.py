@@ -48,7 +48,17 @@ def county_total(density=None, wup_pwc=None, wup_air=None, wup_water=None,
         s1_tot += mw * wup / 1e6
 
         pue_lo, pue_hi = swf["scope2_electricity"]["pue_range"]
-        pue = ((pue_lo + pue_hi) / 2) * pue_scale
+        # Perturb by evidence quality, not uniformly. A building carrying its
+        # operator's own published fleet PUE is not as uncertain as one assigned
+        # a vintage class, so applying the same +/-15% to both would report a
+        # sensitivity the model no longer has -- the same mistake the nuclear
+        # factor showed when an assumed 100-800 span was replaced by a measured
+        # 189-289 one. Disclosed figures get the +/-0.06 site-vs-fleet tolerance.
+        s = pue_scale
+        if swf["scope2_electricity"].get("pue_class") == "operator_disclosed" and pue_scale != 1.0:
+            mid = (pue_lo + pue_hi) / 2
+            s = 1.0 + (pue_scale - 1.0) * (0.06 / mid) / 0.15
+        pue = ((pue_lo + pue_hi) / 2) * s
         s2_tot += mw * pue * 24 * blended / 1e6
 
     s3_tot = (s1_tot + s2_tot) * s3_frac
@@ -68,7 +78,8 @@ CASES = [
      "(was an assumed 100-800 span before the USGS pull)"),
     ("PUE band (scale factor)",
      {"pue_scale": 0.85}, {"pue_scale": 1.15},
-     "+/-15%: hyperscaler-disclosed PUE vs vintage-proxied fallback"),
+     "+/-15% on vintage-classed buildings; +/-0.06 (site vs fleet) on the 61 "
+     "carrying an operator's own published fleet PUE"),
     ("Scope 3 proportional fraction",
      {"s3_frac": 0.05}, {"s3_frac": 0.15},
      "the shipped 5-15% band"),

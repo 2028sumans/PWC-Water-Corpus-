@@ -141,9 +141,23 @@ export interface Scope1Onsite {
 export interface Scope2Electricity {
   mgd_range: [number, number];
   mgd_central: number;
-  pue_class: "modern" | "standard" | "unknown";
+  /**
+   * "operator_disclosed" means the operator publishes a fleet PUE and it was
+   * used directly; the vintage classes are inferences from a build date, and
+   * "new_build" covers unbuilt facilities, which are going up to current
+   * practice rather than being of unknown vintage.
+   */
+  pue_class:
+    | "operator_disclosed"
+    | "new_build"
+    | "modern"
+    | "standard"
+    | "legacy"
+    | "unknown";
   pue_range: [number, number];
   pue_capped_by_proffer: boolean;
+  /** Citation for a disclosed fleet PUE; null when a vintage class was used. */
+  pue_source: string | null;
   blended_consumption_gal_per_mwh: number;
   methodology: string;
   note: string;
