@@ -27,7 +27,11 @@ import time
 import geopandas as gpd
 import pandas as pd
 
-from indirect_water_footprint import estimate_scope_water_footprint
+from indirect_water_footprint import (
+    build_proffer_group_sizes,
+    estimate_scope_water_footprint,
+    resolve_gfa,
+)
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_ROOT = os.environ.get("PWC_DATA_ROOT", os.path.join(_SCRIPT_DIR, "data", "water_raw"))
@@ -126,16 +130,79 @@ def matched_cases(geom, layer, cols):
     return [{c: clean(row[c]) for c in cols} for _, row in hits.iterrows()]
 
 
-GFA_FIELD_PRIORITY = ["GFA", "BPGFA", "ApprovedGFA", "REATaxedGFA", "PermittedGFA"]
-
-
-def coalesce_gfa(row, fields=GFA_FIELD_PRIORITY):
-    """First non-null/non-zero GFA figure, in source-reliability order, plus
-    which field it came from (so the estimate's provenance is traceable)."""
+def coalesce_gfa(row, fields):
+    """First non-null/non-zero figure among `fields`, plus which field it came
+    from. Used for CAMPUS entitlement areas, where a site-wide total is the
+    correct quantity. Per-BUILDING areas must go through resolve_gfa()
+    instead -- see the note below."""
     for f in fields:
         v = clean(row.get(f))
         if v not in (None, 0):
             return v, f
+    return None, None
+
+
+# Per-building floor area is resolved by indirect_water_footprint.resolve_gfa,
+# which knows that Data_Center_Buildings.GFA holds the SITE-WIDE PROFFERED
+# ENTITLEMENT (repeated on every building on that site) whenever GFASource is
+# a proffer. Coalescing GFA first -- as this script used to -- gave 153 of 202
+# buildings a campus entitlement as their own footprint and inflated the
+# county total from ~42M to 87.5M sqft.
+_proffer_group_sizes = build_proffer_group_sizes(
+    [row for _, row in dc_buildings.iterrows()]
+)
+t(f"  proffer-entitlement GFA values shared across multiple buildings: {len(_proffer_group_sizes)}")
+
+# Binding cooling / PUE conditions extracted from special use permits. These
+# are the strongest narrowing evidence the county produces: a proffer that
+# specifies air or closed-loop cooling collapses the Scope 1 technology
+# envelope for that facility. Keyed by the case number that carries them.
+#
+# SUP2025-00016 (Hornbaker Road) proffer text, verbatim:
+#   "c. Data Center Cooling: Groundwater, surface water withdrawals, or
+#    surface water discharges shall not be used to cool the data center
+#    buildings on the Property."  <- MANDATORY
+#   "d. Sustainability: The Applicant shall incorporate ... a minimum of
+#    eight (8) sustainability measures ... may include ...
+#    xvi. Design the data center building to operate below an annualized
+#    1.5 PUE ...; xvii. Use of air or closed loop cooling rather than
+#    water-cooled alternatives"  <- MENU: 8 of 19 required, so xvi/xvii are
+#    NOT guaranteed. Recorded as available-but-unconfirmed, never as fact.
+PERMIT_COOLING_CONDITIONS = {
+    "SUP2025-00016": {
+        "mandatory_no_ground_or_surface_water_cooling": True,
+        "menu_includes_air_or_closed_loop": True,
+        "menu_includes_pue_cap": 1.5,
+        "menu_required_count": 8,
+        "menu_total_count": 19,
+        "source": (
+            "SUP2025-00016 (Hornbaker Road) proffers dated July 31, 2025: cooling with "
+            "groundwater or surface water is prohibited outright; air/closed-loop cooling and a "
+            "1.5 annualized PUE cap appear as items xvii and xvi in a sustainability menu from "
+            "which the applicant must implement at least 8 of 19 and document the selection "
+            "before occupancy."
+        ),
+    },
+}
+
+
+def permit_conditions_for(case_records):
+    """Match any binding cooling/PUE conditions to this facility via its
+    matched case history. Returns (pue_cap, cooling_disclosure) -- both None
+    when nothing applies."""
+    for rec in case_records or []:
+        for key in ("ZoningCaseNumber", "BZACaseNumber", "PlanningCaseNumber"):
+            num = rec.get(key)
+            if num and num in PERMIT_COOLING_CONDITIONS:
+                c = PERMIT_COOLING_CONDITIONS[num]
+                # The PUE cap and air-cooling commitment are menu items, not
+                # guarantees, so they are surfaced as context rather than used
+                # to narrow the estimate. Only mandatory conditions narrow.
+                return None, {
+                    "air_or_closed_loop": False,
+                    "mandatory_source_restriction": c["mandatory_no_ground_or_surface_water_cooling"],
+                    "source": c["source"],
+                }
     return None, None
 
 
@@ -149,7 +216,12 @@ for _, b in dc_buildings.iterrows():
         water_ctx, _ = water_context_for_geometry(geom)
 
     year_built = int(y) if (y := clean(b.get("YearBuilt"))) is not None else None
-    gfa_val, gfa_field = coalesce_gfa(b)
+    gfa_val, gfa_field, gfa_quality = resolve_gfa(b, _proffer_group_sizes)
+
+    use_permits_here = matched_cases(geom, use_permits, ["ZoningCaseNumber", "UsePermitType", "ZoningCaseName", "DateApproved", "DateExpired", "UsePermitStatus"])
+    bza_here = matched_cases(geom, bza, ["BZACaseNumber", "BZACaseType", "BZACaseName"])
+    pending_here = matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"])
+    pue_cap, cooling_disc = permit_conditions_for(use_permits_here + bza_here + pending_here)
 
     profile = {
         "kind": "building",
@@ -161,16 +233,20 @@ for _, b in dc_buildings.iterrows():
         "year_built": year_built,
         "gfa_sqft": gfa_val,
         "gfa_field_used": gfa_field,
+        "gfa_quality": gfa_quality,
         "permit_case": clean(b.get("PermitCase")) or None,
         "permit_status": clean(b.get("PermitStatus")) or None,
-        "use_permits": matched_cases(geom, use_permits, ["ZoningCaseNumber", "UsePermitType", "ZoningCaseName", "DateApproved", "DateExpired", "UsePermitStatus"]),
-        "bza_cases": matched_cases(geom, bza, ["BZACaseNumber", "BZACaseType", "BZACaseName"]),
-        "pending_cases": matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"]),
+        "use_permits": use_permits_here,
+        "bza_cases": bza_here,
+        "pending_cases": pending_here,
+        "permit_cooling_conditions": cooling_disc,
         "water_context": water_ctx,
         "scope_water_footprint": estimate_scope_water_footprint(
-            b.get("BuildingName"), gfa_sqft=gfa_val, gfa_source=gfa_field, year_built=year_built,
+            b.get("BuildingName"), gfa_sqft=gfa_val, gfa_source=gfa_field,
+            gfa_quality=gfa_quality, year_built=year_built,
             d_hv_transmission_ft=(water_ctx or {}).get("d_hv_transmission_ft"),
             cdd=(water_ctx or {}).get("cdd"),
+            pue_cap=pue_cap, cooling_disclosure=cooling_disc,
         ),
     }
     building_profiles.append(profile)
@@ -202,7 +278,8 @@ for _, c in dc_projects.iterrows():
         "pending_cases": matched_cases(geom, pending, ["PlanningCaseNumber", "PlanningCaseType", "PlanningCaseName", "TransmittalDate", "StaffReportLink"]),
         "water_context": water_ctx,
         "scope_water_footprint": estimate_scope_water_footprint(
-            c.get("CaseName"), gfa_sqft=campus_gfa_val, gfa_source=campus_gfa_field, year_built=None,
+            c.get("CaseName"), gfa_sqft=campus_gfa_val, gfa_source=campus_gfa_field,
+            gfa_quality="entitlement", year_built=None,
             d_hv_transmission_ft=(water_ctx or {}).get("d_hv_transmission_ft"),
             cdd=(water_ctx or {}).get("cdd"),
         ),

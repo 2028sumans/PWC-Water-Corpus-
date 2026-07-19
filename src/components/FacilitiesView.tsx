@@ -18,11 +18,13 @@ interface FacilityRow {
   status: string | null;
   hasNpdes: boolean;
   totalRange: [number, number];
-  s1: [number, number];
-  s2: [number, number];
-  s3: [number, number];
-  powerRange: [number, number];
-  powerBasis: string;
+  totalCentral: number;
+  s1Central: number;
+  s2Central: number;
+  s3Central: number;
+  peakDay: number;
+  effMw: number;
+  narrowed: boolean;
 }
 
 function toRow(f: BuildingProfile | CampusProfile): FacilityRow | null {
@@ -37,11 +39,13 @@ function toRow(f: BuildingProfile | CampusProfile): FacilityRow | null {
     status: f.kind === "building" ? f.status : null,
     hasNpdes: f.water_context?.has_npdes === 1,
     totalRange: swf.total_mgd_range,
-    s1: swf.scope1_onsite_cooling.mgd_range,
-    s2: swf.scope2_electricity.mgd_range,
-    s3: swf.scope3_embodied.mgd_range,
-    powerRange: swf.power.mw_range,
-    powerBasis: swf.power.basis,
+    totalCentral: swf.total_mgd_central,
+    s1Central: swf.scope1_onsite_cooling.mgd_central,
+    s2Central: swf.scope2_electricity.mgd_central,
+    s3Central: swf.scope3_embodied.mgd_central,
+    peakDay: swf.scope1_onsite_cooling.peak_day_mgd,
+    effMw: swf.power.effective_it_mw_central,
+    narrowed: swf.scope1_onsite_cooling.basis !== "technology_envelope",
   };
 }
 
@@ -80,18 +84,36 @@ export function FacilitiesView() {
     if (kindFilter !== "all") list = list.filter((r) => r.kind === kindFilter);
     if (q) list = list.filter((r) => r.name.toLowerCase().includes(q) || r.gpin.toLowerCase().includes(q));
     const sorted = [...list];
-    if (sortBy === "total") sorted.sort((a, b) => b.totalRange[1] - a.totalRange[1]);
-    else if (sortBy === "s2") sorted.sort((a, b) => b.s2[1] - a.s2[1]);
+    if (sortBy === "total") sorted.sort((a, b) => b.totalCentral - a.totalCentral);
+    else if (sortBy === "s2") sorted.sort((a, b) => b.s2Central - a.s2Central);
     else sorted.sort((a, b) => a.name.localeCompare(b.name));
     return sorted;
   }, [rows, query, kindFilter, sortBy]);
 
+  // Campus entitlements are NOT net of the buildings already built on them
+  // (remaining_gfa_sqft == planned_gfa_sqft on every campus checked) — a
+  // campus and the buildings sitting on it describe overlapping square
+  // footage. Summing both into one "countywide total" double- or triple-
+  // counts, so the headline aggregates BUILDINGS ONLY, which is the tool's
+  // actual physical inventory. Campuses remain visible and sortable as rows.
   const headline = useMemo(() => {
-    if (!rows.length) return null;
-    const totalLo = rows.reduce((s, r) => s + r.totalRange[0], 0);
-    const totalHi = rows.reduce((s, r) => s + r.totalRange[1], 0);
-    const nNoNpdes = rows.filter((r) => !r.hasNpdes).length;
-    return { totalLo, totalHi, nNoNpdes, n: rows.length };
+    const buildingRows = rows.filter((r) => r.kind === "building");
+    if (!buildingRows.length) return null;
+    const completed = buildingRows.filter((r) => r.status === "Completed");
+    const completedS1 = completed.reduce((s, r) => s + r.s1Central, 0);
+    const completedTotal = completed.reduce((s, r) => s + r.totalCentral, 0);
+    const allTotal = buildingRows.reduce((s, r) => s + r.totalCentral, 0);
+    const nNoNpdes = buildingRows.filter((r) => !r.hasNpdes).length;
+    const nNarrowed = buildingRows.filter((r) => r.narrowed).length;
+    return {
+      completedS1,
+      completedTotal,
+      completedN: completed.length,
+      allTotal,
+      nNoNpdes,
+      nNarrowed,
+      n: buildingRows.length,
+    };
   }, [rows]);
 
   const parentRef = useRef<HTMLDivElement | null>(null);
@@ -173,20 +195,33 @@ export function FacilitiesView() {
         {headline && (
           <div className="mt-8 rounded border border-neutral-800 bg-neutral-900/50 p-3 text-[11px] text-neutral-400 leading-relaxed space-y-2">
             <div>
-              <span className="text-neutral-200 font-medium">
-                {headline.totalLo.toFixed(1)}–{headline.totalHi.toFixed(1)} MGD
-              </span>{" "}
-              countywide Scope 1+2+3 envelope across {headline.n} facilities.
+              <span className="text-neutral-200 font-medium">{headline.completedS1.toFixed(2)} MGD</span>{" "}
+              direct on-site cooling water, {headline.completedN}{" "}completed buildings today — this
+              is the figure independently validated against Prince William Water&apos;s own reported
+              2023 total.
+            </div>
+            <div>
+              <span className="text-neutral-300 font-medium">{headline.allTotal.toFixed(1)} MGD</span>{" "}
+              Scope 1+2+3 central estimate across all {headline.n} tracked buildings (built, under
+              construction, and planned).
             </div>
             <div className="text-amber-400/90">
               {headline.nNoNpdes} of {headline.n} hold no NPDES water discharge permit under their own facility.
             </div>
+            {headline.nNarrowed > 0 && (
+              <div className="text-emerald-400/90">
+                {headline.nNarrowed} narrowed below the default technology envelope by a published
+                operator cooling commitment or a binding permit condition.
+              </div>
+            )}
           </div>
         )}
         <div className="mt-4 text-[10px] text-neutral-600 leading-relaxed italic">
-          Ranges, not point estimates — every figure here is a defensible
-          envelope with explicit uncertainty drivers, not a disclosed
-          measurement. Click a facility for full methodology.
+          Central estimates use Prince William Water&apos;s own observed intensity
+          (309 gal/MW/day, ICPRB 2025). Campus rows are entitlements that
+          overlap with buildings already counted above, so they&apos;re
+          excluded from these totals — sort by campus to see them
+          individually. Click a facility for the full derivation.
         </div>
       </aside>
 
@@ -204,11 +239,11 @@ export function FacilitiesView() {
         <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_90px_90px_130px_130px_130px_150px] gap-0 px-0 py-1.5 border-b border-neutral-800 bg-black text-[10px] uppercase tracking-[0.15em] text-neutral-500 [&>*]:px-3 [&>*]:border-l [&>*]:border-neutral-900/70 [&>*:first-child]:border-l-0">
           <div>Facility</div>
           <div>Kind</div>
-          <div className="text-right">Power (MW)</div>
-          <div className="text-right">Scope 1 (MGD)</div>
-          <div className="text-right">Scope 2 (MGD)</div>
-          <div className="text-right">Scope 3 (MGD)</div>
-          <div>Total (MGD)</div>
+          <div className="text-right" title="Effective IT load, from floor area at 8,818 sqft/MW">IT MW</div>
+          <div className="text-right" title="Direct on-site cooling water, central estimate">Scope 1</div>
+          <div className="text-right" title="Water consumed at the generating plant, central estimate">Scope 2</div>
+          <div className="text-right" title="Embodied / supply-chain, central estimate">Scope 3</div>
+          <div title="Central estimate, with the summer peak-day direct draw beneath">Total MGD · peak</div>
         </div>
 
         <div ref={parentRef} className="flex-1 overflow-auto">
@@ -241,28 +276,38 @@ export function FacilitiesView() {
                       {r.gpin} {r.status ? `· ${r.status}` : ""} {!r.hasNpdes ? "· no NPDES coverage" : ""}
                     </div>
                   </div>
-                  <div className="text-neutral-400 text-[11px] flex items-center capitalize">{r.kind}</div>
+                  <div className="text-neutral-400 text-[11px] flex items-center capitalize">
+                    {r.kind}
+                    {r.narrowed && (
+                      <span className="ml-1 text-emerald-400" title="Narrowed by a published operator WUE or binding permit condition">
+                        ◆
+                      </span>
+                    )}
+                  </div>
                   <div className="text-right text-neutral-300 tabular-nums text-[11px] flex items-center justify-end">
-                    {r.powerRange[0]}–{r.powerRange[1]}
+                    {r.effMw.toFixed(0)}
                   </div>
                   <div className="text-right text-amber-300/90 tabular-nums text-[11px] flex items-center justify-end">
-                    {r.s1[0].toFixed(2)}–{r.s1[1].toFixed(2)}
+                    {r.s1Central.toFixed(3)}
                   </div>
                   <div className="text-right text-sky-300/90 tabular-nums text-[11px] flex items-center justify-end">
-                    {r.s2[0].toFixed(2)}–{r.s2[1].toFixed(2)}
+                    {r.s2Central.toFixed(3)}
                   </div>
                   <div className="text-right text-violet-300/90 tabular-nums text-[11px] flex items-center justify-end">
-                    {r.s3[0].toFixed(2)}–{r.s3[1].toFixed(2)}
+                    {r.s3Central.toFixed(3)}
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-14 h-1.5 rounded bg-neutral-800 overflow-hidden shrink-0">
+                    <div className="w-12 h-1.5 rounded bg-neutral-800 overflow-hidden shrink-0">
                       <div
-                        className={`h-full ${totalBarColor(r.totalRange[1])} transition-all duration-300`}
-                        style={{ width: `${Math.min(100, (r.totalRange[1] / 5) * 100)}%` }}
+                        className={`h-full ${totalBarColor(r.totalCentral)} transition-all duration-300`}
+                        style={{ width: `${Math.min(100, (r.totalCentral / 3) * 100)}%` }}
                       />
                     </div>
                     <span className="text-neutral-200 tabular-nums text-[11px]">
-                      {r.totalRange[0].toFixed(2)}–{r.totalRange[1].toFixed(2)}
+                      {r.totalCentral.toFixed(2)}
+                    </span>
+                    <span className="text-neutral-600 tabular-nums text-[10px]" title="Summer peak-day direct on-site draw">
+                      ▲{r.peakDay.toFixed(2)}
                     </span>
                   </div>
                 </div>

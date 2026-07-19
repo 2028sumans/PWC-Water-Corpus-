@@ -38,12 +38,14 @@ export interface FacilityContext {
   status: string | null;
   yearBuilt: number | null;
   gfaSqft: number | null;
-  powerMwRange: [number, number];
-  powerBasis: string;
-  scope1MgdRange: [number, number];
-  scope2MgdRange: [number, number];
-  scope3MgdRange: [number, number];
-  totalMgdRange: [number, number];
+  effectiveMw: number;
+  scope1Central: number;
+  scope1Range: [number, number];
+  scope2Central: number;
+  scope3Central: number;
+  totalCentral: number;
+  totalRange: [number, number];
+  peakDayMgd: number;
   flags: string[];
 }
 

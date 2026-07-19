@@ -51,6 +51,7 @@ function ScopeRow({
   label,
   tone,
   mgdRange,
+  central,
   detail,
   methodology,
   climatePointMgd,
@@ -59,6 +60,7 @@ function ScopeRow({
   label: string;
   tone: "amber" | "sky" | "violet";
   mgdRange: [number, number];
+  central: number;
   detail: string;
   methodology: string;
   climatePointMgd?: number | null;
@@ -70,15 +72,18 @@ function ScopeRow({
       <div className="flex items-baseline justify-between gap-2">
         <span className={`text-[10px] uppercase tracking-wider ${c.text}`}>{label}</span>
         <span className="text-sm font-light text-neutral-100 shrink-0">
-          {mgdRange[0].toFixed(3)}–{mgdRange[1].toFixed(3)}{" "}
-          <span className="text-[9px] text-neutral-500 font-normal">MGD</span>
+          {central.toFixed(3)}{" "}
+          <span className="text-[9px] text-neutral-500 font-normal">MGD central</span>
         </span>
+      </div>
+      <div className="text-right text-[9px] text-neutral-500">
+        range {mgdRange[0].toFixed(3)}–{mgdRange[1].toFixed(3)}
       </div>
       <div className="mt-1 text-[10px] text-neutral-500 leading-relaxed">{detail}</div>
       <div className="mt-1 text-[9px] text-neutral-600 leading-relaxed italic">{methodology}</div>
       {climatePointMgd != null && (
         <div className={`mt-1.5 pt-1.5 border-t ${c.border} text-[10px] ${c.text} leading-relaxed`}>
-          Climate-weighted point (if evaporative/hybrid): <span className="font-medium">{climatePointMgd.toFixed(3)} MGD</span>
+          Summer peak-day direct draw: <span className="font-medium">{climatePointMgd.toFixed(3)} MGD</span>
           {climateNote && <div className="mt-0.5 text-neutral-600 italic">{climateNote}</div>}
         </div>
       )}
@@ -118,10 +123,13 @@ function CaseHistoryRow({ c }: { c: FacilityCaseRecord }) {
   );
 }
 
-function footprintColor(hiMgd: number): string {
-  if (hiMgd >= 2) return "text-red-400";
-  if (hiMgd >= 0.75) return "text-orange-400";
-  if (hiMgd >= 0.2) return "text-yellow-400";
+// Thresholds calibrated to JLARC's measured per-building figures: 0.666 MGD
+// was the single largest data center building in Virginia (2023), 0.137 MGD
+// put a building in the top 11 statewide, 0.018 MGD is an average office.
+function footprintColor(centralMgd: number): string {
+  if (centralMgd >= 0.666) return "text-red-400";
+  if (centralMgd >= 0.137) return "text-orange-400";
+  if (centralMgd >= 0.018) return "text-yellow-400";
   return "text-green-400";
 }
 
@@ -156,12 +164,7 @@ function unresolvedItems(
   const items: UnresolvedItem[] = [];
   const s1 = swf.scope1_onsite_cooling;
   const s2 = swf.scope2_electricity;
-  const s3 = swf.scope3_embodied;
-  const gfa = swf.power.gfa_estimate;
-
-  const totalSpan = swf.total_mgd_range[1] - swf.total_mgd_range[0];
-  const shareOfSpan = (span: number) =>
-    totalSpan > 0 ? `${Math.round((span / totalSpan) * 100)}% of the total range width` : "an unquantified share of the range";
+  const pw = swf.power;
 
   // ── U1. The structural gap: nobody meters or reports this ──────────────
   const dmr = wc?.dmr_flow_mgd;
@@ -174,72 +177,81 @@ function unresolvedItems(
         ? `NPDES discharge permit on file${dmr != null ? `, reporting ${dmr} MGD of discharge flow` : " (no DMR flow figure reported)"}${wc?.has_deq_permit === 1 ? "; DEQ permit also on record" : ""}.`
         : `No NPDES water discharge permit on record${wc?.has_deq_permit === 1 ? ", though a DEQ permit is on file" : ", and no DEQ permit on file"}.`,
     gap: "NPDES regulates what a facility discharges to surface water — not what it consumes. Data centers lose water primarily to evaporation from municipal supply, which produces no permitted discharge and triggers no reporting duty. Even a permit-holding facility does not report the consumption figure this page estimates.",
-    impact: `Every number on this page is modeled. There is no disclosed measurement anywhere in the public record to validate the ${swf.total_mgd_range[0].toFixed(2)}–${swf.total_mgd_range[1].toFixed(2)} MGD envelope against.`,
+    impact: `No per-facility measurement exists to check the ${swf.total_mgd_central.toFixed(3)} MGD central estimate against. Prince William Water reports only a service-area total (0.42 MGD across all data center customers in 2023), which this model reproduces to within 7% in aggregate but cannot resolve to any single building.`,
     wouldResolve:
       "A facility-level water-use disclosure requirement, or large-customer withdrawal reporting from Prince William Water.",
   });
 
-  // ── U2. Cooling technology — the single widest driver of Scope 1 ───────
-  const s1Span = s1.mgd_range[1] - s1.mgd_range[0];
-  items.push({
-    id: "U2",
-    title: "Cooling technology (dry vs. hybrid vs. open evaporative)",
-    severity: "high",
-    onRecord: `No PWC dataset — building permit, use permit, or rezoning case — discloses this facility's cooling system type.${building?.permit_case ? ` Building permit ${building.permit_case} is on record but carries no mechanical-system detail in the GIS attributes.` : ""}`,
-    gap: `Because the technology is unknown, Scope 1 is reported across the entire published WUE envelope (${s1.wue_range_l_per_kwh[0]}–${s1.wue_range_l_per_kwh[1]} L/kWh) rather than narrowed by an unstated assumption. A dry/closed-loop facility sits near the floor; an open-evaporative one near the ceiling.`,
-    impact: `Widens Scope 1 to ${s1.mgd_range[0].toFixed(3)}–${s1.mgd_range[1].toFixed(3)} MGD — ${shareOfSpan(s1Span)}.${s1.climate_weighted_point_mgd != null ? ` If this facility does use evaporative or hybrid cooling, PWC's climate points nearer ${s1.climate_weighted_point_mgd.toFixed(3)} MGD.` : ""}`,
-    wouldResolve:
-      "Mechanical-system text in the building permit PDF, or an operator WUE disclosure for this specific site.",
-  });
-
-  // ── U3. Power draw — phrasing depends on which methods were available ──
-  const powerSpan = swf.power.mw_range[1] - swf.power.mw_range[0];
-  if (swf.power.basis === "intersection") {
+  // ── U2. Cooling technology — still the widest Scope 1 driver, unless
+  //        an operator commitment or a binding permit condition has
+  //        narrowed it. A published operator WUE is used only as a
+  //        qualitative signal of which technology CLASS the facility likely
+  //        uses (narrowed onto ICPRB's own PWC-calibrated scale below) — a
+  //        global fleet-average WUE and ICPRB's local WUP are measured under
+  //        different accounting boundaries, so the two numbers are not
+  //        interchangeable and the WUE is never substituted in directly.
+  if (s1.basis === "operator_closed_loop_commitment") {
     items.push({
-      id: "U3",
-      title: "Facility power draw (best-constrained input available)",
+      id: "U2",
+      title: "Cooling technology — narrowed by a public operator commitment",
       severity: "moderate",
-      onRecord: `Two independent methods agree: a GFA-derived estimate${gfa ? ` (${gfa.gfa_sqft.toLocaleString()} sqft × ${gfa.it_power_density_w_per_sqft[0]}–${gfa.it_power_density_w_per_sqft[1]} W/sqft, PUE ${gfa.pue_range[0]}–${gfa.pue_range[1]})` : ""} and an interconnection.fyi operator listing${swf.power.operator_match ? ` for ${swf.power.operator_match.operator}` : ""}. The reported ${swf.power.mw_range[0]}–${swf.power.mw_range[1]} MW range is their intersection.`,
-      gap: "Neither source is a metered load figure. The operator range spans that operator's whole county portfolio, and the GFA method rests on published density and PUE benchmarks rather than this building's actual equipment.",
-      impact: `Still a ${Math.round(powerSpan).toLocaleString()} MW span, which propagates proportionally into both Scope 1 and Scope 2.`,
-      wouldResolve: "A metered interconnection capacity or utility load filing specific to this site.",
+      onRecord: `${s1.narrowed_by} That commitment narrows this facility onto ICPRB's own air-cooled tier (${s1.wup_reference_tiers.air_cooled} gal/MW/day) rather than the full ${s1.wup_reference_tiers.air_cooled}–${s1.wup_reference_tiers.fully_water_cooled} regional span.`,
+      gap: "This is a fleet-wide commitment, not a measurement at this address, and the operator's own headline WUE figure is measured on a different accounting boundary than the ICPRB scale this tool is calibrated against — so it is used only as a signal of technology class, not substituted in as a number.",
+      impact: `Narrows Scope 1 to ${s1.mgd_range[0].toFixed(3)}–${s1.mgd_range[1].toFixed(3)} MGD — materially tighter than the unnarrowed default.`,
+      wouldResolve: "A site-level water-use disclosure for this specific building, on the same accounting basis ICPRB used to calibrate the local scale.",
     });
-  } else if (swf.power.basis === "disagreement") {
+  } else if (s1.basis === "disclosed_cooling") {
     items.push({
-      id: "U3",
-      title: "Power estimates conflict — the two methods do not overlap",
-      severity: "high",
-      onRecord: `A GFA-derived estimate${gfa ? ` (${gfa.gfa_sqft.toLocaleString()} sqft → ${gfa.facility_mw_range[0]}–${gfa.facility_mw_range[1]} MW)` : ""} and an interconnection.fyi operator listing${swf.power.operator_match ? ` for ${swf.power.operator_match.operator} (${swf.power.operator_match.mw_range[0]}–${swf.power.operator_match.mw_range[1]} MW)` : ""} do not overlap at all.`,
-      gap: "The tool keeps both methods' bounds rather than silently picking a winner, because neither source is building-specific enough to override the other — the operator figure spans a whole portfolio, and the GFA figure rests on generic density benchmarks. The true load could sit anywhere across the union, including in the gap between the two.",
-      impact: `Forces the widest power span this tool will report (${swf.power.mw_range[0]}–${swf.power.mw_range[1]} MW) and inflates every downstream scope accordingly.`,
-      wouldResolve: "A metered load figure, or a corrected GFA for this building, to adjudicate between the two methods.",
+      id: "U2",
+      title: "Cooling technology — constrained by a binding permit condition",
+      severity: "moderate",
+      onRecord: s1.narrowed_by ?? "A permit condition constrains cooling technology at this site.",
+      gap: "The condition constrains the technology class but does not report actual consumption, and compliance documentation is filed at occupancy rather than published as an ongoing metered figure.",
+      impact: `Pins Scope 1 near the air-cooled tier (${s1.wup_reference_tiers.air_cooled} gal/MW/day), giving ${s1.mgd_range[0].toFixed(3)}–${s1.mgd_range[1].toFixed(3)} MGD.`,
+      wouldResolve: "Published post-occupancy compliance documentation confirming which cooling system was actually installed.",
     });
   } else {
-    const missing = swf.power.basis === "gfa_only" ? "interconnection.fyi operator listing" : "disclosed gross floor area";
     items.push({
-      id: "U3",
-      title: "Power draw rests on a single uncorroborated method",
+      id: "U2",
+      title: "Cooling technology (dry/closed-loop vs. evaporative)",
       severity: "high",
-      onRecord: swf.power.note,
-      gap: `Only one of the two independent power-estimation methods is available here — there is no matching ${missing} to cross-check it against, so the estimate cannot be narrowed by agreement.`,
-      impact: `Leaves a ${Math.round(powerSpan).toLocaleString()} MW span (${swf.power.mw_range[0]}–${swf.power.mw_range[1]} MW) driving both Scope 1 and Scope 2.`,
-      wouldResolve: `A matching ${missing} would supply the second estimate and likely narrow this range to the two methods' intersection.`,
+      onRecord: `No PWC dataset — building permit, use permit, or rezoning case — discloses this facility's cooling system type, and this operator publishes no WUE figure.${building?.permit_case ? ` Building permit ${building.permit_case} is on record but carries no mechanical-system detail in the GIS attributes.` : ""}`,
+      gap: `Scope 1 therefore spans the full measured technology range for the region: ${s1.wup_reference_tiers.air_cooled} gal/MW/day for air-cooled/closed-loop up to ${s1.wup_reference_tiers.fully_water_cooled} for fully evaporative (ICPRB 2025). The central estimate uses Prince William Water's observed fleet average of ${s1.wup_reference_tiers.pwc_observed} gal/MW/day.`,
+      impact: `Leaves Scope 1 at ${s1.mgd_range[0].toFixed(3)}–${s1.mgd_range[1].toFixed(3)} MGD around a ${s1.mgd_central.toFixed(3)} MGD central estimate — an unavoidable ~10x technology span.`,
+      wouldResolve:
+        "An operator WUE disclosure for this site (as Amazon and Microsoft publish fleet-wide), or mechanical-system detail in the building permit — either collapses this to a single technology band.",
     });
   }
 
-  // ── U4. PUE / utilization — assumed, never disclosed ───────────────────
+  // ── U3. Power draw — now floor-area derived, cross-checked not widened ─
+  const xc = pw.operator_cross_check;
+  items.push({
+    id: "U3",
+    title: "Facility power draw is inferred from floor area, not metered",
+    severity: xc && !xc.agrees ? "high" : "moderate",
+    onRecord: `${pw.gfa_sqft.toLocaleString()} sqft (${pw.gfa_quality ?? "unknown"} source: ${pw.gfa_field_used ?? "n/a"}) ÷ ${pw.sqft_per_effective_mw.toLocaleString()} sqft per effective MW = ${pw.effective_it_mw_central} MW effective IT load. The density is ICPRB's, measured across the Virginia fleet via the JLARC/VADEQ air-permit database.${xc ? ` ${xc.note}` : ""}`,
+    gap:
+      pw.gfa_quality === "proffer_split"
+        ? "This building has no assessed or permitted floor area of its own — only a site-wide proffered entitlement, divided evenly across the buildings sharing it. The split is even, but real buildings on a site are not equally sized."
+        : "A fleet-average density is not a site measurement. Actual rack density and mechanical layout vary building to building, and no metered load figure is published for any individual facility.",
+    impact: `Propagates proportionally into both Scope 1 and Scope 2. The ±25% density tolerance is the main reason the total is a range rather than a point.`,
+    wouldResolve:
+      "The per-facility backup-generator capacity in the VADEQ air permit for this site, or a utility load filing — either replaces the floor-area inference with a facility-specific figure.",
+  });
+
+  // ── U4. PUE — assumed from vintage, never disclosed ────────────────────
   items.push({
     id: "U4",
-    title: "Actual PUE and IT utilization",
+    title: "Actual PUE (energy overhead above IT load)",
     severity: "moderate",
-    onRecord: gfa
-      ? gfa.pue_class === "unknown"
-        ? `No build year on record, so PUE falls back to the widest published band (${gfa.pue_range[0]}–${gfa.pue_range[1]}) rather than a vintage-specific one. Utilization assumed flat at ${(s2.assumed_utilization * 100).toFixed(0)}%.`
-        : `PUE inferred from a ${building?.year_built ?? gfa.pue_class} build vintage (${gfa.pue_class} class, ${gfa.pue_range[0]}–${gfa.pue_range[1]}). Utilization assumed flat at ${(s2.assumed_utilization * 100).toFixed(0)}%.`
-      : `Utilization assumed flat at ${(s2.assumed_utilization * 100).toFixed(0)}%; no GFA on record to derive a vintage-based PUE from.`,
-    gap: "No PWC facility discloses its measured PUE or its actual load factor. Both are benchmark assumptions applied uniformly, not site measurements — a facility running well below the assumed utilization would consume proportionally less than shown.",
-    impact: "Scales Scope 1 and Scope 2 linearly; a real utilization of 60% rather than 90% would cut both by roughly a third.",
-    wouldResolve: "Operator sustainability-report PUE and load-factor disclosure at site rather than fleet granularity.",
+    onRecord: s2.pue_capped_by_proffer
+      ? `PUE bounded above by a binding proffer commitment (${s2.pue_range[1]}), with ${s2.pue_range[0]} as the modern-build floor.`
+      : s2.pue_class === "unknown"
+        ? `No build year on record, so PUE falls back to the widest published band (${s2.pue_range[0]}–${s2.pue_range[1]}) rather than a vintage-specific one.`
+        : `PUE inferred from a ${building?.year_built ?? s2.pue_class} build vintage (${s2.pue_class} class, ${s2.pue_range[0]}–${s2.pue_range[1]}).`,
+    gap: "No PWC facility discloses a measured PUE. It is a benchmark assumption keyed to build year, not a site measurement.",
+    impact: `Scales Scope 2 linearly across a ${(s2.pue_range[1] / s2.pue_range[0]).toFixed(2)}x band.`,
+    wouldResolve: "Operator PUE disclosure at site rather than fleet granularity, or a proffered PUE cap made enforceable and reported.",
   });
 
   // ── U5. Scope 2 attribution — average, not marginal ────────────────────
@@ -258,7 +270,7 @@ function unresolvedItems(
     id: "U6",
     title: "Facility-specific embodied / supply-chain water (Scope 3)",
     severity: "structural",
-    onRecord: `Modeled as ${(s3.proportional_range[0] * 100).toFixed(0)}–${(s3.proportional_range[1] * 100).toFixed(0)}% of the Scope 1+2 operational total → ${s3.mgd_range[0].toFixed(3)}–${s3.mgd_range[1].toFixed(3)} MGD.`,
+    onRecord: `Modeled as ${(swf.scope3_embodied.proportional_range[0] * 100).toFixed(0)}–${(swf.scope3_embodied.proportional_range[1] * 100).toFixed(0)}% of the Scope 1+2 operational total → ${swf.scope3_embodied.mgd_range[0].toFixed(3)}–${swf.scope3_embodied.mgd_range[1].toFixed(3)} MGD.`,
     gap: "This is a proportional anchor from corporate disclosure ratios, not a physical estimate. The semiconductor fabs, server assembly, and construction supply chains behind this building are entirely outside Virginia and outside every PWC dataset.",
     impact: "At least one hyperscaler has disclosed embodied water above 99% of its corporate total under a different accounting boundary — evidence the 5–15% anchor used here is a floor, not a ceiling.",
     wouldResolve: "Facility-level embodied-water accounting from the operator, or fab-level water disclosure traceable to this site's hardware.",
@@ -356,18 +368,22 @@ export function RightPanel() {
     if (waterContext?.rpa) flags.push("Resource Protection Area (RPA) buffer");
     if (waterContext?.d_stream_ft != null && waterContext.d_stream_ft < 300) flags.push(`${waterContext.d_stream_ft.toFixed(0)} ft from nearest stream`);
     if (swf.power.hv_plausibility) flags.push(swf.power.hv_plausibility);
+    if (swf.scope1_onsite_cooling.narrowed_by) flags.push(`Scope 1 narrowed: ${swf.scope1_onsite_cooling.narrowed_by}`);
+    flags.push(swf.benchmark.verdict);
     return {
       name: facility.name ?? "Unnamed facility",
       kind: facility.kind,
       status: buildingProfile?.status ?? null,
       yearBuilt: buildingProfile?.year_built ?? null,
       gfaSqft: buildingProfile?.gfa_sqft ?? null,
-      powerMwRange: swf.power.mw_range,
-      powerBasis: swf.power.basis,
-      scope1MgdRange: swf.scope1_onsite_cooling.mgd_range,
-      scope2MgdRange: swf.scope2_electricity.mgd_range,
-      scope3MgdRange: swf.scope3_embodied.mgd_range,
-      totalMgdRange: swf.total_mgd_range,
+      effectiveMw: swf.power.effective_it_mw_central,
+      scope1Central: swf.scope1_onsite_cooling.mgd_central,
+      scope1Range: swf.scope1_onsite_cooling.mgd_range,
+      scope2Central: swf.scope2_electricity.mgd_central,
+      scope3Central: swf.scope3_embodied.mgd_central,
+      totalCentral: swf.total_mgd_central,
+      totalRange: swf.total_mgd_range,
+      peakDayMgd: swf.scope1_onsite_cooling.peak_day_mgd,
       flags,
     };
   }
@@ -489,20 +505,19 @@ export function RightPanel() {
 
         {!swf ? (
           <div className="border-b border-neutral-800 px-5 py-4 text-[11px] text-neutral-500 italic leading-relaxed">
-            No Scope 1/2/3 estimate could be produced for this facility — neither
-            a GFA figure nor an interconnection.fyi operator match exists to
-            derive a power estimate from.
+            No Scope 1/2/3 estimate could be produced for this facility — no
+            floor-area figure exists to derive an effective power load from.
           </div>
         ) : (
           <>
-            {/* Hero: Total Scope 1+2+3 footprint */}
+            {/* Hero: central estimate, with the envelope beneath it */}
             <div className="border-b border-neutral-800 px-5 py-4">
               <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">
                 Est. Scope 1+2+3 Water Footprint
               </div>
               <div className="flex items-baseline gap-3">
-                <div className={`text-4xl font-light ${footprintColor(swf.total_mgd_range[1])} transition-colors duration-300`}>
-                  {swf.total_mgd_range[0].toFixed(2)}–{swf.total_mgd_range[1].toFixed(2)}
+                <div className={`text-4xl font-light ${footprintColor(swf.total_mgd_central)} transition-colors duration-300`}>
+                  {swf.total_mgd_central.toFixed(3)}
                 </div>
                 <div className="text-sm text-neutral-500">MGD</div>
                 <div className="ml-auto text-[10px] text-neutral-500 text-right relative">
@@ -514,34 +529,40 @@ export function RightPanel() {
                     <div className="underline decoration-dotted decoration-neutral-600 underline-offset-2">
                       Methodology
                     </div>
-                    <div className="text-amber-400 text-[11px] uppercase tracking-wider">{swf.power.basis.replace("_", " ")}</div>
+                    <div className="text-amber-400 text-[11px] uppercase tracking-wider">
+                      {swf.scope1_onsite_cooling.basis === "technology_envelope" ? "ICPRB default" : "narrowed"}
+                    </div>
                   </button>
                   {methodologyOpen && (
                     <div
-                      className="absolute right-0 top-12 z-20 w-[360px] max-h-[440px] overflow-y-auto rounded-lg border border-neutral-700 bg-neutral-950 shadow-2xl p-3 text-left"
+                      className="absolute right-0 top-12 z-20 w-[380px] max-h-[460px] overflow-y-auto rounded-lg border border-neutral-700 bg-neutral-950 shadow-2xl p-3 text-left"
                       onMouseLeave={() => setMethodologyOpen(false)}
                     >
                       <div className="flex items-baseline justify-between mb-2">
-                        <div className="text-[10px] uppercase tracking-wider text-neutral-500">Power estimate audit</div>
+                        <div className="text-[10px] uppercase tracking-wider text-neutral-500">Derivation audit</div>
                         <button onClick={() => setMethodologyOpen(false)} className="text-neutral-500 hover:text-neutral-200 text-[10px]">
                           close
                         </button>
                       </div>
                       <div className="space-y-1.5">
                         <EvidenceRow
-                          label="GFA-based estimate"
-                          value={swf.power.gfa_estimate ? `${swf.power.gfa_estimate.gfa_sqft.toLocaleString()} sqft (${swf.power.gfa_field_used}) → ${swf.power.gfa_estimate.facility_mw_range[0]}–${swf.power.gfa_estimate.facility_mw_range[1]} MW` : null}
+                          label="Floor area"
+                          value={`${swf.power.gfa_sqft.toLocaleString()} sqft (${swf.power.gfa_quality ?? "unknown"}, ${swf.power.gfa_field_used ?? "n/a"})`}
                         />
                         <EvidenceRow
-                          label="interconnection.fyi operator match"
-                          value={swf.power.operator_match ? `${swf.power.operator_match.operator} → ${swf.power.operator_match.mw_range[0]}–${swf.power.operator_match.mw_range[1]} MW` : null}
+                          label="Effective IT load"
+                          value={`${swf.power.effective_it_mw_central} MW @ ${swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW`}
                         />
                         <EvidenceRow
-                          label="Climate-weighted seasonal point"
-                          value={swf.scope1_onsite_cooling.climate_weighted_point_mgd != null ? `${swf.scope1_onsite_cooling.climate_weighted_point_mgd.toFixed(3)} MGD` : null}
+                          label="Cooling intensity used"
+                          value={`${swf.scope1_onsite_cooling.wup_gal_per_mw_day.central} gal/MW/day (${swf.scope1_onsite_cooling.basis.replace(/_/g, " ")})`}
                         />
-                        <EvidenceRow label="Cooling technology disclosed" value={null} />
-                        <EvidenceRow label="HV transmission plausibility check" value={swf.power.hv_plausibility} />
+                        <EvidenceRow label="Narrowed by a disclosure" value={swf.scope1_onsite_cooling.narrowed_by} />
+                        <EvidenceRow
+                          label="Operator interconnection cross-check"
+                          value={swf.power.operator_cross_check ? `${swf.power.operator_cross_check.operator}: ${swf.power.operator_cross_check.agrees ? "consistent" : "outside range"}` : null}
+                        />
+                        <EvidenceRow label="HV transmission plausibility" value={swf.power.hv_plausibility} />
                       </div>
                       <div className="mt-2.5 pt-2.5 border-t border-neutral-800 text-[10px] text-neutral-500 leading-relaxed">
                         {swf.power.note}
@@ -550,6 +571,27 @@ export function RightPanel() {
                   )}
                 </div>
               </div>
+              <div className="mt-1.5 text-[11px] text-neutral-400">
+                Range <span className="tabular-nums">{swf.total_mgd_range[0].toFixed(3)}–{swf.total_mgd_range[1].toFixed(3)}</span> MGD
+                <span className="text-neutral-600"> · </span>
+                summer peak-day direct draw{" "}
+                <span className="text-amber-300 tabular-nums">{swf.scope1_onsite_cooling.peak_day_mgd.toFixed(3)}</span> MGD
+              </div>
+
+              {/* Reality check against JLARC's measured per-building figures */}
+              <div
+                className={`mt-2.5 rounded border px-2.5 py-1.5 text-[10px] leading-relaxed ${
+                  swf.benchmark.flag === "exceeds_largest_measured"
+                    ? "border-red-800/60 bg-red-950/20 text-red-300"
+                    : swf.benchmark.flag === "large"
+                      ? "border-amber-800/60 bg-amber-950/20 text-amber-300"
+                      : "border-neutral-800 bg-neutral-900/40 text-neutral-400"
+                }`}
+              >
+                <span className="uppercase tracking-wider text-[9px] opacity-80">Reality check · </span>
+                {swf.benchmark.verdict}
+              </div>
+
               <div className="mt-2 text-[11px] text-neutral-500 leading-relaxed">{swf.total_note}</div>
             </div>
 
@@ -557,28 +599,32 @@ export function RightPanel() {
             <div className="border-b border-neutral-800 px-5 py-4">
               <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Scope Breakdown</div>
               <div className="text-[10px] text-neutral-500 leading-relaxed mb-1">
-                Power basis ({swf.power.basis.replace("_", " ")}): {swf.power.mw_range[0]}–{swf.power.mw_range[1]} MW.
+                Effective IT load {swf.power.effective_it_mw_central} MW (range {swf.power.effective_it_mw_range[0]}–
+                {swf.power.effective_it_mw_range[1]}), from floor area at {swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW.
               </div>
               <ScopeRow
                 label="Scope 1 — on-site cooling"
                 tone="amber"
                 mgdRange={swf.scope1_onsite_cooling.mgd_range}
-                detail={`WUE envelope ${swf.scope1_onsite_cooling.wue_range_l_per_kwh[0]}–${swf.scope1_onsite_cooling.wue_range_l_per_kwh[1]} L/kWh — full published range; cooling technology undisclosed per facility.`}
+                central={swf.scope1_onsite_cooling.mgd_central}
+                detail={`${swf.scope1_onsite_cooling.wup_gal_per_mw_day.low}–${swf.scope1_onsite_cooling.wup_gal_per_mw_day.high} gal/MW/day (central ${swf.scope1_onsite_cooling.wup_gal_per_mw_day.central}). Reference tiers: ${swf.scope1_onsite_cooling.wup_reference_tiers.air_cooled} air-cooled, ${swf.scope1_onsite_cooling.wup_reference_tiers.pwc_observed} PWC observed, ${swf.scope1_onsite_cooling.wup_reference_tiers.fully_water_cooled} fully evaporative.`}
                 methodology={swf.scope1_onsite_cooling.methodology}
-                climatePointMgd={swf.scope1_onsite_cooling.climate_weighted_point_mgd}
-                climateNote={swf.scope1_onsite_cooling.climate_note}
+                climatePointMgd={swf.scope1_onsite_cooling.peak_day_mgd}
+                climateNote={swf.scope1_onsite_cooling.note}
               />
               <ScopeRow
                 label="Scope 2 — electricity-driven"
                 tone="sky"
                 mgdRange={swf.scope2_electricity.mgd_range}
-                detail={`Dominion generation-mix-blended consumption factor: ${swf.scope2_electricity.blended_consumption_gal_per_mwh} gal/MWh at ${swf.scope2_electricity.assumed_utilization * 100}% assumed utilization.`}
+                central={swf.scope2_electricity.mgd_central}
+                detail={`PUE ${swf.scope2_electricity.pue_range[0]}–${swf.scope2_electricity.pue_range[1]} (${swf.scope2_electricity.pue_class} vintage) × ${swf.scope2_electricity.blended_consumption_gal_per_mwh} gal/MWh Dominion generation-mix-blended consumption factor.`}
                 methodology={swf.scope2_electricity.methodology}
               />
               <ScopeRow
                 label="Scope 3 — embodied / supply-chain"
                 tone="violet"
                 mgdRange={swf.scope3_embodied.mgd_range}
+                central={swf.scope3_embodied.mgd_central}
                 detail={`Proportional anchor: ${(swf.scope3_embodied.proportional_range[0] * 100).toFixed(0)}–${(swf.scope3_embodied.proportional_range[1] * 100).toFixed(0)}% of Scope 1+2. ${swf.scope3_embodied.note}`}
                 methodology={swf.scope3_embodied.methodology}
               />

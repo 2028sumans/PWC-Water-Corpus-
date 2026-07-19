@@ -81,49 +81,70 @@ export interface FacilityWaterContext {
   watershed_mgmt_plan_number: string | null;    // PWC Watershed Management Plan section reference
 }
 
-export interface GfaPowerEstimate {
-  gfa_sqft: number;
-  density_class: "standard" | "modern_ai" | "unknown";
-  it_power_density_w_per_sqft: [number, number];
-  it_mw_range: [number, number];
-  pue_class: "modern" | "standard" | "unknown";
-  pue_range: [number, number];
-  facility_mw_range: [number, number];
+/** How trustworthy this facility's floor-area figure is. `proffer_split`
+ * means only a site-wide proffered entitlement existed and it was divided
+ * evenly across the buildings sharing it. */
+export type GfaQuality = "assessed" | "permit" | "estimated" | "proffer_split" | "entitlement";
+
+export interface OperatorCrossCheck {
+  operator: string;
+  operator_mw_range: [number, number];
+  agrees: boolean;
+  note: string;
 }
 
 export interface ScopePowerEstimate {
-  mw_range: [number, number];
-  basis: "intersection" | "disagreement" | "gfa_only" | "operator_only";
-  note: string;
-  gfa_estimate: GfaPowerEstimate | null;
+  effective_it_mw_range: [number, number];
+  effective_it_mw_central: number;
+  basis: "gfa_icprb_density";
+  sqft_per_effective_mw: number;
+  gfa_sqft: number;
   gfa_field_used: string | null;
-  operator_match: { operator: string; mw_range: [number, number] } | null;
-  source: string | null;
+  gfa_quality: GfaQuality | null;
+  note: string;
+  operator_cross_check: OperatorCrossCheck | null;
   hv_plausibility: string | null;
 }
 
 export interface Scope1Onsite {
   mgd_range: [number, number];
-  wue_range_l_per_kwh: [number, number];
-  climate_weighted_point_mgd: number | null;
-  climate_weighted_wue_l_per_kwh: number | null;
-  climate_note: string | null;
+  mgd_central: number;
+  peak_day_mgd: number;
+  consumptive_mgd_central: number;
+  wup_gal_per_mw_day: { low: number; central: number; high: number };
+  wup_reference_tiers: Record<string, number>;
+  /** How the technology envelope was narrowed, best evidence first. */
+  basis: "disclosed_cooling" | "operator_closed_loop_commitment" | "technology_envelope";
+  narrowed_by: string | null;
   methodology: string;
   note: string;
 }
 
 export interface Scope2Electricity {
   mgd_range: [number, number];
+  mgd_central: number;
+  pue_class: "modern" | "standard" | "unknown";
+  pue_range: [number, number];
+  pue_capped_by_proffer: boolean;
   blended_consumption_gal_per_mwh: number;
-  assumed_utilization: number;
   methodology: string;
+  note: string;
 }
 
 export interface Scope3Embodied {
   mgd_range: [number, number];
+  mgd_central: number;
   proportional_range: [number, number];
   methodology: string;
   note: string;
+}
+
+/** Plausibility check of the modeled Scope 1 figure against JLARC's measured
+ * per-building water use for Virginia data centers (2023). */
+export interface BenchmarkCheck {
+  flag: "exceeds_largest_measured" | "large" | "typical_or_below" | "normal";
+  verdict: string;
+  reference_mgd: Record<string, number>;
 }
 
 export interface ScopeWaterFootprint {
@@ -132,7 +153,15 @@ export interface ScopeWaterFootprint {
   scope2_electricity: Scope2Electricity;
   scope3_embodied: Scope3Embodied;
   total_mgd_range: [number, number];
+  total_mgd_central: number;
   total_note: string;
+  benchmark: BenchmarkCheck;
+}
+
+export interface PermitCoolingConditions {
+  air_or_closed_loop: boolean;
+  mandatory_source_restriction: boolean;
+  source: string;
 }
 
 export interface BuildingProfile {
@@ -145,11 +174,13 @@ export interface BuildingProfile {
   year_built: number | null;
   gfa_sqft: number | null;
   gfa_field_used: string | null;
+  gfa_quality: GfaQuality | null;
   permit_case: string | null;
   permit_status: string | null;
   use_permits: FacilityCaseRecord[];
   bza_cases: FacilityCaseRecord[];
   pending_cases: FacilityCaseRecord[];
+  permit_cooling_conditions: PermitCoolingConditions | null;
   water_context: FacilityWaterContext | null;
   scope_water_footprint: ScopeWaterFootprint | null;
 }

@@ -59,12 +59,14 @@ interface FacilityContext {
   status?: string | null;
   yearBuilt?: number | null;
   gfaSqft?: number | null;
-  powerMwRange: [number, number];
-  powerBasis: string;
-  scope1MgdRange: [number, number];
-  scope2MgdRange: [number, number];
-  scope3MgdRange: [number, number];
-  totalMgdRange: [number, number];
+  effectiveMw: number;
+  scope1Central: number;
+  scope1Range: [number, number];
+  scope2Central: number;
+  scope3Central: number;
+  totalCentral: number;
+  totalRange: [number, number];
+  peakDayMgd: number;
   flags?: string[];
 }
 
@@ -86,12 +88,13 @@ function facilityContextBlock(ctx: FacilityContext): string {
   if (ctx.status) lines.push(`Status: ${ctx.status}`);
   if (ctx.yearBuilt) lines.push(`Year built: ${ctx.yearBuilt}`);
   if (ctx.gfaSqft) lines.push(`Gross floor area: ${ctx.gfaSqft.toLocaleString()} sqft`);
-  lines.push(`Estimated facility power: ${fmtRange(ctx.powerMwRange, "MW", 1)} (basis: ${ctx.powerBasis.replace("_", " ")})`);
-  lines.push(`Scope 1 (on-site cooling): ${fmtRange(ctx.scope1MgdRange, "MGD")}`);
-  lines.push(`Scope 2 (electricity-driven): ${fmtRange(ctx.scope2MgdRange, "MGD")}`);
-  lines.push(`Scope 3 (embodied / supply-chain): ${fmtRange(ctx.scope3MgdRange, "MGD")}`);
-  lines.push(`Total Scope 1+2+3 envelope: ${fmtRange(ctx.totalMgdRange, "MGD")}`);
-  if (ctx.flags && ctx.flags.length) lines.push(`Flags: ${ctx.flags.join(", ")}`);
+  lines.push(`Effective IT power (from floor area at 8,818 sqft/MW): ${ctx.effectiveMw} MW`);
+  lines.push(`Scope 1 (on-site cooling): ${ctx.scope1Central.toFixed(3)} MGD central, range ${fmtRange(ctx.scope1Range, "MGD")}`);
+  lines.push(`Scope 2 (electricity-driven): ${ctx.scope2Central.toFixed(3)} MGD central`);
+  lines.push(`Scope 3 (embodied / supply-chain): ${ctx.scope3Central.toFixed(3)} MGD central`);
+  lines.push(`Total Scope 1+2+3: ${ctx.totalCentral.toFixed(3)} MGD central, range ${fmtRange(ctx.totalRange, "MGD")}`);
+  lines.push(`Summer peak-day direct on-site draw: ${ctx.peakDayMgd.toFixed(3)} MGD`);
+  if (ctx.flags && ctx.flags.length) lines.push(`Flags: ${ctx.flags.join("; ")}`);
   return lines.join("\n");
 }
 
@@ -100,20 +103,21 @@ const DOMAIN_PRIMER = `Domain knowledge you MUST treat as authoritative:
 
 KEY EMPIRICAL FINDING: 203 data center buildings exist in Prince William County, but ZERO hold NPDES (National Pollutant Discharge Elimination System) water discharge permits. This is not evidence of good environmental performance — it means the primary federal water disclosure regime structurally cannot see them, because data centers consume water primarily via evaporative cooling loss from municipal supply, not surface discharge. NPDES only regulates discharge, not consumption. A facility with "no NPDES permit" is therefore DARK, not clean.
 
-METHODOLOGY — this tool estimates a facility's water footprint in three scopes, exactly as defined by indirect_water_footprint.py, and NEVER invents a single-point water-consumption number:
+METHODOLOGY — this tool estimates a facility's water footprint in three scopes using empirical, region-calibrated relationships (indirect_water_footprint.py). It reports a CENTRAL estimate plus a range, and NEVER invents a disclosed measurement where none exists:
 
-- Scope 1 (on-site cooling): water evaporated at the facility itself via cooling towers / adiabatic humidification. Governed by Water Usage Effectiveness (WUE, L water per kWh of IT equipment energy; The Green Grid). Cooling technology (dry/closed-loop vs. hybrid vs. open evaporative) is NOT disclosed per facility in any PWC public dataset, so Scope 1 is always reported as the FULL published WUE envelope (0.0-2.4 L/kWh), never narrowed by an unstated assumption. A "climate-weighted point" (from trailing cooling-degree-days) may accompany the range as a plausibility signal for evaporative/hybrid systems specifically — it never replaces the range.
-- Scope 2 (electricity-driven): water consumed at the power plants generating the facility's electricity, computed from estimated facility power draw x Dominion's generation-mix-blended consumption factor (~318 gal/MWh, NREL Macknick et al. 2011) x assumed 90% utilization. This is a system-average grid factor, not marginal-generator attribution (no such public dataset exists).
-- Scope 3 (embodied / supply-chain): water used to fabricate chips, servers, and construction materials before the facility ever draws power. NOT attributable to a specific PWC facility (chip fabs are not in Virginia) — modeled as a 5-15% proportional anchor on top of the Scope 1+2 operational total, per corporate embodied-vs-operational disclosure ratios (Privette et al., AGU Advances 2026). This is a floor-level anchor, not a physical per-facility estimate — at least one hyperscaler has disclosed embodied water exceeding 99% of its corporate total under a different accounting boundary, which is evidence the 5-15% anchor is conservative, not a contradiction.
+- Power: effective IT load = gross floor area / 8,818 sqft per effective MW. That density is ICPRB's, measured across the Virginia data center fleet from the JLARC/VADEQ air-permit database — NOT a generic rack-density benchmark. An interconnection.fyi operator span is used only as a CROSS-CHECK (confirm or flag), never to widen a floor-area-derived estimate.
+- Scope 1 (on-site cooling): effective IT MW x a measured Water Use per Unit of Power (WUP). ICPRB derived WUP from actual utility billing records: 150 gal/MW/day air-cooled/closed-loop, 309 the Prince William Water observed fleet average (used as the CENTRAL estimate), up to 1,577 fully evaporative. Peak summer day runs ~10x the annual average (3,060 gal/MW/day observed in PWC). A published operator WUE (e.g. AWS 0.12 L/kWh, Microsoft 0.27 L/kWh) or a binding permit cooling condition NARROWS this from the ~10x technology envelope to a tight band. A consumptive-use factor of 0.75 applies.
+- Scope 2 (electricity-driven): effective IT MW x PUE (vintage-based) x Dominion's generation-mix-blended consumption factor (~317 gal/MWh, NREL Macknick et al. 2011). System-average grid intensity, not marginal-generator attribution (no such public dataset exists).
+- Scope 3 (embodied / supply-chain): 5-15% proportional anchor on Scope 1+2 (Privette et al., AGU Advances 2026). Not a physical per-facility estimate — chip fabs and construction supply chains are outside Virginia.
 
-POWER ESTIMATION: two independent methods are cross-checked — (A) GFA-based: floor area x IT power density benchmark x PUE range selected by building vintage; (B) operator-keyword match against interconnection.fyi's public interconnection-queue MW ranges. When both exist and overlap, the range narrows to their intersection (the strongest evidence this tool can produce). When they disagree, both bounds are kept and the disagreement is flagged rather than silently resolved. When only one exists, that one is reported alone.
+REALITY CHECK — the model is validated against JLARC's MEASURED figures (Report 598, 2023 utility data): a typical data center building uses ~0.018 MGD (like a large office); only 11 buildings statewide exceeded 0.137 MGD; the single largest in Virginia used 0.666 MGD; the ENTIRE Virginia industry used 5.75 MGD. Summing this model over PWC's completed buildings reproduces Prince William Water's reported 0.42 MGD to within 7%. If a facility's central estimate exceeds the largest measured building, say so plainly.
 
-OBSERVABLE / MODELED / UNRESOLVED taxonomy — every claim about a facility's water footprint falls into one of three buckets:
-- OBSERVABLE: directly present in an institutional record (GFA, permit status, year built, NPDES/DEQ permit status, watershed membership).
-- MODELED: derived from the methodology above using observable inputs (Scope 1/2/3 MGD ranges, facility power range) — defensible but not a disclosed measurement.
-- UNRESOLVED: dark under current disclosure — actual cooling technology, actual metered water withdrawal, actual disclosed PUE, actual facility-specific embodied-water footprint. This is the largest bucket for data center facilities specifically.
+OBSERVABLE / MODELED / UNRESOLVED taxonomy:
+- OBSERVABLE: directly in a record (GFA, permit status, year built, NPDES/DEQ status, watershed).
+- MODELED: derived via the empirical relationships above (the MGD figures).
+- UNRESOLVED: dark under current disclosure — actual cooling technology (unless the operator publishes WUE), actual metered withdrawal, actual PUE, facility-specific embodied water.
 
-GOLDEN RULE: the total Scope 1+2+3 envelope is the sum of each scope's independent minimum and maximum — a conservative bound, not a statistical confidence interval (the three scopes are not assumed to co-vary). NEVER report a single point water-consumption figure for any facility — none is disclosed, and this tool's job is to make that gap visible, not paper over it. NEVER frame "no NPDES permit" as good news.`;
+GOLDEN RULE: quote the CENTRAL estimate as the headline figure, always with its range. The central uses Prince William Water's own observed intensity. NEVER frame "no NPDES permit" as good news.`;
 
 const SYSTEM_PROMPTS: Record<Mode, string> = {
   memo: `You are a water-risk analyst estimating data-center water footprints in Prince William County, Virginia, using the Scope 1/2/3 methodology below. You categorize each attribute as observable (directly present in institutional records), modeled (derived via the stated methodology), or unresolved (dark under current disclosure). Use the retrieved policy documents to ground your analysis. Be neutral — assess, don't advocate.

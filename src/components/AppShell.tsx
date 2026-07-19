@@ -66,44 +66,50 @@ export function AppShell() {
   // Rotating mini-tickers — derived live from the same Scope 1/2/3 water
   // footprint estimates (indirect_water_footprint.py) the right panel shows,
   // so the headline numbers always match what the analyst sees on click.
+  // BUILDINGS ONLY: a campus's entitlement GFA is not net of the buildings
+  // already built on it, so summing buildings + campuses double-counts.
   const tickerStats = useMemo(() => {
     if (!data) return null;
     let topName = "";
-    let topHi = -1;
-    let totalLo = 0;
-    let totalHi = 0;
+    let topCentral = -1;
+    let completedS1 = 0;
+    let completedN = 0;
+    let allCentral = 0;
     let noNpdesCount = 0;
     let npdesCount = 0;
     let n = 0;
-    for (const f of [...data.buildings, ...data.campuses]) {
+    for (const f of data.buildings) {
       const swf = f.scope_water_footprint;
       if (!swf) continue;
       n++;
-      totalLo += swf.total_mgd_range[0];
-      totalHi += swf.total_mgd_range[1];
+      allCentral += swf.total_mgd_central;
+      if (f.status === "Completed") {
+        completedS1 += swf.scope1_onsite_cooling.mgd_central;
+        completedN++;
+      }
       if (f.water_context?.has_npdes === 1) npdesCount++;
       else noNpdesCount++;
-      if (swf.total_mgd_range[1] > topHi) {
-        topHi = swf.total_mgd_range[1];
-        topName = f.name ?? (f.kind === "building" ? "Unnamed building" : "Unnamed campus");
+      if (swf.total_mgd_central > topCentral) {
+        topCentral = swf.total_mgd_central;
+        topName = f.name ?? "Unnamed building";
       }
     }
-    return { topName, topHi, totalLo, totalHi, noNpdesCount, npdesCount, n };
+    return { topName, topCentral, completedS1, completedN, allCentral, noNpdesCount, npdesCount, n };
   }, [data]);
 
   const topCandidateValue = tickerStats && tickerStats.topName
-    ? `${tickerStats.topName} · up to ${tickerStats.topHi.toFixed(2)} MGD`
+    ? `${tickerStats.topName} · ~${tickerStats.topCentral.toFixed(2)} MGD central est.`
     : "loading…";
   const npdesValue = tickerStats
-    ? `${tickerStats.noNpdesCount} of ${tickerStats.n} facilities with NO NPDES coverage · ${tickerStats.npdesCount} with permits`
+    ? `${tickerStats.noNpdesCount} of ${tickerStats.n} buildings with NO NPDES coverage · ${tickerStats.npdesCount} with permits`
     : "loading…";
   const totalValue = tickerStats
-    ? `${tickerStats.totalLo.toFixed(1)}–${tickerStats.totalHi.toFixed(1)} MGD across ${tickerStats.n} facilities`
+    ? `${tickerStats.completedS1.toFixed(2)} MGD direct on-site, ${tickerStats.completedN} completed buildings (validated vs. PWC Water 2023)`
     : "loading…";
 
   const TICKERS: Array<{ label: string; value: string; tone?: "good" | "bad" | "neutral" }> = [
     { label: "LARGEST ESTIMATED FOOTPRINT", value: topCandidateValue, tone: "bad" },
-    { label: "COUNTYWIDE SCOPE 1+2+3 ENVELOPE", value: totalValue },
+    { label: "COMPLETED FLEET, DIRECT WATER", value: totalValue },
     { label: "NPDES COVERAGE", value: npdesValue, tone: "bad" },
     { label: "RAG CORPUS", value: "policy + methodology docs" },
     { label: "HEADLINE FINDING", value: "0 of 203 DC buildings hold NPDES water discharge permits", tone: "bad" },
