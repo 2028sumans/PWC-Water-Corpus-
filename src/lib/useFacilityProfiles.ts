@@ -249,6 +249,20 @@ export interface ScopeWaterFootprint {
   total_consumptive_mgd_central: number;
   total_basis_note: string;
   total_note: string;
+  /**
+   * Monte Carlo 90% credible interval for this building's total, from priors
+   * keyed to its own evidence (tight for permit/disclosed, wide for
+   * vintage-classed). Present after monte_carlo.py runs. Distinct from
+   * total_mgd_range, which is the conservative min/max envelope.
+   */
+  uncertainty?: {
+    method: "monte_carlo";
+    iterations: number;
+    total_mgd_p5: number;
+    total_mgd_p50: number;
+    total_mgd_p95: number;
+    relative_width_pct: number | null;
+  };
   benchmark: BenchmarkCheck;
 }
 

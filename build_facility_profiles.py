@@ -703,4 +703,15 @@ with open(out_path, "w") as f:
     json.dump(out, f, separators=(",", ":"), default=str, allow_nan=False)
 size_kb = os.path.getsize(out_path) / 1024
 t(f"Wrote {out_path} ({size_kb:.0f} KB)")
+
+# Monte Carlo uncertainty runs as a post-process: it reads the profiles just
+# written and appends per-facility credible intervals + a county summary in
+# place. Kept as a separate module (numpy-heavy, independently runnable) but
+# chained here so one command produces a complete, uncertainty-quantified file.
+try:
+    import monte_carlo
+    t("Running Monte Carlo uncertainty pass...")
+    monte_carlo.main()
+except Exception as e:  # never let MC failure block the deterministic build
+    t(f"  Monte Carlo pass skipped: {e}")
 t("DONE.")

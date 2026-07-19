@@ -608,7 +608,21 @@ export function RightPanel() {
                 </div>
               </div>
               <div className="mt-1.5 text-[11px] text-neutral-400">
-                Range <span className="tabular-nums">{swf.total_mgd_range[0].toFixed(3)}–{swf.total_mgd_range[1].toFixed(3)}</span> MGD
+                {swf.uncertainty ? (
+                  <>
+                    90% CI{" "}
+                    <span className="tabular-nums">
+                      {swf.uncertainty.total_mgd_p5.toFixed(3)}–{swf.uncertainty.total_mgd_p95.toFixed(3)}
+                    </span>{" "}
+                    MGD
+                    <span className="text-neutral-600"> (Monte Carlo, ±{swf.uncertainty.relative_width_pct != null ? Math.round(swf.uncertainty.relative_width_pct / 2) : "?"}%)</span>
+                  </>
+                ) : (
+                  <>
+                    Range{" "}
+                    <span className="tabular-nums">{swf.total_mgd_range[0].toFixed(3)}–{swf.total_mgd_range[1].toFixed(3)}</span> MGD
+                  </>
+                )}
                 <span className="text-neutral-600"> · </span>
                 summer peak-day direct draw{" "}
                 <span className="text-amber-300 tabular-nums">{swf.scope1_onsite_cooling.peak_day_mgd.toFixed(3)}</span> MGD

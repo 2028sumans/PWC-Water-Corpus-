@@ -1094,3 +1094,49 @@ All three are the same underlying failure: **carbon accounting conventions — a
 - **The marginal mix is PJM-wide, not Dominion-zone-specific.** Virginia has nearly retired its coal (3% of generation), so the 10% marginal-coal share overstates coal's local role — the **Roanoke figure (8.1 MGD) is an upper bound**, and the true Dominion-zone marginal is *even more* gas-and-James-concentrated than shown. The York→0 result is robust to this; the coal reallocation is not.
 - **Marginal fuel *frequency* is used as a proxy for marginal *energy* share.** A Data Miner pull of hourly marginal MW by fuel for the Dominion zone (2023–24) would replace both approximations and is the clean next step.
 - Neither average nor marginal is "the" right number — GHG Protocol reports average (location-based) and this study keeps that as the headline, with marginal reported alongside as the causal complement. The point is that **for water they disagree about the receiving basin entirely**, which no carbon framework would ever surface.
+
+---
+
+## 17. Monte Carlo uncertainty — facility-centric priors, correlated draws
+
+The range shipped through §16 was an **envelope**: the sum of each scope's independent minimum and maximum. That is a conservative outer bound, not a probability — it assumes every parameter sits at its worst simultaneously, which never happens, and for the county it spans **33.6–87.6 MGD**, too wide to be useful. `monte_carlo.py` replaces it with a real distribution: 40,000 draws of every parameter through the same arithmetic.
+
+### 17.1 Two design choices that make it honest
+
+**Facility-centric priors.** Every building samples from a distribution keyed to *its own evidence*, not a shared average — this is the "not just averages" principle applied to uncertainty itself:
+
+| Parameter | Well-evidenced building samples… | Weakly-evidenced building samples… |
+|---|---|---|
+| Power | permit generator capacity (Eq 6-3 factor) | its operator's measured density band (§15) or a vintage band |
+| Scope 1 WUP | a narrow air-cooled tier (operator cooling commitment) | the full 150–1,577 technology envelope |
+| Scope 2 PUE | a ±0.06 band around the operator's published fleet PUE | a wide vintage band |
+
+Better evidence → narrower prior → narrower interval, **per building**.
+
+**Correlation.** Parameters shared across buildings are drawn **once per iteration** and applied to all: the grid's water intensity (one grid), the ICPRB WUP calibration (one scale), the Scope 3 proportion (one assumption), the Eq 6-3 factor (one ICPRB standard), and per-operator / per-class density and PUE calibration offsets. If these were drawn independently per building, 243 independent errors would cancel and the county interval would collapse to a spuriously tight number. Idiosyncratic, building-specific variation *is* drawn independently and correctly averages down. The result is visible in the numbers: per-building intervals are wide (median **±22%**) but the county interval is much tighter (**±8%**) — because the idiosyncratic part averages out while the systematic part does not. An estimator that reported ±8% per building would be lying; one that reported ±22% for the county would be double-counting.
+
+### 17.2 The result
+
+| | Median | 90% credible interval | Envelope (min/max) |
+|---|---|---|---|
+| County total, average mix | **53.5 MGD** | **49.6 – 57.8** | 33.6 – 87.6 |
+| County total, marginal mix | 49.5 MGD | 46.2 – 52.9 | — |
+
+The 90% CI is roughly **±8%**, against the envelope's ±45%. This is the number to quote in a paper.
+
+### 17.3 A real convexity correction
+
+The Monte Carlo median (53.5) sits **~6% above the plug-in central (50.3 MGD)**. This is not a bug and not noise — it is Jensen's inequality. Water scales with **1/density**, density is uncertain, and the operators' measured density bands are **right-skewed** (e.g. Amazon's permit-backed buildings run 7,259–12,735 sqft/MW around a median of 8,627). The expectation of `1/density` therefore exceeds `1/median density`, so the probability-weighted total is higher than the figure you get by plugging in the central density. **A point estimate built on central density systematically understates the expected footprint.** The Monte Carlo median is the better central estimate, and is recommended as the headline figure going forward; the plug-in central is retained and labelled as such.
+
+### 17.4 What the intervals reveal about evidence
+
+Per-building 90% interval widths: narrowest **29%**, median **43%**, widest **62%** of the median. Two findings fall out:
+
+- **Permit-backed buildings are not much tighter than floor-area buildings** (median width 50% vs 43%). Replacing an assumed density with measured generator capacity removes the density-calibration risk and the backwards-8,818 dependency — a real gain in *accuracy* and *independence* — but ICPRB's Equation 6-3 factor (0.5 redundancy × 0.8 utilization) is itself a ±30% assumption, so the *interval* does not narrow. Even the best-evidenced buildings are ~±25% until someone meters actual load.
+- The buildings with an operator cooling commitment *and* a disclosed PUE *and* permit power are the narrowest (~29%); those on GFA + vintage bands + technology-envelope cooling are the widest (~62%). The interval width is, in effect, a per-building **evidence score**.
+
+### 17.5 Limits
+
+- Distributions are triangular (min/mode/max), chosen for defensibility over a fitted shape no data supports.
+- Correlations are handled at the group level (systematic vs idiosyncratic), not as a full covariance matrix; cross-parameter correlations (e.g. dense buildings also running low PUE) are not modelled.
+- The priors inherit every limitation of the underlying evidence — most importantly that **0 of 243 buildings have metered water or a confirmed cooling type**, so the intervals quantify *parameter* uncertainty, not the structural gap that no facility discloses its consumption.
