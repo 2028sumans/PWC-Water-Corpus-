@@ -656,8 +656,9 @@ Every substantive finding, in one place. Sections 6–7 grew chronologically and
 | 5 | **Campus entitlement GFA duplicated onto smaller campuses.** Manassas Point PRA implied FAR 3.34, Battlefield Business Park 2.68 — both share a GFA with a larger campus. | Flagged via `implied_far` / `far_flag`, not silently corrected |
 | 6 | **Suspected PUE double-count.** | **Retracted** — Eq. 6-3 says "Effective **(IT)** Power Demand", so multiplying by PUE is right |
 | 7 | **`unknown` PUE applied to 147 unbuilt buildings.** Their vintage is not unknown; they are being built now. | Fixed — `new_build` class; `unknown` now empty |
-| 8 | **Withdrawal and consumption are summed.** Scope 1 is delivered water, Scope 2 is consumed water. The 0.75 factor exists to reconcile them and is computed but unused. | Open |
-| 9 | **Peak-day ignores narrowing** — always uses 3,060 gal/MW/day, giving a 20× peak:average ratio on narrowed facilities. | Open |
+| 8 | **Withdrawal and consumption are summed.** Scope 1 is delivered water, Scope 2 is consumed water. The 0.75 factor exists to reconcile them and is computed but unused. | **Closed (§14.1)** — both bases now reported: 51.42 MGD delivered, 50.85 MGD consumptive |
+| 9 | **Peak-day ignores narrowing** — always uses 3,060 gal/MW/day, giving a 20× peak:average ratio on narrowed facilities. | **Closed (§12)** — peak is now a ratio on the building's own central WUP; county peak 23.36 → 20.50 MGD (9.9×) |
+| 13 | **Market-based Scope 2 was missing.** GHG Protocol requires location- *and* market-based figures; only the former existed, so the model did not speak the operators' accounting language. | **Closed (§14.2)** — 44.68 location-based vs 35.55 market-based; the 9.13 MGD gap is the finding |
 | 10 | **The estimator could only narrow one way.** Evidence could lower Scope 1 but never raise it. | Fixed — `disclosed_cooling_evaporative` basis added |
 | 11 | Three join bugs: codenames not unique across operators (`VA-10`), substring matching (`IAD-7` → `IAD-74`), dedupe on `gpin` when GPIN is the **parcel**. | All fixed |
 | 12 | **Non-emergency generator fleets break ICPRB's 0.5 redundancy rationale**, which assumes 2N emergency backup. 74262 is 100% non-emergency. | Flagged per building, factor unchanged |

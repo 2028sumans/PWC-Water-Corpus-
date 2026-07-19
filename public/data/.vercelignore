@@ -1,0 +1,4 @@
+
+# Python pipeline raw inputs (1.2GB) — consumed only by the local *.py scripts,
+# never read by the Next.js app, which serves everything from public/data/.
+/data/

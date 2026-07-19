@@ -2,10 +2,13 @@
 # The Python preprocessing pipeline runs locally before deploy (its outputs in
 # public/data/ ship as static assets), not on Vercel.
 
-# Python preprocessing pipeline
+# Python preprocessing pipeline + its raw inputs (data/ is ~1.2GB, consumed only
+# by the local *.py scripts, never read by the app, which serves public/data/).
 *.py
 __pycache__/
 *.pyc
+data
+/data
 
 # Documentation (read on GitHub, not deployed)
 docs/
@@ -15,6 +18,9 @@ docs/
 *.jsonl
 
 # preprocess_score_parcels.py's output — a local intermediate consumed by
-# build_facility_profiles.py, never served by the app itself.
+# build_facility_profiles.py, never served by the app itself. ~1.08GB combined
+# and over Vercel's 100MB single-file limit.
+parcels_scored.json
+parcels_scored.geojson
 public/data/parcels_scored.json
 public/data/parcels_scored.geojson
