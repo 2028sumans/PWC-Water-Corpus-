@@ -776,3 +776,58 @@ Distribution: 132 `new_build`, 18 `modern`, 6 `standard`, 2 `legacy`, 44 permit-
 This is **not** density resolved. It is density *correctly framed*: the constant is no longer a single fleet average applied to buildings it does not describe, and each building now reports which band it used and why. The evidence base for the modern band is one solid measurement plus two ambiguous attributions plus a literature consistency check.
 
 The headline moved 16% on that. Anyone quoting the total should know the number is now era-adjusted and that the adjustment rests on thin evidence pending §9.2.
+
+---
+
+## 11. The building dataset was stale — refreshed 19 July 2026
+
+Chasing more density pairs led somewhere more consequential than density. Querying the county's **live** Data Center Buildings layer to find floor area for a permit-stated building revealed that the snapshot this model had been running on was materially out of date.
+
+### 11.1 What was wrong
+
+| | Snapshot | Live layer |
+|---|---|---|
+| Buildings | 203 | **243** |
+| Name-matched with >5% GFA difference | — | **40 of 148** |
+| Total GFA (matched names) | 36.4M sqft | 38.5M sqft (+5.7%) |
+
+Individual divergences were far larger than the aggregate:
+
+| Building | Snapshot | Live | |
+|---|---|---|---|
+| Microsoft Azure MNZ04 / MNZ05 | 82,618 | 310,856 | **3.76×** |
+| NTT Grove at Gainesville VA12 | 184,855 | 580,498 | **3.14×** |
+| NTT Grove at Gainesville VA13 | 184,855 | 557,012 | 3.01× |
+| Microsoft Azure 1–6 | 425,459 | 633,333 | 1.49× |
+| Amazon AWS IAD A / B | 634,891 | ~246,000 | **0.39×** |
+| Aligned Data Centers IAD05 | 1,275,141 | 432,742 | 0.34× |
+
+**59 buildings existed in the live layer and not in the snapshot at all** — entire campuses including Devlin Technology Park (A–H) and Project Well.
+
+Every figure this model produced before 19 July 2026 was computed on that snapshot.
+
+### 11.2 A bug the refresh introduced
+
+The live layer encodes "not built" as **`YearBuilt = 0`**, where the old snapshot used null. Taken literally, `0 < 2010`, so **17 Planned buildings were classed `legacy`** — handed the least dense density band (11,000 sqft/MW) and the worst PUE band (1.45–1.80) when they are the newest structures in the dataset.
+
+`_vintage_class` now treats zero and negatives as missing. Fixed before any figure was published.
+
+### 11.3 Effect
+
+| | MGD |
+|---|---|
+| Stale data, single 8,818 density | 32.51 |
+| Stale data, banded density | 37.84 |
+| **Refreshed data, banded density** | **51.42** |
+
+Roughly **+36% from the data refresh alone**, on top of +16% from banding. The refresh matters more than any modelling change made this session.
+
+Completed-building Scope 1 is now **0.3518 MGD** across 54 completed buildings, against Prince William Water's reported 0.42 MGD service-area total — closer than the 0.298 the stale data gave, though that comparison remains **not independent** (§6.1).
+
+Density is now **52%** of the swing, up from 48%, because the refresh added 40 buildings that mostly lack permit-derived power and therefore lean on the constant.
+
+### 11.4 The standing lesson
+
+The county updates this layer continuously — GFA is revised as buildings move from planned to permitted to assessed. A snapshot is a point-in-time read of a moving dataset, and nothing in the pipeline was checking its age. **`build_facility_profiles.py` should re-pull from the live endpoint rather than a vendored file**, or at minimum record and surface the snapshot date.
+
+Live endpoint: `https://gisweb.pwcva.gov/arcgis/rest/services/Planning/Build_Out_Analysis/MapServer/9/query`

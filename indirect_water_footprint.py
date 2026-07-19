@@ -519,12 +519,18 @@ UNBUILT_STATUSES = ("planned", "under construction", "pending")
 
 
 def _vintage_class(year_built, status=None):
-    """Classify a building for PUE purposes.
+    """Classify a building for PUE and density purposes.
 
     Status is consulted before vintage, because an unbuilt facility has no year
     built and that absence is not ignorance -- it means the building is going up
     now, to current practice.
     """
+    # The county layer encodes "not built" as YearBuilt = 0, not as null. Taken
+    # literally, 0 < 2010 and 17 Planned buildings were classed LEGACY -- given
+    # the least dense density band and the worst PUE band, when they are in fact
+    # the newest thing in the dataset. Zero and negatives are missing values.
+    if year_built is not None and year_built <= 0:
+        year_built = None
     if year_built is None:
         if status and status.strip().lower() in UNBUILT_STATUSES:
             return "new_build"
