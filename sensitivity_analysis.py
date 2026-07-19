@@ -34,8 +34,14 @@ def county_total(density=None, wup_pwc=None, wup_air=None, wup_water=None,
         swf = b.get("scope_water_footprint")
         if not swf:
             continue
-        gfa = swf["power"]["gfa_sqft"]
-        mw = gfa / density
+        # Buildings whose power comes from a VADEQ permit do not depend on the
+        # density constant at all -- their MW is generator capacity x ICPRB's
+        # Equation 6-3 factors. Varying density must leave them untouched, or
+        # the sweep reports a sensitivity the model no longer has.
+        if swf["power"].get("basis") == "permit_generator_capacity":
+            mw = swf["power"]["effective_it_mw_central"]
+        else:
+            mw = swf["power"]["gfa_sqft"] / density
 
         basis = swf["scope1_onsite_cooling"]["basis"]
         wup = wup_air if basis == "operator_closed_loop_commitment" else wup_pwc

@@ -551,7 +551,11 @@ export function RightPanel() {
                         />
                         <EvidenceRow
                           label="Effective IT load"
-                          value={`${swf.power.effective_it_mw_central} MW @ ${swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW`}
+                          value={
+                            swf.power.basis === "permit_generator_capacity" && swf.power.permit
+                              ? `${swf.power.effective_it_mw_central} MW from VADEQ permit ${swf.power.permit.registration_no}`
+                              : `${swf.power.effective_it_mw_central} MW @ ${swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW`
+                          }
                         />
                         <EvidenceRow
                           label="Cooling intensity used"
@@ -600,7 +604,18 @@ export function RightPanel() {
               <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Scope Breakdown</div>
               <div className="text-[10px] text-neutral-500 leading-relaxed mb-1">
                 Effective IT load {swf.power.effective_it_mw_central} MW (range {swf.power.effective_it_mw_range[0]}–
-                {swf.power.effective_it_mw_range[1]}), from floor area at {swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW.
+                {swf.power.effective_it_mw_range[1]}),{" "}
+                {swf.power.basis === "permit_generator_capacity" && swf.power.permit ? (
+                  <span className="text-emerald-400/90">
+                    from VADEQ air permit {swf.power.permit.registration_no} —{" "}
+                    {swf.power.permit.site_generator_mw.toLocaleString()} MW of permitted generator
+                    capacity across {swf.power.permit.n_buildings_on_permit} building
+                    {swf.power.permit.n_buildings_on_permit === 1 ? "" : "s"}, apportioned by floor
+                    area. The 8,818 sqft/MW density assumption is not used for this building.
+                  </span>
+                ) : (
+                  <>from floor area at {swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW.</>
+                )}
               </div>
               <ScopeRow
                 label="Scope 1 — on-site cooling"

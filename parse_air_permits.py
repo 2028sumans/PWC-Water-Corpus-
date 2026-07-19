@@ -52,10 +52,20 @@ SECTION_PATTERNS = [
 # "2,750 kW" / "1,000 ekW" / "1500 ekW" / "3,000 kWe". Excludes bhp by requiring
 # the kW unit, which always accompanies the bhp figure on the same row.
 RATING_RE = re.compile(r'([\d,]{3,7})\s*(?:e?kW|kWe)\b', re.I)
-# "Twenty-two (22)" or a bare "(13)"
-COUNT_RE = re.compile(r'\((\d{1,3})\)')
+# "Twenty-two (22)", a bare "(13)", or "(36 units)" / "(1 unit)". The trailing
+# "units" form is common and was invisible to a pattern requiring the closing
+# paren immediately after the digits -- it left permit 74107 (CloudHQ) reading
+# 12 MW against an interconnection bucket of 100-250 MW.
+COUNT_RE = re.compile(r'\((\d{1,3})(?:\s*units?)?\)')
 # Equipment we must not count as generators
-NON_GENSET_RE = re.compile(r'MMBtu|Btu/hr|heating unit|water heater|space heater|boiler|cooling tower|storage tank', re.I)
+NON_GENSET_RE = re.compile(
+    r'MMBtu|Btu/hr|heating unit|water heater|space heater|boiler|cooling tower|'
+    r'storage tank|fire pump', re.I)
+
+# Counts are not always parenthesised. Several permits (74216) open a row with a
+# bare number and a dash -- "34 - MTU 20V4000G74S", "68 - Caterpillar 3516E" --
+# which the parenthesised pattern misses entirely, dropping a 335 MW site to 10.
+DASH_COUNT_RE = re.compile(r'(?:^|\s)(\d{1,3})\s*[-\u2013\u2014]\s*(?=[A-Za-z])')
 
 # Older permits spell counts out with no digits at all -- "Three Caterpillar
 # model 3516B ... 2000 ekW, each". Without this the row parses as a single unit
@@ -92,9 +102,17 @@ def equipment_section(lines):
     their rated capacity (3,000 ekW)"), which are not equipment and would be
     counted twice. Bounding the scan to the equipment list removes them.
     """
+    # The heading must be the real table heading, not a passing mention. Permit
+    # 74107's cover letter says "equipment list on page 3 and throughout the
+    # permit for the ownership name change", which matched a bare "Equipment
+    # List" and put the section boundary 160 lines above the actual table --
+    # leaving the parser to scrape the letterhead instead.
+    heading = re.compile(
+        r'(Equipment\s+List\s*[-–—]|Equipment\s+List.*consists\s+of|'
+        r'Equipment\s+at\s+this\s+facility|F\w+ment\s+to\s+be\s+Construct)', re.I)
     start = None
     for i, l in enumerate(lines):
-        if re.search(r'Equipment\s+List|F\w+ment\s+to\s+be', l, re.I):
+        if heading.search(l):
             start = i
             break
     if start is None:
@@ -105,6 +123,94 @@ def equipment_section(lines):
             end = j
             break
     return start, end
+
+
+# A row may carry two ratings for one set of machines, in two guises:
+#
+#   de-rating   "(2) MTU ... 1,000 ekW / 1,475 bhp de-rated to 750 ekW"
+#   alternative "(60) ... 3,000 ekW ... QSK95-G12 engine 3,250 ekW"
+#               with a condition elsewhere limiting output to 3,000 ekW
+#
+# In both cases the ENFORCEABLE figure is the lower one, and summing both
+# double-counts the same physical machines -- the failure that inflated permit
+# 74262 to 1,539 MW, three times the next largest site in the county.
+DERATE_RE = re.compile(r'de-?rated\s+to|limited?\s+to|shall\s+not\s+exceed', re.I)
+
+
+def parse_rows_count_anchored(lines, sec_start, sec_end):
+    """Parse the equipment table into rows anchored on parenthesised counts.
+
+    Each "(N)" opens a row; every rating from that point until the next "(N)"
+    belongs to it. Taking the MINIMUM rating within a row handles de-rating and
+    alternative-model listings without needing to tell them apart, and prevents
+    the cross-row merging that a proximity window causes -- "(52) ... 2,750 ekW"
+    immediately followed by "(1) ... 750 ekW" are different machines, not
+    alternatives for the same one.
+    """
+    anchors = []
+    for i in range(sec_start, sec_end):
+        matches = list(COUNT_RE.finditer(lines[i])) or list(DASH_COUNT_RE.finditer(lines[i]))
+        for cm in matches:
+            n = _int(cm.group(1))
+            tail = lines[i][cm.end():]
+            # "(804) 698-4000" is DEQ's telephone number, not a count of 804
+            # gen-sets. It parsed as one row of 804 units and turned a ~100 MW
+            # site into 1,206 MW.
+            if re.match(r'\s*\d{3}-\d{4}', tail):
+                continue
+            # No single permit row lists more machines than this; anything
+            # larger is a misparse.
+            if not (1 <= n <= 300):
+                continue
+            anchors.append((i, n))
+    if not anchors:
+        return []
+
+    section, sec_at = None, {}
+    for i in range(sec_start, sec_end):
+        section = find_section(lines[i], section)
+        sec_at[i] = section
+
+    rows = []
+    for idx, (line_i, n) in enumerate(anchors):
+        stop = anchors[idx + 1][0] if idx + 1 < len(anchors) else sec_end
+        block = lines[line_i:max(line_i + 1, stop)]
+        text = " ".join(block)
+        if NON_GENSET_RE.search(text):
+            continue
+        kws = [_int(m.group(1)) for m in RATING_RE.finditer(text)]
+        kws = [k for k in kws if MIN_UNIT_KW <= k <= MAX_UNIT_KW]
+        if not kws:
+            continue
+
+        # Take the FIRST rating in the block, not the minimum.
+        #
+        # pdftotext renders these tables columnwise, so a neighbouring row's
+        # rating can appear inside this row's line span -- permit 74342 shows
+        # "1,000 ekW" (belonging to the following two-unit row) sitting above
+        # the "(2)" that owns it. Taking the minimum grabbed that 1,000 for the
+        # 44-unit row rated 2,800 and cut the site from 273 MW to 194 MW.
+        #
+        # First-rating is also correct for the two multi-rating cases this
+        # parser must survive: a de-rated pair states the nominal figure first
+        # ("1,000 ekW ... de-rated to 750"), and an alternative-model row states
+        # the enforceable figure first ("3,000 ekW ... QSK95-G12 3,250 ekW",
+        # with a condition capping output at 3,000).
+        kw = kws[0]
+        flags = []
+        if len(set(kws)) > 1:
+            flags.append(f"multiple_ratings_{sorted(set(kws))}_took_first_{kw}"
+                         + ("_derate_stated" if DERATE_RE.search(text) else ""))
+        rows.append({
+            "section": sec_at.get(line_i) or "unknown",
+            "n_units": n,
+            "kw_each": kw,
+            "mw": round(n * kw / 1000, 3),
+            "basis": "count_anchored",
+            "flags": flags,
+            "source_line": " ".join(block[0].split())[:150],
+        })
+    return rows
 
 
 def find_section(line, current):
@@ -148,6 +254,18 @@ def parse_permit(path):
             codes.append(f"{p}-{t}".upper())
     codes = list(dict.fromkeys(codes))
 
+    rows = parse_rows_count_anchored(lines, *equipment_section(lines))
+    if rows:
+        return {
+            "file": os.path.basename(path),
+            "registration_no": reg,
+            "location": loc,
+            "building_codes": codes,
+            "rows": rows,
+        }
+
+    # Fall back to the line-scanning parser for permits with no parenthesised
+    # counts at all (older documents spell them out).
     rows = []
     section = None
     sec_start, sec_end = equipment_section(lines)
@@ -272,12 +390,18 @@ def summarise(p):
     p["n_units"] = sum(r["n_units"] for r in p["rows"])
     p["flagged_rows"] = sum(1 for r in p["rows"] if r["flags"])
 
-    alt = detect_alternative_models(p["rows"])
+    # The old detect_alternative_models() heuristic -- "any unit count that
+    # recurs with different ratings" -- was far too crude and false-positived on
+    # clean permits. 74342 legitimately lists (2) gen-sets at 750 ekW and (2)
+    # more at 2,000 ekW; those are different machines, not alternatives. The
+    # count-anchored parser now resolves multi-rating rows by taking the minimum
+    # (the enforceable figure), so a repeated count is no longer suspicious.
+    # Multi-rating rows are INFORMATIONAL, not disqualifying. The first-rating
+    # rule is validated against two hand-computed sites -- 74063 (119 units,
+    # 287.2 MW) and 74342 (103 units, 273.4 MW) -- both reproduced exactly, and
+    # both contain multi-rating rows. Treating the flag as a blocker held back
+    # 12 permits that parse correctly.
     reasons = []
-    if alt:
-        reasons.append(f"alternative_engine_models(counts={alt})")
-    if p["flagged_rows"]:
-        reasons.append(f"{p['flagged_rows']}_flagged_rows")
     if not p["rows"]:
         reasons.append("no_equipment_rows_parsed")
     # A site whose mean unit is outside the physical band for data centre

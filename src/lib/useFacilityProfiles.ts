@@ -93,10 +93,28 @@ export interface OperatorCrossCheck {
   note: string;
 }
 
+/** Permit-derived power provenance, present only when basis is
+ *  "permit_generator_capacity". A permit covers a SITE, so site_generator_mw is
+ *  the whole site's permitted capacity and gfa_share apportions this building's
+ *  slice of it. */
+export interface ScopePermitPower {
+  registration_no: string;
+  site_generator_mw: number;
+  gfa_share: number;
+  n_buildings_on_permit: number;
+  n_buildings_matched: number;
+}
+
 export interface ScopePowerEstimate {
   effective_it_mw_range: [number, number];
   effective_it_mw_central: number;
-  basis: "gfa_icprb_density";
+  /**
+   * "permit_generator_capacity" means power came from a VADEQ air permit's
+   * generator schedule via ICPRB Equation 6-3, and the 8,818 sqft/MW density
+   * bridge was NOT used for this building.
+   */
+  basis: "gfa_icprb_density" | "permit_generator_capacity";
+  permit: ScopePermitPower | null;
   sqft_per_effective_mw: number;
   gfa_sqft: number;
   gfa_field_used: string | null;

@@ -21,6 +21,7 @@ Two record types, one per row:
 Output: public/data/facility_profiles.json
 """
 import json
+import re
 import os
 import time
 
@@ -206,6 +207,99 @@ def permit_conditions_for(case_records):
     return None, None
 
 
+# ---------------------------------------------------------------------------
+# VADEQ air-permit generator capacity -- the strongest per-facility power input
+# ---------------------------------------------------------------------------
+# Permits are issued per SITE and name the buildings they cover, so a permit's
+# capacity must be APPORTIONED across those buildings rather than assigned to
+# each -- assigning per-building inflates a campus by its building count, the
+# same aggregation error that made interconnection.fyi's operator ranges
+# unusable. Apportionment is by floor-area share.
+#
+# Matching is deliberately strict, because three separate join bugs were found
+# while validating this pipeline: codenames are not unique across operators
+# (VA-10 is both NTT's and Iron Mountain's), substring matching makes IAD-7
+# match IAD-74, and GPIN is the parcel rather than the building.
+_PERMIT_PATH = os.path.join(_SCRIPT_DIR, "data", "permit_capacity.json")
+_OPERATOR_ALIASES = {
+    "amazon": ["amazon", "aws"], "microsoft": ["microsoft"], "ntt": ["ntt"],
+    "digital realty": ["digital realty", "dlr"], "equinix": ["equinix"],
+    "iron mountain": ["iron mountain"], "qts": ["qts"],
+    "stack": ["stack", "si nva"], "cloudhq": ["cloudhq", "cloud hq"],
+    "corporate office properties": ["corporate office properties", "copt"],
+    "oath": ["oath"], "comcast": ["comcast"],
+}
+
+
+def _codes(name):
+    return [f"{m.group(1)}-{m.group(2)}".upper()
+            for m in re.finditer(r'\b(IAD|DCA|MNZ|NVA|VA)[- ]?(\d+[A-Za-z]?)', name or '')]
+
+
+def _operator(name):
+    t = (name or "").lower()
+    for canonical, aliases in _OPERATOR_ALIASES.items():
+        if any(a in t for a in aliases):
+            return canonical
+    return None
+
+
+def build_permit_power_index(buildings_df):
+    """Map building name -> permit-derived power inputs.
+
+    Returns {building_name: {registration_no, site_generator_mw, gfa_share,
+    n_buildings_on_permit}}.
+    """
+    if not os.path.exists(_PERMIT_PATH):
+        t("  no permit_capacity.json found -- power falls back to the GFA bridge")
+        return {}
+
+    permits = [p for p in json.load(open(_PERMIT_PATH)) if p.get("confidence") == "high"]
+    rows = []
+    for _, b in buildings_df.iterrows():
+        nm = clean(b.get("BuildingName"))
+        if not nm:
+            continue
+        g, _f, _q = resolve_gfa(b, _proffer_group_sizes)
+        rows.append({"name": nm, "codes": set(_codes(nm)), "op": _operator(nm), "gfa": g or 0.0})
+
+    index = {}
+    for p in permits:
+        if "prince william" not in (p.get("location") or "").lower():
+            continue
+        pcodes = set(p.get("building_codes") or [])
+        if not pcodes:
+            continue
+        cands = [r for r in rows if pcodes & r["codes"]]
+        ops = [r["op"] for r in cands if r["op"]]
+        op = max(set(ops), key=ops.count) if ops else None
+        hits = [r for r in cands if r["op"] == op] if op else cands
+        # More matches than the permit names means the join is ambiguous; skip
+        # rather than guess.
+        if not hits or len(hits) > len(pcodes):
+            continue
+        total_gfa = sum(r["gfa"] for r in hits)
+        if not total_gfa:
+            continue
+        # Buildings on the permit we do not track (usually permitted-but-unbuilt)
+        # still draw on the site's capacity, so scale the denominator up as if
+        # they were of average size. Without this the tracked buildings absorb
+        # the whole site.
+        scale = len(pcodes) / len(hits)
+        for r in hits:
+            index[r["name"]] = {
+                "registration_no": p["registration_no"],
+                "site_generator_mw": p["permanent_generator_mw"],
+                "gfa_share": (r["gfa"] / total_gfa) / scale,
+                "n_buildings_on_permit": len(pcodes),
+                "n_buildings_matched": len(hits),
+            }
+    return index
+
+
+_permit_power_index = build_permit_power_index(dc_buildings)
+t(f"  buildings with permit-derived power: {len(_permit_power_index)}")
+
 building_profiles = []
 for _, b in dc_buildings.iterrows():
     geom = b.geometry
@@ -247,6 +341,7 @@ for _, b in dc_buildings.iterrows():
             d_hv_transmission_ft=(water_ctx or {}).get("d_hv_transmission_ft"),
             cdd=(water_ctx or {}).get("cdd"),
             pue_cap=pue_cap, cooling_disclosure=cooling_disc,
+            permit_power=_permit_power_index.get(clean(b.get("BuildingName"))),
         ),
     }
     building_profiles.append(profile)

@@ -9,6 +9,33 @@
   "ratio": 1.175
  },
  {
+  "registration_no": "74112",
+  "operator": "iron mountain",
+  "n_matched": 7,
+  "n_permit_codes": 8,
+  "permit_mw_scaled": 129.6,
+  "gfa_mw": 202.2,
+  "ratio": 0.641
+ },
+ {
+  "registration_no": "74171",
+  "operator": "amazon",
+  "n_matched": 2,
+  "n_permit_codes": 4,
+  "permit_mw_scaled": 46.6,
+  "gfa_mw": 46.4,
+  "ratio": 1.005
+ },
+ {
+  "registration_no": "74129",
+  "operator": "amazon",
+  "n_matched": 4,
+  "n_permit_codes": 4,
+  "permit_mw_scaled": 92.0,
+  "gfa_mw": 90.2,
+  "ratio": 1.02
+ },
+ {
   "registration_no": "74081",
   "operator": "amazon",
   "n_matched": 2,
@@ -18,22 +45,13 @@
   "ratio": 1.024
  },
  {
-  "registration_no": "74224",
-  "operator": "stack",
-  "n_matched": 1,
-  "n_permit_codes": 1,
-  "permit_mw_scaled": 76.5,
-  "gfa_mw": 31.9,
-  "ratio": 2.398
- },
- {
-  "registration_no": "74171",
+  "registration_no": "74052",
   "operator": "amazon",
-  "n_matched": 2,
+  "n_matched": 4,
   "n_permit_codes": 4,
-  "permit_mw_scaled": 32.7,
-  "gfa_mw": 46.4,
-  "ratio": 0.704
+  "permit_mw_scaled": 74.3,
+  "gfa_mw": 62.2,
+  "ratio": 1.195
  },
  {
   "registration_no": "73995",
@@ -43,5 +61,41 @@
   "permit_mw_scaled": 28.9,
   "gfa_mw": 41.6,
   "ratio": 0.695
+ },
+ {
+  "registration_no": "74224",
+  "operator": "stack",
+  "n_matched": 1,
+  "n_permit_codes": 1,
+  "permit_mw_scaled": 51.3,
+  "gfa_mw": 31.9,
+  "ratio": 1.608
+ },
+ {
+  "registration_no": "73741",
+  "operator": "amazon",
+  "n_matched": 3,
+  "n_permit_codes": 3,
+  "permit_mw_scaled": 35.5,
+  "gfa_mw": 29.4,
+  "ratio": 1.208
+ },
+ {
+  "registration_no": "74236",
+  "operator": "microsoft",
+  "n_matched": 1,
+  "n_permit_codes": 1,
+  "permit_mw_scaled": 25.1,
+  "gfa_mw": 35.5,
+  "ratio": 0.707
+ },
+ {
+  "registration_no": "74237",
+  "operator": "microsoft",
+  "n_matched": 1,
+  "n_permit_codes": 1,
+  "permit_mw_scaled": 24.8,
+  "gfa_mw": 34.0,
+  "ratio": 0.729
  }
 ]

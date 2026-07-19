@@ -342,6 +342,36 @@ def effective_power_from_gfa(gfa_sqft):
     return round(central, 1), round(lo, 1), round(hi, 1)
 
 
+# Uncertainty on permit-derived power comes from ICPRB's own conversion factors
+# rather than from floor area. Equation 6-3 applies redundancy 0.5 and
+# utilization 0.8 (product 0.40); plausible spans of 0.4-0.6 and 0.7-0.9 give a
+# product of 0.28-0.54, i.e. -30%/+35% about the central value.
+PERMIT_FACTOR_CENTRAL = 0.5 * 0.8
+PERMIT_FACTOR_LOW = 0.4 * 0.7
+PERMIT_FACTOR_HIGH = 0.6 * 0.9
+
+
+def effective_power_from_permit(site_generator_mw, gfa_share):
+    """Effective IT power (MW) for one building from its site's permitted
+    generator capacity.
+
+    site_generator_mw -- total nameplate generator capacity on the permit
+    gfa_share         -- this building's share of the site's floor area
+
+    Floor area is used ONLY to apportion a measured site total between the
+    buildings that share the permit. That is a far weaker use of GFA than the
+    density bridge makes of it: an error in floor area rescales one building
+    against its neighbours, rather than generating the site's power from
+    scratch.
+    """
+    if not site_generator_mw or not gfa_share:
+        return None
+    base = site_generator_mw * gfa_share
+    return (round(base * PERMIT_FACTOR_CENTRAL, 1),
+            round(base * PERMIT_FACTOR_LOW, 1),
+            round(base * PERMIT_FACTOR_HIGH, 1))
+
+
 # Interconnection-queue operator ranges. Retained ONLY as a cross-check --
 # these are portfolio-wide spans, not building-specific, and are no longer
 # allowed to widen a GFA-derived estimate.
@@ -595,6 +625,7 @@ def estimate_scope_water_footprint(
     cdd=None,
     pue_cap=None,
     cooling_disclosure=None,
+    permit_power=None,
 ):
     """
     Returns the Scope 1/2/3 estimate for one facility, or None if there is no
@@ -605,7 +636,23 @@ def estimate_scope_water_footprint(
     cooling_disclosure -- {"air_or_closed_loop": bool, "source": str} from a
                         permit/proffer condition, if any
     """
-    eff = effective_power_from_gfa(gfa_sqft)
+    # MW-source precedence. A permit-derived figure comes from ICPRB's own
+    # input (air-permit generator capacity) run through their Equation 6-3, in
+    # the direction that equation validates -- so it supersedes the GFA bridge,
+    # which runs the 8,818 sqft/MW constant backwards. Validation across 11
+    # Prince William sites puts the two within 2% at the median, so this
+    # sharpens per-facility precision rather than moving the aggregate.
+    power_basis = "gfa_icprb_density"
+    permit_meta = None
+    eff = None
+    if permit_power:
+        eff = effective_power_from_permit(permit_power.get("site_generator_mw"),
+                                          permit_power.get("gfa_share"))
+        if eff:
+            power_basis = "permit_generator_capacity"
+            permit_meta = permit_power
+    if eff is None:
+        eff = effective_power_from_gfa(gfa_sqft)
     if eff is None:
         return None
     eff_mw, eff_lo, eff_hi = eff
@@ -649,12 +696,24 @@ def estimate_scope_water_footprint(
         "power": {
             "effective_it_mw_range": [eff_lo, eff_hi],
             "effective_it_mw_central": eff_mw,
-            "basis": "gfa_icprb_density",
+            "basis": power_basis,
             "sqft_per_effective_mw": SQFT_PER_EFFECTIVE_MW,
             "gfa_sqft": gfa_sqft,
             "gfa_field_used": gfa_source,
             "gfa_quality": gfa_quality,
+            "permit": permit_meta,
             "note": (
+                (
+                    f"VADEQ air permit {permit_meta['registration_no']} covers this site with "
+                    f"{permit_meta['site_generator_mw']:,.1f} MW of permitted backup generator "
+                    f"capacity across {permit_meta['n_buildings_on_permit']} building(s). This "
+                    f"building's {permit_meta['gfa_share']:.0%} floor-area share x ICPRB Equation "
+                    f"6-3 (capacity x 0.5 redundancy x 0.8 utilization) = {eff_mw} MW effective IT "
+                    f"load. Floor area is used only to apportion a measured site total, not to "
+                    f"generate it -- the 8,818 sqft/MW density bridge is not used for this "
+                    f"building."
+                )
+                if permit_meta else
                 f"{gfa_sqft:,.0f} sqft / {SQFT_PER_EFFECTIVE_MW:,} sqft per effective MW = "
                 f"{eff_mw} MW effective IT load (+/-{DENSITY_TOLERANCE:.0%} for facility-level "
                 f"variation around the fleet-average density). Density is ICPRB's, computed from "
