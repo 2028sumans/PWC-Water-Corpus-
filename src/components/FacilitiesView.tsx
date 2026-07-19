@@ -196,9 +196,10 @@ export function FacilitiesView() {
           <div className="mt-8 rounded border border-neutral-800 bg-neutral-900/50 p-3 text-[11px] text-neutral-400 leading-relaxed space-y-2">
             <div>
               <span className="text-neutral-200 font-medium">{headline.completedS1.toFixed(2)} MGD</span>{" "}
-              direct on-site cooling water, {headline.completedN}{" "}completed buildings today — this
-              is the figure independently validated against Prince William Water&apos;s own reported
-              2023 total.
+              direct on-site cooling water, {headline.completedN}{" "}completed buildings today.
+              Prince William Water reported 0.42 MGD across its service area in 2023 — a wider
+              boundary than the county, and not an independent check, since the intensity this
+              model uses was itself derived from that figure.
             </div>
             <div>
               <span className="text-neutral-300 font-medium">{headline.allTotal.toFixed(1)} MGD</span>{" "}

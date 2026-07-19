@@ -24,19 +24,52 @@ records in the Loudoun Water, Fairfax Water, and PRINCE WILLIAM WATER service
 areas, cross-referenced against per-facility power capacity from the JLARC /
 VADEQ air-permit database.
 
-VALIDATION
-----------
-Summing this module's Scope 1 estimate across only the COMPLETED data center
-buildings in the county:
+VALIDATION -- WITHDRAWN, IT WAS CIRCULAR
+----------------------------------------
+This module used to claim the following check:
 
-    11,094,472 sqft (per-building GFA, see below)
-      / 8,818 sqft per effective MW      = 1,258 effective IT MW
-      x 309 gal/MW/day (PWC observed WUP) = 0.389 MGD
+    11,094,472 sqft / 8,818 sqft per effective MW = 1,258 effective IT MW
+      x 309 gal/MW/day (PWC observed WUP)          = 0.389 MGD
+    versus Prince William Water's reported 0.42 MGD -> within 7.4%
 
-Prince William Water's own reported figure for its data center customers in
-2023 was 0.42 MGD average. The model lands within 7.4% of a measured number
-it was not fitted to at the facility level. That is the check the previous
-version could not pass.
+That is not a validation. ICPRB derived 309 BY DIVIDING that same 0.42 MGD by
+its own generator-derived estimate of effective power demand (WMA study p.6-13:
+"WUP was then calculated by dividing utility reported data center water use by
+effective power demand"). So 309 := 0.42e6 / 1,359 MW, and substituting it back:
+
+    (1,258 x 0.42e6 / 1,359) / 0.42e6  ==  1,258 / 1,359
+
+The water figure cancels. The check reduces to comparing this module's
+GFA-derived power estimate against ICPRB's generator-derived one -- and returns
+-7.4% either way, which is the tell. It tests the POWER SPINE, not water use,
+and it does so against a WATER UTILITY SERVICE AREA whose boundary is not the
+county.
+
+A genuine validation is possible but must avoid 309 entirely: take per-facility
+generator capacity from VADEQ air permits, run ICPRB's Equation 6-3, apply a
+cooling-type WUP from the physical tiers (150 air-cooled / 1,577 fully
+evaporative), sum bottom-up, and compare to the 0.42 MGD. Nothing cancels in
+that chain, and it doubles as a falsifiable test of the cooling-type
+assignments. See METHODOLOGY.md section 7.
+
+THE DIRECTION PROBLEM WITH 8,818
+--------------------------------
+ICPRB never derives megawatts from floor area. Equation 6-3 is:
+
+    Effective (IT) Power Demand
+        = Total Generator Power Capacity x Redundancy (0.5) x Utilization (0.8)
+
+with power taken from backup generator capacity in VADEQ air permits. The 8,818
+sqft/MW figure appears once, as a unit bridge used to convert Loudoun Water's
+0.017 gal/day/sqft into the 150 gal/MW/day air-cooled tier (0.017 x 8,818 =
+149.9). This module runs that bridge BACKWARD, which no source validates.
+
+For air-cooled facilities the round trip cancels -- (GFA/8,818) x 150 is
+identically GFA x 0.017 -- so the megawatt figure does no work. For every other
+tier, and for all of Scope 2, the constant does real unvalidated predictive work,
+and it is now the single largest swing factor in the model (64%; see
+sensitivity_analysis.py). ICPRB's own Fairfax figures imply 12,722 sqft/MW, 44%
+higher and outside this module's +/-25% tolerance.
 
 THE GFA BUG THIS ALSO FIXES
 ---------------------------
@@ -155,12 +188,55 @@ OPERATOR_CLOSED_LOOP_COMMITMENT = {
 # ---------------------------------------------------------------------------
 # Scope 2 - grid consumption intensity (unchanged; mix independently verified)
 # ---------------------------------------------------------------------------
+# Consumption factors are VIRGINIA-SPECIFIC, computed from USGS plant-level
+# model estimates rather than national medians. See derive_va_consumption_factors()
+# in usgs_va_factors.py for the derivation; values are generation-weighted across
+# every Virginia plant of that type in the USGS 2015 (v1.2, July 2024) release.
+#
+# The nuclear figure is the correction that mattered most. The previous value of
+# 700 gal/MWh was a national median that blended two Virginia plants with opposite
+# water profiles:
+#
+#   Surry (EIA 3806)      once-through saline, James River estuary
+#                         consumption 0.0 Mgal/d ->     0 gal/MWh
+#   North Anna (EIA 6168) "complex" -- Lake Anna cooling reservoir
+#                         consumption 18.6 Mgal/d ->  417 gal/MWh
+#
+# Generation-weighted across the two: 242 gal/MWh, 65% below the national median.
+# Surry consumes no water in USGS's model because heat is discharged to a large
+# tidal estuary; its 1,220 Mgal/d WITHDRAWAL is enormous but non-consumptive, and
+# is saline rather than fresh. That distinction is invisible in a single blended
+# national constant and is the whole reason this fix moves the answer so much.
 CONSUMPTION_FACTORS_GAL_PER_MWH = {
+    "natural_gas_cc": 213,   # VA NGCC fleet, 11.2M MWh
+    "nuclear": 242,          # VA nuclear fleet (Surry + North Anna), 28.1M MWh
+    "coal": 451,             # VA coal fleet, 7.2M MWh
+    "renewable": 0,          # see RENEWABLE_FACTOR_CAVEAT
+}
+
+# Low/high bounds from USGS MIN_CONSUMPTION / MAX_CONSUMPTION, same weighting.
+CONSUMPTION_FACTOR_BOUNDS_GAL_PER_MWH = {
+    "natural_gas_cc": (210, 225),
+    "nuclear": (189, 289),
+    "coal": (440, 474),
+    "renewable": (0, 0),
+}
+
+# The national medians this replaced (Macknick et al., NREL/TP-6A20-50900, 2011),
+# retained so the size of the correction stays visible.
+NREL_NATIONAL_FACTORS_GAL_PER_MWH = {
     "natural_gas_cc": 210,
     "nuclear": 700,
     "coal": 687,
     "renewable": 0,
 }
+
+RENEWABLE_FACTOR_CAVEAT = (
+    "Renewables are carried at 0 gal/MWh. This is a floor, not a measurement: "
+    "hydroelectric reservoirs have very large evaporative consumption in NREL's own "
+    "tables, and solar requires panel washing. Dominion's 14% renewable share is "
+    "predominantly solar, but any hydro within it is understated here."
+)
 
 DOMINION_GENERATION_MIX = {
     "natural_gas_cc": 0.58,
@@ -410,9 +486,13 @@ def scope2_electricity(eff_mw, eff_lo, eff_hi, year_built=None, pue_cap=None):
         "methodology": (
             f"Effective IT MW x PUE ({pue_lo}-{pue_hi}, {vclass} vintage) x 24 h/day x "
             f"{BLENDED_CONSUMPTION_GAL_PER_MWH:.0f} gal/MWh (Dominion generation-mix-blended "
-            f"consumption factor, NREL Macknick et al. 2011) = consumptive water at the "
-            f"generating plant. Dominion's 2025 mix is 58% gas / 25% nuclear / 14% renewable / "
-            f"3% coal."
+            f"consumption factor) = consumptive water at the generating plant. Dominion's 2025 "
+            f"mix is 58% gas / 25% nuclear / 14% renewable / 3% coal. Per-technology factors are "
+            f"VIRGINIA-SPECIFIC, generation-weighted from USGS plant-level model estimates "
+            f"(2015 release v1.2, July 2024) rather than national medians -- nuclear is "
+            f"{CONSUMPTION_FACTORS_GAL_PER_MWH['nuclear']} gal/MWh here against a national median "
+            f"of {NREL_NATIONAL_FACTORS_GAL_PER_MWH['nuclear']}, because Surry discharges to a "
+            f"tidal estuary and consumes nothing while North Anna evaporates from Lake Anna."
         ),
         "note": (
             "System-average grid intensity, not marginal-generator attribution -- no published "
