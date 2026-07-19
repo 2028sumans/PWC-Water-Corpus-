@@ -262,7 +262,13 @@ def parse_cooling_evidence(lines, sec_start, sec_end):
             "Cooling towers appear in this permit's equipment list, which is direct evidence of "
             "evaporative cooling. The circulation rate (gpm) is a design rating, not a consumption "
             "figure -- evaporative loss is a small fraction of circulation and varies with load and "
-            "weather -- so it is recorded but deliberately NOT converted into a water estimate."
+            "weather -- so it is recorded but deliberately NOT converted into a water estimate. "
+            "Permit 74216 additionally caps cooling-tower process water at 2,500 ppm Total "
+            "Dissolved Solids with annual sampling (Conditions 14 and 22). That is the ONLY "
+            "enforceable condition touching data centre water in this entire corpus, and it "
+            "regulates chemistry rather than volume -- though a TDS ceiling does bound cycles of "
+            "concentration, and therefore blowdown, which is a real component of cooling tower "
+            "water loss."
         ),
     }
 
@@ -464,6 +470,13 @@ def summarise(p):
     # supported by the reason the halving exists. Recorded so the exposure is
     # visible; the factor is NOT changed, because what those units actually
     # serve is not something these documents establish.
+    # Grid-service provisions are a second route to the same problem. Permits
+    # 72368 and 73180 authorise operation under a "demand response" or
+    # "alternative power agreement" -- 73180's Load Optimization condition
+    # directs the permittee to "operate only those units necessary to meet the
+    # requirements of an alternative power agreement". Units run that way are
+    # not idle 2N backup either, even where the equipment table calls them
+    # emergency.
     ne = sum(r["mw"] for r in p["rows"] if "non-emergency" in (r["source_line"] or "").lower())
     p["non_emergency_mw"] = round(ne, 2)
     p["non_emergency_share"] = round(ne / p["total_generator_mw"], 3) if p["total_generator_mw"] else 0.0

@@ -449,7 +449,7 @@
      "source_line": "21- Cooling Towers None 9/8/2021"
     }
    ],
-   "note": "Cooling towers appear in this permit's equipment list, which is direct evidence of evaporative cooling. The circulation rate (gpm) is a design rating, not a consumption figure -- evaporative loss is a small fraction of circulation and varies with load and weather -- so it is recorded but deliberately NOT converted into a water estimate."
+   "note": "Cooling towers appear in this permit's equipment list, which is direct evidence of evaporative cooling. The circulation rate (gpm) is a design rating, not a consumption figure -- evaporative loss is a small fraction of circulation and varies with load and weather -- so it is recorded but deliberately NOT converted into a water estimate. Permit 74216 additionally caps cooling-tower process water at 2,500 ppm Total Dissolved Solids with annual sampling (Conditions 14 and 22). That is the ONLY enforceable condition touching data centre water in this entire corpus, and it regulates chemistry rather than volume -- though a TDS ceiling does bound cycles of concentration, and therefore blowdown, which is a real component of cooling tower water loss."
   },
   "rows": [
    {

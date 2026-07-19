@@ -393,6 +393,24 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.3a The only enforceable water condition in the entire corpus is a TDS limit
+
+Reading every permit condition — 109 distinct types across 30 permits, not just the equipment tables — produced one genuinely water-relevant regulatory provision, and its character is the finding.
+
+Permit **74216**, Conditions 14 and 22:
+
+> *"The Total Dissolved Solid (TDS) concentration in the process water in each cooling tower (Ref. Nos. CT1 through CT31) shall not exceed 2,500 ppm TDS."*
+>
+> *"Once per calendar year, the permittee shall sample and analyze the process water from one cooling tower..."*
+
+This is the **only enforceable condition touching data centre water anywhere in the corpus** — county proffers, staff reports and state air permits combined. Three things about it matter:
+
+1. **It regulates chemistry, not volume.** No permit or proffer anywhere caps how much water a facility may use.
+2. **It nonetheless bounds consumption indirectly.** A TDS ceiling limits cycles of concentration, which sets the blowdown rate — a real component of cooling-tower water loss. So the one binding water condition constrains consumption only as a side effect of an air-quality concern.
+3. **It exists in an *air* permit.** The regulatory instrument that comes closest to governing data centre water in Prince William is administered by DEQ's air programme, for drift and emissions purposes, and appears at exactly one site.
+
+It also confirms the cooling-type search is exhausted: the cooling-tower *conditions* appear only in 74216, the same permit whose equipment list names them. No additional evaporatively-cooled facility is identifiable from the permit corpus.
+
 ### 7.1d Non-emergency generators break ICPRB's redundancy rationale
 
 Reading the permits **in full**, rather than parsing only their equipment tables, surfaced a problem with the permit-derived power path itself.
