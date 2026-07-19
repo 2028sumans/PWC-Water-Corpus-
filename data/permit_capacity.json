@@ -1,0 +1,2788 @@
+[
+ {
+  "file": "742624_DC_Permit.txt",
+  "registration_no": "74262",
+  "location": "Prince William County and City of Manassas",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 750,
+    "mw": 1.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "BYPBB1 and            (2) Caterpillar C18 emergency diesel-                   750 ekW                                                             Augu"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(60) Non-emergency diesel-fired engine           3,000 ekW / 4,265 bhp          Selective Catalytic"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3250,
+    "mw": 195.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "QSK95-G12 engine                        3,250 ekW/ 4,657 bhp)              (SCR)**"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(60) Non-emergency diesel-fired engine            3,000 ekW, 4,265 bhp           SCR\u2021 and Diesel"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3250,
+    "mw": 195.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "QSK95-G12 engine                       3,250 ekW / 4,657 bhp)               (DOC)"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(60) Non-emergency diesel-fired engine            3,000 ekW, 4,361 bhp"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building A        BYEG60*               QSK95-G12 engine and/or Caterpillar              3,000 ekW, 4,393 bhp                                         "
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(60) Non-emergency diesel-fired engine            3,000 ekW, 4,361 bhp"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 60,
+    "kw_each": 3000,
+    "mw": 180.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building B        BYEG120*              QSK95-G12 engine and/or Caterpillar              3,000 ekW, 4,393 bhp                                         "
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 22,
+    "kw_each": 3000,
+    "mw": 66.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "BPEG1 through          (22) Caterpillar 3516E non-emergency                   3,000 ekW                                                            Oct"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(1) Caterpillar C18 emergency diesel-                   750 ekW                                                             October 6,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1000,
+    "mw": 1.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Brick Yard                             (1) Emergency diesel-fired engine gen-                  1,000 ekW                                              "
+   }
+  ],
+  "mw_by_section": {
+   "previously_permitted": 1539.25
+  },
+  "total_generator_mw": 1539.25,
+  "permanent_generator_mw": 1539.25,
+  "effective_it_mw": 615.7,
+  "n_units": 506,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[60])"
+  ]
+ },
+ {
+  "file": "741615_DC_Permit.txt",
+  "registration_no": "74161",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 1250,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Gen159                                                1,250 ekW                            2026"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 32,
+    "kw_each": 2250,
+    "mw": 72.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Gen20                                                2,250 ekW                            2018"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Gen52                                                2,500 ekW                            2021"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1600,
+    "mw": 1.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine gen-             1,600 ekW                           April 26,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1750,
+    "mw": 1.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Continuous Power)                  1,750 ekW)"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 103,
+    "kw_each": 1250,
+    "mw": 128.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,250 ekW                            2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 103,
+    "kw_each": 2250,
+    "mw": 231.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Gen137 &          16V4000G84S and/or                   2,250 ekW                        November 14,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 103,
+    "kw_each": 2500,
+    "mw": 257.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Gen158           diesel engine gen-sets               2,500 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 2.5,
+   "previously_permitted": 695.85
+  },
+  "total_generator_mw": 698.35,
+  "permanent_generator_mw": 698.35,
+  "effective_it_mw": 279.34,
+  "n_units": 346,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[103])"
+  ]
+ },
+ {
+  "file": "742413_DC_Permit.txt",
+  "registration_no": "74241",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "previously_permitted",
+    "n_units": 65,
+    "kw_each": 2250,
+    "mw": 146.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building       16V4000                  2,250 ekW                                            November"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 65,
+    "kw_each": 2250,
+    "mw": 146.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building   Caterpillar 3516C            2,250 ekW                                            October 7,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 49,
+    "kw_each": 2800,
+    "mw": 137.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building   20V4000 DS2800               2,800 ekW                                            October 7,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 49,
+    "kw_each": 2800,
+    "mw": 137.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Building   20V4000 DS2800               2,800 ekW                                            October 7,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 150,
+    "mw": 0.15,
+    "basis": "count_in_window",
+    "flags": [
+     "unit_kw_out_of_band"
+    ],
+    "source_line": "150 ekW                                             October 7,"
+   }
+  ],
+  "mw_by_section": {
+   "previously_permitted": 567.05
+  },
+  "total_generator_mw": 567.05,
+  "permanent_generator_mw": 567.05,
+  "effective_it_mw": 226.82,
+  "n_units": 229,
+  "flagged_rows": 1,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "1_flagged_rows"
+  ]
+ },
+ {
+  "file": "742602_DC_Permit.txt",
+  "registration_no": "74260",
+  "location": "Prince William County",
+  "building_codes": [
+   "VA-10",
+   "VA-11"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 60,
+    "kw_each": 3250,
+    "mw": 195.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine      3,250 ekW       Select Catalytic"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 56,
+    "kw_each": 3250,
+    "mw": 182.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "VA10-GEN-201A, -B, -C, -D;      emergency diesel engine       3,250 ekW                                                   2023"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,500 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 196.5,
+   "previously_permitted": 183.5
+  },
+  "total_generator_mw": 380.0,
+  "permanent_generator_mw": 380.0,
+  "effective_it_mw": 152.0,
+  "n_units": 118,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "741125_DC_Permit.txt",
+  "registration_no": "74112",
+  "location": "Prince William County",
+  "building_codes": [
+   "VA-1",
+   "VA-2",
+   "VA-3",
+   "VA-6",
+   "VA-7",
+   "VA-8",
+   "VA-9",
+   "VA-10"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 15,
+    "kw_each": 3000,
+    "mw": 45.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "71 through 85      QSK95-G9)                3,000 ekW               None                April 18, 2026"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1000,
+    "mw": 1.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "16V2000G86S)             1,000 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 275,
+    "mw": 0.275,
+    "basis": "count_in_window",
+    "flags": [
+     "unit_kw_out_of_band"
+    ],
+    "source_line": "275 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 21,
+    "kw_each": 3000,
+    "mw": 63.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1 through 21                               3,000 ekW                None                 June 3, 2019"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 8,
+    "kw_each": 2500,
+    "mw": 20.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "3516C emergency            2,500 ekW                None              (amended June 3,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 250,
+    "mw": 0.25,
+    "basis": "count_in_window",
+    "flags": [
+     "unit_kw_out_of_band"
+    ],
+    "source_line": "250 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 44,
+    "kw_each": 3000,
+    "mw": 132.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "and                                   3,000 ekW                None              October 16, 2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 5,
+    "kw_each": 3000,
+    "mw": 15.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "46 through 50                              3,000 ekW                None              October 16, 2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 29,
+    "kw_each": 3000,
+    "mw": 87.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "3,000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "3,000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 667,
+    "mw": 0.667,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel          667 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 1500,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "LS-3 and LS-7     3512C emergency          1,500 ekW              None           October 16, 2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1000,
+    "mw": 1.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,500 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 46.27,
+   "previously_permitted": 327.42
+  },
+  "total_generator_mw": 373.69,
+  "permanent_generator_mw": 373.69,
+  "effective_it_mw": 149.48,
+  "n_units": 131,
+  "flagged_rows": 3,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "3_flagged_rows"
+  ]
+ },
+ {
+  "file": "74052_DC_Permit.txt",
+  "registration_no": "74052",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-55",
+   "IAD-64",
+   "IAD-84",
+   "IAD-94"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 600,
+    "mw": 0.6,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar model C18 emergency diesel     600 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2500,
+    "mw": 7.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,500 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 13,
+    "kw_each": 2500,
+    "mw": 32.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,500 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2000,
+    "mw": 6.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 21,
+    "kw_each": 2000,
+    "mw": 42.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Twenty-one (21) Caterpillar model      2,000 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 21,
+    "kw_each": 2000,
+    "mw": 42.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 42,
+    "kw_each": 1500,
+    "mw": 63.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Caterpillar model 3512C emergency       1,500 kW                          9/27/2013"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 42,
+    "kw_each": 2500,
+    "mw": 105.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Forty-two (42) Caterpillar model       2,500 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 7,
+    "kw_each": 2000,
+    "mw": 14.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 kW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 7,
+    "kw_each": 750,
+    "mw": 5.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Caterpillar model C18 emergency         750 kW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 0.6,
+   "previously_permitted": 317.25
+  },
+  "total_generator_mw": 317.85,
+  "permanent_generator_mw": 317.85,
+  "effective_it_mw": 127.14,
+  "n_units": 160,
+  "flagged_rows": 1,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[3, 7, 42])",
+   "1_flagged_rows"
+  ]
+ },
+ {
+  "file": "740635_DC_Permit.txt",
+  "registration_no": "74063",
+  "location": "Loudoun County",
+  "building_codes": [
+   "IAD-51",
+   "IAD-56",
+   "IAD-88",
+   "IAD-89",
+   "IAD-192",
+   "IAD-214"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 22,
+    "kw_each": 2750,
+    "mw": 60.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,750 kW                                May 28, 2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 7,
+    "kw_each": 2500,
+    "mw": 17.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "L3, L4, L19                         2,500 kW /"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 600,
+    "mw": 0.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "600 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 36,
+    "kw_each": 2500,
+    "mw": 90.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "L5 through L18,        Thirty-six (36) Caterpillar        2,500 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 2500,
+    "mw": 5.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Two (2) Caterpillar model          2,500 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 16,
+    "kw_each": 2000,
+    "mw": 32.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Sixteen (16) Caterpillar model       2,000 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 26,
+    "kw_each": 2500,
+    "mw": 65.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Twenty-six (26) Caterpillar        2,500 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 600,
+    "mw": 0.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar model C18         600 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 4,
+    "kw_each": 2000,
+    "mw": 8.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Four (4) Caterpillar model         2,000 kW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 4,
+    "kw_each": 2000,
+    "mw": 8.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Four (4) Caterpillar model         2,000 kW /"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 78.6,
+   "previously_permitted": 208.6
+  },
+  "total_generator_mw": 287.2,
+  "permanent_generator_mw": 287.2,
+  "effective_it_mw": 114.88,
+  "n_units": 119,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "743421_DC_Permit.txt",
+  "registration_no": "74342",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-110",
+   "IAD-111",
+   "IAD-112",
+   "IAD-113"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 52,
+    "kw_each": 2750,
+    "mw": 143.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(52) Caterpillar 3516E non-emergency        2,750 ekW        Reduction (SCR) and"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(1) Caterpillar C18 emergency engine       750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 600,
+    "mw": 0.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(1) Caterpillar C18 emergency engine        600 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 44,
+    "kw_each": 2800,
+    "mw": 123.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "55 through                                                 2,800 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 1000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,000 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 400,
+    "mw": 0.4,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(1) Caterpillar C13 emergency engine        400 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(2) Caterpillar 3516C emergency engine      2,000 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 274.7
+  },
+  "total_generator_mw": 274.7,
+  "permanent_generator_mw": 274.7,
+  "effective_it_mw": 109.88,
+  "n_units": 104,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[2])"
+  ]
+ },
+ {
+  "file": "74277_DC_Permit.txt",
+  "registration_no": "74277",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-195",
+   "IAD-196",
+   "IAD-197",
+   "IAD-198"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 104,
+    "kw_each": 2500,
+    "mw": 260.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1 through 104      3516C emergency diesel       2,500 ekW           N/A"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 4,
+    "kw_each": 600,
+    "mw": 2.4,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "C18 emergency diesel         600 ekW            N/A"
+   },
+   {
+    "section": "transitory",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "T1 and T2      3516C transitory emergency     2,000 ekW           N/A"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 262.4,
+   "transitory": 4.0
+  },
+  "total_generator_mw": 266.4,
+  "permanent_generator_mw": 262.4,
+  "effective_it_mw": 104.96,
+  "n_units": 110,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "74129_DC_Permit.txt",
+  "registration_no": "74129",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-100",
+   "IAD-101",
+   "IAD-102",
+   "IAD-103"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 23,
+    "kw_each": 2500,
+    "mw": 57.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "3516C-HD emergency diesel engine 2,500 ekW                                 February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 23,
+    "kw_each": 2500,
+    "mw": 57.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "24 through 3516C-HD emergency diesel engine 2,500 ekW                                   February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 3,
+    "kw_each": 2500,
+    "mw": 7.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "88 through    HD emergency diesel engine gen- 2,500 ekW                                  February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 3,
+    "kw_each": 600,
+    "mw": 1.8,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "diesel engine gen-set                 600 ekW                              January 28,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 23,
+    "kw_each": 2500,
+    "mw": 57.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "47 through 3516C-HD emergency diesel engine 2,500 ekW                                     February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 2500,
+    "mw": 5.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine gen-sets 2,500 ekW                                  February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 2500,
+    "mw": 5.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine gen-set       2,500 ekW                             January 28,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 600,
+    "mw": 0.6,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "diesel engine gen-set                 600 ekW                               January 28,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 18,
+    "kw_each": 2500,
+    "mw": 45.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "70 through 3516C-HD emergency diesel engine 2,500 ekW                                    February 15,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 18,
+    "kw_each": 600,
+    "mw": 10.8,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "diesel engine gen-set                600 ekW                               January 28,"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "T1            diesel engine gen-set              2,000 ekW None                         2018"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 250.2
+  },
+  "total_generator_mw": 250.2,
+  "permanent_generator_mw": 250.2,
+  "effective_it_mw": 100.08,
+  "n_units": 117,
+  "flagged_rows": 2,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[3, 18])",
+   "2_flagged_rows"
+  ]
+ },
+ {
+  "file": "74115_DC_Permit.txt",
+  "registration_no": "74115",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-95",
+   "IAD-96",
+   "IAD-75",
+   "IAD-85"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 21,
+    "kw_each": 2500,
+    "mw": 52.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "49, 69, 70, and 84                                  2,500 ekW          None         October 21, 2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 32,
+    "kw_each": 2500,
+    "mw": 80.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "and 71 through       3516C-HD emergency            2,500 ekW          None"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 35,
+    "kw_each": 2500,
+    "mw": 87.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "3516C-HD emergency           2,500 ekW          None         March 16, 2017"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "2,000 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 52.5,
+   "previously_permitted": 169.5
+  },
+  "total_generator_mw": 222.0,
+  "permanent_generator_mw": 222.0,
+  "effective_it_mw": 88.8,
+  "n_units": 89,
+  "flagged_rows": 1,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "1_flagged_rows"
+  ]
+ },
+ {
+  "file": "74081_DC_Permit.txt",
+  "registration_no": "74081",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-73",
+   "IAD-74",
+   "IAD-602",
+   "IAD-193",
+   "IAD-194"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 9,
+    "kw_each": 2500,
+    "mw": 22.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "through 20,        3516C emergency diesel       2,500 ekW           None              July 8, 2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 40,
+    "kw_each": 2750,
+    "mw": 110.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "37 through 76       3516E emergency diesel       2,750 ekW           None              July 8, 2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 3,
+    "kw_each": 750,
+    "mw": 2.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "78 through 80        C18 emergency diesel         750 ekW            None              July 8, 2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "750 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 27,
+    "kw_each": 2500,
+    "mw": 67.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1, 2, 5 through                                  2,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 6,
+    "kw_each": 2000,
+    "mw": 12.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 134.75,
+   "previously_permitted": 80.25
+  },
+  "total_generator_mw": 215.0,
+  "permanent_generator_mw": 215.0,
+  "effective_it_mw": 86.0,
+  "n_units": 86,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "74167_DC_Permit.txt",
+  "registration_no": "74167",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-108",
+   "IAD-109",
+   "IAD-132",
+   "IAD-133",
+   "IAD-607"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine gen-set     2,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 1600,
+    "mw": 3.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency diesel engine gen-set     1,600 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 600,
+    "mw": 1.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "80 and 81          emergency diesel engine gen-        600 ekW           None"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 44,
+    "kw_each": 2500,
+    "mw": 110.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "36 through 79       3516C-HD emergency diesel          2,500 ekW          None"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2500,
+    "mw": 7.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "33 through 35       emergency diesel engine gen-       2,500 ekW          None          April 15, 2020"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 32,
+    "kw_each": 2500,
+    "mw": 80.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1 through 32        3516C-HD emergency diesel          2,500 ekW          None          April 10, 2019"
+   },
+   {
+    "section": "transitory",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "T1 and T2           transitory emergency diesel       2,000 ekW          None          April 10, 2019"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 2.5,
+   "previously_permitted": 201.9,
+   "transitory": 4.0
+  },
+  "total_generator_mw": 208.4,
+  "permanent_generator_mw": 204.4,
+  "effective_it_mw": 81.76,
+  "n_units": 86,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[2])"
+  ]
+ },
+ {
+  "file": "74224_DC_Permit.txt",
+  "registration_no": "74224",
+  "location": "Prince William County",
+  "building_codes": [
+   "NVA-02D"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1000,
+    "mw": 1.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "EG-44       diesel fired emergency      1,483 bhp / 1,000 ekW           N/A"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 8,
+    "kw_each": 3000,
+    "mw": 24.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "C175-16 diesel fired       4,423 bhp / 3,000 ekW                          December 13,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 13,
+    "kw_each": 3000,
+    "mw": 39.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "4,423 bhp / 3,000 ekW                          November 14,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 21,
+    "kw_each": 3000,
+    "mw": 63.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "(21) diesel fired       4,423 bhp / 3,000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 21,
+    "kw_each": 3000,
+    "mw": 63.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "4,332 bhp / 3,000 ekW                             2022"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1250,
+    "mw": 1.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "EG-43        diesel fired emergency      1,821 bhp / 1,250 ekW            N/A"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 1.0,
+   "previously_permitted": 190.25
+  },
+  "total_generator_mw": 191.25,
+  "permanent_generator_mw": 191.25,
+  "effective_it_mw": 76.5,
+  "n_units": 65,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "741714_DC_Permit.txt",
+  "registration_no": "74171",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-130",
+   "IAD-131",
+   "IAD-313",
+   "DCA-072"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 18,
+    "kw_each": 2750,
+    "mw": 49.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 22,
+    "kw_each": 2750,
+    "mw": 60.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Caterpillar 3516E       2,750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1600,
+    "mw": 1.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,600 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 2500,
+    "mw": 5.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "23 through 40                                            2,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2000,
+    "mw": 6.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 8,
+    "kw_each": 2500,
+    "mw": 20.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 8,
+    "kw_each": 2500,
+    "mw": 20.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "41 through 44                                           2,500 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 112.35,
+   "previously_permitted": 51.0
+  },
+  "total_generator_mw": 163.35,
+  "permanent_generator_mw": 163.35,
+  "effective_it_mw": 65.34,
+  "n_units": 63,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "742054_DC_Permit.txt",
+  "registration_no": "74205",
+  "location": "Loudoun County",
+  "building_codes": [
+   "IAD-120",
+   "IAD-121",
+   "IAD-122",
+   "IAD-619"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1600,
+    "mw": 1.6,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,600 ekW                              2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 52,
+    "kw_each": 2500,
+    "mw": 130.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1 through 52        3516C-HD emergency            2,500 ekW           None          January 27, 2021"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 600,
+    "mw": 1.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "53 and 54         emergency diesel engine         600 ekW            None             June 2, 2022"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "T1 and T2          emergency diesel engine       2,000 ekW          None           January 27, 2021"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 1.6,
+   "previously_permitted": 135.2
+  },
+  "total_generator_mw": 136.8,
+  "permanent_generator_mw": 136.8,
+  "effective_it_mw": 54.72,
+  "n_units": 57,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[2])"
+  ]
+ },
+ {
+  "file": "73995_DC_Permit.txt",
+  "registration_no": "73995",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-59",
+   "IAD-52",
+   "IAD-14",
+   "VA-0A",
+   "IAD-1"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,500 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 12,
+    "kw_each": 2000,
+    "mw": 24.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Twelve (12) Caterpillar      2,000 ekW      9 VAC 5-50-410"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,500 ekW                              January 11,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 19,
+    "kw_each": 2500,
+    "mw": 47.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Nineteen (19) Caterpillar     2,500 ekW        9 VAC 5-50-410"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 18,
+    "kw_each": 2500,
+    "mw": 45.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Eighteen (18) Caterpillar   2,500 ekW         9 VAC 5-50-410"
+   },
+   {
+    "section": "transitory",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Transitory                                  2,000 kW"
+   },
+   {
+    "section": "transitory",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Transitory                                  2,000 kW"
+   },
+   {
+    "section": "transitory",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Transitory                                  2,000 kW"
+   },
+   {
+    "section": "transitory",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Transitory                                  2,000 kW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 26.5,
+   "previously_permitted": 94.0,
+   "transitory": 8.0
+  },
+  "total_generator_mw": 128.5,
+  "permanent_generator_mw": 120.5,
+  "effective_it_mw": 48.2,
+  "n_units": 55,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "74278_DC_Permit.txt",
+  "registration_no": "74278",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-210",
+   "IAD-211"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 40,
+    "kw_each": 2500,
+    "mw": 100.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1 through 40      3516C emergency diesel        2,500 ekW            N/A"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 600,
+    "mw": 1.2,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "41 and 42         C18 emergency diesel          600 ekW             N/A"
+   },
+   {
+    "section": "transitory",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "T1 and T2      3516C transitory emergency      2,000 ekW            N/A"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 101.2,
+   "transitory": 4.0
+  },
+  "total_generator_mw": 105.2,
+  "permanent_generator_mw": 101.2,
+  "effective_it_mw": 40.48,
+  "n_units": 44,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[2])"
+  ]
+ },
+ {
+  "file": "7374123_DC_Permit.txt",
+  "registration_no": "73741",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-7",
+   "IAD-11",
+   "IAD-24"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16       3,000 ekW /"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1950,
+    "mw": 1.95,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,950 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2250,
+    "mw": 2.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,250 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C    2,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2250,
+    "mw": 2.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516B    2,250 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C    2,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2250,
+    "mw": 2.25,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516B    2,250 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2800,
+    "mw": 2.8,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,800 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2800,
+    "mw": 2.8,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,800 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1000,
+    "mw": 1.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C32     1,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-   2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3512C    1,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model C175-16   3,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C       2,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C       2,000 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-      2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-      2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-      2,500 ekW /"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2500,
+    "mw": 2.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) Caterpillar Model 3516C-      2,500 ekW /"
+   },
+   {
+    "section": "transitory",
+    "n_units": 4,
+    "kw_each": 2000,
+    "mw": 8.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "Transitory                                           2,000 kW /"
+   },
+   {
+    "section": "transitory",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "engine gen-set Caterpillar Model 3512C (1,500 ekW/2,206 bhp) that is being removed from"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 6.0,
+   "previously_permitted": 82.8,
+   "transitory": 9.5
+  },
+  "total_generator_mw": 98.3,
+  "permanent_generator_mw": 88.8,
+  "effective_it_mw": 35.52,
+  "n_units": 40,
+  "flagged_rows": 1,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "1_flagged_rows"
+  ]
+ },
+ {
+  "file": "74236_DC_Permit.txt",
+  "registration_no": "74236",
+  "location": "Prince William County",
+  "building_codes": [
+   "MNZ-03"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 20,
+    "kw_each": 750,
+    "mw": 15.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency engine gen-set          750 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 20,
+    "kw_each": 3100,
+    "mw": 62.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "through        C175-16 emergency engine         3,100 ekW          None          August 5, 2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 110,
+    "mw": 0.22,
+    "basis": "count_in_window",
+    "flags": [
+     "unit_kw_out_of_band"
+    ],
+    "source_line": "Series diesel engine driven      \u2264 110 kW           None          August 5, 2024"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 77.22
+  },
+  "total_generator_mw": 77.22,
+  "permanent_generator_mw": 77.22,
+  "effective_it_mw": 30.89,
+  "n_units": 42,
+  "flagged_rows": 1,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[20])",
+   "1_flagged_rows"
+  ]
+ },
+ {
+  "file": "74237_DC_Permit.txt",
+  "registration_no": "74237",
+  "location": "Prince William County",
+  "building_codes": [
+   "MNZ-01"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 20,
+    "kw_each": 750,
+    "mw": 15.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "emergency engine gen-set         750 ekW                                     2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 20,
+    "kw_each": 3100,
+    "mw": 62.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "C175-16 diesel fired        3,100 ekW              N/A"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 77.0
+  },
+  "total_generator_mw": 77.0,
+  "permanent_generator_mw": 77.0,
+  "effective_it_mw": 30.8,
+  "n_units": 40,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[20])"
+  ]
+ },
+ {
+  "file": "743331_DC_Permit.txt",
+  "registration_no": "74333",
+  "location": "Prince William County",
+  "building_codes": [
+   "IAD-45"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 22,
+    "kw_each": 2750,
+    "mw": 60.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "fired engine gen-sets,       2,750 ekW, 4,043 bhp        Catalyzed Diesel           N/A               3/26/2026"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 750,
+    "mw": 0.75,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "23         engine gen-set, Caterpillar     750 ekW, 1,112 bhp               None                 N/A               3/26/2026"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 2,
+    "kw_each": 2000,
+    "mw": 4.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "T1 and T2      engine gen-sets, Caterpillar   2,000 ekW, 2,937 bhp              None                 N/A               3/26/2026"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 65.25
+  },
+  "total_generator_mw": 65.25,
+  "permanent_generator_mw": 65.25,
+  "effective_it_mw": 26.1,
+  "n_units": 25,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "73683_DC_Permit.txt",
+  "registration_no": "73683",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 3,
+    "kw_each": 2000,
+    "mw": 6.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "thru                            2,000 ekW      Model CBL-49-24,             None"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 7,
+    "kw_each": 2500,
+    "mw": 17.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "electric generator            2,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 7,
+    "kw_each": 2050,
+    "mw": 14.35,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,050 ekW                                   2008"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2500,
+    "mw": 7.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "and GER1                                       2,500 ekW                                   2008"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 2500,
+    "mw": 7.5,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "GE5                                          2,500 ekW                                31, 2015"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 2,
+    "kw_each": 2050,
+    "mw": 4.1,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "GMR                                         2,050 ekW                                    2008"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2050,
+    "mw": 2.05,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "electrical generator          2,050 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "2,000 ekW                                  2018"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 6.0,
+   "previously_permitted": 55.0
+  },
+  "total_generator_mw": 61.0,
+  "permanent_generator_mw": 61.0,
+  "effective_it_mw": 24.4,
+  "n_units": 27,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "alternative_engine_models(counts=[3, 7])"
+  ]
+ },
+ {
+  "file": "72368_DC_Permit.txt",
+  "registration_no": "72368",
+  "location": null,
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [
+     "no_section_header"
+    ],
+    "source_line": "One (1) CAT 3516B        2000 ekW"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [
+     "no_section_header"
+    ],
+    "source_line": "One (1) CAT 3516B        2000 ekW"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [
+     "no_section_header"
+    ],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [
+     "no_section_header"
+    ],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "One (1) CAT 3516B      2000 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 3,
+    "kw_each": 1333,
+    "mw": 3.999,
+    "basis": "count_in_window",
+    "flags": [],
+    "source_line": "1,333 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "unknown": 8.0,
+   "previously_permitted": 16.0
+  },
+  "total_generator_mw": 24.0,
+  "permanent_generator_mw": 24.0,
+  "effective_it_mw": 9.6,
+  "n_units": 13,
+  "flagged_rows": 4,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "4_flagged_rows"
+  ]
+ },
+ {
+  "file": "73180_DC_Permit.txt",
+  "registration_no": "73180",
+  "location": null,
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count",
+     "no_section_header"
+    ],
+    "source_line": "Caterpillar Model   2,000 ekW,"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count",
+     "no_section_header"
+    ],
+    "source_line": "Caterpillar Model     2,000 ekW,"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count",
+     "no_section_header"
+    ],
+    "source_line": "Caterpillar Model     2,000 ekW,"
+   },
+   {
+    "section": "unknown",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count",
+     "no_section_header"
+    ],
+    "source_line": "Caterpillar Model    2,000 ekW,         SCR - Steuler"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model      2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model      2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model      2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model      2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model      2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2000,
+    "mw": 2.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model     2,000 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1333,
+    "mw": 1.333,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model       1,333 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1333,
+    "mw": 1.333,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model       1,333 ekW,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1333,
+    "mw": 1.333,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar Model       1,333 ekW,"
+   }
+  ],
+  "mw_by_section": {
+   "unknown": 8.0,
+   "previously_permitted": 16.0
+  },
+  "total_generator_mw": 24.0,
+  "permanent_generator_mw": 24.0,
+  "effective_it_mw": 9.6,
+  "n_units": 13,
+  "flagged_rows": 13,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "13_flagged_rows"
+  ]
+ },
+ {
+  "file": "743411_DC_Permit.txt",
+  "registration_no": "74341",
+  "location": "Caroline County",
+  "building_codes": [
+   "VA-1"
+  ],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 32,
+    "kw_each": 625,
+    "mw": 20.0,
+    "basis": "spelled_count",
+    "flags": [],
+    "source_line": "1,332      TWD1683GE-B              (625 ekW)       Reduction"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 20.0
+  },
+  "total_generator_mw": 20.0,
+  "permanent_generator_mw": 20.0,
+  "effective_it_mw": 8.0,
+  "n_units": 32,
+  "flagged_rows": 0,
+  "confidence": "high",
+  "review_reasons": []
+ },
+ {
+  "file": "74107_DC_Permit.txt",
+  "registration_no": "74107",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "3,000 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1750,
+    "mw": 1.75,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "1,750 ekW                      August 24, 2020,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "1,500 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2750,
+    "mw": 2.75,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Cummins model QSK78-DQLF              2,750 ekW                     December 8, 2016,"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 3000,
+    "mw": 3.0,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Caterpillar model C175-16 emergency      3,000 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 4.75,
+   "previously_permitted": 7.25
+  },
+  "total_generator_mw": 12.0,
+  "permanent_generator_mw": 12.0,
+  "effective_it_mw": 4.8,
+  "n_units": 5,
+  "flagged_rows": 5,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "5_flagged_rows"
+  ]
+ },
+ {
+  "file": "74216_DC_Permit.txt",
+  "registration_no": "74216",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 2800,
+    "mw": 2.8,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "emergency diesel engine      2,800 ekW          None          2/27/2024"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1750,
+    "mw": 1.75,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "emergency diesel engine      1,750 ekW          None          2/27/2024"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 2750,
+    "mw": 2.75,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "emergency diesel engine      2,750 ekW          None              9/8/2021"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 1750,
+    "mw": 1.75,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "emergency diesel engine      1,750 ekW          None              9/8/2021"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 560,
+    "mw": 0.56,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "(Group 3)                                       \u2264560 ekW"
+   },
+   {
+    "section": "previously_permitted",
+    "n_units": 1,
+    "kw_each": 274,
+    "mw": 0.274,
+    "basis": "assumed_single",
+    "flags": [
+     "unit_kw_out_of_band",
+     "no_explicit_count"
+    ],
+    "source_line": "equivalent) fire pump      \u2264274 ekW           None"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 4.55,
+   "previously_permitted": 5.33
+  },
+  "total_generator_mw": 9.88,
+  "permanent_generator_mw": 9.88,
+  "effective_it_mw": 3.95,
+  "n_units": 6,
+  "flagged_rows": 6,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "6_flagged_rows"
+  ]
+ },
+ {
+  "file": "72374_DC_Permit.txt",
+  "registration_no": "72374",
+  "location": "Prince William County",
+  "building_codes": [],
+  "rows": [
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Diesel Engine Generator Set           1500 ekW"
+   },
+   {
+    "section": "to_be_constructed",
+    "n_units": 1,
+    "kw_each": 1500,
+    "mw": 1.5,
+    "basis": "assumed_single",
+    "flags": [
+     "no_explicit_count"
+    ],
+    "source_line": "Diesel Engine Generator Set           1500 ekW"
+   }
+  ],
+  "mw_by_section": {
+   "to_be_constructed": 3.0
+  },
+  "total_generator_mw": 3.0,
+  "permanent_generator_mw": 3.0,
+  "effective_it_mw": 1.2,
+  "n_units": 2,
+  "flagged_rows": 2,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "2_flagged_rows"
+  ]
+ },
+ {
+  "file": "7320002_DC_Permit.txt",
+  "registration_no": "73200",
+  "location": "Manassas, VA",
+  "building_codes": [],
+  "rows": [],
+  "mw_by_section": {},
+  "total_generator_mw": 0,
+  "permanent_generator_mw": 0.0,
+  "effective_it_mw": 0.0,
+  "n_units": 0,
+  "flagged_rows": 0,
+  "confidence": "needs_review",
+  "review_reasons": [
+   "no_equipment_rows_parsed"
+  ]
+ }
+]

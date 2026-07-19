@@ -1,0 +1,47 @@
+[
+ {
+  "registration_no": "74260",
+  "operator": "ntt",
+  "n_matched": 2,
+  "n_permit_codes": 2,
+  "permit_mw_scaled": 152.0,
+  "gfa_mw": 129.4,
+  "ratio": 1.175
+ },
+ {
+  "registration_no": "74081",
+  "operator": "amazon",
+  "n_matched": 2,
+  "n_permit_codes": 5,
+  "permit_mw_scaled": 34.4,
+  "gfa_mw": 33.6,
+  "ratio": 1.024
+ },
+ {
+  "registration_no": "74224",
+  "operator": "stack",
+  "n_matched": 1,
+  "n_permit_codes": 1,
+  "permit_mw_scaled": 76.5,
+  "gfa_mw": 31.9,
+  "ratio": 2.398
+ },
+ {
+  "registration_no": "74171",
+  "operator": "amazon",
+  "n_matched": 2,
+  "n_permit_codes": 4,
+  "permit_mw_scaled": 32.7,
+  "gfa_mw": 46.4,
+  "ratio": 0.704
+ },
+ {
+  "registration_no": "73995",
+  "operator": "amazon",
+  "n_matched": 3,
+  "n_permit_codes": 5,
+  "permit_mw_scaled": 28.9,
+  "gfa_mw": 41.6,
+  "ratio": 0.695
+ }
+]

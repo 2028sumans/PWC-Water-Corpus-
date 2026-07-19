@@ -322,7 +322,29 @@ Two moves, in order:
 
    ICPRB's per-facility capacity came from a **JLARC consultant dataset** compiled from VADEQ permits and never published. The two remaining routes are both requests, not downloads: a **FOIA to DEQ** (the data-center page explicitly invites one) or a direct request to **ICPRB or JLARC** for the compiled dataset. Statewide context for scale: roughly 9,000 permitted data-center generators at 2–4 MW each.
 
-### 7.1b Why the density constant cannot be repaired by tuning
+### 7.1a Permit capacity obtained — the constant's CENTRE is corroborated, its BAND is not
+
+28 VADEQ permit documents were obtained and parsed ([`parse_air_permits.py`](parse_air_permits.py) → [`data/permit_capacity.json`](data/permit_capacity.json)). **9 parse cleanly; 21 are marked `needs_review` and excluded from every total.** Running the clean Prince William permits through ICPRB's Equation 6-3 and comparing to the GFA bridge ([`validate_density_vs_permits.py`](validate_density_vs_permits.py)):
+
+| Reg | Operator | Coverage | Permit MW | GFA MW | Ratio |
+|---|---|---|---|---|---|
+| 74260 | NTT | 2/2 | 152.0 | 129.4 | 1.17 |
+| 74081 | Amazon | 2/5 | 34.4 | 33.6 | **1.02** |
+| 74224 | Stack | 1/1 | 76.5 | 31.9 | 2.40 |
+| 74171 | Amazon | 2/4 | 32.7 | 46.4 | 0.70 |
+| 73995 | Amazon | 3/5 | 28.9 | 41.6 | 0.70 |
+
+**Median ratio 1.02 → implied density 8,613 sqft/MW against the shipped 8,818 — a 2.3% difference.**
+
+This is not the result I expected, and it changes the diagnosis. The density constant has been treated throughout this document as the model's weakest link. Against the most direct evidence available — the same input ICPRB uses, run in the direction their equation validates — **its central value is very nearly right.** Permit 74081 is the cleanest case (our worked example, IAD-73/74) and lands at 1.02.
+
+It also resolves the §7.1 contradiction. Interconnection floors implied 7,253 sqft/MW but compare against entitlement *ceilings*, biasing the ratio low; ICPRB's Fairfax figures implied 12,722 from a single locality's aggregate. Permits are per-site and definition-matched, and land at 8,613 — essentially on the shipped value.
+
+**What remains wrong is the confidence band, not the centre.** Per-site ratios span 0.70–2.40 (3.4×) on n=5, against the model's stated ±25% (1.67×). The correct fix is therefore *not* a new central value — it is widening the density band and, where a clean permit exists, replacing the estimate with the permit-derived figure entirely.
+
+Caveats that keep this provisional: n=5; three of five sites have partial building coverage, so the permit MW is scaled by the fraction of named buildings present; and permitted capacity is an entitlement, making it `inferable` rather than `observable`.
+
+### 7.1b Why re-centring the density constant does not help
 
 Three half-measures were quantified before concluding this. None works:
 
