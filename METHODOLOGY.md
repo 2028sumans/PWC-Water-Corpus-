@@ -831,3 +831,93 @@ Density is now **52%** of the swing, up from 48%, because the refresh added 40 b
 The county updates this layer continuously — GFA is revised as buildings move from planned to permitted to assessed. A snapshot is a point-in-time read of a moving dataset, and nothing in the pipeline was checking its age. **`build_facility_profiles.py` should re-pull from the live endpoint rather than a vendored file**, or at minimum record and surface the snapshot date.
 
 Live endpoint: `https://gisweb.pwcva.gov/arcgis/rest/services/Planning/Build_Out_Analysis/MapServer/9/query`
+
+---
+
+## 12. The peak-day figure ignored every narrowing — fixed 19 July 2026
+
+Found while computing §13, because peak day is the number the basin analysis turns on.
+
+`WUP_PEAK_GAL_PER_MW_DAY["pwc_observed"] = 3,060` gal/MW/day is Prince William Water's **observed system peak day (2023)**, a fleet-wide figure. The estimator applied it flat to every building — including the buildings the Scope 1 logic had just narrowed to the 150 gal/MW/day air-cooled tier on the strength of an operator closed-loop commitment.
+
+Two things were wrong with that:
+
+1. It implied a **20× peak-to-average ratio** for those buildings, where the observed county ratio is 3,060 / 309 = **9.9×**.
+2. It put their peak day at roughly **7× their own Scope 1 upper bound**. A closed-loop site has no evaporative peak to have; the whole point of the narrowing is that its consumption is nearly weather-independent.
+
+The peak is now derived as a **ratio applied to whatever central WUP the building actually earned**:
+
+```python
+peak_ratio = (WUP_PEAK_GAL_PER_MW_DAY["pwc_observed"]
+              / WUP_GAL_PER_MW_DAY["pwc_observed"])      # 3060 / 309 = 9.9
+peak = mgd(eff_mw, wup_central * peak_ratio)
+```
+
+A building narrowed to 150 now peaks at 1,485 gal/MW/day, not 3,060. The county-wide summer peak drops from **23.36 MGD (11.3× annual)** to **20.50 MGD (9.9× annual)**, which is now the observed ratio by construction rather than an artefact of mixing a fleet peak with a per-building average.
+
+This is the same class of error as §6.5 and the nuclear factor: a fleet-level constant applied where a building-level one was already available. Worth a standing check — **any constant sourced from a system-wide observation must be asked whether it survives being pushed down to a single building.**
+
+---
+
+## 13. Where the water actually comes from — basin displacement
+
+This is the analysis with the clearest hydrological claim in the project, and the one that most justifies treating the work as water science rather than infrastructure accounting.
+
+`basin_analysis.py` asks a question the per-facility totals cannot: **which basin gives up the water?** Scope 1 is withdrawn locally, from the Occoquan and Potomac headwater streams the buildings sit on. Scope 2 is consumed hundreds of kilometres away, at the generating plants — which sit in the James, York, Roanoke and Rappahannock basins. Since Scope 2 is ~87% of the total, almost the entire footprint is displaced out of the county's own watersheds.
+
+### 13.1 Method
+
+Scope 1 is assigned to receiving watershed by the building's own `water_context.watershed_name` (county watershed layer). Scope 2 is split by fuel using the same blended-intensity arithmetic as §3, then each fuel's share is distributed across Virginia's actual plants of that type **in proportion to their reported consumption**, and each plant is assigned a basin from the USGS dataset's own `NAME_OF_WATER_SOURCE` field. Attribution therefore uses one source end to end — no external basin lookup, no plant-siting assumption of mine.
+
+Two source strings resolve to no basin and are recorded as such rather than guessed: `Municipality` (the plant buys treated water; the dataset does not name the supplier) and `Wells`. Together they carry 19.3% of Scope 2, which is a real limit on the precision of the claim and is stated as one.
+
+### 13.2 Scope 1 — the local draw, all within the Potomac basin
+
+| Receiving watershed | Buildings | IT MW | Annual avg (MGD) | Summer peak (MGD) | Watershed acres | Peak gal/acre/day |
+|---|---|---|---|---|---|---|
+| Broad Run | 166 | 6,117 | 1.651 | 16.35 | 2,476 | **6,604** |
+| Bull Run | 61 | 1,160 | 0.344 | 3.40 | 1,716 | 1,983 |
+| Powells Creek | 14 | 328 | 0.066 | 0.66 | 1,781 | 371 |
+| Quantico Creek | 2 | 29 | 0.009 | 0.09 | 1,316 | 67 |
+
+The concentration is the finding. **Broad Run carries 80% of the county's local data-centre draw** — 166 of 243 buildings — and on a summer peak day that is 6,604 gallons per watershed acre per day, 3.3× Bull Run and 18× Powells Creek. Whatever the county-wide number is, the stress is not county-wide.
+
+### 13.3 Scope 2 — consumed in basins the county has no standing in
+
+| Basin | MGD | % of Scope 2 |
+|---|---|---|
+| James | 19.35 | 43.3% |
+| **York (Lake Anna / North Anna)** | **13.68** | **30.6%** |
+| *unresolved — purchased municipal water* | 8.60 | 19.2% |
+| Roanoke | 2.49 | 5.6% |
+| Rappahannock | 0.27 | 0.6% |
+| Tennessee/Clinch | 0.23 | 0.5% |
+| *unresolved — groundwater* | 0.04 | 0.1% |
+| New/Kanawha | 0.02 | 0.0% |
+
+The James total is gas combined cycle — chiefly Tenaska (11.89 MGD) and Bear Garden (7.44 MGD). The York total is essentially **North Anna alone**: Virginia's other nuclear station, Surry, reports zero consumption because it is once-through cooled on the tidal James, so the entire nuclear share of Prince William's electricity lands on Lake Anna.
+
+### 13.4 The headline
+
+| | MGD | % of total |
+|---|---|---|
+| Total footprint | 51.42 | — |
+| Consumed **in** the Potomac basin | 2.07 | **4.0%** |
+| Consumed in **other** basins | 44.68 | **86.9%** |
+| Scope 3, basin not locatable | 4.67 | 9.1% |
+
+**About 96% of the consumptive water footprint of Prince William County's data centres is consumed outside the basin the buildings occupy.**
+
+Two consequences follow, and they are the paper's argument:
+
+1. **North Anna alone gives up 13.68 MGD to serve these buildings — 6.6× the entire local Scope 1 draw of 2.07 MGD.** A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres, and it is affected roughly seven times more than the streams the buildings actually sit on.
+
+2. **The reviewing body and the affected basin do not overlap.** Every one of these facilities was approved through Prince William County land-use review — rezonings, special use permits, site plans, all Potomac-basin instruments. That process has authority over the 4% and none whatsoever over the 96%. The Lake Anna shoreline had no standing in any of the hearings recorded in §8.
+
+This is why the local-versus-total framing common to data-centre water reporting is not merely incomplete but misdirected: it scrutinises the small share that is visible to the permitting authority and is silent on the large share that is not.
+
+### 13.5 What would sharpen it
+
+- **19.2% of Scope 2 is unattributed** (`Municipality` / `Wells`). Resolving which utilities supply Hopewell and the other purchased-water plants would move ~8.6 MGD onto a named basin — likely James, which would push that basin past 60%.
+- The plant-level split uses **2015** USGS consumption as the allocation weight. Dominion's fleet has changed since; a newer EIA-923/860 pull would re-weight it.
+- Marginal versus average dispatch. The attribution here is average-mix. A **marginal** analysis — which plant actually turns up when a Loudoun/Prince William data centre adds load — would plausibly shift weight toward gas and away from nuclear, since nuclear runs baseload regardless. That is the single most defensible improvement available and is the natural next piece of work.

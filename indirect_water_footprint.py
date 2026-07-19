@@ -613,7 +613,15 @@ def scope1_onsite_cooling(eff_mw, eff_lo, eff_hi, operator_commitment=None, cool
     lo = mgd(eff_lo, wup_lo)
     hi = mgd(eff_hi, wup_hi)
     central = mgd(eff_mw, wup_central)
-    peak = mgd(eff_mw, WUP_PEAK_GAL_PER_MW_DAY["pwc_observed"])
+    # Peak day scales with the tier this facility actually sits on, not with the
+    # fleet peak. Applying PWC's observed 3,060 gal/MW/day peak to a facility
+    # narrowed to the 150 air-cooled tier implied a 20x peak:average ratio and a
+    # peak 7x its own Scope 1 upper bound -- a closed-loop site cannot have an
+    # evaporation-driven peak. The observed PWC ratio is 3,060/309 = 9.9x, and
+    # that RATIO is what generalises across tiers.
+    peak_ratio = (WUP_PEAK_GAL_PER_MW_DAY["pwc_observed"]
+                  / WUP_GAL_PER_MW_DAY["pwc_observed"])
+    peak = mgd(eff_mw, wup_central * peak_ratio)
 
     return {
         "mgd_range": [round(lo, 4), round(hi, 4)],

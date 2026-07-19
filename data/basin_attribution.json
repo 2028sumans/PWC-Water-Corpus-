@@ -1,0 +1,49 @@
+{
+ "scope1_by_watershed": {
+  "BROAD RUN": {
+   "n": 166,
+   "s1": 1.6505,
+   "peak": 16.350199999999997,
+   "mw": 6116.899999999997,
+   "acres": 2475.92993164
+  },
+  "BULL RUN": {
+   "n": 61,
+   "s1": 0.34400000000000014,
+   "peak": 3.4022000000000006,
+   "mw": 1160.4000000000008,
+   "acres": 1715.65002441
+  },
+  "POWELLS CREEK": {
+   "n": 14,
+   "s1": 0.0664,
+   "peak": 0.6599999999999999,
+   "mw": 328.0,
+   "acres": 1780.95996094
+  },
+  "QUANTICO CREEK": {
+   "n": 2,
+   "s1": 0.0088,
+   "peak": 0.0876,
+   "mw": 28.6,
+   "acres": 1315.56994629
+  }
+ },
+ "scope2_by_generating_basin": {
+  "unresolved (purchased municipal water)": 8.59937890651662,
+  "James": 19.348185637089056,
+  "York (Lake Anna)": 13.681445563597702,
+  "Tennessee/Clinch": 0.22956081215434926,
+  "New/Kanawha": 0.017131403892115617,
+  "Roanoke": 2.490906125913611,
+  "unresolved (groundwater)": 0.04111536934107748,
+  "Rappahannock": 0.2706761814954267
+ },
+ "totals_mgd": {
+  "scope1": 2.0696999999999997,
+  "scope2": 44.67839999999996,
+  "scope3": 4.675,
+  "total": 51.423099999999955
+ },
+ "summer_peak_local_mgd": 20.5
+}
