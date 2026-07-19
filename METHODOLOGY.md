@@ -393,6 +393,26 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.1e A permit states floor area AND load for the same building
+
+Reading every permit description in full — not keyword-matching them — turned up the thing this project has looked for all along: **an applicant stating a data centre's floor area and its electrical load in the same sentence.**
+
+`MEC2025-01801`, parcel 7596-55-9338, Issued:
+
+> *"THE PROJECT IS A TWO-STORY DATA CENTER AND OFFICE BUILDING AT AN APPROXIMATE **339,744 SF GROSS** AREA... AND ROOF EQUIPMENT PLATFORM TO SUPPORT THE **60 MW CRITICAL LOAD** PLANNED"*
+
+**339,744 ÷ 60 = 5,662 sqft per MW**, against the **8,818** this model uses.
+
+"Critical load" is IT load — the same quantity ICPRB's *Effective (IT) Power Demand* denotes — so these are directly comparable. Taken at face value, the constant **understates this building's power by 1.56×**.
+
+A second statement, `MEC2025-01881` on the NTT parcel: *"A NEW TWO-STORY **96 MW** DATA CENTER BUILDING THAT CONSISTS OF 12 DATA SERVER VAULTS"*. Which of the four NTT buildings there it refers to is not stated, so it cannot be assigned — but for scale, the model's permit-derived figures are 74.7 MW (VA10) and 77.3 MW (VA11), while a GFA-derived VA10 would be 63.6 MW. **The permit-derived path is the closer of the two to a stated 96 MW**, which is a further point for §7.1a.
+
+Also captured: a 270,000 SF data centre building (`MEC2023-01041`), and — usefully — the white-space ratio stated outright in `MEC2025-00037`: *"Approx. 26,000 SF Data Hall with associated Mechanical and Electrical Gallery spaces (additional 12,000 SF)"*, i.e. roughly 68% of fitted-out area is hall.
+
+All four are recorded in [`data/eportal_density_statements.json`](data/eportal_density_statements.json).
+
+**Nothing is recalibrated on this.** One building is not a fleet, the 5,662 figure is a *planned* load on a *gross* area including office, and ICPRB's 8,818 is a fleet average across a Virginia estate that includes far older and less dense buildings — so a 2025 new build coming in denser is expected rather than contradictory. What it does establish is that the direction of §7.2b's substation flag and the direction of this figure **disagree**: the substation suggested campus power might be overstated, this suggests per-building power is understated. Both are single observations. The honest reading is that the density constant remains the largest unresolved term, and now has credible evidence pulling in both directions.
+
 ### 7.3c Harvested: data centres permit chillers, not cooling towers
 
 The ePortal harvest is done. **185 records** captured across the keyword set (`chiller`, `igloo`, `cooling tower`, `dry cooler`, `evaporative`, `condenser water`), joined on `MainParcel` and saved to [`data/eportal_cooling_permits.json`](data/eportal_cooling_permits.json). **76 land on data centre parcels**, covering 75 parcels overall, and are attached per building as `eportal_cooling_permits`.
