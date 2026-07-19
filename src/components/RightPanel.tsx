@@ -533,6 +533,16 @@ export function RightPanel() {
                   {swf.total_mgd_central.toFixed(3)}
                 </div>
                 <div className="text-sm text-neutral-500">MGD</div>
+                <div
+                  className="text-[10px] text-neutral-500 leading-tight"
+                  title={swf.total_basis_note}
+                >
+                  delivered
+                  <br />
+                  <span className="text-neutral-600">
+                    {swf.total_consumptive_mgd_central.toFixed(3)} consumptive
+                  </span>
+                </div>
                 <div className="ml-auto text-[10px] text-neutral-500 text-right relative">
                   <button
                     onClick={() => setMethodologyOpen((v) => !v)}
@@ -654,6 +664,30 @@ export function RightPanel() {
                 }) × ${swf.scope2_electricity.blended_consumption_gal_per_mwh} gal/MWh Dominion generation-mix-blended consumption factor.`}
                 methodology={swf.scope2_electricity.methodology}
               />
+              {swf.scope2_electricity.market_based && (
+                <div className="mt-1 ml-3 border-l border-neutral-800 pl-3 py-1.5">
+                  <div className="flex items-baseline gap-2 text-[11px]">
+                    <span className="text-neutral-500">Market-based Scope 2</span>
+                    <span className="tabular-nums text-neutral-300">
+                      {swf.scope2_electricity.market_based.mgd_central.toFixed(3)} MGD
+                    </span>
+                    <span className="text-neutral-600">
+                      vs {swf.scope2_electricity.mgd_central.toFixed(3)} location-based
+                    </span>
+                  </div>
+                  <div className="mt-1 text-[10px] leading-relaxed text-neutral-500">
+                    {swf.scope2_electricity.market_based.claim}. The GHG Protocol requires both
+                    figures. This one is contractual, not physical —{" "}
+                    {(
+                      swf.scope2_electricity.mgd_central -
+                      swf.scope2_electricity.market_based.mgd_central
+                    ).toFixed(3)}{" "}
+                    MGD of real Virginia-basin consumption is netted away by annual renewable
+                    matching. The water was still consumed at the plant that actually served this
+                    building.
+                  </div>
+                </div>
+              )}
               <ScopeRow
                 label="Scope 3 — embodied / supply-chain"
                 tone="violet"

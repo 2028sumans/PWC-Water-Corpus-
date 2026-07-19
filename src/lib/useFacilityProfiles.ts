@@ -180,6 +180,20 @@ export interface Scope2Electricity {
   /** Citation for a disclosed fleet PUE; null when a vintage class was used. */
   pue_source: string | null;
   blended_consumption_gal_per_mwh: number;
+  /** GHG Protocol requires both. mgd_central above is the location-based one. */
+  accounting_basis: "location_based";
+  /**
+   * What the operator would publish, given its renewable-matching claim. Null
+   * for operators with no such claim on file. Contractual, not physical: a REC
+   * does not stop the plant that actually served this building evaporating.
+   */
+  market_based: {
+    mgd_central: number;
+    renewable_matched_share: number;
+    effective_gal_per_mwh: number;
+    claim: string;
+    caveat: string;
+  } | null;
   methodology: string;
   note: string;
 }
@@ -207,6 +221,15 @@ export interface ScopeWaterFootprint {
   scope3_embodied: Scope3Embodied;
   total_mgd_range: [number, number];
   total_mgd_central: number;
+  /**
+   * The same total with ICPRB's 0.75 consumptive-use factor applied to Scope 1.
+   * total_mgd_central mixes bases: Scope 1 is DELIVERED water (ICPRB's WUP
+   * intensities come from utility billing records, so blowdown returning to the
+   * basin is counted), while Scope 2 is CONSUMPTION at the generating plant.
+   * Use delivered against utility supply, consumptive against basin balance.
+   */
+  total_consumptive_mgd_central: number;
+  total_basis_note: string;
   total_note: string;
   benchmark: BenchmarkCheck;
 }
