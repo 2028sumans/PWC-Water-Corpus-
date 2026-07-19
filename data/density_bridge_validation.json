@@ -1,0 +1,122 @@
+[
+ {
+  "site": "Amazon Data Services, Inc. IAD-7 IAD-11 IAD-24",
+  "bucket": "100-250 MW",
+  "n_matched": 3,
+  "n_buildings": 3,
+  "n_codes": 3,
+  "it_mw": 29.4,
+  "facility_mw": 41.2,
+  "flag": "under"
+ },
+ {
+  "site": "Amazon Data Services, Inc. IAD-14 IAD-52 IAD-59",
+  "bucket": "100-250 MW",
+  "n_matched": 3,
+  "n_buildings": 3,
+  "n_codes": 3,
+  "it_mw": 41.6,
+  "facility_mw": 58.2,
+  "flag": "under"
+ },
+ {
+  "site": "Amazon Data Services, Inc. IAD-55 IAD-64 IAD-84",
+  "bucket": "100-250 MW",
+  "n_matched": 3,
+  "n_buildings": 4,
+  "n_codes": 3,
+  "it_mw": 62.2,
+  "facility_mw": 81.8,
+  "flag": "under"
+ },
+ {
+  "site": "Amazon Data Services, Inc. IAD-73 IAD-74 IAD-602 IAD-193 IAD-194",
+  "bucket": "100-250 MW",
+  "n_matched": 2,
+  "n_buildings": 2,
+  "n_codes": 5,
+  "it_mw": 33.6,
+  "facility_mw": 47.0,
+  "flag": "under"
+ },
+ {
+  "site": "Amazon Data Services, Inc. IAD-100 IAD-101 IAD-102 IAD-103",
+  "bucket": "100-250 MW",
+  "n_matched": 4,
+  "n_buildings": 4,
+  "n_codes": 4,
+  "it_mw": 90.2,
+  "facility_mw": 100.6,
+  "flag": "in"
+ },
+ {
+  "site": "Amazon Data Services Inc - IAD-104/105/106",
+  "bucket": "250+ MW",
+  "n_matched": 3,
+  "n_buildings": 3,
+  "n_codes": 3,
+  "it_mw": 76.1,
+  "facility_mw": 84.9,
+  "flag": "under"
+ },
+ {
+  "site": "Amazon Data Services (IAD-130, IAD-131, IAD-313 and DCA-072))",
+  "bucket": "100-250 MW",
+  "n_matched": 2,
+  "n_buildings": 2,
+  "n_codes": 4,
+  "it_mw": 46.4,
+  "facility_mw": 51.7,
+  "flag": "under"
+ },
+ {
+  "site": "SI NVA02D, LLC",
+  "bucket": "100-250 MW",
+  "n_matched": 1,
+  "n_buildings": 1,
+  "n_codes": 1,
+  "it_mw": 31.9,
+  "facility_mw": 35.6,
+  "flag": "under"
+ },
+ {
+  "site": "Microsoft - Gainesville Data Center - MNZ03",
+  "bucket": "50-100 MW",
+  "n_matched": 1,
+  "n_buildings": 1,
+  "n_codes": 1,
+  "it_mw": 35.5,
+  "facility_mw": 46.1,
+  "flag": "under"
+ },
+ {
+  "site": "Microsoft - Manassas Data Center - MNZ01",
+  "bucket": "50-100 MW",
+  "n_matched": 1,
+  "n_buildings": 1,
+  "n_codes": 1,
+  "it_mw": 34.0,
+  "facility_mw": 44.2,
+  "flag": "under"
+ },
+ {
+  "site": "NTT Global Data Centers VA10 LLC",
+  "bucket": "100-250 MW",
+  "n_matched": 1,
+  "n_buildings": 1,
+  "n_codes": 1,
+  "it_mw": 63.6,
+  "facility_mw": 82.7,
+  "flag": "under"
+ },
+ {
+  "site": "Digital Realty - Porpoise Ventures LLC (VA4)",
+  "bucket": "10-25 MW",
+  "n_matched": 1,
+  "n_buildings": 1,
+  "n_codes": 1,
+  "it_mw": 25.8,
+  "facility_mw": 36.1,
+  "flag": "over"
+ }
+]
