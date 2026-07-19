@@ -393,6 +393,35 @@ This is a stronger statement of the disclosure gap than "no operator publishes a
 
 Two incidental facts worth carrying: the Gainesville East site is the **Atlantic Research Corporation brownfield**, where clearing has already disturbed two perennial streams as part of remediation and staff record the cleanup status as *"unclear to staff"*. And Planning Commission packets interleave unrelated cases, so a section must be attributed to its own case — a "private well" provision and playground equipment in the same PDF as a data centre item belong to a residential application, not to the data centre.
 
+### 7.3b County trade permits DO carry cooling equipment — route reopened
+
+The cooling-type search was closed in §7.3 on the basis that air permits name equipment only once and imagery cannot be validated. That conclusion was **too early**: it never tested the county's trade-permit system.
+
+Prince William's ePortal (`egcss.pwcgov.org`, Tyler EnerGov) exposes a public search over Permit, Plan, Inspection, Code Case, Request and Project records. Every record carries `MainParcel`, which joins directly to the parcels already in this dataset. Mechanical (`MEC`), plumbing (`PLB`), electrical (`ELE`) and fire-protection (`FPP`/`FPR`) permits are all public.
+
+**Permit descriptions contain equipment-level detail**, which the air permits' project-level descriptions do not:
+
+> `MEC2026-01982` — *"THERE WILL BE TWO NEW CHILLERS WITH ASSOCIATED PUMPS AND A MATCHING COOLING TOWER"*
+> `MEC2023-02299` — *"JC-1 Cooling tower, pump and piping"*
+> `MEC2026-00947` — *"(1) DOAS1 - Dedicated Outdoor Air Unit (1) CT1..."*
+
+**And data centre cooling equipment is in there, named by building code:**
+
+| Permit | Parcel | Description |
+|---|---|---|
+| `PLB2020-00815`, `PLB2020-00742` | 7597-42-1456 | *"IGLOO/CHILLER ADDITIONS - IAD 52"* |
+| `PLB2020-00775` | 7298-51-5907 | *"IGLOO/CHILLER ADDITIONS - IAD 55"* |
+| `PLB2020-00480` | **7596-17-3979** | *"THREE NEW IGLOO CONTAINERS"* |
+| `PLB2020-00478` | **7596-17-3979** | *"TWO NEW IGLOO CONTAINERS"* |
+
+7596-17-3979 is **AWS IAD-74**, this document's worked example. Note these are **plumbing** permits, not mechanical — chillers with water connections are permitted through PLB, so a mechanical-only search would have missed them.
+
+Corpus size: **345 records matching "chiller", 51 matching "cooling tower"** across all permit types.
+
+**Access notes for whoever harvests this.** The API (`POST /SelfService/api/energov/search/search`) rejects reconstructed payloads with HTTP 500 even on verbatim replay, so it requires headers the Angular client adds; results are instead readable from the rendered DOM, which parses cleanly into permit number, type, status, parcel, address and description. The UI pages 10 at a time and programmatic `.click()` does not advance it — real clicks do. Sorting descending by permit number surfaces recent records first, which is where data centre activity is.
+
+**What this does not yet establish.** Whether "IGLOO/CHILLER" units are air-cooled or evaporative is not stated, and a chiller alone does not settle cooling type — the question is whether heat is finally rejected through a cooling tower or dry cooler. But this is the first source that names cooling equipment per data-centre building, and it is public, joinable and unharvested.
+
 ### 7.3a The only enforceable water condition in the entire corpus is a TDS limit
 
 Reading every permit condition — 109 distinct types across 30 permits, not just the equipment tables — produced one genuinely water-relevant regulatory provision, and its character is the finding.
