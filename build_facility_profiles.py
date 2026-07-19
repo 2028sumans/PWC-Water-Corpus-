@@ -29,6 +29,7 @@ import geopandas as gpd
 import pandas as pd
 
 from indirect_water_footprint import (
+    SQFT_PER_EFFECTIVE_MW,
     build_proffer_group_sizes,
     estimate_scope_water_footprint,
     resolve_gfa,
@@ -223,7 +224,10 @@ def permit_conditions_for(case_records):
 _PERMIT_PATH = os.path.join(_SCRIPT_DIR, "data", "permit_capacity.json")
 _OPERATOR_ALIASES = {
     "amazon": ["amazon", "aws"], "microsoft": ["microsoft"], "ntt": ["ntt"],
-    "digital realty": ["digital realty", "dlr"], "equinix": ["equinix"],
+    "digital realty": ["digital realty", "dlr", "digital third", "digital carver", "porpoise"],
+    "equinix": ["equinix"],
+    "gainesville crossing": ["gainesville crossing", "gcdc", "corscale"],
+    "nova mango": ["nova mango"],
     "iron mountain": ["iron mountain"], "qts": ["qts"],
     "stack": ["stack", "si nva"], "cloudhq": ["cloudhq", "cloud hq"],
     "corporate office properties": ["corporate office properties", "copt"],
@@ -297,8 +301,104 @@ def build_permit_power_index(buildings_df):
     return index
 
 
+# ---------------------------------------------------------------------------
+# Tier 2: operator-matched permits, for the 7 permits that name no buildings
+# ---------------------------------------------------------------------------
+# Seven high-confidence PWC permits carry no building codenames at all -- QTS,
+# Gainesville Crossing, Digital Realty, Nova Mango, CloudHQ, COPT, Comcast --
+# holding 902 MW of effective IT power that codename matching cannot reach.
+# Every one of them belongs to an operator with exactly ONE Prince William
+# permit, which makes operator a safe key for precisely these cases. Amazon (12
+# permits) and Microsoft (2) stay on codenames, where the key is ambiguous.
+#
+# The hazard is that one permit rarely covers an operator's whole county
+# portfolio. CloudHQ is the proof: permit 74107 covers the MCC1/MCC6 halls at
+# 61 MW, while CloudHQ has 13 buildings totalling 475 MW of GFA-derived load.
+# Spreading that permit across all 13 would understate them roughly eightfold.
+#
+# So a coverage test gates the match: the permit's power must be within the
+# range that codename-matched permits actually showed against the GFA bridge
+# (0.64-1.61 across 11 sites, so 0.6-1.7 here). This is a test of WHETHER THE
+# PERMIT COVERS THIS BUILDING SET, not a calibration of the estimate -- a ratio
+# far from 1 means the permit describes a different set of buildings than the
+# one it is about to be applied to.
+_DEQ_PERMIT_PATH = os.path.join(_SCRIPT_DIR, "data", "vadeq_air_permits_pwc.json")
+OPERATOR_COVERAGE_MIN = 0.6
+OPERATOR_COVERAGE_MAX = 1.7
+
+
+def build_operator_permit_index(buildings_df, already_matched, permit_index):
+    if not (os.path.exists(_PERMIT_PATH) and os.path.exists(_DEQ_PERMIT_PATH)):
+        return {}
+
+    caps = [p for p in json.load(open(_PERMIT_PATH)) if p.get("confidence") == "high"]
+    deq = json.load(open(_DEQ_PERMIT_PATH))["permits"]
+    site_by_reg = {p["registration_no"].split("-")[0]: p["site_name"] for p in deq}
+
+    # Only operators with exactly one Prince William permit are eligible.
+    by_op = {}
+    for c in caps:
+        if "prince william" not in (c.get("location") or "").lower():
+            continue
+        op = _operator(site_by_reg.get(c["registration_no"], ""))
+        if not op:
+            continue
+        by_op.setdefault(op, []).append(c)
+    eligible = {op: v[0] for op, v in by_op.items() if len(v) == 1}
+
+    # A permit already consumed by codename matching must not be spent again.
+    # Iron Mountain's permit 74112 was matched to VA-1/2/3/6/7 by codename, and
+    # the operator pass then applied the SAME 148 MW to five further Iron
+    # Mountain buildings -- assigning one site's capacity twice.
+    spent = {v["registration_no"] for v in permit_index.values()}
+    for op in [o for o, p in eligible.items() if p["registration_no"] in spent]:
+        t(f"    operator '{op}': permit {eligible[op]['registration_no']} already "
+          f"consumed by codename matching -- not reused")
+        del eligible[op]
+
+    rows = []
+    for _, b in buildings_df.iterrows():
+        nm = clean(b.get("BuildingName"))
+        if not nm or nm in already_matched:
+            continue
+        g, _f, _q = resolve_gfa(b, _proffer_group_sizes)
+        rows.append({"name": nm, "op": _operator(nm), "gfa": g or 0.0})
+
+    index = {}
+    for op, permit in eligible.items():
+        hits = [r for r in rows if r["op"] == op and r["gfa"] > 0]
+        if not hits:
+            continue
+        total_gfa = sum(r["gfa"] for r in hits)
+        gfa_mw = total_gfa / SQFT_PER_EFFECTIVE_MW
+        ratio = permit["effective_it_mw"] / gfa_mw if gfa_mw else 0
+        if not (OPERATOR_COVERAGE_MIN <= ratio <= OPERATOR_COVERAGE_MAX):
+            t(f"    operator '{op}': permit {permit['registration_no']} rejected, "
+              f"coverage ratio {ratio:.2f} outside [{OPERATOR_COVERAGE_MIN}, {OPERATOR_COVERAGE_MAX}] "
+              f"({len(hits)} buildings) -- the permit does not cover this building set")
+            continue
+        t(f"    operator '{op}': permit {permit['registration_no']} accepted, "
+          f"coverage ratio {ratio:.2f} across {len(hits)} buildings")
+        for r in hits:
+            index[r["name"]] = {
+                "registration_no": permit["registration_no"],
+                "site_generator_mw": permit["permanent_generator_mw"],
+                "gfa_share": r["gfa"] / total_gfa,
+                "n_buildings_on_permit": len(hits),
+                "n_buildings_matched": len(hits),
+                "match_basis": "operator_single_permit",
+                "coverage_ratio": round(ratio, 2),
+            }
+    return index
+
+
 _permit_power_index = build_permit_power_index(dc_buildings)
-t(f"  buildings with permit-derived power: {len(_permit_power_index)}")
+t(f"  buildings matched to a permit by BUILDING CODENAME: {len(_permit_power_index)}")
+_operator_index = build_operator_permit_index(dc_buildings, set(_permit_power_index), _permit_power_index)
+t(f"  buildings matched to a permit by OPERATOR (single-permit operators): {len(_operator_index)}")
+for _k, _v in _operator_index.items():
+    _permit_power_index.setdefault(_k, _v)
+t(f"  buildings with permit-derived power: {len(_permit_power_index)} of {len(dc_buildings)}")
 
 building_profiles = []
 for _, b in dc_buildings.iterrows():
