@@ -176,8 +176,13 @@ function unresolvedItems(
       wc?.has_npdes === 1
         ? `NPDES discharge permit on file${dmr != null ? `, reporting ${dmr} MGD of discharge flow` : " (no DMR flow figure reported)"}${wc?.has_deq_permit === 1 ? "; DEQ permit also on record" : ""}.`
         : `No NPDES water discharge permit on record${wc?.has_deq_permit === 1 ? ", though a DEQ permit is on file" : ", and no DEQ permit on file"}.`,
-    gap: "NPDES regulates what a facility discharges to surface water — not what it consumes. Data centers lose water primarily to evaporation from municipal supply, which produces no permitted discharge and triggers no reporting duty. Even a permit-holding facility does not report the consumption figure this page estimates.",
-    impact: `No per-facility measurement exists to check the ${swf.total_mgd_central.toFixed(3)} MGD central estimate against. Prince William Water reports only a service-area total (0.42 MGD across all data center customers in 2023), which this model reproduces to within 7% in aggregate but cannot resolve to any single building.`,
+    gap: "NPDES regulates what a facility discharges to surface water — not what it consumes. Data centers lose water primarily to evaporation from municipal supply, which produces no permitted discharge and triggers no reporting duty. Even a permit-holding facility does not report the consumption figure this page estimates. The gap is structural rather than a matter of operators declining to answer: the county's own land-use review has no field for water quantity. Every data center staff report contains a Potable Water Plan Analysis, and across all of them it evaluates only whether public water is available and who pays to connect — never how much will be used. The Environment Plan Analysis treats water solely as a quality and habitat question (Resource Protection Areas, stream disturbance, buffers). A facility can be approved, conditioned and built without any public document stating its water demand.",
+    // The old text here claimed this model "reproduces [PWC's 0.42 MGD] to
+    // within 7% in aggregate". That was the circular validation: ICPRB derived
+    // the 309 gal/MW/day intensity BY DIVIDING that same 0.42 MGD by its own
+    // power estimate, so the comparison cancels the water figure and tests the
+    // power spine instead. Withdrawn — see METHODOLOGY.md 6.1.
+    impact: `No per-facility measurement exists to check the ${swf.total_mgd_central.toFixed(3)} MGD central estimate against. Prince William Water reports only a service-area total (0.42 MGD across all data center customers in 2023) — a wider boundary than the county, and not an independent check, since the intensity this model uses was itself derived from that figure.`,
     wouldResolve:
       "A facility-level water-use disclosure requirement, or large-customer withdrawal reporting from Prince William Water.",
   });
