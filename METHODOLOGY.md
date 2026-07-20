@@ -1203,3 +1203,119 @@ Three plants are **conspicuously missing** from the freshwater model, and their 
 - **The window ends in 2020.** Chesterfield's coal units retired in 2023 and are still present (as multi-fuel) in the data; the coal factor is therefore slightly more coal-weighted than today's fleet. Immaterial to the total (coal is 3% of the mix) but noted.
 - **Generation weights are 2018–2020**, not 2025. The factors are intensities (gal/MWh), so this matters far less than for an absolute total, but the Dominion mix shares (§3) remain a separate 2025 estimate layered on top.
 - The reclaimed-water plants above are a genuine data gap, not a modelling choice — closing it needs EIA-923 Schedule 8 cooling-water records for those specific plants, the natural next pull.
+
+---
+
+## 19. Water-stress context — drought, warming, and seasonality (added after the dataset re-audit)
+
+A full re-read of the 81 raw datasets (see `DATASET_AUDIT.md`) found that the
+NOAA climate series — 1895→2026 monthly, for the county — had never been used.
+They carry the water-*stress* context the footprint must be read against.
+`climate_context.py` computes them; `public/data/climate_context.json` ships them.
+
+- **Extreme drought, now.** Palmer PDSI/PHDI = **−5.3 (April 2026)** — the driest
+  **0.9% of all 1,576 months since 1895** (min ever −6.96). The county is in a
+  near-record drought as the data-center estate is built out.
+- **Cooling demand is rising.** Cooling degree days are **+37% over the record**
+  (20th-century decades ~900–1,150; **2010s–2020s ≈ 1,365/yr**). The evaporative
+  Scope 1 load scales with CDD, so the per-MW water intensity of cooling has a
+  structural upward trend, not a stationary one.
+- **It is summer-concentrated.** **~88–92% of annual cooling degree days fall in
+  Jun–Sep** (Jul 33%, Aug 27%, Jun 20%, Sep 12%). This is the same window in which
+  the 9.9× peak day lands (§12), competing outdoor demand peaks, and river flows
+  are lowest — the ICPRB study's explicit concern (2025 WMA Study §6.2).
+- **Precipitation deficit.** Last 12 months are **−15% below the long-run mean**.
+
+The convergence *is* the finding: rising, summer-peaked cooling demand arriving
+during a 99th-percentile drought, with ~96% of the resulting consumption occurring
+out-of-basin (§13). Four independent series point the same way. This reframes the
+whole footprint from a static inventory into a water-stress question.
+
+---
+
+## 20. Reconciliation with the source reports (ICPRB & JLARC, read in full)
+
+The re-audit read the ICPRB 2025 WMA Study §6 and JLARC Rpt598 line by line. They
+**confirm the model's foundations** and fix two framings.
+
+### 20.1 Confirmed exactly
+- **Eq 6-2 / 6-3, factors 0.5 / 0.8 / 0.75**, and the WUP tiers all match ICPRB §6.2
+  verbatim: PWC 0.42 MGD / 4.2 MGD peak (2023) → **309 / 3,060** ✓; Loudoun 1,006 ✓;
+  air-cooled **150** (= 0.017 gal/day/sqft × 8,818) ✓; fully-water-cooled 1,577 ✓.
+- **8,818 sqft/MW is used once, to derive the 150 tier** — power in Eq 6-3 is
+  generator capacity, never floor area. This is exactly the "run backwards" point in
+  §1/§6, now confirmed from the source text.
+- **JLARC benchmarks match:** office building **6.7 MGal/yr (0.018 MGD)** ✓; largest
+  building **243 MGal/yr (0.666 MGD)** ✓ — the `benchmark_check` anchors are correct.
+
+### 20.2 Framing correction — Scope 1 vs Scope 1+2+3 (important)
+JLARC's whole-Virginia **direct** data-center water use in 2023 was **2.1 billion
+gallons = 5.75 MGD** (≈⅓ reclaimed; <0.5% of state withdrawals); ICPRB's WMA
+**direct** use is **~4 MGD average / ~15 MGD peak (2025)**. These are **Scope 1
+(on-site) only.** This model's headline **~57–60 MGD is Scope 1+2+3** and is
+dominated by Scope 2 (off-site generation water, ~87%). The model's **Scope 1 for
+PWC (~2 MGD)** is fully consistent with those sources. **The 57–60 MGD figure must
+never be compared naively against JLARC's 5.75 MGD or ICPRB's 4 MGD** — they measure
+different boundaries. Every headline now carries the scope label for this reason.
+
+### 20.3 Peak ratio is cooling-type-dependent — capped (code fixed)
+The model applied PWC's observed **9.9× peak:average ratio** (3,060/309) to every
+tier. But that ratio is PWC's, whose fleet is air-/hybrid-cooled and therefore
+highly weather-sensitive. **Water-cooled facilities have a much lower peak ratio:**
+ICPRB observed **2.7× in Loudoun** (2,716/1,006), and Table 6-5 tops out at **5,200
+gal/MW/day** peak (High, 90% water-cooled). Applying 9.9× to the fully-water-cooled
+central (1,577) would give **15,600 — ~3× ICPRB's ceiling**, i.e. the flat ratio
+*overstates* peak for water-cooled sites. Fixed: `peak_wup` is now capped at
+ICPRB's fully-water-cooled peak envelope (5,200 gal/MW/day). In practice this
+changes almost nothing today because 0/243 buildings sit on the water-cooled
+central tier (no cooling-type evidence exists), but the logic is now correct.
+
+### 20.4 Utility's own current figures (independent cross-check)
+Prince William Water's 2025 FAQ: data centers were **3.8% of average daily demand
+and 10.1% of maximum daily demand** (peak/avg ≈ 2.7× on a demand-share basis).
+ICPRB basin-wide: data centers are **9% of annual / up to 12% of summer consumptive
+use** in the WMA. These bound the estimate independently of the WUP chain.
+
+### 20.5 Reclaimed water is still consumptive (corrects §18.4)
+The ICPRB study and fact sheet are explicit: for evaporative cooling, **reclaimed
+water is largely lost, not returned — it reduces return flows.** §18.4 framed the
+reclaimed-water gas plants (Greensville/Warren/Brunswick) as ~zero fresh-basin
+impact; the correct framing is that they **shift the loss from withdrawal to
+return-flow reduction — still a consumptive loss**, just invisible to a
+withdrawal-based freshwater model. Same caveat applies to data centers on Broad Run
+WRF reclaimed water.
+
+### 20.6 The PUE–water tradeoff (JLARC Appendix J)
+JLARC states plainly that a **PUE mandate would *increase* water use**, because
+water-dependent cooling uses less energy. This is the mechanism behind the §14/§16
+tension: pushing PUE down (an energy goal) pushes water up. Hyperscale fleet PUE is
+**1.1–1.4**, confirming the model's disclosed/vintage PUE bands.
+
+### 20.7 Additional density anchors
+Independent basin/state densities from the reports: ICPRB basin-wide **~10,370
+sqft/MW** (56M sqft / 5,400 MW); JLARC statewide **~12,475 sqft/MW** (63M sqft /
+5,050 MW). Both are less dense than PWC's permit-backed median (8,638, §15) because
+they include older Loudoun and colocation stock — consistent with the vintage/
+operator banding, and useful as outer anchors.
+
+---
+
+## 21. NPDES — corrected from "zero" to the precise, evidenced picture
+
+The prior headline ("0 of 243 hold NPDES") was too crude. The EPA ECHO / ICIS data,
+read in full, show:
+- **~17 Prince William data centers DO hold VPDES permits — but they are VAR10
+  construction-stormwater general permits** (erosion/sediment during building;
+  temporary; no operational-water reporting), not process/discharge permits.
+- **Exactly one regional hyperscale — Microsoft IAD11 (Loudoun, VAG25 cooling-water
+  general permit) — is required to report discharge flow, temperature, and chlorine,
+  and is in non-compliance: 41 overdue-DMR violations, flow fields blank.** So the
+  operational-discharge pathway exists but is unused/unreported even where mandated.
+- **County ECHO loadings (2026): 32 permitted dischargers in PWC, zero data centers**
+  (dominant discharger is Dominion Possum Point). Only **two Virginia data centers**
+  hold their own DEQ withdrawal permit (JLARC).
+
+Corrected statement: *Prince William data centers hold construction-stormwater
+permits, not operational water-discharge or withdrawal permits; their operational
+water consumption is structurally unreported, and even the lone regional
+cooling-water permit sits in DMR non-compliance.* This is stronger and defensible.

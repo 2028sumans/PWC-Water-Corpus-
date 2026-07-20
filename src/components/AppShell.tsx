@@ -112,7 +112,8 @@ export function AppShell() {
     { label: "COMPLETED FLEET, DIRECT WATER", value: totalValue },
     { label: "NPDES COVERAGE", value: npdesValue, tone: "bad" },
     { label: "RAG CORPUS", value: "policy + methodology docs" },
-    { label: "HEADLINE FINDING", value: "235 of 243 DC buildings hold no NPDES water discharge permit", tone: "bad" },
+    { label: "WATER STRESS", value: "county in extreme drought — PDSI −5.3, driest 1% of months since 1895", tone: "bad" },
+    { label: "PERMITS", value: "PWC data centers hold construction-stormwater permits, not operational water permits", tone: "bad" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);
   useEffect(() => {

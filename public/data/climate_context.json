@@ -1,0 +1,79 @@
+{
+ "source": "NOAA Climate at a Glance, Prince William County VA (monthly 1895-2026)",
+ "drought": {
+  "PDSI": {
+   "latest_month": "202604",
+   "latest_value": -5.3,
+   "min_ever": -6.96,
+   "max_ever": 5.56,
+   "percentile_of_record": 0.9,
+   "n_months": 1576
+  },
+  "PHDI": {
+   "latest_month": "202604",
+   "latest_value": -5.3,
+   "min_ever": -6.96,
+   "max_ever": 5.56,
+   "percentile_of_record": 0.9,
+   "n_months": 1576
+  },
+  "PMDI": {
+   "latest_month": "202604",
+   "latest_value": -5.3,
+   "min_ever": -6.96,
+   "max_ever": 5.56,
+   "percentile_of_record": 0.9,
+   "n_months": 1576
+  },
+  "Palmer_Z": {
+   "latest_month": "202604",
+   "latest_value": -3,
+   "min_ever": -4.7,
+   "max_ever": 10.64,
+   "percentile_of_record": 4.1,
+   "n_months": 1576
+  }
+ },
+ "cooling_degree_days": {
+  "annual_by_decade": {
+   "1890s": 1011,
+   "1900s": 938,
+   "1910s": 905,
+   "1920s": 937,
+   "1930s": 1150,
+   "1940s": 1042,
+   "1950s": 1018,
+   "1960s": 951,
+   "1970s": 995,
+   "1980s": 1079,
+   "1990s": 1086,
+   "2000s": 1153,
+   "2010s": 1371,
+   "2020s": 1364
+  },
+  "monthly_climatology": {
+   "01": 0,
+   "02": 0,
+   "03": 1,
+   "04": 3,
+   "05": 67,
+   "06": 213,
+   "07": 348,
+   "08": 293,
+   "09": 127,
+   "10": 14,
+   "11": 0,
+   "12": 0
+  },
+  "jun_sep_share_pct": 92.0,
+  "recent_2010s_2020s_mean": 1368,
+  "pct_increase_vs_pre1950": 37
+ },
+ "precipitation": {
+  "last_12mo_total_in": 34.4,
+  "long_run_mean_annual_in": 40.5,
+  "deficit_in": -6.1,
+  "deficit_pct": -15
+ },
+ "headline": "Prince William County is in extreme drought: PDSI -5.3 (202604), the driest 0.9% of 1576 months since 1895. Cooling degree days are up 37% since the early record (1368/yr now) and 92% of them fall in Jun-Sep. Last 12 months of precipitation are -15% below normal. Data-center cooling demand is rising, summer-concentrated, and landing during a near-record drought in the months when river flows are lowest."
+}

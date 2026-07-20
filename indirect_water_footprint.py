@@ -710,15 +710,23 @@ def scope1_onsite_cooling(eff_mw, eff_lo, eff_hi, operator_commitment=None, cool
     lo = mgd(eff_lo, wup_lo)
     hi = mgd(eff_hi, wup_hi)
     central = mgd(eff_mw, wup_central)
-    # Peak day scales with the tier this facility actually sits on, not with the
-    # fleet peak. Applying PWC's observed 3,060 gal/MW/day peak to a facility
-    # narrowed to the 150 air-cooled tier implied a 20x peak:average ratio and a
-    # peak 7x its own Scope 1 upper bound -- a closed-loop site cannot have an
-    # evaporation-driven peak. The observed PWC ratio is 3,060/309 = 9.9x, and
-    # that RATIO is what generalises across tiers.
+    # Peak day scales with the tier this facility actually sits on. The observed
+    # PWC ratio is 3,060/309 = 9.9x, and that RATIO is applied to the building's
+    # own central WUP -- so a facility narrowed to the 150 air-cooled tier peaks
+    # at 1,485, not the 3,060 fleet peak.
+    #
+    # CAP (added after the July 2026 dataset re-audit of the ICPRB source): the
+    # 9.9x ratio is PWC's, whose fleet is air-/hybrid-cooled and therefore highly
+    # weather-sensitive. Water-cooled facilities have a MUCH lower peak:average
+    # ratio -- ICPRB observed 2,716/1,006 = 2.7x in Loudoun, and Table 6-5 tops
+    # out at 5,200 gal/MW/day peak (High, 90% water-cooled). Applying 9.9x to the
+    # fully-water-cooled central (1,577) would give 15,600, ~3x ICPRB's ceiling.
+    # So the peak WUP is capped at ICPRB's fully-water-cooled peak envelope.
     peak_ratio = (WUP_PEAK_GAL_PER_MW_DAY["pwc_observed"]
                   / WUP_GAL_PER_MW_DAY["pwc_observed"])
-    peak = mgd(eff_mw, wup_central * peak_ratio)
+    peak_wup = min(wup_central * peak_ratio,
+                   WUP_PEAK_GAL_PER_MW_DAY["fully_water_cooled"])
+    peak = mgd(eff_mw, peak_wup)
 
     return {
         "mgd_range": [round(lo, 4), round(hi, 4)],
