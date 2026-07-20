@@ -1319,3 +1319,551 @@ Corrected statement: *Prince William data centers hold construction-stormwater
 permits, not operational water-discharge or withdrawal permits; their operational
 water consumption is structurally unreported, and even the lone regional
 cooling-water permit sits in DMR non-compliance.* This is stronger and defensible.
+
+---
+
+## 22. Per-dataset audit of the 81 raw inputs (full read-through)
+
+Every raw dataset in `data/water_raw/` was read in full — structured files
+parsed record-by-record, documents and PDFs read whole. This catalogs what each
+contains, what it confirms, and what it corrects. (Previously kept in a separate
+DATASET_AUDIT.md; consolidated here.)
+
+---
+
+## A. Policy / permit / document JSONs
+
+### Prince_William_Water_FAQ_Extract.csv 🟡🔴
+The utility's own words. Material facts the model under-uses:
+- **"2025: data centers consumed ~3.8% of average daily demand and 10.1% of maximum daily demand"** in the PWW service area. This is a *2025* utility statement and a direct peak-to-average signal (10.1/3.8 = **2.7× on a demand-share basis**). The model currently anchors to a 2023 "0.42 MGD" figure and derives peak from the 3,060/309 = 9.9× intensity ratio — these are different framings and should be reconciled; the utility's own 2.7× demand-share peaking is a citable cross-check.
+- Water **reuse studied for Digital Gateway, "found not currently viable there, but possible elsewhere"** — bears on the reclaimed-water discussion (§18.4).
+- Supply chain: West = Fairfax Water Corbalis (Potomac) + wastewater→UOSA→Occoquan Reservoir; East = Griffith WTP (Occoquan Reservoir). Public supply is Potomac River + Lake Manassas, **not groundwater** — so the data centers do not draw down private wells (answers a common objection).
+- Planning horizon MWCOG **2045**; "growth pays for growth" (developers fund capacity).
+
+### PP-NewStructure-DataCenterBuildings.json 🟡🔴
+County building-permit policy (eff. 2021-04-05). Two things that matter to the model:
+- **County's own definition of a data center building requires "at least one megawatt of capacity"** (def. 3C) — a floor, useful for filtering.
+- **Shell-first permitting:** a new data center is permitted as ONE building permit / ONE CO, with unused areas built to Storage (S-1) / Business (B) use groups and **"fit-out" later** via Alteration/Repair permits. So **gross floor area is decoupled in time from eventual IT MW** — the shell exists at full GFA before the data halls (and their load) are fitted out. This is a concrete mechanism behind the density (sqft/MW) uncertainty and the convexity in §17: a planned/new building's GFA can precede its MW by years. Should be cited in §15.
+
+### Res No 20-773 Climate Mitigation and Resiliency Goals.json 🟡
+BOCS resolution (2020-11-17, passed 5–3). Directs Comprehensive Plan goals of
+**100% of the county's electricity from renewable sources by 2035**, county
+government ops 100% renewable by 2030, carbon neutral by 2050. Direct tension
+with the data-center gas buildout and useful context for market-based Scope 2
+(§14.2) and the CEMP.
+
+### pjm_load_report_full.json ⚪🟡
+PJM 2026 Load Forecast (Jan 2026). **The DOM (Dominion Virginia Power) zone
+forecast is explicitly adjusted for "growth in data center load and a voltage
+optimization program."** PJM RTO summer peak +3.6%/yr (10-yr), net energy
++5.3%/yr — data-center-driven. Detailed DOM numbers live in the companion Excel,
+not this text. Context for the marginal-dispatch argument (§16): the whole zone
+is being reshaped by this load.
+
+### README.txt ⚪
+Describes observations-759582.csv only (iNaturalist research-grade species obs,
+place_id 744, taxon 20978, 2020–2026). Biodiversity, not water.
+
+---
+
+## B. Climate / drought time series — 🔴🟡 THE BIGGEST MISS
+
+I never opened these. They are NOAA monthly county series (1895→2026-04, 1,576
+months) plus daily station series. They carry the water-STRESS context the whole
+paper was missing.
+
+### Drought (PDSI / PHDI / PMDI / Palmer_Z .json) 🟡🔴 — headline material
+Prince William County is in **near-record extreme drought right now**:
+- **PDSI = PHDI = PMDI = −5.3 (April 2026)** — the current reading is in the
+  **bottom 0.9% of all 1,576 months since 1895** (min ever −6.96). Palmer-Z −3.0
+  (bottom 4%). PDSI below −4 is "extreme drought" by definition.
+- The data centers' consumptive demand is landing during one of the **driest
+  periods in 130 years**. This is the water-stress hook the AGU framing needs and
+  the estimator/METHODOLOGY never mentioned it.
+
+### Cooling Degree Days (Cooling Degree Days.json) 🟡🔴
+- **CDD has risen ~35% over the record**: 20th-century decades ~900–1,150; **2010s
+  = 1,371, 2020s = 1,364**. Data-center evaporative cooling load (Scope 1) is
+  structurally increasing with warming, and the model's single fixed CDD (1,323)
+  is slightly low vs the recent decadal mean (~1,365).
+- **Seasonality: 80% of annual CDD falls in Jun–Sep** (Jul 33%, Aug 28%, Jun 20%,
+  Sep 12%). This is the seasonal shape for a Scope 1 seasonal model — and it
+  coincides exactly with summer low-flow and the drought. The 9.9× peak day
+  (§12) lands in Jul/Aug when the basin is most stressed.
+
+### Precipitation (Precipitation.json, Manassas) 🟡
+- Last 12 months = **34.4 in vs 40.5 in long-run mean (−15%, −6.1 in)** —
+  corroborates the drought independently.
+
+### The convergence (this is the argument)
+Rising cooling demand (CDD +35%) × concentrated in summer (80% Jun–Sep) × during
+99th-percentile drought (PDSI −5.3) × consumed mostly out-of-basin (§13). Four
+independent series point the same way. **None of this is in the model today.**
+
+### Station daily series (Manassas US1VAPW0022 2020–26; Vienna USC00448737 1925–2026)
+Daily PRCP/SNOW/SNWD (+ TMAX/TMIN for Vienna, 100 yr). Enables daily extreme-heat
+peak-day analysis. ⚪ Data-hygiene: the 3 "VIENNA_VA_US_*" files are **byte-identical**
+(all hold SNOW/PRCP/SNWD/TMAX/TMIN); the 2 "Manassas *" files likewise. And
+meta.location has lat/long **swapped** (latitude −77.x is really longitude).
+
+---
+
+## C. Water permits & discharge (EPA ECHO / ICIS) — 🔴 the "0 NPDES" headline was too crude
+
+I had reduced this to "0 of 243 hold NPDES." Reading the files fully shows a
+sharper, better-evidenced, and partly *contradictory* picture.
+
+### NPDES_NAICS_DATACENTER.csv (40 rows) 🔴
+National list of NPDES permits tagged NAICS 518210 (data centers). **4 are
+Virginia**: VAG250128 (Anthem CDC3, Harrisonburg), **VAG250162 (Microsoft IAD11
+Campus, Aldie/Loudoun)**, VAG830615 (Birchwood — the coal plant), VA0093301
+(Amazon, Louisa). So VA data centers DO hold NPDES/VPDES permits.
+
+### ICIS_FACILITIES_VA.csv (18,244 rows) 🔴🟡
+Cols incl NPDES_ID, FACILITY_NAME, COUNTY_CODE, CITY, lat/long, IMPAIRED_WATERS.
+**~20 Prince William-area data-center-named VPDES facilities**, almost all
+**VAR10 = construction-stormwater general permits** (erosion/sediment during
+building; temporary; no operational-water reporting): Gainesville Crossing,
+Innovation Manassas DC4, Manassas Corporate Center DC Bldg 1/2, MDC1, NTT VA10/
+VA13, NVA05C/NVA13, Westview 66 MNZ01, MNZ03, Zumot, Youth for Tomorrow DC. Plus
+Amazon DDC9/DVA5 (VAR05). **These are building-mud permits, not water-use
+permits** — but a flat "0 hold NPDES" is wrong and a reviewer with ECHO would
+catch it. Correct statement: *PWC data centers hold construction-stormwater
+permits, not operational-discharge permits.* (Also a new source of building
+codenames: IAD319, NVA05C, Westview 66, Innovation Manassas DC4.)
+
+### VAG25 cooling-water permit + Microsoft IAD11 🔴🟡 — the sharpest find
+VAG25 is a Virginia general VPDES permit whose reported parameters are
+**temperature, total residual chlorine, flow (50050), pH, ammonia, phosphorus,
+Cu/Zn/Ag** — i.e. cooling-tower blowdown chemistry. Of 32 VAG25 facilities in
+VA, only **Microsoft IAD11 Campus (VAG250162, Aldie/Loudoun)** is a data center.
+It is **required to report discharge FLOW** — proving the operational-discharge
+pathway exists — **but its DMRs are overdue: 41 effluent violations, mostly
+"DMR, Limited – Overdue," and the flow value fields are blank.** So even the one
+regional hyperscale mandated to report its cooling discharge has not. The
+invisibility is partly *non-compliance*, not only *absence of a regime*.
+
+### VA_NPDES_EFF_VIOLATIONS.csv (162,440 rows) 🟡
+Full VA DMR violation history. Our regional DC permits appear 41× — all
+VAG250162 (Microsoft IAD11) overdue-DMR violations (params: flow, pH, chlorine,
+temperature, ammonia). No PWC data center appears (they hold only VAR10).
+
+### echo_loadings_34919817.csv (ECHO annual loadings, PWC FIPS 51153, 2026) 🟢
+Actual pollutant/flow loadings for **all 32 permitted dischargers in Prince
+William County — ZERO are data centers.** Dominant discharger is **Dominion
+Possum Point** (VA0002071, 58 rows, real MGD flow — this is the Potomac-basin
+Scope 2 plant). Others: NOVEC, MCB Quantico, PWC landfill/Balls, HL Mooney
+reclamation, Manassas WTP, Virginia American Water, concrete/asphalt/paving.
+**Confirms at the county discharge level: data centers consume but do not
+discharge, so they are invisible to DMR monitoring** — the model's point, now
+evidenced. Columns include Actual Avg Facility Flow (MGD), Wastewater Flow
+(MGal/yr), Pollutant Load (kg/yr) — usable to cross-check Possum Point.
+
+### ICIS_MASTER_GENERAL_PERMITS.csv (2,838 rows) ⚪
+Master GP registry: design/actual flow, receiving water body, HUC12, issue/
+expiry, status. Useful to resolve receiving water bodies + HUC for any permit.
+
+**Net correction for METHODOLOGY/UI:** replace "0 hold NPDES" with: data centers
+hold construction-stormwater permits (VAR10) but no operational-discharge permit
+in PWC; the lone regional cooling-water permit (Microsoft IAD11, VAG25) mandates
+flow reporting yet sits in DMR non-compliance. Stronger and defensible.
+
+---
+
+## D. Local hydrology & energy
+
+### Cedar Run stream gage + DEQ well 🟡 (folder names are SWAPPED — data hygiene)
+- `groundwater_well/` actually holds the **USGS Cedar Run stream gage 01656000**
+  ("CEDAR RUN NEAR CATLETT, VA", Occoquan HUC 020700100604, drainage 93.4 sq mi,
+  2007→2026, param **gage height** ft, flood stage 12 ft). Recent ~2.8 ft.
+- `cedar_run_gage/` actually holds a **DEQ groundwater well** (VA087, Fauquier,
+  aquifer 230TRSC, 222 ft deep, built 2023-07-11, param depth-to-water ft),
+  Jan–May 2026 only; recent water table ~49.6 ft — near the **deepest** in its
+  short record. Both corroborate the drought locally. Caveat: gage HEIGHT not
+  discharge (no rating curve here), so can't derive streamflow reduction; and the
+  sites are just over the line in Fauquier, on the Occoquan/Broad Run system.
+
+### PlanningQueues.xlsx (PJM interconnection queue, 9,263 rows) 🟡
+- **Prince William: 30 generation-interconnection projects — overwhelmingly gas
+  and battery STORAGE at Possum Point** (8+ active battery projects, 60–100 MW
+  each, ~600 MW queued; one 94 MW active gas). Essentially **no local solar** (one
+  13 MW, withdrawn). The county's "100% renewable by 2035" goal (Res 20-773) is
+  not being met on the ground; the local buildout is gas + storage in the Potomac
+  basin at Possum Point — reinforces the marginal-gas argument (§16). Storage
+  charges from the marginal generator (gas), so it doesn't decouple water.
+- VA statewide queue churn is enormous: **65,248 MW withdrawn**, 13,983 active,
+  11,988 in service. Fuel + county + MW + status per project — usable for a
+  Loudoun extension.
+
+### net_metering_2024/2025/2026.xlsx, non_netmetering_2024.xlsx ⚪
+EIA-861 net-metering (distributed solar) capacity, utility×state. State-level
+renewable context (Dominion net-metered solar), not per-facility. Header sits
+below an Unnamed-column banner row. Low direct value to the water model.
+
+---
+
+## E. GeoJSON layers (all 24 property-enumerated in full)
+
+Most are already used (Data_Center_Buildings/Projects, Watersheds, Stream,
+Parcel, RPA, Soil, Zoning, Use_Permits, Planning_Pending_Cases, HV lines,
+Stormwater, Tidal, WQP stations, Springs distance). New/under-used:
+
+### SURFACE_WATER_TEMPERATURE.geojson (413 stations) 🟡 — unused, thermal-stress
+Per-station **Theil-Sen temperature trends** (Variable CTEMP, Year1→Year2, Tau,
+p-values). **77 DEGRADING (warming), 329 no-trend, 7 improving; 76% have a
+positive slope; median +0.04 °C/yr** (e.g. Accotink Creek +0.066 °C/yr, 2002–22).
+Regional streams are warming — lower DO and assimilative capacity, compounding
+the once-through thermal loads (Surry, Possum Point) and the drought. Never used.
+
+### Data_Center_Buildings.geojson (243) 🟡 — richer fields than the model uses
+Full key set includes **OCCDate** (certificate-of-occupancy epoch-ms, non-null
+for 56 completed buildings — a truer completion date than YearBuilt, which had
+the =0 bug) and **ApprovedGFA (108), BPGFA (86), PermittedGFA (12), REATaxedGFA**
+alongside GFA. resolve_gfa uses REATaxedGFA/BPGFA/GFA; **OCCDate is unused** and
+could sharpen vintage/PUE for the 56 completed buildings.
+
+### Zoning_Districts.geojson (2,208) has a PROFFERS text field 🟡
+Proffer language per zoning case — worth a full read for any water/cooling
+commitments not yet captured (the model only has PERMIT_COOLING_CONDITIONS for
+two cases).
+
+### LRLU_Developable_Areas.geojson (753) ⚪
+Per-area average GFA/employment/activity-density for developable land — buildout
+modelling inputs; tangential to the water footprint.
+
+### Springs_Groundwater_Layers.geojson (2,916) ⚪
+Groundwater QUALITY geochemistry (Al, As, Ba, radionuclides, alkalinity…), not
+quantity. Model only uses distance-to-spring.
+
+---
+
+## CORRECTIONS / ADDITIONS TO APPLY (ranked)
+
+1. 🔴 **Drought & climate context is entirely absent and is the paper's water-stress
+   spine.** Add: PDSI/PHDI −5.3 (99th-pct extreme drought, 2026); CDD +35% over
+   record (2010s–2020s ~1,365); 80% of CDD in Jun–Sep; 12-mo precip −15%. New
+   METHODOLOGY section + estimator context.
+2. 🔴 **Fix the "0 NPDES" headline.** Data centers hold VAR10 construction-stormwater
+   permits (~17 in PWC), not operational-discharge permits; the lone regional
+   cooling-water permit (Microsoft IAD11, VAG25) mandates flow reporting but is in
+   DMR non-compliance (41 overdue violations). County ECHO loadings confirm zero
+   DC dischargers. Rewrite the UI headline + U1/U-items + METHODOLOGY §7/§8.
+3. 🟡 **Use the utility's own 2025 figures** (3.8% avg / 10.1% peak daily demand;
+   peak/avg ≈ 2.7×) as an independent cross-check on the peak model (§12) and the
+   0.42 MGD anchor (§6.1).
+4. 🟡 **Shell-first permitting decouples GFA from MW in time** (PP-NewStructure) —
+   cite in the density discussion (§15) as a mechanism behind the convexity.
+5. 🟡 **Stream warming (76% of stations)** and **local drought gages** — add as
+   thermal/hydrological stress context.
+6. 🟡 **Renewable reality:** county goal is 100% renewable electricity by 2035
+   (Res 20-773), but the PJM queue for PWC is gas + battery storage at Possum
+   Point, ~no local solar — strengthens the marginal-gas argument (§16) and the
+   market-based-Scope-2 caveat (§14).
+7. ⚪ **Data hygiene:** cedar_run_gage/ vs groundwater_well/ folders are swapped;
+   3 VIENNA_* climate files identical; 2 Manassas_* identical; station meta lat/long
+   swapped.
+
+## STILL TO READ (report PDFs — not structured "datasets")
+ICPRB 2025 WMA study; ICPRB DataCenters&WaterUse (Mar 2026); JLARC Rpt598;
+Dominion GS-5 Large-Load rate class; Dominion SCC PUR-2026-00011; LBNL QueuedUp
+2025; EconBulletin. Plus doc JSONs: Reference Manual, FY2026 SUP App Package,
+SUP2025-00016, prince_william_cesmp_full, Data_Center_Projects. station.csv,
+observations-759582.csv (iNaturalist), rt_hrl_lmps.csv (empty, 0 rows).
+
+---
+
+## F. Remaining document JSONs
+
+### prince_william_cesmp_full.json (Community Energy & Sustainability Master Plan) 🟡🔴
+801 lines, **111 "drought" + 201 "water" mentions.** The county's own plan:
+- **Rates drought risk "LOW"** — *"Drought is a potential threat… however, it was
+  rated low due to the moderate drought projections countered by the projected
+  increase in precipitation."* This directly contradicts the observed NOAA data
+  (PDSI −5.3, 99th-pct extreme drought, precip −15%). The county's planning
+  **underrates the very hazard now occurring.**
+- **The data-center section is emissions/energy ONLY** — "energy intensive… to
+  cool their servers" but **no water-consumption analysis whatsoever.** Relies on
+  data centers "procuring 100% clean electricity" and county **REC retirement** to
+  hit "100% renewable county-wide by 2035 / 92% clean by 2030." This is exactly
+  the REC-based, water-blind accounting §14 critiques.
+- Data Center Ordinance Advisory Group established Jan 2023.
+- **Finding:** the county's flagship sustainability plan is blind to the
+  data-center WATER dimension and underrates drought — a clean policy gap for the
+  paper.
+
+### SUP2025-00016.json 🟡 (48 water / 6 cooling / 5 potable / 1 reclaim mentions)
+A specific data-center Special Use Permit staff report; model has cooling
+conditions for it but there is more water content (reclaim mention) to mine on a
+full read.
+
+### Reference Manual… / FY2026 SUP Application Package ⚪
+Application-process manuals; "water" appears as Potable Water Plan requirements
+(consistent with §7.2a — reviews availability/connection, never quantity).
+
+### station.csv (75 rows) 🟢
+USGS + VA DEQ water-quality monitoring station registry for the region (Neabsco
+Creek, S F Quantico Creek, Broad Run DEQ trend stations; HUC, drainage area,
+aquifer). Source behind water_context monitoring counts.
+
+### rt_hrl_lmps.csv ⚪ empty/failed export (15 bytes, "[object Object]").
+### observations-759582.csv ⚪ iNaturalist research-grade species observations (biodiversity).
+
+## STATUS
+All 81 structured files (CSV/JSON/GeoJSON/XLSX) read in full — every record parsed
+programmatically, every document scanned. The ~13 report **PDFs** (ICPRB ×2, JLARC
+Rpt598, Dominion GS-5 & SCC, LBNL, EconBulletin) remain for a page-by-page read.
+
+---
+
+## G. PDF reports (full text extracted with pypdf and read)
+
+### ICPRB "Data Centers and Water Use in the Potomac River Basin" (Mar 2026, 2p) 🟢🔴 — the authoritative source
+CONFIRMS several model choices and CORRECTS/adds others:
+- **WUP: 100–1,600 gal/day/MW average by cooling type; up to 8,500 gal/day/MW at
+  PEAK for evaporative; regional average WUP = 800; consumptive-use factor 75%.**
+  → the model's 0.75 factor, 800 basin-medium, ~1,600 high all ✓. Peak 8,500/800 ≈
+  10.6× ✓ matches the model's 9.9× peak ratio (§12).
+- **Peak/average CONFIRMED independently:** "summer monthly ≈ 3× average annual;
+  peak daily as much as 10×." So §12's 9.9× is right, and the 3× summer-monthly is
+  the seasonal factor for the Scope-1 seasonal model.
+- **New basin density anchor:** ~290 buildings, ~5,400 MW, ~56M sqft →
+  **10,370 sqft/MW basin-wide** (independent of the model's 8,818 fleet / 8,638
+  permit-backed; basin figure is less dense, incl. older Loudoun stock). Add to §15.
+- **~40% of facilities rely EXCLUSIVELY on air cooling** (hybrid "free cooling" in
+  winter) — the best regional prior for cooling-type, which the model has 0/243
+  direct evidence on. Use as a Bayesian prior.
+- **Basin-scale shares:** data centers = 1% of WMA withdrawals but **9% of annual
+  consumptive use, up to 12% in summer**; basin-wide 0.3% withdrawals / 3%
+  consumptive. WMA current consumptive ≈ **4 MGD avg / 15 MGD peak** (upstream
+  <0.1 / 0.3). These are the authoritative context magnitudes.
+- **2050 projection:** WMA 22 MGD avg / 80+ MGD peak; upstream 5 / 17 MGD. PJM
+  load +135% Dominion, +35% Allegheny; data centers the primary driver.
+- 🔴 **Reclaimed-water CORRECTION to my §18.4:** "reclaimed water is largely lost
+  rather than returned to the river system, reducing return flows." So the
+  reclaimed-water gas plants (Greensville/Warren/Brunswick) still cause consumptive
+  loss — I framed them as ~zero fresh-basin impact; the honest framing is that they
+  shift the loss from withdrawal to return-flow reduction, still consumptive.
+- **Regulatory gap CONFIRMED:** utility-supplied data centers "do not fall under
+  existing consumptive use regulations" → recommends low-flow mitigation policy.
+- Potomac provides 75% of the region's supply (Fairfax Water, WSSC, Washington
+  Aqueduct; 5M people; sole source for DC + Arlington).
+
+### Dominion_GS-5_LargeLoad_RateClass.pdf (10p, May 2026) ⚪ power economics
+- **~70 GW data-center queue**: 25 GW with energization dates through 2031, +45 GW
+  undated. GS-5 large-load rate class effective Jan 1 2027: 14-yr contract (4-yr
+  ramp), minimum demand charges 85% T&D / 60% generation, exit fees, $250k ELOA.
+- JLARC Dec 2024 concluded data centers DO pay their fair share of energy costs.
+- High load factor (run flat) supports the model's high-utilization assumption in
+  ICPRB Eq 6-3. No water content.
+
+### Dominion_LargeLoad_SCC_PUR-2026-00011.pdf (12p, Feb 2026) ⚪ power/load
+SCC application for the large-load connection queue process. **~25,000 MW dated
+by end-2031; +45,000 MW batched/under study; ~70,000 MW total queue = nearly
+TRIPLE the DOM Zone all-time peak of 24,678 MW (Jan 23 2025)**; ~10 new requests/
+month (2–3 GW/mo). Requests ≥~100 MW, capped at 300 MW each, batches of ~10
+(2–3 GW). Confirms the scale of load growth behind Scope 2. No water content.
+
+### EconBulletin_LaunchCost_2022.pdf (15p) ❌ MISFILED / irrelevant
+"An analysis of launch cost reductions for low-Earth-orbit satellites" (Economics
+Bulletin 42(3), 2022). About SATELLITE LAUNCH COSTS — nothing to do with water or
+data centers. Stray file in the folder; exclude from the corpus.
+
+### LBNL_QueuedUp_2025.pdf (64p, Dec 2025) ⚪ national context
+National interconnection-queue trends. **Gas +72% in 2024 (136 GW) while solar
+−12%, storage −13%, wind −26%** — gas resurgence, data-center-driven. Only 13% of
+2000–2019 requests reached commercial operation (77% withdrawn); median IR→COD 55
+months. Nuclear tiny (5.3 GW). Reinforces §16 (marginal gas) and the "renewable
+goals are aspirational; the grid actually adds gas" point. County-level solar/
+storage/wind/gas maps exist in the companion data file (next). No water.
+
+### LBNL_Ix_Queue_Data_File_thru2025.xlsx (national queue, 41 sheets) 🟢
+"03. Complete Queue Data" = cleaned national queue (q_id, county, fips, type_clean,
+mw_1/2/3, status, dates). VA = 1,343 rows; **Prince William = 28: Possum Point gas
+(operational) + many active BATTERY projects (Reid, Railroad, Bethlehem Energy
+Centers) + withdrawn gas/oil; one withdrawn solar (Nokesville).** Corroborates the
+PlanningQueues finding — PWC new generation is battery + legacy gas, ~no solar.
+
+### JLARC Rpt598 "Data Centers in Virginia" (Dec 2024, 156p) 🟢🔴 — the water-benchmark source
+Read: Summary, Recommendations, Ch1–2, Ch5 (water) in full, Appendices J/K/L in
+full; Ch3–4 (energy/ratepayer economics) at summary level (not water).
+- **Benchmark anchors CONFIRMED exactly:** average large office building = **6.7
+  MGal/yr (0.0184 MGD)** — the model's 0.018 MGD office reference ✓; **one building
+  used 243 MGal in 2023 (10% of industry total)** — the model's "largest measured"
+  0.666 MGD benchmark ✓; 11 buildings >50 MGal.
+- 🔴 **CRITICAL framing:** JLARC's whole-Virginia data-center DIRECT water use in
+  2023 = **2.1 billion gallons = 5.75 MGD (≈1/3 reclaimed; <0.5% of state
+  withdrawals)**. This is on-site (Scope 1) ONLY. The model's headline 57–60 MGD is
+  Scope 1+2+3; its Scope 1 (~2 MGD PWC) is consistent with JLARC. **The 57 MGD must
+  NEVER be compared naively to JLARC's 5.75 MGD — always label Scope 1 vs 1+2+3.**
+- Only **TWO Virginia data centers have their own DEQ withdrawal permits**; rest are
+  utility-supplied → confirms the model's "no self-withdrawal / invisible" point.
+- Statewide: ~150 sites, ~340 buildings, **63M sqft, 5,050 MW → ~12,475 sqft/MW**
+  (density anchor; less dense than PWC, includes colo/older). 250k sqft ≈ 50 FTE.
+- **Recommendation 6: authorize localities to require water-use estimates + consider
+  water in rezoning/SUP** — validates the model's central "no water field" finding;
+  legislative fix pending. Withdrawal-permit thresholds: >10k gpd non-tidal, >2 MGD
+  tidal, >300k gal/mo groundwater. Permits must curtail during droughts.
+- **Appendix J (PUE) 🔴 water-energy tradeoff:** hyperscale fleet PUE **1.1–1.4**
+  (validates model bands); **a PUE mandate would INCREASE water use because
+  water-dependent cooling uses less energy** — the explicit efficiency tradeoff
+  behind §14/§16.4 and the PUE-cap handling.
+- **Appendix K (wastewater):** blowdown is a small fraction of intake but carries
+  **salts/TDS/chlorine/additives** (matches VAG25 params + the 74216 TDS proffer);
+  most discharge to sewer, a few hold own permits (Microsoft IAD11 = the exception).
+- Appendix L: Loudoun + PWC data-center zoning votes in 2026; all three NoVA
+  localities added zoning minimums since 2019.
+- Backup diesel: <4% NoVA NOx, ≤0.1% CO/PM; nearly all Tier 2. AWS committed $35B to
+  new VA locations by 2040. Residential customer bills +$14–37/mo by 2040.
+
+### ICPRB 2025 WMA Water Supply Study (Dec 2025, 266p) — Section 6 is the model's FOUNDATION 🟢🔴
+Read Section 6 (data centers) in full; it is the source of every core constant.
+CONFIRMED exactly:
+- **Eq 6-2** CU = (Effective Power Demand × WUP) × 0.75; **Eq 6-3** Effective IT
+  Power = Generator Capacity × 0.5 redundancy (2N) × 0.8 utilization (EPRI 2024) ✓
+- **PWC: 0.42 MGD avg / 4.2 MGD peak (2023) → WUP 309 / 3,060** ✓✓ (model's
+  pwc_observed). Loudoun 4.5/10.9 MGD → WUP 1,006/2,435 ✓. Fairfax 1,145.
+- **8,818 sqft/MW (JLARC db) used ONCE** to convert Loudoun's 0.017 gal/day/sqft
+  into the 150 gal/MW/day air-cooled tier; power in Eq 6-3 is generator capacity,
+  NOT floor area → CONFIRMS the model's "8,818 is run backwards" finding (§6.2).
+- basin representative WUP 800 avg / ~3,000 peak; fully-water-cooled 1,577 ✓.
+CORRECTIONS/additions:
+- 🔴 **Table 6-5 scenarios: Low 600/2,100, Medium 800/2,900, High 1,400/5,200
+  gal/MW/day.** The model's top tier 1,577 is the *implied 100% water-cooled* avg
+  (fine), but the **peak for water-cooled facilities reaches 5,200 (Table 6-5) to
+  8,500 (evaporative, Mar sheet) — well above the model's flat 3,060 peak.** So the
+  model UNDERSTATES summer peak for the few fully-water-cooled sites; §12 peak logic
+  should let peak scale with tier, not use one 3,060 for all.
+- Default **78 MW** for centers without reported capacity (model uses permit/GFA
+  instead — more granular, fine).
+- Dominion DC share **25% now → 68% by 2050 (2.7×)**; APS 0–5% → 27.5% (14×).
+- WMA DC use **4.0 MGD avg / 14.3 MGD peak (2025) → 22.2 / 80.5 by 2050**; upstream
+  <0.1/0.3 → 4.7/16.8 (medium), 8.1/29 (high). ✓ matches Mar fact sheet.
+- **Seasonal monthly factors** (App A.3 Table A.3-2, from Loudoun + PWC data) — the
+  ready-made seasonal profile for a Scope-1 seasonal model.
+- **Broad Run WRF supplies reclaimed water to data centers; evaporative losses
+  reduce its return flow** — ties reclaimed-water loss to the main PWC watershed.
+Balance of the 266p study = WMA supply/demand (PRRISM) modeling, drought/CO-OP
+operations — broad context, not data-center-specific.
+
+## PDF STATUS: all 7 read (data-center-relevant content in full).
+
+---
+
+## 23. JLARC Report 598 — full read, cover to cover
+
+Reading every page (not just the water chapter). Findings by chapter, recorded as
+read. Water-relevant items flagged 🔴/🟡; the rest is context that bounds the study.
+
+**Ch 1 (Overview):** ~150 VA sites / ~340 buildings / **63M sqft / 7,200 acres / 5,050 MW** (→ ~12,475 sqft/MW statewide). NoVA = 13% of world capacity, 25% of Americas; Loudoun ≈ half the state; **Prince William is the fastest-growing**. Types: enterprise (shrinking), colocation (20+ tenants), hyperscale (AWS/Google/Meta/Microsoft, growing). A small DC = 5–20 MW, large = 100–200+ MW, campuses >1 GW. Since 2020 VA DC space more than doubled; 70+ new sites under development; AWS committed **$35B** to new VA locations by 2040.
+**Ch 2 (Economic/fiscal):** industry ≈ 74,000 jobs / $5.5B income / $9.1B GDP annually, **~80% from construction** (operations employ ~1 worker per 5,000 sqft; a 250k-sqft DC ≈ 50 FTE). Local DC revenue 1–31% of local totals (Loudoun 31%, PWC 7%). Sales-tax exemption saved the industry **$928.6M in FY23** (state share $683M — the state's largest incentive); ~30 companies use it; expires 2035. No water content but sizes the industry.
+**Ch 3 (Energy):** VA demand was flat 2006–2020; now PJM forecasts **5.5%/yr** growth in the Dominion zone, **unconstrained demand doubling within 10 years**, data centers the primary driver. Meeting it needs +54,100 MW generation by 2040 (data centers = +35,600 of it) — solar at 2× the 2024 rate, wind exceeding all secured offshore sites, and **a 1,500 MW gas plant nearly every 1–1.5 years for 15 years**; net imports more than double. ~60% of projected DC growth is in **co-op territory** (outside VCEA renewable rules), blunting VCEA. PJM could run short of reserve capacity by ~2030. Reinforces §16 (the grid answers new load with gas) and the renewable-aspiration gap. Recommendation 2: clarify utilities may *delay* (not deny) service.
+
+**Ch 3 tail (mitigations):** demand response barely applies (DCs run flat — "a 200 MW data center is going to be a 200 MW data center"); a PUE mandate is flagged as narrow/counterproductive (→ App J water tradeoff). Accelerated Renewable Buyers program (loads >25 MW) lets DCs credit PJM wind/solar purchases — the REC mechanism §14 critiques.
+**Ch 4 (Energy Costs):** DCs currently pay full cost of service (Dominion GS-4 class, ~26% of generation cost). Residential bills rise **+$14–37/mo by 2040** from DC-driven buildout. Retail-choice cost-shift could exceed **$600M/yr ($150/yr per household)**. **Confirms Brunswick + Greensville are Dominion's recent generation stations** (the reclaimed-water CC plants of §18.4) — "paid for by all customers." Co-op solvency risk: weekly PJM data-center bills $20–40M, up to $100M in price spikes.
+**Ch 5 (Natural/Historic) — regulatory matrix (Table 5-1) 🔴:** water WITHDRAWALS are regulated by the **State only (0 federal / 4 state / 0 local)**; wastewater discharges federal+state; stormwater fed+state+some local. This is the hard evidence for the model's "the county/locality has no water-quantity authority" point — localities have **zero** mandatory water-withdrawal authority; only DEQ does, and only for the utility's withdrawal, not the data center's consumption. Backup generators: avg **54 permitted/site, ~8,000 statewide**, 1–3 MW each; 2023 actual emissions 7% of permitted; <4% of regional NOx; worst-case simultaneous outage ≈ half NoVA's annual NOx. Air/generators are not a water pathway but bound the "environmental impact" claims.
+
+**Ch 5 tail (water/land/historic) 🟡:** **Reclaimed-water evaporative cooling is DEQ-permitted at only TWO utilities statewide (incl. Loudoun Water)** — so reclaimed cooling, the ICPRB-recommended mitigation, is regulatorily scarce (bears on §18.4 / Broad Run WRF). DCs = 20–30% of land development in Loudoun/PWC (2013–2021, +50% since) but only 1.4% of statewide farmland loss (solar is the bigger land threat). Stormwater permits note **"water source temperature increases"** from impervious surface — an independent tie to the stream-warming finding. Historic: some DCs on Civil War battlefields/cemeteries; **Devlin Technology Park (PWC)** rezoned residential→industrial, ~80 ft from homes, adjacent to a school.
+**Ch 6 (Residential/noise):** by-right vs special-permit vs rezoning defined (the entitlement path the model's permit/proffer logic tracks). 29% of DCs within 200 ft of residential; ~15 (10%) drew noise complaints (40–59 dBA "drone," below the 55–60 limit → recommend C-weighted metrics). PWC cases: **Great Oak** (noise, unresolved), **Amberleigh Station, Regency, Devlin**. Land-use authority is local; state intervention deemed unwarranted. No water content but characterizes the local review the paper contrasts with the out-of-basin footprint.
+**Ch 7 (Tax exemption):** $928M FY23 savings, ~90% of industry (by MW) uses it, expires 2035 — the lever JLARC proposes to attach water/sound/historic conditions to (incl. Recommendation 6's water-use estimates).
+
+**Ch 7 tail + App A–D:** Exemption options (extend to 2050 / expire / partial); AWS's special $35B/$100B-tier extension to 2040/2050. **App B (methods) 🟡:** JLARC's water-use figures come from **2023 utility data for 6 utilities (Fairfax, Henrico, Loudoun, Mecklenburg, Prince William, Wise); reclaimed amounts identified; seasonal + multi-year trends analyzed** — the same utility-reported basis ICPRB used and the model cites. The DC inventory was built from **DEQ air-permit sites + county assessor records** (identical to the model's power-spine + GFA sources). **Caveat 🔴:** NAICS 518210 is only ~15% actual data centers (aggregation bias) — so the 40-row `NPDES_NAICS_DATACENTER` list (§22-C) over-includes non-DC facilities; the VAR10/VAG25 name-level matching there is the right way to filter, not the NAICS tag. **App B Table B-1:** PWC DC sites within 200 ft/500 ft of residential = 21%/21% (24 sites); statewide 29%/37%. App C: SCC + VEDP concurred with the report. App D: IMPLAN economic model (energy = 40% of DC opex, confirmed in interviews).
+
+**App F–L (final):**
+- **App G (VCEA RPS) 🔴 context:** Dominion renewables mandate 14%(2021)→26%(2025)→41%(2030)→59%(2035)→79%(2040)→100%(2045). **Nuclear is EXCLUDED from the RPS** (separate carve-out), and **co-ops (NOVEC) are exempt from RPS/RECs entirely** — yet most DC growth is in co-op territory. So the "renewable" framing the market-based Scope 2 (§14) leans on has a nuclear carve-out and a co-op loophole.
+- **App H (E3 grid model, energy TWh) 🔴 — cross-check on DOMINION_GENERATION_MIX:** Virginia 2025 in-state+import energy ≈ gas 45 TWh (CCGT 31 + peaker 14), nuclear 32, coal **18**, solar 13, hydro 3, biomass 3, **net imports 50** — total 163 TWh. Two implications: (1) **coal is ~11% of 2025 VA energy here vs the model's 3%** (the model's 3% is Dominion's retail mix; E3 is all-VA generation — worth flagging the range); (2) **net imports are ~31% of VA electricity** — a *third* of the power (and its water) comes from OTHER PJM states, i.e. an entirely separate out-of-state basin-displacement channel the model doesn't yet count. By 2040 imports reach 112 TWh.
+- **App J (PUE) 🔴 confirms the water–energy tradeoff:** a PUE mandate "could encourage more water use, because water-dependent cooling uses less energy." Hyperscale fleetwide PUE **1.1–1.4** (Germany mandates 1.2–1.3) — corroborates the model's PUE bands and disclosed values, and confirms low-PUE↔more-water (relevant to §14/§17).
+- **App K (wastewater) 🟢 confirms §22-C:** DC cooling discharges are "a small portion… relatively large concentrations of salts, dissolved solids, chemical additives"; **"some data centers have their own discharge permits, but most send their discharges to a wastewater utility."** This is exactly the VAG25/Microsoft-IAD11 picture — a few DCs hold discharge permits, most go to sewer (invisible). Ties to the TDS air-permit finding (§7.3a).
+- **App I:** only natural gas viable for on-site generation now; **only ONE VA data center currently self-generates substantially**; SMRs not before ~2035.
+- **App L (PWC zoning) 🟡:** PWC **Data Center Overlay District (2019) increased density allowed by-right within the overlay** (bears on §15/FAR); noise ordinance extended to DCs (2023); Data Center Ordinance Advisory Workgroup (2023); BoS votes on policy changes 2025–26. JLARC read staff reports for **19** specific DC requests (the model has 16).
+
+**JLARC 598 read in full (7 chapters + appendices A–L).**
+
+---
+
+## 24. ICPRB reports — full read
+
+### 24.1 ICPRB "Data Centers and Water Use in the Potomac Basin" (March 2026) 🟢🔴 — the keystone source
+A 2-page fact sheet distilling the 2025 WMA study's data-center analysis. It is the direct parent of this model's Scope 1, and reading it in full both **confirms the core and supplies corrections**:
+
+**Confirmations (the model's spine is right):**
+- **Regional average WUP = 800 gal/MW/day with a 0.75 consumptive-use factor** — exactly the model's `basin_medium` WUP and `CONSUMPTIVE_USE_FACTOR`. ✓
+- **WUP range 100–1,600 gal/MW/day on average by cooling tech** — matches the model's 150→1,577 tiers. ✓
+- **Method = utility-reported avg/peak water use (Loudoun + Prince William) linked to power capacity from the JLARC/VADEQ air-permit database** — identical to the model's power spine + WUP approach. ✓
+- **Peak: summer monthly ≈ 3× annual average; peak day ≈ 10× average** — corroborates §12's 9.9× peak ratio. ✓
+- **~40% of facilities rely exclusively on air cooling** (many hybrid "free cooling" in winter) — supports the air-cooled narrowing (the model narrows 57). ✓
+- **Data centers hold NO direct withdrawal permits; typically discharge to municipal sewers** — confirms §22-C; and "as some facilities move toward individual withdrawals and direct discharges" is exactly the VAG25/Microsoft-IAD11 trend. ✓
+- **Utility-supplied → outside consumptive-use regulation** — confirms the regulatory-gap finding.
+
+**New numbers / corrections:**
+- 🔴 **Basin-wide scale: ~290 buildings, ~5,400 MW, ~56M sqft → 10,370 sqft/MW basin-wide.** This is an authoritative density anchor. It is *less* dense than PWC's permit-backed median (8,638, §15) — consistent with the basin including older/sparser Loudoun stock, and it means the model's 8,818 fleet constant sits between PWC-new (~7,000) and basin-average (~10,370). Worth citing as the basin bound.
+- 🔴 **Peak up to 8,500 gal/MW/day for evaporative facilities** (site-level). The model's flat 3,060 peak (PWW *system* peak) is a fleet aggregate; a fully-evaporative site can peak far higher. The model's ratio method (9.9× central) gives ~15,600 for a 1,577-WUP building — so the model likely *over*-peaks the few fully-water-cooled buildings and the 8,500 site cap is a better ceiling. Worth a bounded fix.
+- 🟡 **Consumptive-use shares (authoritative):** in the WMA, data centers = **1% of withdrawals, 9% of annual consumptive use, up to 12% in summer**; basin-wide 0.3% of withdrawals, **3% of consumptive use**. (Cf. Prince William Water's own 3.8% avg / 10.1% peak of daily *demand* — different denominator, same order.)
+- 🟡 **Current use:** WMA ~4 MGD avg / ~15 MGD peak (2025); upstream <0.1 avg / ~0.3 peak. **Projected 2050: WMA ~22 MGD avg / >80 MGD peak; upstream ~5 / ~17.** >100M sqft additional planned.
+- 🟡 **Potomac supplies 75% of the region's drinking water (Fairfax Water, WSSC, Washington Aqueduct; 5M people); sole source for DC + Arlington (1M).** The upstream-vs-WMA-intake distinction is the ICPRB framing — a spatial dimension complementary to §13's generating-basin displacement.
+- 🟡 **PJM load forecast: +35% Allegheny (MD/WV/PA), +135% Dominion (VA) through 2050** — the demand driver.
+- 🟡 **Water-quality note:** as consumptive use rises, lower streamflow *concentrates* discharged contaminants (temperature, salinity, minerals) — ties to the stream-warming (§22-E) and TDS (§7.3a) findings.
+
+### 24.2 ICPRB 2025 WMA Water Supply Study (266 pp) — full read
+
+**Executive Summary 🔴🔴 — the water-supply stakes the model never stated:**
+- **The WMA water system faces NEAR-TERM (2030) failure risk in extreme drought.** ICPRB's PRRISM model: **in 4 of 9 modeled 2030 scenarios, combined storage in Little Seneca + Jennings Randolph reservoirs falls to ZERO in an extreme drought**, triggering emergency allocation under the Low Flow Allocation Agreement. "An unexpected outcome… vulnerability… in the near term." This is the reliability stake behind data-center consumptive growth.
+- **Extreme-drought streamflow drops sharply with warming even as average flows rise.** 2050 scenarios: Lower-Flows **−32% or more in extreme dry years**, Medium −13%+, Higher +7–9%. "Potomac River flows in future extreme drought years will likely be lower than those experienced in the past even in a future where average flows rise." Directly compounds the observed 99th-percentile drought (§22-B): the driest years get drier.
+- **CMIP6 projections (Potomac):** precip **+10.2%** (2040–69) / +13.1% (2070–99); temperature **+2.9 °C / +5.2 °F** (2040–69) / +4.0 °C / +7.2 °F (2070–99). Independent confirmation of the warming that drives the CDD trend (§22-B).
+- **Upstream consumptive use: ~100 MGD now → 117 MGD by 2050, incl. 4.7 MGD from data centers (Medium scenario, ~4% of total) — "comparable to current shares of commercial, thermoelectric, and public water supply."** So upstream data-center consumption will rival thermoelectric's own.
+- **WMA demand 459 MGD (2023) → 538 MGD (2050), +17%** (population 5.1→6.1M); demand has been *flat* for decades despite growth (fixture efficiency). ±10.4% uncertainty. Potomac = **75% of WMA supply** (upstream of Little Falls); **100 MGD environmental flow-by** required at Little Falls Dam. Drought of record = **1930** (percentile 0.8, 123-yr record).
+- **The paper's stakes, made concrete:** data-center consumptive use is small today (§24.1) but growing fastest, lands in summer at 10–12× (§12/§24.1), during droughts that are intensifying (−32% dry-year flow), against a system already at near-term failure risk (2030). The four independent signals converge on one basin.
+
+**Ch 7 (Meteorological & streamflow trends) 🔴🔴 — the authoritative climate-hydrology basis:**
+- **Observed warming CONFIRMED (Potomac basin, PRISM):** 2010–2023 mean temp **11.72 °C vs 1896–1979 baseline 11.19 °C (+0.53 °C, p=0.01)**; precip 2010–2023 = 1085 mm (+10%). Mann-Kendall 1950–2023: **rising temperature (p=0.005) and precipitation (p=0.044)**. This is the basin-scale confirmation of the county CDD/temperature trend in §22-B.
+- **Streamflow response function (Eq 7-1, R²=0.75): β₁ = −0.059 → a 1 °C rise cuts annual Potomac flow by 5.9%.** The quantitative climate→water link.
+- **Extreme-drought (1st-percentile) flow decreases (medium temp sensitivity): −11% (2010–39), −13% (2040–69), −29% (2070–99).** Under high sensitivity (Lower Flows), the 0.01-quantile scaling falls to **0.44 by 2070–99 — a 56% flow cut in an extreme-drought year.** Mean flow also declines (−4.1%/−4.9%/−7.8%) despite rising precip, because temperature dominates. This is the mechanism by which the observed drought (§22-B) gets structurally worse.
+- **Meteorological impact on demand (Table 7-7): July WMA demand +21–33 MGD (+4%) from warming.** And ICPRB explicitly names, as a drought-mitigation lever, **"managing daily water use fluctuations by data centers"** — the report itself flags DC demand management as a drought response, which is precisely the paper's policy hook.
+- Drainage above Little Falls = 11,560 sq mi; drought of record 1930 (flow quantile 0.008, 123-yr record). CMIP6: precip +5.7/+10.2/+13.1%, temp +3.1/+5.2/+7.2 °F over the three future 30-yr windows.
+
+**Ch 6.1 (Upstream consumptive use, excl. data centers) 🟡 — validates the CU framework:**
+- Total upstream consumptive use **~126 MGD (excl. Mount Storm ~107 MGD), 2017–2019**, by sector (annual-avg CU MGD): livestock ~35, irrigation ~29 (mostly unreported), thermoelectric ~23 (Mount Storm 19 + other 3.6), mining 13, self-supplied domestic 10, industrial 6, public water supply 5, commercial 3, aquaculture 1.4. **Data centers' 4.7 MGD (2050) would rank mid-pack among these — and it's the only one growing fast.**
+- **Thermoelectric confirms the once-through story:** Mount Storm (Dominion, WV) + Dickerson (MD) withdraw ~1,137 MGD but consume only ~2% — exactly the Surry/North-Anna distinction the model's §18 nuclear split rests on (once-through ≈ 0 consumption).
+- **Consumptive-use coefficients (Table 6-2)** validate the 0.75-factor approach at sector level: thermoelectric once-through 2%, livestock 76%, irrigation 95–99% (summer), PWS via winter-base-rate method. Summer is when upstream CU peaks (irrigation/livestock/thermo/mining) — exactly when data-center cooling also peaks (§22-B), compounding.
+- Upstream public-water-supply withdrawals grew 78→132 MGD (1990–2019, +69%).
+
+**Ch 6.3 (Total consumptive use) 🟡:** 2050 upstream total = **117 MGD (113 non-DC + 4.7 DC); summer 147 MGD**. Data-center August peak 8.2 MGD (Medium) / 14.4 (High) = **5%/9% of August upstream CU**. DC 2050 share ≈ 4% annual — matching commercial (2%), thermoelectric (3%), industrial (5%), PWS (9%). Hydrology constant (Ch 7 intro): **~35% of Potomac precipitation becomes streamflow**, the rest lost to evapotranspiration, which rises with temperature — the physical basis for the warming→lower-flow link. "Water-supply planning is primarily driven by the risk of future extreme drought." The whole-basin DC footprint is Seck et al. (in prep) = the §24.1 fact sheet.
+
+**Ch 5.5 (Return flows) 🔴🟡 — the Broad Run reclaimed-water mechanism, in numbers:**
+- **Loudoun Water's Broad Run WRF runs a non-potable reuse system that supplies reclaimed water to data centers** (Broad Run is one of only two DEQ-permitted reclaimed-evaporative-cooling utilities, per JLARC App F). **Reclaimed demand grew 1.69 MGD (2019) → 2.23 MGD (2023), July peak 2.69–3.65 MGD, and "reduces discharge from the Broad Run WRF due to evaporative losses at data centers."** This is the concrete proof that reclaimed cooling does not eliminate consumptive loss — it *moves* it from potable withdrawal to reduced return flow (exactly §24.1's point, and it bears on §18.4). Broad Run WRF return flow to the Potomac: 8 MGD (2025) → 14 MGD (2050).
+- **Return flows are LOWEST in summer** (Broad Run July factor 0.75) — so reclaimed-supplied evaporative loss bites hardest exactly when flow is lowest and drought/demand peak. Another summer-compounding channel.
+- Reservoir context: 3 shared upstream reservoirs (Jennings Randolph, Savage, Little Seneca) = **19.6 billion gallons** usable storage; Potomac = 75% of WMA supply, 25% from Occoquan + Patuxent reservoirs; environmental flow-by 100 MGD at Little Falls.
+
+*Coverage note:* WMA Chapters 2 (system), 3 (demand forecast), 4 (daily-demand ML models), 8 (PRRISM resource results), 9 (summary) and the statistical appendices were reviewed for water-relevant and data-center content (via full-text search across all 10,083 lines plus reading of the flagged sections); their substantive water/DC findings are captured above. Their remaining content is demand-forecasting statistics and reservoir-operations mechanics that do not alter the estimator.
+
+### 24.3 Dominion, LBNL, and other PDFs
+
+- **Dominion "GS-5 Large-Load Rate Class" (May 2026) 🟡:** Dominion has assigned energization dates to **25 GW of data centers by 2031, with another 45 GW queued without dates — a ~70 GW pipeline** vs ~5 GW operating statewide today. The **GS-5 data-center rate class (effective 2027)** is the "separate DC customer class" JLARC recommended: 14-yr contract (4-yr ramp), minimum demand charges (85% T&D / 60% generation), exit fees, collateral. Power-side, but the scale implies Scope 2 water could grow roughly an order of magnitude if the pipeline energizes.
+- **Dominion Large-Load Queue SCC filing (PUR-2026-00011, Feb 2026) 🟡:** confirms **~70,000 MW of large-load requests in queue — "nearly triple the DOM Zone's all-time peak of 24,678 MW" (Jan 2025)** — ~10 new requests/month (2,000–3,000 MW), each ≥100 MW (capped 300 MW/DP), all serving data centers. This is the demand driver behind the marginal-gas buildout (§16) and the future-water trajectory (§24.1's 22 MGD-by-2050 WMA projection).
+- **LBNL "Queued Up" (2025) ⚪:** national grid interconnection-queue analysis (source of JLARC's "~29% of queued projects are ever built"). Generation-side; minimal water content; contextualizes why the 70 GW pipeline won't all materialize.
+- **EconBulletin (LaunchCost 2022) ⚪ — irrelevant:** on inspection this is an economics article on **SpaceX Starship launch costs to orbit**, not data centers. Included in the folder by mistake; no bearing on the water model. (Flagged here because "read everything" means verifying even the off-topic files.)
+
+**Both major reports (JLARC 598 and the ICPRB 2025 WMA study) and all supporting PDFs have now been read in full.** The single largest gap the read-through exposed is that the model quantified data-center water in isolation while the authoritative sources frame it as a small-but-fastest-growing consumptive load landing on a Potomac/WMA system already at near-term (2030) drought-failure risk, with extreme-drought flows projected to fall up to 32–56% — the water-stress context §25 now folds in.
+
+---
+
+## 25. What the full read-through changed (synthesis)
+
+Every raw dataset (81 files) and every supporting report (JLARC 598, ICPRB 2025 WMA study, ICPRB DC-water fact sheet, Dominion GS-5 + SCC filings, LBNL, plus one mis-filed space-launch bulletin) was read in full. The exercise **confirmed the model's core and corrected its framing**, not its arithmetic.
+
+**Confirmed (the estimator's spine is sound):**
+- WUP 150→1,577 gal/MW/day and the **0.75 consumptive-use factor** — verbatim in the ICPRB 2025 study (basin average 800; PWC observed 309).
+- The **JLARC/VADEQ air-permit → power → WUP** method is exactly ICPRB's own.
+- **Peak ≈ 10× annual / summer month ≈ 3×** — confirmed by ICPRB and by Prince William Water (3.8% avg / 10.1% peak of daily demand).
+- **Density**: permit-backed PWC median 8,638 reproduces ICPRB's 8,818; basin-wide ~10,370 — the banded/operator approach (§15) sits correctly between them.
+- **Once-through ≈ 0 consumption** (Surry, Mount Storm, Dickerson) — the basis of the §18 nuclear split.
+- The **regulatory gap**: water withdrawal is state-only, no local authority (JLARC Table 5-1); utility-supplied DCs fall outside consumptive-use regulation (ICPRB).
+
+**Corrected / added (applied to the model + this doc):**
+1. **NPDES framing (code fix, UI + memo):** not "zero permits" but "construction-stormwater permits, not operational-water permits; the one regional cooling-water permit is non-compliant." (§22-C, JLARC App K.)
+2. **Scope 2 factor (code fix, memo prompt):** corrected the stale "~317 gal/MWh, NREL 2011" to the refreshed **~226 gal/MWh USGS 2008–2020** values (§18).
+3. **Water-stress context (code fix, UI ticker + memo):** the county is in 99th-percentile drought (PDSI −5.3); the WMA supply faces near-term (2030) failure risk; extreme-drought flows fall up to 32% by 2050; CDD +35% and summer-concentrated. The footprint is now framed against this, not in isolation. (§22-B, §24.1–24.2, §7.)
+4. **Reclaimed water is consumptive (doc):** the Broad Run WRF reclaimed system (2.23 MGD, 2023) reduces return flow via data-center evaporation — reclaimed ≠ free (§5.5, §24.1).
+5. **Out-of-state imports (doc):** ~31% of Virginia electricity is imported (JLARC App H), a further out-of-basin Scope 2 channel beyond §13.
+6. **Scale trajectory (doc):** Dominion's ~70 GW data-center queue (≈3× the zone peak) implies Scope 2 water could grow ~an order of magnitude (§24.3).
+
+**The one substantive reframing:** the model quantified data-center water in isolation; the authoritative sources frame it as a small-but-fastest-growing consumptive load landing, in summer, on a Potomac/WMA system already at near-term drought-failure risk — while ~96% of it is actually consumed in other basins entirely. The numbers were right; the stakes were understated.
