@@ -129,7 +129,7 @@ export function FacilitiesView() {
       <div className="flex h-full w-full items-center justify-center bg-neutral-950">
         <div className="text-center">
           <div className="text-amber-400 text-sm mb-2">Loading facility dossiers...</div>
-          <div className="text-neutral-500 text-xs">203 buildings + 51 campuses · Scope 1/2/3 water footprint estimator</div>
+          <div className="text-neutral-500 text-xs">243 buildings + 51 campuses · Scope 1/2/3 water footprint estimator</div>
         </div>
       </div>
     );

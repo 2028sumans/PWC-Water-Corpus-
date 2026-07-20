@@ -2,12 +2,14 @@
 # The Python preprocessing pipeline runs locally before deploy (its outputs in
 # public/data/ ship as static assets), not on Vercel.
 
-# Python preprocessing pipeline + its raw inputs (data/ is ~1.2GB, consumed only
-# by the local *.py scripts, never read by the app, which serves public/data/).
+# Python preprocessing pipeline + its raw inputs (the ROOT data/ dir is ~1.2GB,
+# consumed only by the local *.py scripts, never read by the app).
+# NOTE: must be "/data" (root-anchored), NOT bare "data" -- a bare pattern also
+# matches public/data/, which holds every asset the app serves, and excluding it
+# makes facility_profiles.json 404 on production (infinite "Loading..." screen).
 *.py
 __pycache__/
 *.pyc
-data
 /data
 
 # Documentation (read on GitHub, not deployed)

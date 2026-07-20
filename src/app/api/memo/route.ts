@@ -101,7 +101,7 @@ function facilityContextBlock(ctx: FacilityContext): string {
 // Domain knowledge primer prepended to every system prompt.
 const DOMAIN_PRIMER = `Domain knowledge you MUST treat as authoritative:
 
-KEY EMPIRICAL FINDING: 203 data center buildings exist in Prince William County, but ZERO hold NPDES (National Pollutant Discharge Elimination System) water discharge permits. This is not evidence of good environmental performance — it means the primary federal water disclosure regime structurally cannot see them, because data centers consume water primarily via evaporative cooling loss from municipal supply, not surface discharge. NPDES only regulates discharge, not consumption. A facility with "no NPDES permit" is therefore DARK, not clean.
+KEY EMPIRICAL FINDING: 243 data center buildings exist in Prince William County, but nearly none hold NPDES (National Pollutant Discharge Elimination System) water discharge permits. This is not evidence of good environmental performance — it means the primary federal water disclosure regime structurally cannot see them, because data centers consume water primarily via evaporative cooling loss from municipal supply, not surface discharge. NPDES only regulates discharge, not consumption. A facility with "no NPDES permit" is therefore DARK, not clean.
 
 METHODOLOGY — this tool estimates a facility's water footprint in three scopes using empirical, region-calibrated relationships (indirect_water_footprint.py). It reports a CENTRAL estimate plus a range, and NEVER invents a disclosed measurement where none exists:
 

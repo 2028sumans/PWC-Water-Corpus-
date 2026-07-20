@@ -112,7 +112,7 @@ export function AppShell() {
     { label: "COMPLETED FLEET, DIRECT WATER", value: totalValue },
     { label: "NPDES COVERAGE", value: npdesValue, tone: "bad" },
     { label: "RAG CORPUS", value: "policy + methodology docs" },
-    { label: "HEADLINE FINDING", value: "0 of 203 DC buildings hold NPDES water discharge permits", tone: "bad" },
+    { label: "HEADLINE FINDING", value: "235 of 243 DC buildings hold no NPDES water discharge permit", tone: "bad" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);
   useEffect(() => {
