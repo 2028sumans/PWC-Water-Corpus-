@@ -5,7 +5,7 @@
 
 This document exists to be attacked. Section 6 lists the errors and soft spots found so far — including one retraction, one circular validation, and one constant that the source document uses in the opposite direction from this tool.
 
-> **Current headline (as of the §18 refresh, 19 July 2026).** County-wide total: **60.0 MGD, 90% credible interval 53.9–66.6** (Monte Carlo median, average grid mix; plug-in central 57.1 MGD). Marginal-mix median 46.8 MGD. Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
+> **Current headline (as of the §18 refresh, 19 July 2026).** County-wide total: **52.6 MGD, 90% credible interval 47.0–58.7** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.0). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression with a measured ×/÷1.51 (90%) residual (§26). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
 
 ---
 
@@ -14,11 +14,12 @@ This document exists to be attacked. Section 6 lists the errors and soft spots f
 Every estimate descends from a single physical input — **gross floor area** — converted to **effective electrical load** by one constant, then multiplied by scope-specific water intensities. There is no per-facility water measurement anywhere in the chain. Following the July 2026 USGS pull, the Scope 2 intensities are Virginia-specific measured values; the power spine is not, and it is now the only remaining dominant assumption.
 
 ```
-GFA (sqft) ──÷ density──> effective MW ──┬── × WUP (gal/MW/day) ─────────> Scope 1
-   (density banded by operator/vintage,  ├── × PUE × 24h × ~226 gal/MWh ─> Scope 2
-    §15; or permit MW where available)   └── (Scope 1 + Scope 2) × 5–15% ─> Scope 3
+IT POWER (MW) ← evidence ladder ────────┬── × WUP (gal/MW/day) ─────────> Scope 1
+  tier 1: permit generator MW (45)      ├── × PUE × 24h × ~226 gal/MWh ─> Scope 2
+  tier 3/4: fitted GFA→MW model (198)   └── (Scope 1 + Scope 2) × 5–15% ─> Scope 3
+  (measured residual ×/÷1.51 at 90%; §26)
 ```
-*(Blended Scope 2 intensity ~226 gal/MWh on the refreshed §18 factors; older sections show the pre-refresh 198.)*
+*(Power is the root; floor area only enters through the fitted, leak-free regression of §26. Blended Scope 2 intensity ~226 gal/MWh per §18; older sections show pre-refresh numbers.)*
 
 ---
 
@@ -1867,3 +1868,61 @@ Every raw dataset (81 files) and every supporting report (JLARC 598, ICPRB 2025 
 6. **Scale trajectory (doc):** Dominion's ~70 GW data-center queue (≈3× the zone peak) implies Scope 2 water could grow ~an order of magnitude (§24.3).
 
 **The one substantive reframing:** the model quantified data-center water in isolation; the authoritative sources frame it as a small-but-fastest-growing consumptive load landing, in summer, on a Potomac/WMA system already at near-term drought-failure risk — while ~96% of it is actually consumed in other basins entirely. The numbers were right; the stakes were understated.
+
+---
+
+## 26. Re-rooting the model on power: the evidence ladder and the fitted fallback
+
+### 26.1 Why the root changed
+
+Data-center water is not caused by floor area; it is caused by **heat**, and heat is **IT electrical power**. Both scopes are functions of MW. Floor area only ever entered as a proxy for power, converted through "density" (sqft/MW) — a latent variable standing in for everything unobserved (white-space fraction, rack density, utilization, cooling design). The model previously placed that proxy at the root; §15's validation work made it *better*, but it was still an assumption wearing an empirical costume. As of this section, **power is the explicit root**, obtained per building from a ranked **evidence ladder**:
+
+| Tier | Basis | Buildings | Nature |
+|---|---|---|---|
+| 1 | VADEQ permit generator capacity × ICPRB Eq 6-3 | **45** | observed |
+| 2 | stated critical load in trade permits | 0 *(reserved — none cleanly attributable yet)* | observed |
+| 3 | fitted GFA→MW regression, operator-calibrated | **57** | inferred, measured error |
+| 4 | fitted GFA→MW regression, generic curve | **141** | inferred, measured error |
+| 5 | legacy hand-set vintage bands | 0 *(only if the model file is absent)* | assumed |
+
+Every building now carries `power.evidence_tier`; the ladder is the observable/inferable/unresolved taxonomy made quantitative.
+
+### 26.2 The fitted fallback (`fit_power_model.py` → `data/power_model.json`)
+
+**The leakage trap.** Permit MW was apportioned to buildings *by GFA share*, so within a campus MW/GFA is constant by construction — a building-level fit would partly relearn its own apportionment (artificially inflated fit). The independent unit is the **permit site**: full site GFA (recovered as `gfa/gfa_share`) vs site IT MW. That yields **n = 14 leak-free sites** (5,478–13,759 sqft/MW, 2.5× spread).
+
+**Model selection by leave-one-out CV** ("ML where effective" — tested, not assumed):
+
+| Candidate | LOO-RMSE (log₁₀) | ×/÷ factor |
+|---|---|---|
+| **ridge + operator dummies** | **0.108** | **1.28** |
+| pure density (slope=1) | 0.125 | 1.33 |
+| OLS + shrunk operator effects | 0.136 | 1.37 |
+| OLS log-log | 0.142 | 1.39 |
+| random forest | 0.155 | 1.43 |
+| gradient boosting | 0.161 | 1.45 |
+
+Tree ensembles **lose to pure density** at n=14 — the honest ML answer is a regularized linear model. The deployed (portable) form: `log₁₀(MW) = −3.931 + 0.998·log₁₀(GFA) + operator effect`, operator effects shrunk toward zero (Stack ×1.17, Digital Realty ×1.12 … Iron Mountain ×0.86, Microsoft ×0.86).
+
+**Three readings:**
+1. **Slope 0.998 ≈ 1.** Power is almost exactly proportional to floor area over 25–316 MW — "density" was the right functional *form*; what was wrong was hand-setting its value and its uncertainty. The generic curve lands at ~8,730 sqft/MW, independently re-deriving ICPRB's 8,818 a third time.
+2. **The transparency-gap number:** knowing only floor area (+ operator), public records determine a site's power to **×/÷1.28 (1σ), ×/÷1.51 (90%)**. That measured factor is the fallback tier's uncertainty everywhere downstream — nothing about it is assumed.
+3. **Held-out check:** the one trade-permit stated critical load (339,744 sqft ↔ 60 MW design) → model predicts 38.9 MW effective ≈ 0.81× of the 48 MW implied at ICPRB's 0.8 utilization — inside the 90% band.
+
+Variance split for the Monte Carlo: σ_systematic = 0.014 (coefficient calibration, drawn once, shared), σ_idiosyncratic = 0.087 (per-site, independent).
+
+### 26.3 Effect on the numbers
+
+| | Before (bands) | After (fitted) |
+|---|---|---|
+| County plug-in central | 57.1 MGD | **49.6 MGD** |
+| County MC median [90% CI] | 60.0 [53.9–66.6] | **52.6 [47.0–58.7]** |
+| Marginal-mix MC median | 46.8 | **41.0** |
+
+The ~13% drop is the fit deleting an unsupported assumption: the old `new_build` band presumed unbuilt buildings 25% denser (7,070 sqft/MW) than the fleet; the permit evidence shows no such thing, so 141 tier-4 buildings moved to the fitted ~8,731. The OAT sweep now shows the fallback model at **67% swing** — *larger* than the old "52% density" figure because ×/÷1.51 is a measured 90% interval rather than a flattering hand-set band; meanwhile the MC county CI stays ±11% because most of that residual is idiosyncratic and averages down across 198 buildings. Both numbers are true: OAT answers "what if the model is coherently wrong," the MC answers "what error is probable."
+
+### 26.4 The accuracy roadmap this enables (data, not modeling)
+
+Ranked by expected interval shrinkage: (1) **PJM RTEP/TEAC supplemental-project filings** — public, substation-level load MW driven by data centers; would move whole campuses to tier ~1. (2) **Systematic ePortal trade-permit sweep** for stated critical loads (populates tier 2). (3) **Diesel fuel-tank permits** (tank gallons → runtime-hours → MW). (4) **Water-meter sizes** on plumbing permits (hard physical upper bounds on Scope 1). (5) **Business personal-property (computer equipment) assessments** — a power proxy with independent failure modes. Grid-side signals (LMP congestion, DOM-zone metered load, GS-4 class sales) constrain the *aggregate*, not buildings — used as mass-balance checks, not estimators. Residential electricity prices carry no invertible per-facility signal (regulated, lagged, systemwide) and are excluded.
+
+Also queued: distributional validation of the 54 completed buildings' Scope 1 against JLARC's published anonymized 2023 per-building water distribution (median 0.018 MGD, 11 > 0.137, max 0.666) — the closest available thing to ground truth.

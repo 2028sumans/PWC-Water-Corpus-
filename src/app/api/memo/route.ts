@@ -88,7 +88,7 @@ function facilityContextBlock(ctx: FacilityContext): string {
   if (ctx.status) lines.push(`Status: ${ctx.status}`);
   if (ctx.yearBuilt) lines.push(`Year built: ${ctx.yearBuilt}`);
   if (ctx.gfaSqft) lines.push(`Gross floor area: ${ctx.gfaSqft.toLocaleString()} sqft`);
-  lines.push(`Effective IT power (from floor area at 8,818 sqft/MW): ${ctx.effectiveMw} MW`);
+  lines.push(`Effective IT power (permit-observed or fitted GFA->MW model; see evidence tier): ${ctx.effectiveMw} MW`);
   lines.push(`Scope 1 (on-site cooling): ${ctx.scope1Central.toFixed(3)} MGD central, range ${fmtRange(ctx.scope1Range, "MGD")}`);
   lines.push(`Scope 2 (electricity-driven): ${ctx.scope2Central.toFixed(3)} MGD central`);
   lines.push(`Scope 3 (embodied / supply-chain): ${ctx.scope3Central.toFixed(3)} MGD central`);
@@ -107,11 +107,11 @@ WATER-STRESS CONTEXT (authoritative, from ICPRB 2025 WMA study + NOAA): Prince W
 
 METHODOLOGY — this tool estimates a facility's water footprint in three scopes using empirical, region-calibrated relationships (indirect_water_footprint.py). It reports a CENTRAL estimate plus a range, and NEVER invents a disclosed measurement where none exists:
 
-- Power: effective IT load = gross floor area / infrastructure density (sqft per effective MW). Density is BANDED by operator and build era, calibrated to Prince William's own permit-backed buildings (median ~8,638 sqft/MW, which independently reproduces ICPRB's 8,818 fleet figure; basin-wide ICPRB reports ~10,370). Where a VADEQ air permit gives generator capacity, MW comes from that (ICPRB Eq 6-3), not from floor area.
+- Power (the model's ROOT): per-building evidence ladder. Tier 1 (45 buildings): VADEQ permit generator capacity x ICPRB Eq 6-3 — observed. Tiers 3-4 (198 buildings): a fitted, leak-free site-level GFA->MW regression (n=14 independent permit sites, chosen by leave-one-out CV; slope ~1.0, generic ~8,730 sqft/MW independently reproducing ICPRB's 8,818) with a MEASURED residual of x/1.51 at 90% — that factor is the quantified cost of knowing only floor area. Never describe density as an assumption the model rests on; it is the fitted fallback when power is unobserved.
 - Scope 1 (on-site cooling): effective IT MW x a measured Water Use per Unit of Power (WUP). ICPRB: 150 gal/MW/day air-cooled/closed-loop, 309 the Prince William Water observed fleet average (CENTRAL), 800 basin-average, up to 1,577 fully evaporative — with a 0.75 consumptive-use factor (both confirmed verbatim by the ICPRB 2025 study). Peak summer day runs ~10x the annual average (confirmed: ICPRB reports peak-day ~10x, summer-month ~3x). A published operator WUE or a binding permit cooling condition NARROWS from the ~10x envelope to a tight band.
 - Scope 2 (electricity-driven): effective IT MW x PUE x Dominion's generation-mix-blended consumption factor ~226 gal/MWh — VIRGINIA-SPECIFIC, from the USGS 2008–2020 thermoelectric reanalysis (nuclear 391, gas 196, coal 474 gal/MWh), NOT national medians. Reported BOTH ways: location-based (average grid) AND marginal (a new load turns on gas, not the nuclear baseload). This matters enormously for basin attribution: ~96% of the footprint is consumed OUTSIDE the Potomac basin the buildings sit in (North Anna/York basin ~21.6 MGD under average mix, but ~0 under marginal — the York attribution is largely an average-mix artifact).
 - Scope 3 (embodied / supply-chain): 5-15% proportional anchor on Scope 1+2 (Privette et al., AGU Advances 2026). Not a physical per-facility estimate.
-- Uncertainty is Monte Carlo (facility-centric priors, correlated draws): county total ~60 MGD, 90% CI ~54–67 (average mix).
+- Uncertainty is Monte Carlo (facility-centric priors, correlated draws): county total ~52.6 MGD, 90% CI ~47-59 (average mix); marginal-mix ~41.
 
 REALITY CHECK — compare against JLARC's MEASURED figures (Report 598, 2023 utility data): a typical data center building uses ~0.018 MGD (like a large office); only 11 buildings statewide exceeded 0.137 MGD; the single largest in Virginia used 0.666 MGD; the ENTIRE Virginia industry used 5.75 MGD. If a facility's central estimate exceeds the largest measured building, say so plainly. Do NOT claim the model is validated against Prince William Water's 0.42 MGD service-area total: ICPRB derived the 309 gal/MW/day intensity this model uses BY DIVIDING that same figure by its own power estimate, so comparing back to it is circular and tests the power estimate rather than water use. No independent per-facility measurement exists.
 

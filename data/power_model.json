@@ -1,0 +1,127 @@
+{
+ "fitted": "site-level, leak-free (permit sites; building apportionment excluded)",
+ "n_sites": 14,
+ "winner_by_loo": "ridge_operator",
+ "exported_model": "ols_operator_pooled",
+ "loo_rmse_log10_all": {
+  "pure_density": 0.12478723383023795,
+  "ols_loglog": 0.14184650762211024,
+  "ols_operator_pooled": 0.13590825349300079,
+  "ridge_operator": 0.1079277980192645,
+  "random_forest": 0.15512228863406674,
+  "gradient_boosting": 0.16058740055128637
+ },
+ "intercept": -3.9308679356805736,
+ "slope": 0.9981560395710446,
+ "coef_cov": [
+  [
+   0.07064796748519073,
+   -0.012024641066393251
+  ],
+  [
+   -0.012024641066393251,
+   0.0020522846641854225
+  ]
+ ],
+ "sigma_log10": 0.1079277980192645,
+ "sigma_systematic_log10": 0.01392146379100002,
+ "sigma_idiosyncratic_log10": 0.0866120571473287,
+ "r2_insample": 0.9783683920504469,
+ "operator_effects": {
+  "iron mountain": -0.06535834909499523,
+  "digital realty": 0.04796552188760679,
+  "corscale": 0.02877636617039503,
+  "qts": -0.009773098056707674,
+  "ntt": 0.022142713253660684,
+  "amazon": -0.0002729705571192509,
+  "microsoft": -0.06785046943828843,
+  "stack": 0.06744205991007135
+ },
+ "shrink_k": 2.0,
+ "training_sites": [
+  {
+   "permit": "74112",
+   "gfa": 2037219.4285714286,
+   "it_mw": 148.068,
+   "operator": "iron mountain"
+  },
+  {
+   "permit": "74262",
+   "gfa": 1985450.0,
+   "it_mw": 315.70000000000005,
+   "operator": "digital realty"
+  },
+  {
+   "permit": "74241",
+   "gfa": 1627643.0000000002,
+   "it_mw": 226.76,
+   "operator": "corscale"
+  },
+  {
+   "permit": "74161",
+   "gfa": 1356387.0,
+   "it_mw": 144.84,
+   "operator": "qts"
+  },
+  {
+   "permit": "74260",
+   "gfa": 1141440.0,
+   "it_mw": 152.0,
+   "operator": "ntt"
+  },
+  {
+   "permit": "74171",
+   "gfa": 818504.0,
+   "it_mw": 93.24000000000001,
+   "operator": "amazon"
+  },
+  {
+   "permit": "74129",
+   "gfa": 795191.0000000001,
+   "it_mw": 92.0,
+   "operator": "amazon"
+  },
+  {
+   "permit": "74081",
+   "gfa": 742900.0,
+   "it_mw": 86.0,
+   "operator": "amazon"
+  },
+  {
+   "permit": "73995",
+   "gfa": 611390.0000000001,
+   "it_mw": 48.2,
+   "operator": "amazon"
+  },
+  {
+   "permit": "74052",
+   "gfa": 547877.0,
+   "it_mw": 74.3,
+   "operator": "amazon"
+  },
+  {
+   "permit": "74236",
+   "gfa": 312931.0,
+   "it_mw": 25.1,
+   "operator": "microsoft"
+  },
+  {
+   "permit": "74237",
+   "gfa": 283140.0,
+   "it_mw": 24.8,
+   "operator": "microsoft"
+  },
+  {
+   "permit": "74224",
+   "gfa": 281000.0,
+   "it_mw": 51.300000000000004,
+   "operator": "stack"
+  },
+  {
+   "permit": "73741",
+   "gfa": 259543.0,
+   "it_mw": 35.52,
+   "operator": "amazon"
+  }
+ ]
+}

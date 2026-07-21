@@ -118,7 +118,13 @@ export interface ScopePowerEstimate {
    * generator schedule via ICPRB Equation 6-3, and the 8,818 sqft/MW density
    * bridge was NOT used for this building.
    */
-  basis: "gfa_icprb_density" | "permit_generator_capacity";
+  basis: "gfa_icprb_density" | "permit_generator_capacity" | "fitted_gfa_model";
+  /**
+   * Power evidence ladder: 1 permit generator capacity (observed), 2 stated
+   * critical load (reserved), 3 fitted GFA→MW model with operator calibration,
+   * 4 fitted model generic curve, 5 legacy vintage density band.
+   */
+  evidence_tier: 1 | 2 | 3 | 4 | 5 | null;
   permit: ScopePermitPower | null;
   sqft_per_effective_mw: number;
   /** Build-era band actually used for this building's density, and the figure
@@ -132,6 +138,7 @@ export interface ScopePowerEstimate {
    */
   density_class:
     | "new_build" | "modern" | "standard" | "legacy" | "unknown"
+    | "fitted_operator" | "fitted_generic"
     | `operator_${string}` | null;
   density_sqft_per_mw_used: number | null;
   density_source: string | null;

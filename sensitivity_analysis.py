@@ -74,14 +74,15 @@ BASE = county_total()
 
 # (label, low-case kwargs, high-case kwargs, justification for the span)
 CASES = [
-    ("Infrastructure density (sqft/MW)",
-     {"density": 12722}, {"density": 8818 * 0.75},
-     "each building's own era band scaled by the ratio 12,722/8,818 and 0.75, i.e. the "
-     "same relative spread applied to whichever band it sits in"),
+    ("GFA->power fallback model (90% resid.)",
+     {"density": 8818 * 1.51}, {"density": 8818 / 1.51},
+     "x/1.51 = the fitted model's measured 90% LOO residual (fit_power_model.py, "
+     "14 leak-free permit sites) applied to every inferred-power building -- an "
+     "empirical span, replacing the former hand-set 12,722/6,614 density band"),
     ("Nuclear consumption factor (gal/MWh)",
-     {"nuclear_cf": 189}, {"nuclear_cf": 289},
-     "USGS MIN/MAX_CONSUMPTION for Surry + North Anna, generation-weighted "
-     "(was an assumed 100-800 span before the USGS pull)"),
+     {"nuclear_cf": 305}, {"nuclear_cf": 477},
+     "USGS 2008-2020 reanalysis cu_lower/cu_upper for Surry + North Anna, "
+     "generation-weighted, pooled 2018-2020"),
     ("PUE band (scale factor)",
      {"pue_scale": 0.85}, {"pue_scale": 1.15},
      "+/-15% on vintage-classed buildings; +/-0.06 (site vs fleet) on the 61 "
@@ -90,9 +91,9 @@ CASES = [
      {"s3_frac": 0.05}, {"s3_frac": 0.15},
      "the shipped 5-15% band"),
     ("Gas CC consumption factor (gal/MWh)",
-     {"gas_cf": 210}, {"gas_cf": 225},
-     "USGS MIN/MAX_CONSUMPTION across the 4 VA NGCC plants, generation-weighted "
-     "(was an assumed 130-300 dry-vs-wet-cooling span before the USGS pull)"),
+     {"gas_cf": 160}, {"gas_cf": 231},
+     "USGS 2008-2020 reanalysis cu_lower/cu_upper across VA gas plants, "
+     "generation-weighted, pooled 2018-2020"),
     ("Scope 1 WUP central (gal/MW/day)",
      {"wup_pwc": 150}, {"wup_pwc": 1577},
      "full measured technology envelope, air-cooled to fully evaporative"),

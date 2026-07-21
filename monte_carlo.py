@@ -78,7 +78,17 @@ def main():
     mm = m.PJM_MARGINAL_FUEL_MIX
     blended_marg = mm["natural_gas_cc"] * cf_gas + mm["coal"] * cf_coal + mm["natural_gas_ct"] * 20.0
 
-    # per-group calibration offsets (drawn once per group, shared within it)
+    # Fitted-model uncertainty (fit_power_model.py): the systematic component
+    # (coefficient calibration) is drawn ONCE and shared -- it cannot average
+    # away across buildings -- while the idiosyncratic site residual is drawn
+    # per building. Both sigmas are MEASURED from the leak-free site-level fit,
+    # not assumed.
+    pm = m.POWER_MODEL or {}
+    fit_syst = rng.normal(0.0, pm.get("sigma_systematic_log10", 0.02), N)
+    sig_idio = pm.get("sigma_idiosyncratic_log10", 0.09)
+
+    # per-group calibration offsets (drawn once per group, shared within it) --
+    # legacy band tiers only
     dens_groups = {c: tri(0.92, 1.0, 1.08) for c in
                    {str(b["scope_water_footprint"]["power"].get("density_class")) for b in bs}}
     pue_groups = {c: tri(0.97, 1.0, 1.03) for c in
@@ -100,6 +110,10 @@ def main():
             # Systematic Eq 6-3 factor (shared) x small independent apportionment
             # of the site's generator capacity among co-permitted buildings.
             eff = ec * permit_factor * tri(0.90, 1.0, 1.10)
+        elif pw["basis"] == "fitted_gfa_model":
+            # Lognormal about the fitted prediction: shared coefficient draw +
+            # independent site residual, both measured by the fit's LOO/OLS stats.
+            eff = ec * np.power(10.0, fit_syst + rng.normal(0.0, sig_idio, N))
         else:
             # Uncertainty is on density (sqft/MW). ehi MW <-> densest (min
             # sqft/MW); elo MW <-> sparsest (max sqft/MW). Sampling density and

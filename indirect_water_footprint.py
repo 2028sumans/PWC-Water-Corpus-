@@ -502,6 +502,63 @@ def density_class(year_built, status=None):
     return _vintage_class(year_built, status)
 
 
+# ---------------------------------------------------------------------------
+# Fitted GFA -> power fallback model (fit_power_model.py)
+# ---------------------------------------------------------------------------
+# The estimator's root quantity is IT POWER, not floor area. Where power is
+# observed (a VADEQ permit), it is used directly. Where it is not, this fitted
+# site-level regression -- log10(MW) = a + b log10(GFA) + operator effect,
+# trained leak-free on the 14 independent permit sites, model chosen by
+# leave-one-out CV -- replaces the former hand-set density bands. Its measured
+# LOO residual (x/1.28 at 1 sigma, x/1.51 at 90%) IS the fallback tier's
+# uncertainty; nothing about it is assumed.
+import json as _json
+import os as _os
+_PM_PATH = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "data", "power_model.json")
+try:
+    with open(_PM_PATH) as _fh:
+        POWER_MODEL = _json.load(_fh)
+except Exception:
+    POWER_MODEL = None
+
+
+def _fitted_operator(name):
+    n = (name or "").lower()
+    for k in ["iron mountain", "digital realty", "dlr", "amazon", "aws", "microsoft",
+              "azure", "qts", "ntt", "stack", "corscale", "gainesville crossing"]:
+        if k in n:
+            return {"aws": "amazon", "dlr": "digital realty", "azure": "microsoft",
+                    "gainesville crossing": "corscale"}.get(k, k)
+    return None
+
+
+def effective_power_from_fitted(gfa_sqft, name):
+    """Effective IT power from the fitted fallback model. Returns the same
+    6-tuple shape as effective_power_from_gfa, or None if the model file is
+    absent (the vintage bands then remain as a last resort)."""
+    if not POWER_MODEL or not gfa_sqft or gfa_sqft <= 0:
+        return None
+    import math
+    op = _fitted_operator(name)
+    eff = POWER_MODEL["operator_effects"].get(op, 0.0) if op else 0.0
+    in_table = op is not None and op in POWER_MODEL["operator_effects"]
+    log_mw = POWER_MODEL["intercept"] + POWER_MODEL["slope"] * math.log10(gfa_sqft) + eff
+    central = 10 ** log_mw
+    band = 10 ** (1.645 * POWER_MODEL["sigma_log10"])   # 90% interval multiplier
+    cls = "fitted_operator" if in_table else "fitted_generic"
+    dens = gfa_sqft / central
+    src = (
+        f"fitted GFA->MW model (n={POWER_MODEL['n_sites']} independent permit sites, "
+        f"leak-free site-level fit, winner by LOO-CV: {POWER_MODEL['winner_by_loo']}; "
+        f"slope {POWER_MODEL['slope']:.2f}, LOO residual x/{10**POWER_MODEL['sigma_log10']:.2f}"
+        + (f"; operator effect for {op}: x{10**POWER_MODEL['operator_effects'][op]:.2f}" if in_table else
+           "; no operator calibration -- generic curve")
+        + ")"
+    )
+    return (round(central, 1), round(central / band, 1), round(central * band, 1),
+            cls, round(dens), src)
+
+
 def effective_power_from_gfa(gfa_sqft, year_built=None, status=None,
                              operator_density=None):
     """Effective IT power (MW) from gross floor area.
@@ -970,8 +1027,20 @@ def estimate_scope_water_footprint(
     # which runs the 8,818 sqft/MW constant backwards. Validation across 11
     # Prince William sites puts the two within 2% at the median, so this
     # sharpens per-facility precision rather than moving the aggregate.
+    # POWER EVIDENCE LADDER. The root quantity is IT power; each rung is a more
+    # direct observation of it, and every building is tagged with the rung it
+    # landed on (evidence_tier):
+    #   1  permit_generator_capacity -- VADEQ generator MW x ICPRB Eq 6-3
+    #   2  stated_critical_load      -- reserved: trade-permit stated MW (none
+    #                                   yet cleanly attributable to a building)
+    #   3  fitted_gfa_model_operator -- fitted site-level GFA->MW regression,
+    #                                   operator-calibrated
+    #   4  fitted_gfa_model_generic  -- same regression, generic curve
+    #   5  vintage_density_band      -- legacy hand-set bands (only if the
+    #                                   fitted-model file is absent)
     power_basis = "gfa_icprb_density"
     permit_meta = None
+    evidence_tier = None
     eff = None
     if permit_power:
         eff = effective_power_from_permit(permit_power.get("site_generator_mw"),
@@ -979,12 +1048,21 @@ def estimate_scope_water_footprint(
         if eff:
             power_basis = "permit_generator_capacity"
             permit_meta = permit_power
+            evidence_tier = 1
     density_cls = density_used = density_src = None
+    if eff is None:
+        f = effective_power_from_fitted(gfa_sqft, name)
+        if f:
+            eff = f[:3]
+            density_cls, density_used, density_src = f[3], f[4], f[5]
+            power_basis = "fitted_gfa_model"
+            evidence_tier = 3 if density_cls == "fitted_operator" else 4
     if eff is None:
         g = effective_power_from_gfa(gfa_sqft, year_built, status, operator_density)
         if g:
             eff = g[:3]
             density_cls, density_used, density_src = g[3], g[4], g[5]
+            evidence_tier = 5
     if eff is None:
         return None
     eff_mw, eff_lo, eff_hi = eff
@@ -1045,6 +1123,7 @@ def estimate_scope_water_footprint(
             "effective_it_mw_range": [eff_lo, eff_hi],
             "effective_it_mw_central": eff_mw,
             "basis": power_basis,
+            "evidence_tier": evidence_tier,
             "sqft_per_effective_mw": SQFT_PER_EFFECTIVE_MW,
             "gfa_sqft": gfa_sqft,
             "gfa_field_used": gfa_source,
@@ -1065,15 +1144,17 @@ def estimate_scope_water_footprint(
                     f"building."
                 )
                 if permit_meta else
-                f"{gfa_sqft:,.0f} sqft / {density_used:,} sqft per effective MW = {eff_mw} MW "
-                f"effective IT load. "
+                f"{gfa_sqft:,.0f} sqft -> {eff_mw} MW effective IT load "
+                f"(implied {density_used:,} sqft/MW). "
                 + (
-                    f"Density is calibrated to this operator's own permit-backed buildings in "
-                    f"the county rather than to a build-era band: {density_src}"
-                    if density_src else
-                    f"Density is banded by build era ({density_cls}) rather than fixed at "
-                    f"ICPRB's {SQFT_PER_EFFECTIVE_MW:,} fleet average, which spans two decades of "
-                    f"construction: {DENSITY_SOURCE_NOTE.get(density_cls, '')}."
+                    f"Power is INFERRED, not observed: {density_src}. The 90% interval "
+                    f"(x/1.51) is the measured residual of that fit -- the quantified cost "
+                    f"of knowing only floor area."
+                    if power_basis == "fitted_gfa_model" else
+                    (f"Density is calibrated to this operator's own permit-backed buildings: "
+                     f"{density_src}" if density_src else
+                     f"Density is banded by build era ({density_cls}): "
+                     f"{DENSITY_SOURCE_NOTE.get(density_cls, '')}.")
                 )
             ),
             "operator_cross_check": xcheck,
