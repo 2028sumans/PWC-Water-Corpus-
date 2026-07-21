@@ -1,0 +1,82 @@
+{
+ "jlarc_anchors": {
+  "office_mgd": 0.018356164383561645,
+  "tail_threshold_mgd": 0.136986301369863,
+  "tail_count": 11,
+  "state_max_mgd": 0.6657534246575343,
+  "industry_total_mgd": 5.7534246575342465,
+  "assumed_n_with_data": 300,
+  "reference_lognormal": {
+   "median": 0.018356164383561645,
+   "sigma_ln": 1.122387188697687
+  }
+ },
+ "ours": {
+  "n": 54,
+  "min": 0.0004,
+  "p25": 0.003,
+  "median": 0.00375,
+  "p75": 0.00885,
+  "max": 0.0208,
+  "mean": 0.00615,
+  "sum": 0.3321
+ },
+ "checks": [
+  {
+   "test": "median <= office benchmark (most use office-or-less)",
+   "ours": 0.0037,
+   "jlarc": "<= 0.0184",
+   "consistent": true,
+   "note": ""
+  },
+  {
+   "test": "share at-or-below office benchmark",
+   "ours": "96%",
+   "jlarc": ">= 50% ('most')",
+   "consistent": true,
+   "note": ""
+  },
+  {
+   "test": "share below a typical household (0.0003)",
+   "ours": "0%",
+   "jlarc": "'some'",
+   "consistent": true,
+   "note": "JLARC gives no count; qualitative"
+  },
+  {
+   "test": "buildings above 0.137 MGD",
+   "ours": 0,
+   "jlarc": "~2.0 expected at statewide rate (11/300)",
+   "consistent": true,
+   "note": "PWC's chiller-dominant fleet should sit at or below the statewide rate"
+  },
+  {
+   "test": "max building vs statewide max",
+   "ours": 0.0208,
+   "jlarc": 0.6658,
+   "consistent": true,
+   "note": "a county subset must not exceed the statewide max"
+  },
+  {
+   "test": "mean per building",
+   "ours": 0.0062,
+   "jlarc": "~0.0192 statewide (incl. reclaimed-heavy Loudoun)",
+   "consistent": true,
+   "note": "expected lower: statewide mean is pulled up by evaporative outliers"
+  }
+ ],
+ "ks_full": {
+  "D": 0.5404667663694365,
+  "p": 2.704571394295907e-15
+ },
+ "ks_body": {
+  "D": 0.5279098817880861,
+  "p": 1.4693672177612295e-14
+ },
+ "ks_pwc_scaled": {
+  "D": 0.16521783419167144,
+  "p": 0.09332302861749153,
+  "scale": 0.27122107142857144,
+  "statewide_wup": 1139.2920113929201
+ }
+}

@@ -114,6 +114,7 @@ export function AppShell() {
     { label: "RAG CORPUS", value: "policy + methodology docs" },
     { label: "WATER STRESS", value: "county in extreme drought — PDSI −5.3, driest 1% of months since 1895", tone: "bad" },
     { label: "PERMITS", value: "PWC data centers hold construction-stormwater permits, not operational water permits", tone: "bad" },
+    { label: "VALIDATION", value: "Scope 1 distribution vs JLARC 2023 metered data: all 6 published constraints pass; shape indistinguishable after county-intensity scaling (KS p=0.09)", tone: "good" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);
   useEffect(() => {

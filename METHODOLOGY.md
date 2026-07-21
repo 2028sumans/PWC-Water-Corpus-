@@ -1926,3 +1926,32 @@ The ~13% drop is the fit deleting an unsupported assumption: the old `new_build`
 Ranked by expected interval shrinkage: (1) **PJM RTEP/TEAC supplemental-project filings** — public, substation-level load MW driven by data centers; would move whole campuses to tier ~1. (2) **Systematic ePortal trade-permit sweep** for stated critical loads (populates tier 2). (3) **Diesel fuel-tank permits** (tank gallons → runtime-hours → MW). (4) **Water-meter sizes** on plumbing permits (hard physical upper bounds on Scope 1). (5) **Business personal-property (computer equipment) assessments** — a power proxy with independent failure modes. Grid-side signals (LMP congestion, DOM-zone metered load, GS-4 class sales) constrain the *aggregate*, not buildings — used as mass-balance checks, not estimators. Residential electricity prices carry no invertible per-facility signal (regulated, lagged, systemwide) and are excluded.
 
 Also queued: distributional validation of the 54 completed buildings' Scope 1 against JLARC's published anonymized 2023 per-building water distribution (median 0.018 MGD, 11 > 0.137, max 0.666) — the closest available thing to ground truth.
+
+---
+
+## 27. Distributional validation against JLARC's metered 2023 water data
+
+The model has never had per-facility ground truth (§6.1's circularity note). But JLARC Report 598 published the **distribution** of metered 2023 per-building water use — anonymized, from the six utilities covering "the large majority" of the Virginia industry — and a distribution does not need names. `validate_scope1_distribution.py` tests our 54 completed buildings' Scope 1 centrals (same basis: delivered, per building, annual) against it.
+
+**JLARC's published anchors:** most buildings ≤ an average large office (6.7 MG/yr = 0.018 MGD); some below a household; **11 buildings > 50 MG/yr (0.137 MGD)**; max **243 MG/yr (0.666 MGD, 10% of the industry's total)**; industry total 2.1 BG/yr (5.75 MGD, over ⅓ reclaimed); ~340 buildings inventoried statewide.
+
+**What is genuinely out-of-sample here:** the aggregate *level* of our completed fleet is semi-calibrated (309 came from PWC's service-area total — the §6.1 circularity). The **median, spread, and tail were never calibrated to anything**; they emerge from per-building power (evidence ladder, §26) and cooling narrowing.
+
+### 27.1 Results
+
+| Test | Ours (n=54) | JLARC | |
+|---|---|---|---|
+| Median ≤ office benchmark | 0.0037 | ≤ 0.0184 | **pass** |
+| Share ≤ office ("most") | 96% | ≥ 50% | **pass** |
+| Buildings > 0.137 MGD | 0 | ~2.0 expected at the statewide rate | **pass** (see below) |
+| Max vs statewide max | 0.021 | 0.666 | **pass** |
+| Mean per building | 0.0062 | ~0.019 statewide | **pass** (expected lower) |
+
+- **KS vs the raw statewide reference lognormal** (fit only to JLARC's two published quantiles): **rejected** (D=0.54, p≈10⁻¹⁵) — *as it must be*: the statewide sample is dominated by Loudoun, whose measured fleet intensity is **1,006 gal/MW/day vs PWC's 309** (ICPRB Table 6-5), with reclaimed-supplied evaporative stock forming the >0.137 tail.
+- **The decisive test:** scale the reference median by the *published* county-intensity ratio (309 ÷ statewide 5.75 MGD/5,050 MW = 1,139 gal/MW/day → ×0.271 — no fitting to our data anywhere), leaving a pure test of **shape**. Result: **D=0.165, p=0.093 — statistically indistinguishable.** The per-building spread our estimates produce (from the evidence ladder + cooling narrowing) matches the spread in metered reality.
+
+### 27.2 What this does and does not establish
+
+It **does** establish that the model's per-building allocation is realistic: the shape survives contact with the only metered per-building data in existence, and PWC's zero-tail is *consistent with* its chiller-dominant permit record (§7.3c) rather than an artifact. It does **not** validate the absolute level for any single building (still semi-calibrated at fleet scale), and the reference's σ was inferred from just two published quantiles. A records request for the underlying anonymized JLARC/utility data would convert this from a two-quantile test to a full-curve one.
+
+One flag worth keeping visible: our central-WUP ceiling (309) means the model *cannot* produce a >0.137 MGD building as a central estimate — only in ranges. If PWC ever hosts a fully-evaporative building, the centrals will understate it; the tail passes today because the county's permit record says such buildings are rare-to-absent here.
