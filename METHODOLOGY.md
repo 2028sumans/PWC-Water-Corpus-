@@ -1955,3 +1955,30 @@ The model has never had per-facility ground truth (§6.1's circularity note). Bu
 It **does** establish that the model's per-building allocation is realistic: the shape survives contact with the only metered per-building data in existence, and PWC's zero-tail is *consistent with* its chiller-dominant permit record (§7.3c) rather than an artifact. It does **not** validate the absolute level for any single building (still semi-calibrated at fleet scale), and the reference's σ was inferred from just two published quantiles. A records request for the underlying anonymized JLARC/utility data would convert this from a two-quantile test to a full-curve one.
 
 One flag worth keeping visible: our central-WUP ceiling (309) means the model *cannot* produce a >0.137 MGD building as a central estimate — only in ranges. If PWC ever hosts a fully-evaporative building, the centrals will understate it; the tail passes today because the county's permit record says such buildings are rare-to-absent here.
+
+---
+
+## 28. ePortal stated-load sweep — tier 2 attempted; power model validated instead
+
+Tier 2 of the evidence ladder (§26) — stated critical load from trade permits — was designed but empty. To fill it, the county's ePortal (Tyler EnerGov SelfService) permit API was reverse-engineered and swept systematically.
+
+### 28.1 Method (reproducible)
+`POST /SelfService/api/energov/search/search` with the tenant headers `tenantId:3, tenantName:PWCePortal` and `EnableDescriptionSearch:true`. Swept ~2,900 permits across the keywords {data center, critical load, megawatt, data server vault, MVA}, regex-extracted `\d+\s*MW` / vault statements, required "data center" context, and excluded solar (one 20 MW *ENERGIX solar farm* was a false positive — verification matters). Saved to `data/eportal_stated_loads.json`.
+
+### 28.2 Two data findings
+- **Load disclosure is sparse.** Across the entire permit corpus, only **5 data-center parcels state an electrical/critical load** in their descriptions (96, 84, 60, 36, 36 MW). Most permits describe the project by floor area alone. This is direct evidence for the transparency-gap thesis: even the county's own permitting system rarely captures the quantity that drives water use.
+- **Permit inventory ≠ GIS building inventory.** The 60 MW (11530 Elevate) and 84 MW (John Marshall/Grove Hill) buildings are recent permits whose addresses **collide with older buildings in the county's Data_Center_Buildings GIS layer** (the model's building source), and some stated-load buildings are not in that layer at all. The two inventories are out of sync — a caveat for any GIS-keyed data-center study.
+
+### 28.3 Why tier 2 was left empty (and what the sweep produced instead)
+Mapping stated loads to modeled buildings by address gave, cleanly, corroboration — not new inputs:
+
+| Stated (critical → ×0.8 effective) | Cleanly-matched model building | Verdict |
+|---|---|---|
+| 96 MW → 77 (one NTT building) | NTT VA10–13, 67–77 MW eff | **consistent — validates** |
+| 36 MW → 29 @ 9570 Hornbaker | Stack NVA02E, 34.7 MW eff (tier-3 fitted) | **consistent within the fitted ±28% band** |
+| 60 MW → 48 @ 11530 Elevate | Iron Mountain VA-8/9, 25 MW eff | **address collision** (new permit vs old building) — not a correction |
+| 84 MW → 67 @ John Marshall | Village Place 29 MW / NTT area | **ambiguous** — parcel spans multiple buildings |
+
+Where a stated load maps 1:1 to a modeled building, it *confirms* the power spine — including the **fitted GFA→MW model** (Stack NVA02E: fitted 34.7 vs stated-implied 29, inside the interval). Where it appears to contradict, the cause is a permit-vs-GIS address collision, so "correcting" the model would inject an error. **Tier 2 is therefore left empty rather than populated with unreliable overwrites.** The sweep's real product is a *second independent validation of power* (after §27's JLARC Scope-1 distributional test) plus the two findings above.
+
+The reusable harvest method remains valuable: if the county later links the permit and GIS inventories (or a records request supplies per-building critical loads), this exact pipeline populates tier 2 directly.

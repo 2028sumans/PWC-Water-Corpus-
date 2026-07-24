@@ -1,0 +1,77 @@
+{
+ "source": "Prince William County Development Services ePortal (Tyler EnerGov SelfService), permit search API (POST /SelfService/api/energov/search/search, EnableDescriptionSearch=true)",
+ "retrieved": "2026-07-24",
+ "method": "Reverse-engineered the ePortal search API (tenant headers tenantId=3/PWCePortal). Swept ~2,900 permits across keywords {data center, critical load, megawatt, data server vault, MVA} with description-search enabled; regex-extracted MW/vault statements; required 'data center' context and excluded solar/PV (one 20 MW ENERGIX solar farm was a false positive and is excluded).",
+ "finding": "Stated electrical/critical load appears in the permit descriptions of only 5 data-center parcels county-wide -- disclosure of load is sparse, consistent with the project's transparency-gap thesis. Stated values are CRITICAL (design IT) load; effective demand ~= critical x 0.8 utilization (ICPRB Eq 6-3).",
+ "loads": [
+  {
+   "parcel": "7397-56-8403",
+   "critical_mw": 96,
+   "vaults": 12,
+   "note": "NTT parcel with 4 buildings (VA10-13); the 96 MW is not attributed to a specific building -> not usable as a per-building tier-2 value",
+   "permit": "BLD2025-04670"
+  },
+  {
+   "parcel": "7397-65-0198",
+   "critical_mw": 84,
+   "vaults": 14,
+   "note": "single 84 MW data center building, 14 data server vaults",
+   "permit": "BLD2023-06335"
+  },
+  {
+   "parcel": "7596-55-9338",
+   "critical_mw": 60,
+   "vaults": null,
+   "note": "single building, 339,744 SF, 4 data halls; 60 MW critical load (MEC2025-01801)",
+   "permit": "MEC2025-01801"
+  },
+  {
+   "parcel": "7595-65-9278",
+   "critical_mw": 36,
+   "vaults": null,
+   "note": "NEW: 2-story precast 36 MW data center, Hornbaker Road",
+   "permit": "BLD2023-03213"
+  },
+  {
+   "parcel": "7595-65-9182",
+   "critical_mw": 36,
+   "vaults": null,
+   "note": "NEW: adjacent Hornbaker Road parcel, 36 MW (may be the same project spanning parcels)",
+   "permit": "BLD2023-03853"
+  }
+ ],
+ "addresses": {
+  "7397-56-8403": "7250/7251/7253 Grove Hill Blvd + 14300 John Marshall Hwy, Gainesville (NTT Grove campus)",
+  "7397-65-0198": "14300 John Marshall Hwy / 7253 Grove Hill Blvd, Gainesville",
+  "7596-55-9338": "11530 Elevate Dr, Manassas",
+  "7595-65-9278": "9570 Hornbaker Rd, Manassas",
+  "7595-65-9182": "9570 Hornbaker Rd, Manassas"
+ },
+ "validation": [
+  {
+   "stated": "96 MW critical (1 NTT building)",
+   "effective_x0.8": 76.8,
+   "model": "NTT VA10-13 at 67-77 MW eff",
+   "verdict": "CONSISTENT (validates)"
+  },
+  {
+   "stated": "36 MW critical @ 9570 Hornbaker",
+   "effective_x0.8": 28.8,
+   "model": "Stack NVA02E eff 34.7 MW (tier 3 fitted)",
+   "verdict": "CONSISTENT within the fitted +/-28% band (validates the fitted model)"
+  },
+  {
+   "stated": "60 MW critical @ 11530 Elevate",
+   "effective_x0.8": 48.0,
+   "model": "Iron Mountain VA-8/9 eff 25.2 MW",
+   "verdict": "COLLISION: 2025 new-structure permit shares an address with an older modeled building (in_model=false in density_statements); NOT a correction"
+  },
+  {
+   "stated": "84 MW critical @ John Marshall/Grove Hill",
+   "effective_x0.8": 67.2,
+   "model": "Village Place 29 MW / NTT area",
+   "verdict": "AMBIGUOUS: parcel touches multiple buildings; not cleanly attributable"
+  }
+ ],
+ "conclusion": "Stated critical load is disclosed for only 5 data-center parcels county-wide. Where it cleanly maps to a modeled building it CORROBORATES the power spine (NTT, Stack) rather than correcting it; the discrepant cases are permit-vs-GIS-inventory address collisions, not model errors. Tier 2 of the evidence ladder is therefore left empty rather than populated with unreliable overwrites: the sweep's value is a second independent validation of power (after the JLARC Scope-1 distributional test), plus two data-completeness findings."
+}
