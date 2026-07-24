@@ -2038,3 +2038,30 @@ The overhead-imagery route (`fetch_facility_imagery.py`, Esri World Imagery ~0.1
 
 ### 30.4 The same-shaped finding, third time
 Like the power harvests (§28–29), the cooling harvest resolves the unknown at the **fleet** level (chiller-dominant, corroborated) but **not at the per-building level** with documentary rigor. In the paper's observable / inferable / unresolved taxonomy, per-building cooling type is **inferable** (the fleet is chiller-dominant, so the chiller-tier WUP is the right prior for an unlabelled building) but the per-building air-vs-water chiller split remains **unresolved** — which is exactly why the estimator carries cooling type as a *banded* Scope 1 range (150–1,577 gal/MW/day envelope, narrowed only where an operator commitment or proffer documents the path) rather than a point value.
+
+## 31. Seasonal water-stress model — demand and scarcity coincide in calendar time (Track-2 analysis)
+
+The estimator is an annual average. That average hides a timing fact the ICPRB study treats as its central supply concern (2025 WMA Study §6.2; ICPRB *Data Centers & Water Use*, March 2026): data-center water demand is cooling-driven and therefore summer-concentrated, and it peaks in the same months the region's rivers run lowest. `seasonal_stress.py` makes that coincidence quantitative from measured data. Output: `public/data/seasonal_stress.json`.
+
+### 31.1 Two measured curves
+- **Demand shape** — monthly cooling-degree-day climatology, Prince William County, NOAA 1895–2026 (already in `climate_context.py`). Cooling load peaks in **July at 3.9× the annual-mean month**; 92% of annual CDD fall Jun–Sep. Winter CDD ≈ 0, i.e. free/economizer cooling dominates and evaporative makeup water falls toward zero — the water signal is genuinely a summer signal.
+- **Supply shape** — monthly mean-discharge climatology from USGS NWIS (mean daily discharge, full record), two gages:
+  - **Potomac at Little Falls (01646500, record from 1930)** — ICPRB's regional reference gage — bottoms in **August at 41% of annual-mean flow**.
+  - **Cedar Run near Catlett (01663500, record from 1942)** — Occoquan-basin, PWC-local — bottoms in **August at 47% of annual-mean flow**.
+
+### 31.2 The coincidence index
+Defining a monthly stress index as (normalized CDD demand ÷ normalized Potomac flow) — how demand-heavy a month is relative to the supply it has — the index peaks in **July at ~9.0** and stays above 8 through August, versus ≈0 in winter. Peak cooling-water demand and minimum river flow are not merely both "in summer"; they land in the *same weeks*. This is measured, not modeled: both inputs are observational series.
+
+### 31.3 Banded fleet-water overlay
+To translate the demand shape into gallons, the fleet's annual-mean total (**49.6 MGD central**, buildings only) is split into a flat baseload (IT-driven Scope 2 + Scope 3, present every month) plus a cooling-variable component distributed across months in proportion to CDD. The cooling-variable **share** is the one free parameter, so it is swept rather than fixed:
+
+| Cooling-variable share | Summer peak | Winter trough | Peak : trough |
+|---|---|---|---|
+| 15% | 71 MGD | 42 MGD | 1.7× |
+| 30% | 93 MGD | 35 MGD | 2.7× |
+| 45% | 115 MGD | 27 MGD | 4.2× |
+
+The share is banded because PWC's air/closed-loop-dominant fleet (§30) has a *modest* direct-water seasonal amplitude, while the thermoelectric water behind its electricity (Scope 2) is more strongly summer-peaked; the true blended amplitude sits inside this band. The point of the overlay is the *shape and swing*, not a precise gallons-per-month figure.
+
+### 31.4 What this adds to the paper
+It converts the estimator's static annual number into the supply-relevant quantity: **the sector draws the most water in the months the basin can least spare it, during a period the county is already in near-record drought (PDSI −5.3, driest 0.9% of 1,576 months)**. This is a genuine Track-2 result built entirely on measured public series (NOAA + USGS), independent of the estimator's contested per-building assumptions — it holds regardless of the exact MGD total.

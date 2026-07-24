@@ -1,0 +1,179 @@
+{
+ "purpose": "Seasonal coincidence of data-center cooling-water demand with regional low-flow. Two measured curves (CDD demand shape, USGS streamflow climatology) plus a banded monthly fleet-water overlay.",
+ "demand_cdd": {
+  "monthly_norm": {
+   "Jan": 0.0,
+   "Feb": 0.0,
+   "Mar": 0.011,
+   "Apr": 0.034,
+   "May": 0.754,
+   "Jun": 2.398,
+   "Jul": 3.917,
+   "Aug": 3.298,
+   "Sep": 1.43,
+   "Oct": 0.158,
+   "Nov": 0.0,
+   "Dec": 0.0
+  },
+  "peak_month": "Jul",
+  "jun_sep_share_pct": 92.0
+ },
+ "supply_streamflow": {
+  "Potomac R at Little Falls": {
+   "record_years": "1930-2026",
+   "n_years": 97,
+   "monthly_mgd": {
+    "Jan": 8764.1,
+    "Feb": 10764.5,
+    "Mar": 14469.2,
+    "Apr": 12664.9,
+    "May": 10145.2,
+    "Jun": 6021.0,
+    "Jul": 3192.0,
+    "Aug": 2987.7,
+    "Sep": 3405.4,
+    "Oct": 3822.3,
+    "Nov": 4816.3,
+    "Dec": 7262.4
+   },
+   "monthly_norm": {
+    "Jan": 1.191,
+    "Feb": 1.463,
+    "Mar": 1.966,
+    "Apr": 1.721,
+    "May": 1.379,
+    "Jun": 0.818,
+    "Jul": 0.434,
+    "Aug": 0.406,
+    "Sep": 0.463,
+    "Oct": 0.519,
+    "Nov": 0.654,
+    "Dec": 0.987
+   },
+   "annual_mean_mgd": 7359.6,
+   "low_flow_month": "Aug",
+   "low_flow_pct_of_annual": 41,
+   "name": "Potomac R at Little Falls",
+   "role": "ICPRB regional reference"
+  },
+  "Cedar Run near Catlett": {
+   "record_years": "1942-2026",
+   "n_years": 77,
+   "monthly_mgd": {
+    "Jan": 247.0,
+    "Feb": 293.5,
+    "Mar": 340.0,
+    "Apr": 333.6,
+    "May": 301.0,
+    "Jun": 205.2,
+    "Jul": 114.9,
+    "Aug": 102.9,
+    "Sep": 117.1,
+    "Oct": 170.8,
+    "Nov": 189.1,
+    "Dec": 232.2
+   },
+   "monthly_norm": {
+    "Jan": 1.12,
+    "Feb": 1.33,
+    "Mar": 1.541,
+    "Apr": 1.512,
+    "May": 1.364,
+    "Jun": 0.93,
+    "Jul": 0.521,
+    "Aug": 0.467,
+    "Sep": 0.531,
+    "Oct": 0.774,
+    "Nov": 0.857,
+    "Dec": 1.053
+   },
+   "annual_mean_mgd": 220.6,
+   "low_flow_month": "Aug",
+   "low_flow_pct_of_annual": 47,
+   "name": "Cedar Run near Catlett",
+   "role": "Occoquan basin, PWC-local"
+  }
+ },
+ "coincidence_index": {
+  "monthly": {
+   "Jan": 0.0,
+   "Feb": 0.0,
+   "Mar": 0.01,
+   "Apr": 0.02,
+   "May": 0.55,
+   "Jun": 2.93,
+   "Jul": 9.03,
+   "Aug": 8.12,
+   "Sep": 3.09,
+   "Oct": 0.3,
+   "Nov": 0.0,
+   "Dec": 0.0
+  },
+  "peak_month": "Jul",
+  "definition": "normalized CDD demand / normalized Potomac flow; >1 = demand-heavy relative to supply that month"
+ },
+ "fleet_water_overlay": {
+  "annual_mean_total_mgd": 49.6,
+  "note": "baseload (flat) + cooling-variable (CDD-shaped); the cooling-variable share is swept because PWC's air/closed-loop dominant fleet has a modest direct-water seasonal amplitude, while its Scope-2 thermoelectric water is more summer-peaked.",
+  "scenarios": {
+   "cooling_var_share_15pct": {
+    "monthly_mgd": {
+     "Jan": 42.2,
+     "Feb": 42.2,
+     "Mar": 42.2,
+     "Apr": 42.4,
+     "May": 47.8,
+     "Jun": 60.0,
+     "Jul": 71.3,
+     "Aug": 66.7,
+     "Sep": 52.8,
+     "Oct": 43.3,
+     "Nov": 42.2,
+     "Dec": 42.2
+    },
+    "summer_peak_mgd": 71.3,
+    "winter_trough_mgd": 42.2,
+    "peak_to_trough_ratio": 1.69
+   },
+   "cooling_var_share_30pct": {
+    "monthly_mgd": {
+     "Jan": 34.7,
+     "Feb": 34.7,
+     "Mar": 34.9,
+     "Apr": 35.2,
+     "May": 45.9,
+     "Jun": 70.4,
+     "Jul": 93.0,
+     "Aug": 83.8,
+     "Sep": 56.0,
+     "Oct": 37.1,
+     "Nov": 34.7,
+     "Dec": 34.7
+    },
+    "summer_peak_mgd": 93.0,
+    "winter_trough_mgd": 34.7,
+    "peak_to_trough_ratio": 2.68
+   },
+   "cooling_var_share_45pct": {
+    "monthly_mgd": {
+     "Jan": 27.3,
+     "Feb": 27.3,
+     "Mar": 27.5,
+     "Apr": 28.0,
+     "May": 44.1,
+     "Jun": 80.8,
+     "Jul": 114.7,
+     "Aug": 100.9,
+     "Sep": 59.2,
+     "Oct": 30.8,
+     "Nov": 27.3,
+     "Dec": 27.3
+    },
+    "summer_peak_mgd": 114.7,
+    "winter_trough_mgd": 27.3,
+    "peak_to_trough_ratio": 4.21
+   }
+  }
+ },
+ "headline": "Data-center cooling demand peaks in Jul (CDD climatology); the Potomac at Little Falls is at its seasonal low in Aug, averaging 41% of its annual-mean flow, and Cedar Run (PWC-local) bottoms in Aug at 47% of annual mean. The demand-to-scarcity coincidence index peaks in Jul. The sector's water draw is largest in the exact months the region's rivers carry the least water."
+}
