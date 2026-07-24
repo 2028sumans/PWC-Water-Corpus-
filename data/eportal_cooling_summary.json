@@ -1,0 +1,291 @@
+{
+ "purpose": "Consolidated per-building cooling-equipment evidence from PWC ePortal permits + broad keyword sweep. Corroborates the air/closed-loop (chiller) dominance assumed in METHODOLOGY 7.3c; does NOT provide per-building cooling tonnage or an air-vs-water chiller split, so it does not recalibrate any Scope 1 number.",
+ "fleet_n": 243,
+ "buildings_with_equipment_evidence": 17,
+ "tally": {
+  "chiller_or_air": 9,
+  "tower_and_chiller": 3,
+  "tower": 2,
+  "proffer_only": 3
+ },
+ "interpretation": "Among buildings with equipment-level permit evidence, chiller/air references outnumber cooling-tower references ~3:1 (9 chiller-only + 3 mixed vs 2 tower-only). Coverage is ~6% of the fleet; descriptions are frequently redacted (NDA / 10-10-10 targeted review) and rarely state whether a chiller is air- or water-cooled. Permits therefore corroborate the chiller-dominant prior but cannot serve as an independent per-building Scope 1 anchor.",
+ "buildings": [
+  {
+   "gpin": "7596-47-5780",
+   "name": "Iron Mountain Data Center VA-1",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "MEC2025-00404"
+   ],
+   "sweep_tags": [
+    "chiller"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-17-3979",
+   "name": "Amazon AWS IAD-74 Manassas",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00480",
+    "PLB2020-00478",
+    "PLB2018-00690",
+    "PLB2017-01958",
+    "FPP2020-00518",
+    "ELE2020-00979",
+    "ELE2020-00977",
+    "ELE2019-04894",
+    "ELE2018-04922",
+    "ELE2018-01171",
+    "ELE2017-03361",
+    "BLD2020-00998",
+    "BLD2020-00997",
+    "BLD2019-06101",
+    "BLD2019-00428",
+    "BLD2018-01439",
+    "BLD2017-03576"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-17-3979",
+   "name": "Amazon AWS IAD-73 Manassas",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00480",
+    "PLB2020-00478",
+    "PLB2018-00690",
+    "PLB2017-01958",
+    "FPP2020-00518",
+    "ELE2020-00979",
+    "ELE2020-00977",
+    "ELE2019-04894",
+    "ELE2018-04922",
+    "ELE2018-01171",
+    "ELE2017-03361",
+    "BLD2020-00998",
+    "BLD2020-00997",
+    "BLD2019-06101",
+    "BLD2019-00428",
+    "BLD2018-01439",
+    "BLD2017-03576"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-58-8732",
+   "name": "Amazon Bethlehem Technology Park DC23",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00094",
+    "FPP2020-00323",
+    "FPP2020-00322",
+    "ELE2020-01729",
+    "ELE2020-00272",
+    "BLD2020-00094"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-58-8732",
+   "name": "Amazon Bethlehem Technology Park DC18",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00094",
+    "FPP2020-00323",
+    "FPP2020-00322",
+    "ELE2020-01729",
+    "ELE2020-00272",
+    "BLD2020-00094"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-58-8732",
+   "name": "Amazon Bethlehem Technology Park DC19",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00094",
+    "FPP2020-00323",
+    "FPP2020-00322",
+    "ELE2020-01729",
+    "ELE2020-00272",
+    "BLD2020-00094"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-58-8732",
+   "name": "Amazon Bethlehem Technology Park DC20",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00094",
+    "FPP2020-00323",
+    "FPP2020-00322",
+    "ELE2020-01729",
+    "ELE2020-00272",
+    "BLD2020-00094"
+   ],
+   "sweep_tags": [],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7595-96-0662",
+   "name": "Amazon AWS IAD-77",
+   "status": "Completed",
+   "signal": "tower_and_chiller",
+   "tower_permits": [
+    "LND2023-00088"
+   ],
+   "chiller_permits": [
+    "PLB2019-00827"
+   ],
+   "sweep_tags": [
+    "tower",
+    "chiller",
+    "air_cooled_chiller",
+    "air_cooled"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7597-62-3841",
+   "name": "Amazon AWS IAD-11",
+   "status": "Completed",
+   "signal": "tower",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [
+    "tower"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7597-62-3841",
+   "name": "Amazon AWS IAD-24",
+   "status": "Completed",
+   "signal": "tower",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [
+    "tower"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7597-42-1456",
+   "name": "Amazon AWS IAD-52",
+   "status": "Planned",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00815",
+    "PLB2020-00742",
+    "FPP2020-00729",
+    "ELE2020-01557",
+    "BLD2020-01729"
+   ],
+   "sweep_tags": [
+    "chiller"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7298-51-5907",
+   "name": "Amazon AWS IAD-55",
+   "status": "Completed",
+   "signal": "chiller_or_air",
+   "tower_permits": [],
+   "chiller_permits": [
+    "PLB2020-00775",
+    "ELE2020-01562",
+    "BLD2020-01730"
+   ],
+   "sweep_tags": [
+    "chiller"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7697-47-7005",
+   "name": "Equinix Manassas DC14",
+   "status": "Completed",
+   "signal": "tower_and_chiller",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [
+    "chiller",
+    "tower"
+   ],
+   "has_proffer_condition": false
+  },
+  {
+   "gpin": "7596-81-5396",
+   "name": "Hornbaker Road 2",
+   "status": "Planned",
+   "signal": "proffer_only",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [],
+   "has_proffer_condition": true
+  },
+  {
+   "gpin": "7496-59-2613",
+   "name": "Project Industry A",
+   "status": "Pending",
+   "signal": "proffer_only",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [],
+   "has_proffer_condition": true
+  },
+  {
+   "gpin": "7496-58-0951",
+   "name": "Project Industry B",
+   "status": "Pending",
+   "signal": "proffer_only",
+   "tower_permits": [],
+   "chiller_permits": [],
+   "sweep_tags": [],
+   "has_proffer_condition": true
+  },
+  {
+   "gpin": "7595-96-0662",
+   "name": "Power loft DC6",
+   "status": "Planned",
+   "signal": "tower_and_chiller",
+   "tower_permits": [
+    "LND2023-00088"
+   ],
+   "chiller_permits": [
+    "PLB2019-00827"
+   ],
+   "sweep_tags": [
+    "tower",
+    "chiller",
+    "air_cooled_chiller",
+    "air_cooled"
+   ],
+   "has_proffer_condition": false
+  }
+ ]
+}

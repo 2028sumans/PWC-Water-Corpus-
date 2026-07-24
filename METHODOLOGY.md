@@ -2011,3 +2011,30 @@ Like the ePortal stated-load sweep (§28), these entries are **aggregate and for
 > **Per-building operational power — and therefore water — is not obtainable from public records. What is public is aggregate (zone/utility totals) or forward (delivery-point requests for unbuilt campuses).**
 
 That is the transparency-gap thesis demonstrated at the data-acquisition level, not just asserted. The pipeline dataset is retained for the 2050 growth-scenario analysis (a real Track-2 paper asset); it does not change any current per-building estimate.
+
+## 30. Cooling-type harvest (Item 2) — permits corroborate chiller-dominance but cannot resolve per-building water intensity
+
+Cooling type is the third-largest swing factor in the estimator (sensitivity_analysis.py) and was unresolved for 0/243 buildings at the per-building level. Two documentary routes were pursued to fill it.
+
+### 30.1 ePortal cooling-equipment permits
+Two harvests against the Tyler EnerGov ePortal (egcss.pwcgov.org): (a) a parcel-targeted pull already populating `eportal_cooling_permits` for 20 buildings, and (b) a fresh broad keyword sweep over `['cooling tower','adiabatic','evaporative','chiller','air-cooled','dry cooler','water-cooled']` (3,018 permits harvested; 70 parcels with cooling-equipment mentions). Intersecting the broad sweep against our 165 unique building GPINs yielded only 6 clean building matches — the sweep overwhelmingly returns non-data-center buildings (schools, offices). The parcel-targeted route is strictly higher-precision. Consolidated per-building evidence is saved to `data/eportal_cooling_summary.json`.
+
+**Result — 17 of 243 buildings carry any cooling-equipment permit evidence (~7%):**
+
+| Signal | Buildings |
+|---|---|
+| chiller / air-cooled only | 9 |
+| cooling tower + chiller mentioned | 3 |
+| cooling tower / evaporative only | 2 |
+| proffer condition only (no equipment permit) | 3 |
+
+Among buildings with equipment-level evidence, chiller/air references outnumber cooling-tower references **~3:1** (9 chiller-only + 3 mixed vs 2 tower-only; Amazon's "igloo containers" are air-cooled units). This **corroborates the air/closed-loop dominance assumed in §7.3c** (ICPRB's ~11% county water-cooled share) with independent permit evidence, where before it rested on the ICPRB aggregate alone.
+
+### 30.2 Why it does not recalibrate any Scope 1 number
+Permit descriptions give equipment *mentions*, not (a) cooling *tonnage*, (b) the *primary* heat-rejection path, or (c) — critically — whether a named "chiller" is **air-cooled** (near-zero site water) or **water-cooled** (evaporative-scale makeup water), the exact distinction that sets the WUP. Coverage is ~7% of the fleet and descriptions are frequently redacted (NDA / "10-10-10 targeted" review). Permits thus **corroborate the prior but cannot serve as an independent per-building Scope 1 anchor**; no estimator constant changed.
+
+### 30.3 Aerial imagery — a documented dead end, not re-attempted
+The overhead-imagery route (`fetch_facility_imagery.py`, Esri World Imagery ~0.15 m/px) was built and assessed earlier (§7.3): from directly overhead an evaporative cooling tower and an air-cooled chiller both present as a rectangular housing with circular fan cowlings; the features that separate them (water basin, drift eliminators, sump piping, plume) are inside the housing or below resolution, and **no labelled Prince William facility exists to calibrate a classifier** (the one permitted cooling-tower installation, Nova Mango Farms, has no parcel in county GIS). Producing cooling labels this way would feed a visual guess into a tool where every other input cites a document — so it stays unwired.
+
+### 30.4 The same-shaped finding, third time
+Like the power harvests (§28–29), the cooling harvest resolves the unknown at the **fleet** level (chiller-dominant, corroborated) but **not at the per-building level** with documentary rigor. In the paper's observable / inferable / unresolved taxonomy, per-building cooling type is **inferable** (the fleet is chiller-dominant, so the chiller-tier WUP is the right prior for an unlabelled building) but the per-building air-vs-water chiller split remains **unresolved** — which is exactly why the estimator carries cooling type as a *banded* Scope 1 range (150–1,577 gal/MW/day envelope, narrowed only where an operator commitment or proffer documents the path) rather than a point value.
