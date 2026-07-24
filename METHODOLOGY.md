@@ -1982,3 +1982,32 @@ Mapping stated loads to modeled buildings by address gave, cleanly, corroboratio
 Where a stated load maps 1:1 to a modeled building, it *confirms* the power spine — including the **fitted GFA→MW model** (Stack NVA02E: fitted 34.7 vs stated-implied 29, inside the interval). Where it appears to contradict, the cause is a permit-vs-GIS address collision, so "correcting" the model would inject an error. **Tier 2 is therefore left empty rather than populated with unreliable overwrites.** The sweep's real product is a *second independent validation of power* (after §27's JLARC Scope-1 distributional test) plus the two findings above.
 
 The reusable harvest method remains valuable: if the county later links the permit and GIS inventories (or a records request supplies per-building critical loads), this exact pipeline populates tier 2 directly.
+
+---
+
+## 29. PJM TEAC substation-load harvest — a forward pipeline, not a per-building fill
+
+The second tier-1/2 harvest targeted PJM's Transmission Expansion Advisory Committee (TEAC) "Dominion Supplemental Projects" decks, which name substations and the data-center load driving them — the highest-value retrievable power data identified in the brainstorm.
+
+### 29.1 Method
+`curl` the TEAC PDFs (pjm.com) → `pdftotext -layout` → regex-extract "(Substation) to serve a data center … in Prince William County … expected capacity of X MW" blocks. Decks: 2025-10-08 (primary) and 2026-01-06 (cross-check). Saved to `data/pwc_datacenter_load_pipeline.json`.
+
+### 29.2 Result: an independent forward load pipeline
+**9 Prince William data-center substation delivery points totaling ~1,970 MW**, in-service 2030–2031, utility-filed:
+
+| Substation | MW | Utility |
+|---|---|---|
+| Artemis, Hera, Nero, Caesar, Diamond Hill | 300 each | NOVEC |
+| Sky Lark | 202 | NOVEC |
+| Javelin | 168 | NOVEC |
+| Antique | 70 | City of Manassas |
+| Acadian | 30 | City of Manassas |
+
+This is **~1,970 MW of new campus load requested for 2030–31 — a ~25% near-term increase** on the ~7,600 IT MW the estimator models today, and an **independent corroboration** of the growth trajectory (JLARC's "doubling," Dominion's 70 GW queue, §24.3).
+
+### 29.3 The consistent finding across both harvests
+Like the ePortal stated-load sweep (§28), these entries are **aggregate and forward** — delivery-point requests for *future campuses named by substation*, not attributable to any of the 243 existing buildings. They populate **no per-building evidence tier**. Two independent public-record harvests (permits, transmission filings) converge on the same structural fact:
+
+> **Per-building operational power — and therefore water — is not obtainable from public records. What is public is aggregate (zone/utility totals) or forward (delivery-point requests for unbuilt campuses).**
+
+That is the transparency-gap thesis demonstrated at the data-acquisition level, not just asserted. The pipeline dataset is retained for the 2050 growth-scenario analysis (a real Track-2 paper asset); it does not change any current per-building estimate.

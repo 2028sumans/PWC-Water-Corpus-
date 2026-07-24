@@ -1,0 +1,63 @@
+{
+ "source": "PJM TEAC 'Dominion Supplemental Projects' deck, 2025-10-08 (also cross-checked vs 2026-01-06 deck)",
+ "note": "Utility delivery-point requests for data-center campuses in Prince William County. FORWARD pipeline (in-service 2027-2031), campus-level total expected capacity -- independent of the building-level estimate.",
+ "total_mw": 1970.0,
+ "substations": [
+  {
+   "substation": "Artemis",
+   "mw": 300.0,
+   "utility": "NOVEC",
+   "in_service": "12/30/2031"
+  },
+  {
+   "substation": "Hera",
+   "mw": 300.0,
+   "utility": "NOVEC",
+   "in_service": "12/30/2031"
+  },
+  {
+   "substation": "Nero",
+   "mw": 300.0,
+   "utility": "NOVEC",
+   "in_service": "12/30/2030"
+  },
+  {
+   "substation": "Caesar",
+   "mw": 300.0,
+   "utility": "NOVEC",
+   "in_service": "12/30/2030"
+  },
+  {
+   "substation": "Diamond Hill",
+   "mw": 300.0,
+   "utility": "NOVEC",
+   "in_service": "12/01/2031"
+  },
+  {
+   "substation": "Sky Lark",
+   "mw": 202.0,
+   "utility": "NOVEC",
+   "in_service": "12/31/2030"
+  },
+  {
+   "substation": "Javelin",
+   "mw": 168.0,
+   "utility": "NOVEC",
+   "in_service": "12/31/2030"
+  },
+  {
+   "substation": "Antique",
+   "mw": 70.0,
+   "utility": "City of Manassas",
+   "in_service": "12/31/2030"
+  },
+  {
+   "substation": "Acadian",
+   "mw": 30.0,
+   "utility": "City of Manassas",
+   "in_service": "12/31/2030"
+  }
+ ],
+ "method": "curl + pdftotext -layout; regex-extracted '(Substation) to serve a data center ... in Prince William County ... expected capacity of X MW' blocks",
+ "interpretation": "Independent, utility-filed FORWARD data-center load pipeline for Prince William County: ~1970 MW of new campus capacity requested for 2030-2031 in-service, on top of the ~7,600 IT MW the estimator currently models (a ~25% near-term increase). These are delivery-point requests for FUTURE campuses named by substation; they are NOT attributable to the 243 existing buildings, so they populate no per-building evidence tier. Value: (1) a growth-scenario input for 2050 projections; (2) an independent aggregate corroboration of the growth trajectory (JLARC 'doubling', Dominion 70 GW queue). Finding: like the ePortal stated-load sweep (section 28), the retrievable public data is AGGREGATE and FORWARD, not per-building -- reinforcing the transparency-gap thesis."
+}
