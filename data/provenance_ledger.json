@@ -162,25 +162,38 @@
    "note": "PREMISE, not a derived result. It is what produces the York/Lake Anna -> 0 outcome by construction (METHODOLOGY 47.2). Uncontroversial but must be reported as an assumption. Verified robust: York stays 0.00 under every alternative marginal-mix parameterization tested."
   },
   {
-   "id": "pjm_marginal_fuel_mix",
-   "type": "assumption_unsourced",
-   "claim": "PJM marginal fuel shares: CC 61.7%, CT 17.2%, coal 10.0%, wind 11.1%",
-   "value": {
-    "natural_gas_cc": 0.617,
-    "natural_gas_ct": 0.172,
-    "coal": 0.1,
-    "wind": 0.111
-   },
-   "source": "attributed in-code to 'PJM marginal-fuel data (2022)' -- NO supporting file in the corpus",
-   "note": "UNSOURCED pending a citable reference. Does NOT affect the York->0 result (robust across 0-15% coal). DOES strongly affect the marginal DESTINATION (Roanoke swings 0.00-11.11 MGD), so no destination claim may rest on it (METHODOLOGY 47.3-47.5)."
-  },
-  {
    "id": "marginal_attribution_in_state",
    "type": "limitation",
    "claim": "Marginal generation is attributed to Virginia plants only",
    "value": null,
    "source": "USGS thermoelectric file, VA slice",
    "note": "PJM is a 13-state RTO; the marginal unit (especially coal) is often outside Virginia. Marginal DESTINATION basins are therefore under-determined. Does not affect York->0 (METHODOLOGY 47.4)."
+  },
+  {
+   "id": "pjm_marginal_fuel_mix",
+   "claim": "PJM real-time marginal resources 2022: coal 10.0%, natural gas 75.2% (residual ~14.8% wind/solar/hydro/oil); nuclear does not appear as a marginal resource",
+   "value": {
+    "coal": 0.1,
+    "natural_gas": 0.752,
+    "other": 0.148
+   },
+   "source": "Monitoring Analytics, 2023 State of the Market Report for PJM, Section 3 (Energy Market)",
+   "source_pdf": "PJM_SOM_2023_sec3_energy_market.pdf",
+   "page": 117,
+   "section": "3 Energy Market \u2014 Marginal Resources",
+   "verbatim_quote": "In 2022, coal units were 10.0 percent and natural gas units were 75.2 percent of marginal resources.",
+   "note": "2023 values (coal 9.1%, gas 83.1%) carried as a sensitivity. The SOM does not split gas into CC vs CT; that split (78:22) remains an assumption -- see pjm_marginal_gas_cc_ct_split. Neither affects the York->0 result."
+  },
+  {
+   "id": "pjm_marginal_gas_cc_ct_split",
+   "type": "assumption",
+   "claim": "Marginal gas is split 78:22 between combined-cycle and simple-cycle turbines",
+   "value": {
+    "cc": 0.78,
+    "ct": 0.22
+   },
+   "source": "not published by PJM/Monitoring Analytics at this granularity",
+   "note": "RESIDUAL ASSUMPTION after sourcing the headline mix. Matters because CC and CT water intensities differ ~10x (213 vs ~20 gal/MWh). Does NOT affect York->0 (no nuclear term). Affects the blended marginal intensity and hence marginal-case magnitudes."
   }
  ]
 }

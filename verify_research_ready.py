@@ -26,7 +26,7 @@ Checks:
   16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
   17 triangulation         forward-load sources agree within public granularity, cap left untuned
   18 seasonal x basin      binding condition is summer+Broad Run, amplified vs flat, sweep-robust
-  19 marginal-flip        York->0 holds across all marginal-mix params; assumptions declared
+  19 marginal-flip        York->0 robust to params; mix sourced; residual premises declared
 
 Exit code 0 iff every check passes.
 """
@@ -441,11 +441,15 @@ def c_marginal_flip_robust():
         yorks.append(out.get("York (Lake Anna)", 0.0))
     robust = all(y < 1e-9 for y in yorks)
     led = {e["id"]: e for e in json.load(open(os.path.join(DATA, "provenance_ledger.json")))["entries"]}
-    declared = ("pjm_marginal_fuel_mix" in led and led["pjm_marginal_fuel_mix"]["type"] == "assumption_unsourced"
-                and "nuclear_never_marginal" in led)
-    return (robust and declared), (
+    # The marginal mix must now be SOURCED (verbatim quote, verified in-PDF by
+    # check 10), and the two residual assumptions -- nuclear's non-marginality and
+    # the CC:CT split the SOM does not publish -- must remain explicitly declared.
+    sourced = bool(led.get("pjm_marginal_fuel_mix", {}).get("verbatim_quote"))
+    premises = ("nuclear_never_marginal" in led
+                and led.get("pjm_marginal_gas_cc_ct_split", {}).get("type") == "assumption")
+    return (robust and sourced and premises), (
         f"York across coal shares 0-15%: {[round(y,3) for y in yorks]} (all zero={robust}); "
-        f"unsourced mix + premise declared in ledger={declared}")
+        f"marginal mix sourced={sourced}; residual premises declared={premises}")
 
 
 def main():

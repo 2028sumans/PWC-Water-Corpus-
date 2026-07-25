@@ -258,9 +258,18 @@ DOMINION_GENERATION_MIX = {
 # The average mix above describes the grid's whole output. But a NEW data-centre
 # load is served at the MARGIN -- by whatever unit is next in the dispatch
 # stack -- and in PJM that is overwhelmingly gas, never the nuclear baseload.
-# From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit
-# 61.7% of hours, coal 10.0%, wind 11.1%; the remaining ~17% is peaking gas
-# (simple-cycle CT) and other. Nuclear is ~never marginal.
+# SOURCED (METHODOLOGY 47.3): Monitoring Analytics, 2023 State of the Market
+# Report for PJM, Sec. 3 (Energy Market), p.117 -- verbatim: "In 2022, coal units
+# were 10.0 percent and natural gas units were 75.2 percent of marginal
+# resources." (2023: coal 9.1%, gas 83.1% -- carried as a sensitivity.) The
+# residual 14.8% is wind/solar/hydro/oil/other, which consume ~no cooling water.
+# Nuclear does not appear as a marginal resource -- it is must-run baseload.
+#
+# ONE ASSUMPTION REMAINS: the SOM does not split marginal gas into combined-cycle
+# vs simple-cycle, and their water intensities differ ~10x (213 vs ~20 gal/MWh).
+# We split the published 75.2% in the ratio 78:22 CC:CT, reflecting that CTs are
+# peakers marginal in far fewer hours. Flagged in the ledger as the residual
+# assumption; it does not affect the York result (no nuclear term at all).
 #
 # This matters enormously for the BASIN question. Average-mix accounting assigns
 # 25% of every data-centre's electricity to nuclear, i.e. to North Anna and the
@@ -270,10 +279,10 @@ DOMINION_GENERATION_MIX = {
 # partly an ARTIFACT of average-mix accounting; the marginal reality is even more
 # concentrated on gas and the James. See METHODOLOGY.md section 16.
 PJM_MARGINAL_FUEL_MIX = {
-    "natural_gas_cc": 0.617,
-    "natural_gas_ct": 0.172,   # remaining marginal hours: peaking/other, ~dry
-    "coal": 0.100,
-    "wind": 0.111,
+    "natural_gas_cc": 0.752 * 0.78,   # 58.7% -- published gas share x CC:CT split
+    "natural_gas_ct": 0.752 * 0.22,   # 16.5% -- peaking gas, ~dry
+    "coal": 0.100,                    # published verbatim (2022)
+    "wind": 0.148,                    # residual: wind/solar/hydro/oil, ~0 water
 }
 # Simple-cycle combustion turbines consume almost no water (no steam cycle, no
 # cooling tower); carried at a small positive value for inlet cooling / NOx.

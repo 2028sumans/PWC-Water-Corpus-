@@ -2470,8 +2470,18 @@ The average-vs-marginal basin flip is the project's most novel result, so it was
 ### 47.2 What is assumed (defensible, but a premise — not a finding)
 **"Nuclear is never on the margin."** `PJM_MARGINAL_FUEL_MIX` contains no nuclear term, so the York attribution goes to zero **by construction**. This is standard dispatch reasoning — nuclear is must-run baseload with near-zero marginal cost and does not respond to an added MW — and it is uncontroversial. But it must be reported as the *premise* that produces the result, not as an empirical discovery. Tested across every alternative parameterization below, York remains **0.00 in all cases**, confirming the result depends on this premise alone and on nothing fragile.
 
-### 47.3 What is unsourced (a real weakness, now labelled)
-The specific marginal split — combined-cycle 61.7%, coal 10.0%, wind 11.1%, CT 17.2%, attributed in-code to "PJM marginal-fuel data (2022)" — **is not in the provenance ledger and no supporting file exists in the corpus.** It is carried as an assumption pending a citable source. It does not affect the York result, but it strongly affects the *destination*:
+### 47.3 What was unsourced — now RESOLVED with a citable source
+The audit found the marginal split (originally CC 61.7%, coal 10.0%, wind 11.1%, CT 17.2%) attributed in-code to "PJM marginal-fuel data (2022)" with **no supporting file in the corpus and no ledger entry**. That has since been sourced and corrected.
+
+**Source obtained:** Monitoring Analytics, *2023 State of the Market Report for PJM*, Section 3 (Energy Market) — verbatim, now machine-verified in-corpus by ledger check 10:
+
+> "In 2022, coal units were 10.0 percent and natural gas units were 75.2 percent of marginal resources."
+
+The original coal figure (10.0%) matched the published value **exactly**; the gas figure (78.9%) was 3.7 pp high. Constants corrected to the published shares: coal 10.0%, gas 75.2%, residual 14.8% (wind/solar/hydro/oil, ~no cooling water). Nuclear does not appear as a marginal resource at all — confirming the premise in §47.2 from the published record rather than from assumption alone. 2023 values (coal 9.1%, gas 83.1%) are carried as a sensitivity. Blended marginal intensity moved 180 → **165.7 gal/MWh**.
+
+**One residual assumption remains**, declared in the ledger (`pjm_marginal_gas_cc_ct_split`): the SOM does not split marginal gas into combined-cycle vs simple-cycle, whose water intensities differ ~10× (213 vs ~20 gal/MWh). We split the published 75.2% at 78:22 CC:CT. This affects marginal-case magnitudes but **not** the York result.
+
+The destination remains parameter-sensitive:
 
 | Coal share (marginal) | James | Roanoke | Potomac | York |
 |---|---|---|---|---|

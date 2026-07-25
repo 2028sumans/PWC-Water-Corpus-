@@ -39,14 +39,14 @@
   "Rappahannock": 0.32877581012549173
  },
  "scope2_marginal_by_generating_basin": {
-  "Tennessee/Clinch": 1.5461357811739047,
-  "James": 10.442457639161962,
-  "Potomac": 3.8966662439156536,
-  "unresolved (purchased municipal water)": 7.993640121510995,
-  "Roanoke": 8.00465684301041,
-  "Rappahannock": 1.0959433712270656
+  "Tennessee/Clinch": 1.4703760035264815,
+  "James": 9.930783128767484,
+  "Potomac": 3.7057318047804766,
+  "unresolved (purchased municipal water)": 7.601956282631468,
+  "Roanoke": 8.004878993700014,
+  "Rappahannock": 1.0959737865940768
  },
- "scope2_marginal_total_mgd": 32.9795,
+ "scope2_marginal_total_mgd": 31.8097,
  "totals_mgd": {
   "scope1": 1.7624000000000017,
   "scope2": 43.32289999999998,
