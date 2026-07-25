@@ -2519,3 +2519,21 @@ Claims about what is "novel" were previously made from memory. They have now bee
 Attributional-vs-consequential (average-vs-marginal) electricity accounting is **long established in LCA** and is not a methodological novelty. What appears unpublished is the *combination*: applying that distinction to **spatially resolved data-center water attribution** and showing that it does not merely rescale the total but **relocates the single largest attributed basin to zero**. This engages the newest work directly rather than competing with it: Guidi & Dominici establish where electricity-related burdens concentrate under location-based accounting; this study shows that concentration is convention-dependent.
 
 **The defensible novelty claim is therefore:** *a novel application of an established accounting distinction, demonstrating that the spatial attribution of data-center water burden is convention-dependent* — not a novel method, and not a novel observation that displacement occurs.
+
+### 48.4 Completed literature sweep (the earlier check was partial)
+The §48.1–48.3 sweep stopped after three papers. Completed here; two further competitors and one important regional gap were found.
+
+| Work | What it does | Overlap with this study |
+|---|---|---|
+| **Li, Yang, Islam & Ren (2023/2025)**, *Making AI Less "Thirsty"*, arXiv:2304.03271 / CACM | Canonical AI-water paper; on-site + off-site at model/global scale; notes water intensity varies by time and location | Establishes the **transparency framing** and temporal variation. Not basin-resolved, not convention-comparative |
+| **Siddik, Shehabi & Marston (2021)**, *Environ. Res. Lett.* | US spatial carbon+water footprint incl. power-plant water | Establishes **displacement** |
+| **Mytton (2021)**, *npj Clean Water* | Scope framing; <1/3 of operators measure water | Establishes **scope + transparency** |
+| **Guidi & Dominici (2026)**, arXiv:2607.02531 | 472 US hyperscale facilities, both pathways, basins, water stress; different hotspot geographies | **Supersedes the displacement finding** at national scale. Location-based only ("marginal": 0 occurrences) |
+| **arXiv:2605.25854 (2026)**, ECW nexus dispatch framework | Internalizes virtual water into power dispatch; criticizes "static statistical accounting" | Raises **static-vs-dynamic accounting** conceptually, but is an optimization paper on synthetic IEEE 30/118-bus systems — no real facilities or named basins |
+| **Privette, Barros & Cai (2026)**, *AGU Advances* 7:e2025AV002140 | Commentary: transparency gaps undermine regulation and quantification | **States the problem this study empirically quantifies.** Same venue family; useful as motivation |
+| **ICPRB (March 2026)**, *Data Centers and Water Use in the Potomac River Basin* | The regional authority's own assessment | **Covers on-site consumption ONLY** — full-text search: "power plant" 0, "electricity generation" 0, "off-site" 0, "marginal" 0 |
+
+### 48.5 Final novelty position (narrowed twice, now defensible)
+Neither the *method* (attributional vs consequential accounting) nor the *concepts* (displacement; static accounting is inadequate; transparency is poor) are novel — all are published. What the sweep did **not** find is an **empirical, basin-resolved demonstration on a real facility fleet that switching between two standard accounting conventions relocates the single largest attributed basin to zero.**
+
+The strongest *regional* contribution is separate and concrete: **ICPRB's own study of this basin omits electricity-related water entirely**, so ~87% of the footprint falls outside the boundary the regional water authority actually assessed. That gap is specific, verifiable, and policy-relevant.
