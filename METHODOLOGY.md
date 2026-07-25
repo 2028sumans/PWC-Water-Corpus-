@@ -5,7 +5,7 @@
 
 This document exists to be attacked. Section 6 lists the errors and soft spots found so far — including one retraction, one circular validation, and one constant that the source document uses in the opposite direction from this tool.
 
-> **Current headline (as of the §32 predictive-variance upgrade).** County-wide total: **53.6 MGD, 90% credible interval 44.5–64.9** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.8). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression whose per-building predictive variance is now LOO-calibrated and heteroscedastic (§32; wider for floor areas far from the training data). The county CI is **±19%**, corrected upward from the earlier ±11% once the systematic coefficient component was propagated honestly (it does not average away). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
+> **Current headline (as of the §32 predictive-variance upgrade).** County-wide total: **53.6 MGD, 90% credible interval 44.5–64.9** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.8). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression whose per-building predictive variance is now LOO-calibrated and heteroscedastic (§32; wider for floor areas far from the training data). The county CI is **±19%**, corrected upward from the earlier ±11% once the systematic coefficient component was propagated honestly (it does not average away). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 18.8 MGD** (average-mix accounting; **0 under marginal dispatch**, §16) — outside the Potomac basin the buildings sit in; **80% of the footprint is consumed outside the Potomac basin entirely** (§13). Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
 
 ---
 
@@ -891,15 +891,17 @@ The concentration is the finding. **Broad Run carries 80% of the county's local 
 
 *(Figures below use the refreshed USGS 2008–2020 factors of §18; the earlier draft of this section used the 2015 release.)*
 
-| Basin | MGD | % of Scope 2 |
-|---|---|---|
-| **York (Lake Anna / North Anna)** | **21.62** | **43.3%** |
-| James | 10.99 | 22.0% |
-| *unresolved — purchased municipal water* | 8.42 | 16.9% |
-| Potomac | 4.10 | 8.2% |
-| Roanoke | 2.77 | 5.5% |
-| Tennessee/Clinch | 1.63 | 3.3% |
-| Rappahannock | 0.38 | 0.8% |
+| Basin | MGD (avg mix) | % of Scope 2 | MGD (marginal) |
+|---|---|---|---|
+| **York (Lake Anna / North Anna)** | **18.77** | **43.3%** | **0.00** |
+| James | 9.54 | 22.0% | 10.44 |
+| *unresolved — purchased municipal water* | 7.31 | 16.9% | 7.99 |
+| Potomac | 3.56 | 8.2% | 3.90 |
+| Roanoke | 2.40 | 5.5% | 8.00 |
+| Tennessee/Clinch | 1.41 | 3.3% | 1.55 |
+| Rappahannock | 0.33 | 0.8% | 1.10 |
+
+*(Refreshed to the §32 GP model; marginal column added — see §16. Under marginal dispatch the York/nuclear attribution goes to zero and the water shifts to the James gas fleet.)*
 
 The York total is essentially **North Anna alone**: Virginia's other nuclear station, Surry, reports zero consumption because it is once-through cooled on the tidal James, so the entire nuclear share of Prince William's electricity lands on Lake Anna — and with the refreshed nuclear factor (391 gal/MWh, §18) that share is now the largest single basin by a wide margin. The James total is the older fresh-consuming gas plants (Tenaska, Bear Garden); the Potomac line is Possum Point (gas). Dominion's three largest *modern* gas plants consume reclaimed water and appear in no basin here (§18.4).
 
@@ -907,16 +909,16 @@ The York total is essentially **North Anna alone**: Virginia's other nuclear sta
 
 | | MGD | % of total |
 |---|---|---|
-| Total footprint (plug-in central) | 57.13 | — |
-| Consumed **in** the Potomac basin | 6.14 | **10.7%** |
-| Consumed in **other** basins | 45.80 | **80.2%** |
-| Scope 3, basin not locatable | 5.19 | 9.1% |
+| Total footprint (plug-in central) | 49.60 | — |
+| Consumed **in** the Potomac basin | 5.32 | **10.7%** |
+| Consumed in **other** basins | 39.76 | **80.2%** |
+| Scope 3, basin not locatable | 4.51 | 9.1% |
 
-**About 88% of the *locatable* consumptive water footprint of Prince William County's data centres is consumed outside the basin the buildings occupy** (45.80 of 51.94 MGD; the Potomac in-basin share rose after the §18 refresh moved Possum Point's gas consumption onto the Potomac).
+**About 88% of the *locatable* consumptive water footprint of Prince William County's data centres is consumed outside the basin the buildings occupy** (39.76 of 45.09 MGD; the Potomac in-basin share includes Possum Point's gas consumption, §18.4).
 
 Two consequences follow, and they are the paper's argument:
 
-1. **North Anna alone gives up 21.62 MGD to serve these buildings — 10.6× the entire local Scope 1 draw of 2.03 MGD.** A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres, and it is affected roughly *eleven times* more than the streams the buildings actually sit on.
+1. **North Anna alone gives up 18.77 MGD to serve these buildings — 10.6× the entire local Scope 1 draw of 1.76 MGD** (average-mix accounting). A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres under location-based accounting, and it is affected roughly *eleven times* more than the streams the buildings actually sit on — yet under marginal dispatch (§16) that same reservoir gives up nothing, and the causal water lands on the James gas fleet. Which basin "bears" the footprint is itself an accounting choice.
 
 2. **The reviewing body and the affected basin do not overlap.** Every one of these facilities was approved through Prince William County land-use review — rezonings, special use permits, site plans, all Potomac-basin instruments. That process has authority over the ~11% and almost none over the ~88%. The Lake Anna shoreline had no standing in any of the hearings recorded in §8.
 
@@ -1075,7 +1077,7 @@ From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **6
 
 | | Average-mix MGD | Marginal MGD |
 |---|---|---|
-| **York — North Anna / Lake Anna** | **21.6** | **0.0** |
+| **York — North Anna / Lake Anna** | **18.8** | **0.0** |
 | James (gas fleet) | 11.0 | 12.0 |
 | purchased municipal (unresolved) | 8.4 | 9.2 |
 | Potomac (Possum Point gas) | 4.1 | 4.5 |
@@ -1085,7 +1087,7 @@ From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **6
 
 Two findings:
 
-1. **The total barely moves, but the basin allocation transforms.** The York-basin attribution — 21.6 MGD, the single largest water body in the whole study, 10.6× the entire local Scope 1 — **falls to exactly zero under marginal accounting.** The Lake Anna displacement identified in §13 is, to first order, an *artifact of average-mix accounting.* The water a new Prince William data centre actually causes is consumed in the **James** gas fleet, not at North Anna. The §18 refresh, by raising the nuclear factor, makes this gap larger, not smaller: ~22 MGD now hinges entirely on the average-vs-marginal choice.
+1. **The total barely moves, but the basin allocation transforms.** The York-basin attribution — 18.8 MGD, the single largest water body in the whole study, 10.6× the entire local Scope 1 — **falls to exactly zero under marginal accounting.** The Lake Anna displacement identified in §13 is, to first order, an *artifact of average-mix accounting.* The water a new Prince William data centre actually causes is consumed in the **James** gas fleet, not at North Anna. The nuclear factor makes this gap large: ~19 MGD hinges entirely on the average-vs-marginal choice.
 
 2. This is a **third, independent mechanism** by which the footprint escapes view, and it completes the paper's argument:
 
@@ -1182,7 +1184,7 @@ Scope 2 rises ~14% and now dominates the total even more heavily. The Monte Carl
 
 ### 18.3 Effect on the basin finding — it gets stronger
 
-The refresh amplifies the paper's core result. North Anna's larger factor pushes the **York-basin (Lake Anna) attribution from 13.4 to 21.6 MGD — now 10.6× the entire local Scope 1 draw** (was 6.6×). Under marginal dispatch it still falls to **0.0** (nuclear is never marginal), so the average-vs-marginal divergence of §16 is now even more dramatic: the refresh widens the gap between the two accountings from ~13 MGD to ~22 MGD, all of it on one out-of-basin reservoir.
+The refresh amplifies the paper's core result. North Anna's larger factor pushes the **York-basin (Lake Anna) attribution to 18.8 MGD — now 10.6× the entire local Scope 1 draw** (was 6.6×). Under marginal dispatch it still falls to **0.0** (nuclear is never marginal), so the average-vs-marginal divergence of §16 is dramatic: ~19 MGD hinges entirely on the two accountings, all of it on one out-of-basin reservoir.
 
 ### 18.4 A finding hiding in the absences — reclaimed water
 

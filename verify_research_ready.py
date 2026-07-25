@@ -235,6 +235,30 @@ def c_provenance_ledger():
                        if not bad else f"{len(bad)} problems e.g. {bad[:2]}")
 
 
+# 11 ------------------------------------------------------------------------
+def c_basin_displacement():
+    """basin_attribution.json internally consistent; the York avg->marginal flip
+    holds; >75% consumed outside the Potomac basin; and the North Anna figure
+    quoted in METHODOLOGY matches the JSON (no drift)."""
+    b = json.load(open(os.path.join(DATA, "basin_attribution.json")))
+    t = b["totals_mgd"]
+    avg = b["scope2_by_generating_basin"]; marg = b["scope2_marginal_by_generating_basin"]
+    york_a = avg.get("York (Lake Anna)", 0.0); york_m = marg.get("York (Lake Anna)", 0.0)
+    consistent = abs((t["scope1"] + t["scope2"] + t["scope3"]) - t["total"]) < 0.05
+    flip = york_a > 10 and york_m < 0.5
+    outside = t["scope2"] - avg.get("Potomac", 0.0)
+    displaced = outside / t["total"] > 0.75
+    # doc must quote the current North Anna figure (whole-number MGD)
+    txt = open(METH).read()
+    doc_ok = f"{york_a:.1f} MGD" in txt or f"{round(york_a,1)} MGD" in txt
+    ok = consistent and flip and displaced and doc_ok
+    return ok, (f"York {york_a:.1f}->{york_m:.1f} MGD (flip={flip}); "
+                f"{100*outside/t['total']:.0f}% consumed outside Potomac; "
+                f"doc quotes {york_a:.1f} MGD={doc_ok}"
+                if ok else
+                f"consistent={consistent} flip={flip} displaced={displaced} doc_ok={doc_ok}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -247,6 +271,7 @@ def main():
     check("8 seasonal invariants", c_seasonal)
     check("9 constant provenance", c_constants)
     check("10 provenance ledger", c_provenance_ledger)
+    check("11 basin displacement", c_basin_displacement)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

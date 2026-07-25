@@ -2,56 +2,56 @@
  "scope1_by_watershed": {
   "BROAD RUN": {
    "n": 166,
-   "s1": 1.6207,
-   "peak": 16.053199999999997,
-   "mw": 5980.599999999998,
+   "s1": 1.3940999999999992,
+   "peak": 13.810499999999987,
+   "mw": 5141.999999999995,
    "acres": 2475.92993164
   },
   "BULL RUN": {
    "n": 61,
-   "s1": 0.34400000000000014,
-   "peak": 3.4022000000000006,
-   "mw": 1160.4000000000008,
+   "s1": 0.3068000000000001,
+   "peak": 3.0464000000000016,
+   "mw": 1037.500000000001,
    "acres": 1715.65002441
   },
   "POWELLS CREEK": {
    "n": 14,
-   "s1": 0.0604,
-   "peak": 0.6014,
-   "mw": 288.50000000000006,
+   "s1": 0.054299999999999994,
+   "peak": 0.5348999999999999,
+   "mw": 265.8,
    "acres": 1780.95996094
   },
   "QUANTICO CREEK": {
    "n": 2,
-   "s1": 0.0088,
-   "peak": 0.0876,
-   "mw": 28.6,
+   "s1": 0.0072,
+   "peak": 0.071,
+   "mw": 23.2,
    "acres": 1315.56994629
   }
  },
  "scope2_by_generating_basin": {
-  "Tennessee/Clinch": 1.627884148335224,
-  "James": 10.994578527603338,
-  "Potomac": 4.102693493715719,
-  "unresolved (purchased municipal water)": 8.416285425736856,
-  "York (Lake Anna)": 21.618366607578153,
-  "Roanoke": 2.766166961630367,
-  "Rappahannock": 0.3787248354004387
+  "Tennessee/Clinch": 1.413186777395955,
+  "James": 9.544532400625704,
+  "Potomac": 3.5616000087946893,
+  "unresolved (purchased municipal water)": 7.306283613981337,
+  "York (Lake Anna)": 18.767176933303784,
+  "Roanoke": 2.4013444557730224,
+  "Rappahannock": 0.32877581012549173
  },
  "scope2_marginal_by_generating_basin": {
-  "Tennessee/Clinch": 1.7810460302294722,
-  "James": 12.029019669894659,
-  "Potomac": 4.488701464230947,
-  "unresolved (purchased municipal water)": 9.208144057497144,
-  "Roanoke": 9.2208345911046,
-  "Rappahannock": 1.2624541870431771
+  "Tennessee/Clinch": 1.5461357811739047,
+  "James": 10.442457639161962,
+  "Potomac": 3.8966662439156536,
+  "unresolved (purchased municipal water)": 7.993640121510995,
+  "Roanoke": 8.00465684301041,
+  "Rappahannock": 1.0959433712270656
  },
- "scope2_marginal_total_mgd": 37.9902,
+ "scope2_marginal_total_mgd": 32.9795,
  "totals_mgd": {
-  "scope1": 2.0338999999999996,
-  "scope2": 49.9047000000001,
-  "scope3": 5.192700000000006,
-  "total": 57.13130000000011
+  "scope1": 1.7624000000000017,
+  "scope2": 43.32289999999998,
+  "scope3": 4.510199999999998,
+  "total": 49.59549999999998
  },
- "summer_peak_local_mgd": 20.1444
+ "summer_peak_local_mgd": 17.4628
 }
