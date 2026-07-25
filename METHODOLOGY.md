@@ -2499,3 +2499,23 @@ The marginal attribution maps marginal generation onto **Virginia plants only** 
 **Not defensible (do not use):** any claim about the specific basins the burden *moves to*, or their proportions — §47.3 and §47.4 show the destination is parameter-sensitive and geographically under-determined.
 
 The conceptual point is fully preserved, and is arguably sharper without the destination: the finding is that a 19 MGD basin burden is **an artifact of convention**, not that it relocates somewhere specific.
+
+## 48. Literature positioning and novelty audit (verified, not asserted)
+
+Claims about what is "novel" were previously made from memory. They have now been checked against the literature, and one required a substantial narrowing.
+
+### 48.1 Prior work — verified to exist and say what we attribute to it
+- **Siddik, Shehabi & Marston (2021)**, "The environmental footprint of data centers in the United States," *Environmental Research Letters* 16:064017. Verified: computes spatially-detailed carbon and water footprints for US data centers, including **indirect water at generating locations** — "nearly half of servers are fully or partially powered by power plants located within water stressed regions." **Establishes the displacement concept.**
+- **Mytton (2021)**, "Data centre water consumption," *npj Clean Water* 4:11, DOI 10.1038/s41545-021-00101-w. Verified: direct + indirect (electricity-generation) water scope framing, and independently documents the transparency problem — fewer than a third of operators measure water consumption.
+
+### 48.2 The direct competitor — found during the audit, materially changes our positioning
+**Guidi & Dominici (June 2026)**, "The Hidden Water Geography of U.S. Hyperscale Data Centers in the AI Era," arXiv:2607.02531. Maps **both pathways** (on-site cooling and electricity-related) for **472 US hyperscale facilities**, linking facilities to electricity regions, hydrologic basins and water stress. Finds electricity-related water is ~three-quarters of the total, that "the two pathways produce different hotspot geographies," and that 3 of 24 balancing authorities account for 59% of electricity-related water.
+
+**Consequence: the displacement finding is no longer novel.** It is now published at national scale with far more facilities than this study covers. Any framing that leads with "data-center water is displaced to generating basins" is superseded.
+
+**But their accounting is location-based only.** A full-text search of the paper returns **"marginal": 0 occurrences** (versus 4 for "location-based"). They do not compare average-mix to marginal-dispatch attribution.
+
+### 48.3 What remains genuinely novel, stated narrowly
+Attributional-vs-consequential (average-vs-marginal) electricity accounting is **long established in LCA** and is not a methodological novelty. What appears unpublished is the *combination*: applying that distinction to **spatially resolved data-center water attribution** and showing that it does not merely rescale the total but **relocates the single largest attributed basin to zero**. This engages the newest work directly rather than competing with it: Guidi & Dominici establish where electricity-related burdens concentrate under location-based accounting; this study shows that concentration is convention-dependent.
+
+**The defensible novelty claim is therefore:** *a novel application of an established accounting distinction, demonstrating that the spatial attribution of data-center water burden is convention-dependent* — not a novel method, and not a novel observation that displacement occurs.
