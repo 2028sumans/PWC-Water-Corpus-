@@ -2226,3 +2226,28 @@ Current ledger — 12 quoted claims, all verified verbatim in-PDF, plus 3 typed 
 | Dominion generation mix | shares | EIA / Dominion | *external data* |
 
 This directly implements the reviewer discipline "every factual claim needs a source, page, and verbatim quote": the PERMIT_FACTOR 0.4 = 0.5 × 0.8 that anchors the power ladder, the four Scope-1 WUP tiers, the 0.75 consumptive factor, and the JLARC validation anchors are all now quote-backed and machine-checked on every run.
+
+## 37. Growth scenarios to 2050 — buildout and the grid, not facility efficiency
+
+`growth_scenarios.py` projects the county footprint forward on three anchors: today's shipped fleet (~6,470 effective IT MW, 49.6 MGD), the committed ~1,970 MW PJM TEAC forward pipeline (§29, in-service 2027–2031), and 2050 buildout **scenarios** (multiples of today's effective IT MW — *scenarios, not forecasts*). Output: `public/data/growth_scenarios.json`.
+
+### 37.1 The projection
+| Horizon | Effective IT MW | On-site Scope 1 | Total (today's grid) | Total (decarbonized grid) |
+|---|---|---|---|---|
+| Today | 6,470 | 1.8 MGD | 48 MGD | — |
+| 2030–31 (pipeline) | 8,110 | 2.5 MGD | 61 MGD | — |
+| 2050 low (pipeline only) | 8,110 | 2.5 MGD | 61 MGD | 28 MGD |
+| 2050 central (~2×, JLARC doubling) | 12,940 | 4.0 MGD | 97 MGD | 45 MGD |
+| 2050 high (~3×, queue-driven) | 19,410 | 6.0 MGD | 145 MGD | 68 MGD |
+
+The model reproduces today's plug-in central (50.0 vs 49.6 MGD) as a calibration check.
+
+### 37.2 The two levers — and which one matters
+The dominant drivers are **buildout** (how much gets built) and **grid water-intensity**, not facility efficiency. Because Scope 2 is ~87% of the footprint, **decarbonizing the grid cuts the central 2050 case from ~97 to ~45 MGD** — a larger reduction than any facility PUE/cooling measure could deliver (consistent with §35: facility levers barely move the county total; the grid dominates). Facility efficiency is held at central precisely because the value-of-disclosure analysis showed it is not the lever.
+
+### 37.3 Cross-check against ICPRB's independent forecast (on-site only)
+This is a **category-careful** comparison. ICPRB forecasts **on-site (Scope 1) consumptive use for the whole Washington Metro Area** (~4 MGD today → ~22 MGD by 2050, ledger-quoted). Only our **Scope 1** is comparable — our *total* is ~87% Scope 2 (off-site power-plant water) that ICPRB's on-site number excludes. On that like-for-like basis:
+- PWC on-site today (1.8 MGD) is ~44% of the WMA on-site total (4 MGD) — plausible for a major but not sole cluster.
+- PWC on-site 2050 central (4.0 MGD) stays well under the WMA-wide 22 MGD — directionally consistent.
+
+That our on-site is a *fraction* of the regional forecast while our *total* dwarfs it is not a discrepancy — it **is the displacement thesis**: the water that makes data centers a large consumer is consumed at the power plant, outside the basin and outside any on-site accounting. This is a second, independent out-of-sample consistency check (after JLARC, §27), and it is honest about what is and isn't comparable.

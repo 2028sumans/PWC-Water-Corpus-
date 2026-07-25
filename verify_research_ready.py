@@ -259,6 +259,24 @@ def c_basin_displacement():
                 f"consistent={consistent} flip={flip} displaced={displaced} doc_ok={doc_ok}")
 
 
+# 12 ------------------------------------------------------------------------
+def c_growth_scenarios():
+    """growth_scenarios: the per-MW model reproduces today's plug-in central; the
+    ICPRB on-site cross-check is direction-consistent; decarbonizing the grid
+    beats today's grid (the paper's mitigation claim)."""
+    g = json.load(open(os.path.join(PUB, "growth_scenarios.json")))
+    cal = g["calibration"]
+    calib_ok = abs(cal["model_today_total_mgd"] - cal["actual_plug_in_total_mgd"]) <= 2.0
+    icprb = g["icprb_cross_check_onsite"]["consistent_direction"]
+    c = g["scenarios"]["2050_central"]
+    decarb_beats = c["grid_decarbonized"]["total_mgd"] < c["grid_today"]["total_mgd"]
+    ok = calib_ok and icprb and decarb_beats
+    return ok, (f"model today {cal['model_today_total_mgd']} vs actual "
+                f"{cal['actual_plug_in_total_mgd']} (calib={calib_ok}); ICPRB on-site "
+                f"consistent={icprb}; 2050 decarb {c['grid_decarbonized']['total_mgd']} < "
+                f"today-grid {c['grid_today']['total_mgd']} ={decarb_beats}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -272,6 +290,7 @@ def main():
     check("9 constant provenance", c_constants)
     check("10 provenance ledger", c_provenance_ledger)
     check("11 basin displacement", c_basin_displacement)
+    check("12 growth scenarios", c_growth_scenarios)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

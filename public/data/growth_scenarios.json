@@ -1,0 +1,82 @@
+{
+ "framing": "Buildout scenarios (multiples of today's effective IT MW), not forecasts. TOTAL is Scope 1+2+3 (~87% off-site Scope 2); ON-SITE is Scope 1 only (the ICPRB-comparable quantity).",
+ "baseline_today": {
+  "effective_it_mw": 6468,
+  "total_mgd": 49.6,
+  "onsite_s1_mgd": 1.76
+ },
+ "pipeline_mw_grid": 1970.0,
+ "pipeline_mw_effective": 1642,
+ "scenarios": {
+  "today": {
+   "effective_it_mw": 6468,
+   "grid_today": {
+    "scope1_onsite_mgd": 2.0,
+    "scope2_mgd": 42.04,
+    "total_mgd": 48.44
+   }
+  },
+  "2030_31_pipeline": {
+   "effective_it_mw": 8110,
+   "grid_today": {
+    "scope1_onsite_mgd": 2.51,
+    "scope2_mgd": 52.71,
+    "total_mgd": 60.73
+   }
+  },
+  "2050_low": {
+   "effective_it_mw": 8110,
+   "grid_today": {
+    "scope1_onsite_mgd": 2.51,
+    "scope2_mgd": 52.71,
+    "total_mgd": 60.73
+   },
+   "grid_decarbonized": {
+    "scope1_onsite_mgd": 2.51,
+    "scope2_mgd": 23.36,
+    "total_mgd": 28.45
+   }
+  },
+  "2050_central": {
+   "effective_it_mw": 12937,
+   "grid_today": {
+    "scope1_onsite_mgd": 4.0,
+    "scope2_mgd": 84.07,
+    "total_mgd": 96.88
+   },
+   "grid_decarbonized": {
+    "scope1_onsite_mgd": 4.0,
+    "scope2_mgd": 37.26,
+    "total_mgd": 45.38
+   }
+  },
+  "2050_high": {
+   "effective_it_mw": 19406,
+   "grid_today": {
+    "scope1_onsite_mgd": 6.0,
+    "scope2_mgd": 126.11,
+    "total_mgd": 145.32
+   },
+   "grid_decarbonized": {
+    "scope1_onsite_mgd": 6.0,
+    "scope2_mgd": 55.89,
+    "total_mgd": 68.07
+   }
+  }
+ },
+ "calibration": {
+  "model_today_total_mgd": 50.0,
+  "actual_plug_in_total_mgd": 49.6,
+  "actual_onsite_s1_mgd": 1.76
+ },
+ "icprb_cross_check_onsite": {
+  "note": "ICPRB forecasts ON-SITE (Scope 1) consumptive use for the whole Washington Metro Area; PWC is a subset. Only our Scope 1 is comparable -- our TOTAL is ~87% Scope 2 (off-site power-plant water) that ICPRB's on-site number excludes. That our on-site is a fraction of the WMA total, while our total dwarfs it, IS the displacement thesis.",
+  "pwc_onsite_today_mgd": 1.76,
+  "icprb_wma_onsite_2025_mgd": 4.0,
+  "pwc_onsite_2050_central_mgd": 4.0,
+  "icprb_wma_onsite_2050_mgd": 22.0,
+  "pwc_share_of_wma_onsite_today_pct": 44,
+  "consistent_direction": true
+ },
+ "headline": "Today ~50 MGD total (1.8 MGD on-site). The committed ~1970 MW pipeline lifts the total to ~61 MGD by 2030-31. By 2050 the total spans ~61 (pipeline only) to ~145 MGD (3x buildout) on today's grid -- but DECARBONIZING the grid cuts the central case from ~97 to ~45 MGD, a bigger lever than any facility measure because Scope 2 dominates. On-site Scope 1 rises to ~4 MGD, still a fraction of ICPRB's ~22 MGD WMA-wide on-site forecast (consistent)."
+}
