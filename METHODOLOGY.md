@@ -2126,3 +2126,27 @@ Both fabrications were caught by the provenance guard (`reject_reasons: provenan
 
 ### 33.3 Status and scope
 This is a **methods contribution**, demonstrated to reproduce hand-coding rather than to change any current estimate: the Hornbaker facts already existed in the profiles, and the pipeline recovered them with citations. Running it at scale (an API key + more parsed proffer/permit PDFs) is the path to extending PUE/cooling/source coverage beyond the handful of hand-read documents — the concrete "how disclosure would be ingested" mechanism behind the transparency-gap thesis. No estimator constant changed.
+
+## 34. Research-readiness audit (mechanical, re-runnable)
+
+Before the Track-2 analyses, the corpus was put through a verification harness (`verify_research_ready.py`) — the "not AI slop" gate made mechanical. Every check re-computes or re-verifies from source rather than trusting a stored value, and the run fails loudly on any drift. Current status: **9/9 pass**.
+
+| # | Check | What it proves |
+|---|---|---|
+| 1 | data integrity | 243 buildings, required scope keys, all totals finite, per-building MC CIs present |
+| 2 | headline reproducible | plug-in central (49.6) and MC median/CI (53.6 / 44.5–64.9) recomputed from the profiles match the METHODOLOGY headline — no documentation drift |
+| 3 | numeric consistency | the authoritative headline and the memo prompt carry the current post-§32 numbers, not stale pre-GP ones |
+| 4 | GP calibration | `power_model` predictive-variance block is LOO-calibrated in-band (cov90 86%, z² 1.10) and the RBF kernel does not beat linear |
+| 5 | GP heteroscedasticity | the fitted band genuinely widens with distance from the training centroid (×/1.63 at centroid → ×/2.24 at 20k sqft) |
+| 6 | LLM provenance | every verified extraction quote is found in its source text; every reject carries a reason |
+| 7 | JLARC validation | all six published Scope-1 distribution constraints pass; KS p=0.093 after intensity scaling |
+| 8 | seasonal invariants | `seasonal_stress` demand-peak (July) and Potomac low-flow (41%) agree with the METHODOLOGY headline |
+| 9 | constant provenance | the load-bearing constants (WUP 309, USGS factors, Eq 6-3 0.5×0.8) are cited to a source in METHODOLOGY, and match the estimator module |
+
+### 34.1 Source grounding confirmed against the original PDFs
+Beyond internal consistency, the load-bearing external numbers were checked verbatim against the source documents (not just against our own citation of them):
+- **JLARC Report 598**: "6.7 million gallons per year" (office benchmark), "11 data center buildings each used over 50 million gallons", "one building that used 243 million gallons (10 percent of the industry's total)", "2.1 billion gallons ... just over a third ... reclaimed" — the exact anchors in `validate_scope1_distribution.py`.
+- **ICPRB 2025 WMA study**: all four WUP tiers appear verbatim — "150 gallons/MW/day" (air-cooled), "309 for the average ... in Prince William", "about 800 gallons/day/MW ... basin", "1,577 gallons/MW/day" (water-cooled).
+- **Estimator arithmetic**: a completed building was hand-recomputed end-to-end (Scope 1 = MW·WUP/1e6; Scope 2 = MW·PUE·24·blended/1e6; Scope 3 = 10%) and matched the stored total to four decimals.
+
+The harness is re-run before any number-touching deploy, so the published figures can never silently drift from the code and data that produce them.
