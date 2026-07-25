@@ -1,0 +1,100 @@
+{
+ "purpose": "Value-of-disclosure: county 90% CI as fitted-power buildings are disclosed (central fixed, uncertainty collapses to permit tier), largest-footprint first.",
+ "baseline_ci_width_pct": 38.0,
+ "full_power_disclosure_floor_pct": 20.2,
+ "power_addressable_share_pct": 47.0,
+ "top10_buildings": {
+  "ci_width_pct": 31.1,
+  "pct_fitted_gfa": 18.9
+ },
+ "layered_disclosure_stack_ci_width_pct": {
+  "baseline": 38.0,
+  "power": 18.0,
+  "power_pue": 17.8,
+  "power_pue_cooling": 18.4,
+  "power_pue_cooling_grid": 6.4
+ },
+ "curve": [
+  {
+   "n_disclosed": 0,
+   "pct_fitted_gfa_disclosed": 0.0,
+   "p50": 53.7,
+   "p5": 44.5,
+   "p95": 64.9,
+   "ci_width_pct": 38.0
+  },
+  {
+   "n_disclosed": 5,
+   "pct_fitted_gfa_disclosed": 11.8,
+   "p50": 53.1,
+   "p5": 45.1,
+   "p95": 62.9,
+   "ci_width_pct": 33.5
+  },
+  {
+   "n_disclosed": 10,
+   "pct_fitted_gfa_disclosed": 18.9,
+   "p50": 53.0,
+   "p5": 45.5,
+   "p95": 62.0,
+   "ci_width_pct": 31.1
+  },
+  {
+   "n_disclosed": 20,
+   "pct_fitted_gfa_disclosed": 31.0,
+   "p50": 52.8,
+   "p5": 45.6,
+   "p95": 61.4,
+   "ci_width_pct": 29.9
+  },
+  {
+   "n_disclosed": 30,
+   "pct_fitted_gfa_disclosed": 40.1,
+   "p50": 52.5,
+   "p5": 46.3,
+   "p95": 59.8,
+   "ci_width_pct": 25.7
+  },
+  {
+   "n_disclosed": 50,
+   "pct_fitted_gfa_disclosed": 53.9,
+   "p50": 52.4,
+   "p5": 46.5,
+   "p95": 59.0,
+   "ci_width_pct": 24.0
+  },
+  {
+   "n_disclosed": 75,
+   "pct_fitted_gfa_disclosed": 67.5,
+   "p50": 52.3,
+   "p5": 46.6,
+   "p95": 58.7,
+   "ci_width_pct": 23.2
+  },
+  {
+   "n_disclosed": 100,
+   "pct_fitted_gfa_disclosed": 79.8,
+   "p50": 52.1,
+   "p5": 46.8,
+   "p95": 58.0,
+   "ci_width_pct": 21.6
+  },
+  {
+   "n_disclosed": 150,
+   "pct_fitted_gfa_disclosed": 95.6,
+   "p50": 51.8,
+   "p5": 46.8,
+   "p95": 57.2,
+   "ci_width_pct": 20.2
+  },
+  {
+   "n_disclosed": 198,
+   "pct_fitted_gfa_disclosed": 100.0,
+   "p50": 51.8,
+   "p5": 46.7,
+   "p95": 57.2,
+   "ci_width_pct": 20.2
+  }
+ ],
+ "headline": "The county 90% CI is +/-19% today. Disclosing actual IT load for the 10 largest inferred-power buildings (19% of fitted floor area) narrows it to +/-16%; full facility power disclosure reaches +/-9%. Critically, adding PUE and cooling-type disclosure on top buys almost nothing at the county scale (+/-9%): Scope 2 is ~87% of the footprint, so the binding uncertainty is the GRID's water-intensity (gal/MWh), not any facility attribute. Only resolving that collapses the interval to +/-3%. The largest transparency gap is at the power plant, not the data center -- the displacement thesis, quantified."
+}

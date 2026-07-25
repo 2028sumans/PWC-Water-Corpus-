@@ -2150,3 +2150,36 @@ Beyond internal consistency, the load-bearing external numbers were checked verb
 - **Estimator arithmetic**: a completed building was hand-recomputed end-to-end (Scope 1 = MW·WUP/1e6; Scope 2 = MW·PUE·24·blended/1e6; Scope 3 = 10%) and matched the stored total to four decimals.
 
 The harness is re-run before any number-touching deploy, so the published figures can never silently drift from the code and data that produce them.
+
+## 35. Value-of-disclosure analysis (the transparency-gap thesis, quantified)
+
+The estimator's headline is a ±19% county interval (§32). This analysis (`value_of_disclosure.py`) answers the paper's central question directly: *how much of that interval is disclosure-addressable, and what disclosure buys the most?* It is a counterfactual Monte Carlo on the same machinery — for a "disclosed" building the power central is held fixed (disclosure reveals the number, it does not move our estimate) while its uncertainty collapses from the GP predictive variance (§32) to a small independent reporting noise. This is the analysis the LLM extraction pipeline (§33) exists to feed.
+
+### 35.1 The value-of-disclosure curve (power)
+Disclosing fitted-power buildings largest-footprint-first, and re-running the MC at each step:
+
+| Buildings disclosed | % of fitted floor area | County 90% CI |
+|---|---|---|
+| 0 (today) | 0% | ±19% |
+| 10 | 19% | ±16% |
+| 30 | 40% | ±13% |
+| 100 | 80% | ±11% |
+| 198 (all fitted) | 100% | ±10% |
+
+Steep diminishing returns: the ~30 largest inferred-power buildings carry most of the addressable uncertainty. Disclosure has real, quantified value — but a floor remains.
+
+### 35.2 The layered disclosure stack — and why facility disclosure is not enough
+Collapsing each inference in turn, for *every* building:
+
+| Disclosure level | County 90% CI |
+|---|---|
+| baseline (today) | ±19% |
+| + actual IT power | **±9%** |
+| + PUE | ±9% |
+| + cooling type | ±9% |
+| + grid water-intensity | **±3%** |
+
+**This is the key result.** Full facility-side power disclosure halves the interval (±19%→±9%), but adding PUE and cooling-type disclosure on top buys *almost nothing at the county scale*. The reason is structural: Scope 2 (grid electricity) is ~87% of the footprint, so the binding uncertainty is the **grid's water-intensity (gal/MWh)** — a power-plant / generation-mix property, not any data-center attribute. Only resolving *that* collapses the interval to ±3%.
+
+### 35.3 What this means for the paper
+The largest transparency gap is **at the power plant, not the data center** — the displacement thesis, quantified as an uncertainty budget. Facility-level disclosure (the thing policymakers usually ask operators for) is necessary but not sufficient; the dominant lever is generation-side water accounting, which ties directly to the average-vs-marginal Scope 2 question (§16). It also sets disclosure priorities: actual IT load for the ~30 largest buildings is the highest-value facility ask, but grid water-intensity transparency dwarfs all facility disclosures combined. Output: `public/data/value_of_disclosure.json`. No estimator constant changed — this reads the shipped model.
