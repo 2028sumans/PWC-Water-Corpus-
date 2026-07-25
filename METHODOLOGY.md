@@ -2348,3 +2348,32 @@ Utilities size infrastructure to peak day, and the peak lands in the same months
 **Broad Run is the finding.** It holds 166 of 243 buildings, and at **full buildout** its peak-day on-site draw is of the same order as the *entire lowest-month mean flow* of the stream the buildings sit on — 105% at the upstream Buckland gage, 96% at the downstream Bristow gage, so the result is robust to gage choice. Today's 50 completed buildings are at 21%. The annual-average framing (4.2% of mean flow) makes this invisible.
 
 **Caveats carried in the output, not hidden:** (a) draw figures are full-buildout (built + under construction + planned), with completed-only reported alongside; (b) Broad Run is bracketed by two gages and both are reported rather than assuming one is conservative; (c) the Broad Run and Bull Run gages were discontinued (1986, 1981) so their climatologies are historical stationary references — under the current drought (PDSI −5.3, §31) actual flows are likely lower, which would raise these ratios, not lower them; (d) Powells Creek has no usable gage (~2 years of record) and is recorded as a data gap rather than estimated.
+
+## 42. Exposure and the monitoring gap (H1 + H2)
+
+`exposure_gap.py` → `public/data/exposure_gap.json`. The footprint says how much; this asks where the buildings sit relative to water, and where the oversight sits relative to the buildings.
+
+### 42.1 Exposure — the buildings are close to water
+| Metric | Value |
+|---|---|
+| Distance to nearest mapped stream | median **303 ft** (min 1 ft, max 1,094 ft) |
+| Within 300 ft of a stream | **118 of 243 (49%)** |
+| Intersecting a Resource Protection Area | 4 |
+| Intersecting a wetland | 1 |
+
+Half the fleet is stream-adjacent. (RPA/wetland intersection is rare precisely because those layers are what land-use review *does* screen — the siting worked as designed on the dimension that was regulated.)
+
+### 42.2 The gap — the oversight is not close to the buildings
+| Metric | Value |
+|---|---|
+| No NPDES discharge permit of their own | **235 of 243 (97%)** |
+| No Water Quality Portal station within 1 mile | 154 of 243 (63%) |
+| No VA DEQ monitoring station within 1 mile | **243 of 243 (100%)** |
+| **Compound blind spot** (stream-adjacent **and** unpermitted **and** unmonitored) | **112 of 243 (46%)** |
+
+**Not one of the 243 buildings has a state DEQ monitoring station within a mile.** Combined with the 97% without NPDES coverage (they hold *construction-stormwater* permits, not operational-water permits, §7), the result is that nearly half the fleet is simultaneously adjacent to a stream, outside the discharge-permit system, and outside the monitoring network. The concentration basin is worst in absolute terms: all 166 Broad Run buildings are unmonitored, 159 of them unpermitted, carrying a 13.8 MGD full-buildout peak-day draw (§41).
+
+### 42.3 The community layer is denser than the regulatory one
+Research-grade iNaturalist observations exist within a mile of most sites (median 8, max 44) while official DEQ monitoring exists near none. The public record of what lives near these facilities is better populated than the state's. This is the concrete version of the "community observations as a monitoring input" argument: the observations already exist; no framework ingests them.
+
+**Why this matters for the paper:** the water-consumption estimate is unverifiable *by construction* — not because the modelling is weak, but because the measurement infrastructure that would verify it is absent at exactly the locations that matter. That is the transparency gap expressed spatially, and it is measured, not asserted.

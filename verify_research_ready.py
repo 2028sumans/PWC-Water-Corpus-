@@ -17,6 +17,13 @@ Checks:
   7  JLARC validation      Scope-1 distribution constraints pass; KS p>0.05 after scaling
   8  seasonal invariants   seasonal_stress numbers agree with the METHODOLOGY headline
   9  constant provenance   each key physical constant is cited to a source in METHODOLOGY
+  10 provenance ledger     every quoted claim is verbatim in its source PDF (else rejected)
+  11 basin displacement    York avg->marginal flip; >75% consumed outside the Potomac basin
+  12 growth scenarios      per-MW model reproduces today; ICPRB on-site cross-check consistent
+  13 value of information  per-DP load is top acquisition; grid's conditional > alone value
+  14 evidence ladder       CI width monotone in evidence tier; tier 2 empty; peak/annual ~10x
+  15 basin stress          Broad Run peak-day/low-flow robust across both bracketing gages
+  16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
 
 Exit code 0 iff every check passes.
 """
@@ -327,6 +334,33 @@ def c_basin_stress():
                 f"scale-comparison framing present={framing}")
 
 
+# 16 ------------------------------------------------------------------------
+def c_exposure_gap():
+    """Exposure/gap counts recomputed from the profiles must match the published
+    analysis (no drift), and the headline gap claims must hold."""
+    e = json.load(open(os.path.join(PUB, "exposure_gap.json")))
+    d = _profiles()
+    bs = [b for b in d["buildings"] if b.get("scope_water_footprint")]
+
+    def wc(b, k, default=0):
+        v = (b.get("water_context") or {}).get(k)
+        return v if isinstance(v, (int, float)) else default
+    no_npdes = sum(1 for b in bs if wc(b, "has_npdes") == 0)
+    no_deq = sum(1 for b in bs if wc(b, "n_deq_monitoring_1mi") == 0)
+    near = sum(1 for b in bs if wc(b, "d_stream_ft", 1e9) <= 300)
+    blind = sum(1 for b in bs if wc(b, "d_stream_ft", 1e9) <= 300
+                and wc(b, "has_npdes") == 0 and wc(b, "n_deq_monitoring_1mi") == 0)
+    g = e["regulatory_monitoring_gap"]; x = e["exposure"]
+    match = (g["no_npdes"]["n"] == no_npdes and g["no_deq_station_within_1mi"]["n"] == no_deq
+             and x["within_300ft_of_stream"]["n"] == near
+             and g["compound_blind_spot"]["n"] == blind)
+    all_unmonitored = no_deq == len(bs)
+    ok = match and all_unmonitored
+    return ok, (f"recomputed: {near} stream-adjacent, {no_npdes} no-NPDES, {no_deq}/{len(bs)} "
+                f"no-DEQ-station, {blind} compound blind spot (match={match}; "
+                f"all unmonitored={all_unmonitored})")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -344,6 +378,7 @@ def main():
     check("13 value of information", c_value_of_information)
     check("14 evidence ladder", c_evidence_ladder)
     check("15 basin stress", c_basin_stress)
+    check("16 exposure + monitoring gap", c_exposure_gap)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"
