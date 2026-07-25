@@ -22,6 +22,7 @@ import {
   type ScopeWaterFootprint,
 } from "@/lib/useFacilityProfiles";
 import { CitedText } from "./CitedText";
+import { FacilityContext } from "./FacilityContext";
 import { X, ExternalLink, MessageSquare, Loader2, Check, Minus, FileText } from "lucide-react";
 
 function EvidenceRow({ label, value }: { label: string; value: string | number | null | undefined }) {
@@ -748,6 +749,9 @@ export function RightPanel() {
             </div>
           </>
         )}
+
+        {/* How this building compares — the county analyses, applied to this facility */}
+        <FacilityContext swf={swf} waterContext={waterContext} />
 
         {/* Facility Dossier */}
         <div className="border-b border-neutral-800 px-5 py-4">
