@@ -659,6 +659,13 @@ export function RightPanel() {
                     {swf.power.permit.n_buildings_on_permit === 1 ? "" : "s"}, apportioned by floor
                     area. The 8,818 sqft/MW density assumption is not used for this building.
                   </span>
+                ) : swf.power.basis === "fitted_gfa_model" ? (
+                  <>
+                    from the fitted GFA→MW model (n=14 permit sites, LOO-calibrated);
+                    implies {swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW here. The
+                    IT-load range is this building&apos;s own 90% predictive interval — wider the
+                    farther its floor area sits from the training data.
+                  </>
                 ) : (
                   <>from floor area at {swf.power.sqft_per_effective_mw.toLocaleString()} sqft/MW.</>
                 )}

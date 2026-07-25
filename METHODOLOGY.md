@@ -5,7 +5,7 @@
 
 This document exists to be attacked. Section 6 lists the errors and soft spots found so far — including one retraction, one circular validation, and one constant that the source document uses in the opposite direction from this tool.
 
-> **Current headline (as of the §18 refresh, 19 July 2026).** County-wide total: **52.6 MGD, 90% credible interval 47.0–58.7** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.0). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression with a measured ×/÷1.51 (90%) residual (§26). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
+> **Current headline (as of the §32 predictive-variance upgrade).** County-wide total: **53.6 MGD, 90% credible interval 44.5–64.9** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.8). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression whose per-building predictive variance is now LOO-calibrated and heteroscedastic (§32; wider for floor areas far from the training data). The county CI is **±19%**, corrected upward from the earlier ±11% once the systematic coefficient component was propagated honestly (it does not average away). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 21.6 MGD** — outside the Potomac basin the buildings sit in. Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
 
 ---
 
@@ -1919,7 +1919,9 @@ Variance split for the Monte Carlo: σ_systematic = 0.014 (coefficient calibrati
 | County MC median [90% CI] | 60.0 [53.9–66.6] | **52.6 [47.0–58.7]** |
 | Marginal-mix MC median | 46.8 | **41.0** |
 
-The ~13% drop is the fit deleting an unsupported assumption: the old `new_build` band presumed unbuilt buildings 25% denser (7,070 sqft/MW) than the fleet; the permit evidence shows no such thing, so 141 tier-4 buildings moved to the fitted ~8,731. The OAT sweep now shows the fallback model at **67% swing** — *larger* than the old "52% density" figure because ×/÷1.51 is a measured 90% interval rather than a flattering hand-set band; meanwhile the MC county CI stays ±11% because most of that residual is idiosyncratic and averages down across 198 buildings. Both numbers are true: OAT answers "what if the model is coherently wrong," the MC answers "what error is probable."
+The ~13% drop is the fit deleting an unsupported assumption: the old `new_build` band presumed unbuilt buildings 25% denser (7,070 sqft/MW) than the fleet; the permit evidence shows no such thing, so 141 tier-4 buildings moved to the fitted ~8,731. The OAT sweep now shows the fallback model at **67% swing** — *larger* than the old "52% density" figure because ×/÷1.51 is a measured 90% interval rather than a flattering hand-set band.
+
+> **Superseded by §32.** The next sentence originally claimed the MC county CI "stays ±11% because most of that residual is idiosyncratic and averages down across 198 buildings." That held only under this section's single-σ split. §32 replaces it with a LOO-calibrated per-building predictive variance whose systematic (coefficient/leverage) component does **not** average away; the honest county CI is **±19%** (44.5–64.9) and the MC median is 53.6. The plug-in central (49.6) is unchanged. OAT still answers "what if the model is coherently wrong," the MC "what error is probable."
 
 ### 26.4 The accuracy roadmap this enables (data, not modeling)
 
@@ -2065,3 +2067,38 @@ The share is banded because PWC's air/closed-loop-dominant fleet (§30) has a *m
 
 ### 31.4 What this adds to the paper
 It converts the estimator's static annual number into the supply-relevant quantity: **the sector draws the most water in the months the basin can least spare it, during a period the county is already in near-record drought (PDSI −5.3, driest 0.9% of 1,576 months)**. This is a genuine Track-2 result built entirely on measured public series (NOAA + USGS), independent of the estimator's contested per-building assumptions — it holds regardless of the exact MGD total.
+
+## 32. Per-building predictive variance for the power fallback (GP / Bayesian-linear upgrade)
+
+§26 fitted a log-log GFA→MW fallback and exported a **single** systematic σ (coefficient uncertainty evaluated at the mean floor area). Every unpermitted building then carried the same systematic width regardless of how far its floor area sat from the 14 permit sites actually fit on. `gp_power_model.py` replaces that with a **per-building predictive variance** and, critically, **validates its calibration** before anything is deployed.
+
+### 32.1 The model
+Bayesian linear regression in log10 space — equivalently a Gaussian process with a linear (dot-product) kernel plus white noise. The posterior predictive variance for a new building at floor area *x* is the ordinary least-squares prediction-interval variance:
+
+> Var[log₁₀ MW | *x*] = *s*² · (1 + [1, *x*] (XᵀX)⁻¹ [1, *x*]ᵀ)
+
+The `1` term is irreducible site-to-site scatter — **idiosyncratic**, independent per building, averages down across the fleet. The leverage term grows quadratically as *x* leaves the training centroid — **systematic** coefficient uncertainty, drawn once per Monte Carlo iteration and shared across all buildings, so it does **not** average away. The point prediction is unchanged; only the variance becomes per-building.
+
+The operator effect stays in the **mean** (the deployed prediction keeps its shrunk operator offset) but gets **no separate variance term**: the between-operator dispersion τ² estimates to ≈0 at n=14 (operator identity is not statistically distinguishable from noise — the same reason pure density rivals ridge+operator in LOO, §26). Adding an operator-variance term re-injects idiosyncratic scatter on only 5 residual dof and over-widens the interval; the pooled residual (dof = n−2 = 12) is the honest total scatter.
+
+### 32.2 Research-readiness gate — calibration, not decoration
+A predictive-variance model is only science if its intervals are calibrated. Leave-one-out on **the exact deployed form** (operator-adjusted mean + pooled prediction variance):
+
+| | RMSE (log₁₀) | coverage @90% | coverage @50% | mean z² |
+|---|---|---|---|---|
+| deployed form | 0.136 | 86% (12/14) | 50% | **1.10** |
+
+Coverage lands at nominal within n=14 sampling noise and mean squared standardized residual is ≈1 — the intervals are honest, neither optimistic nor padded. A kernel check confirms the choice: adding an RBF kernel does **not** improve LOO-RMSE (0.145 either way), so the linear form is validated, not assumed. Verified downstream: relative CI width correlates with distance-from-training-centroid at **r = 0.98** across the 198 fitted buildings — a 630k sqft building (near the 723k-sqft centroid) carries a ~103% interval; a 14k-sqft outlier far below the training range carries ~195%.
+
+### 32.3 Effect on the numbers — and a correction to §26.3
+| | §26 (single σ) | §32 (per-building predictive var) |
+|---|---|---|
+| County plug-in central | 49.6 MGD | 49.6 MGD (unchanged — point prediction identical) |
+| County MC median | 52.6 MGD | **53.6 MGD** |
+| County 90% CI | 47.0 – 58.7 (±11%) | **44.5 – 64.9 (±19%)** |
+| Marginal-mix MC median | 41.0 | **41.8** |
+
+**This supersedes the §26.3 claim that the county CI "stays ±11% because most of the residual is idiosyncratic and averages down."** That was true only under the earlier split, which credited operator effects with reducing scatter they do not reliably reduce (τ²≈0). With the calibrated split, a real **systematic** (coefficient/leverage) component does *not* average away, and the honest county interval is **±19%**. The median rises ~1 MGD purely from the wider per-building lognormal skew, not from any change to the point estimate. The direction is the right one for a transparency-gap paper: floor-area-inferred power is genuinely more uncertain than the earlier MC implied, and the per-building ladder now shows it — permit-backed buildings sit at a **52%** median 90%-width, floor-area buildings at **116%**.
+
+### 32.4 Portability
+`gp_power_model.py` needs sklearn (offline, for the kernel check) and writes a `predictive_variance` block (β, noise variance, (XᵀX)⁻¹) into `data/power_model.json`. The build and Monte Carlo consume it in pure NumPy — no sklearn at inference. Reproduce with: `fit_power_model.py` → `gp_power_model.py` → `build_facility_profiles.py` → `monte_carlo.py`.

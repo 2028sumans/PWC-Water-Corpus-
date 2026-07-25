@@ -544,13 +544,27 @@ def effective_power_from_fitted(gfa_sqft, name):
     in_table = op is not None and op in POWER_MODEL["operator_effects"]
     log_mw = POWER_MODEL["intercept"] + POWER_MODEL["slope"] * math.log10(gfa_sqft) + eff
     central = 10 ** log_mw
-    band = 10 ** (1.645 * POWER_MODEL["sigma_log10"])   # 90% interval multiplier
+    # 90% predictive interval. When the LOO-calibrated predictive-variance block
+    # (gp_power_model.py) is present, the band is HETEROSCEDASTIC: the OLS
+    # prediction-interval sd sqrt(s2*(1+leverage)) widens as this building's
+    # floor area departs from the training centroid -- so an extrapolated
+    # hyperscale campus carries a wider power interval than one sitting inside
+    # the 14-site data. Falls back to the single LOO sigma otherwise.
+    pv = POWER_MODEL.get("predictive_variance")
+    if pv:
+        xv = (1.0, math.log10(gfa_sqft))
+        inv = pv["XtX_inv"]
+        lev = sum(xv[i] * inv[i][j] * xv[j] for i in range(2) for j in range(2))
+        sd = math.sqrt(pv["noise_var_log10"] * (1.0 + lev))
+    else:
+        sd = POWER_MODEL["sigma_log10"]
+    band = 10 ** (1.645 * sd)   # 90% interval multiplier (per-building)
     cls = "fitted_operator" if in_table else "fitted_generic"
     dens = gfa_sqft / central
     src = (
         f"fitted GFA->MW model (n={POWER_MODEL['n_sites']} independent permit sites, "
         f"leak-free site-level fit, winner by LOO-CV: {POWER_MODEL['winner_by_loo']}; "
-        f"slope {POWER_MODEL['slope']:.2f}, LOO residual x/{10**POWER_MODEL['sigma_log10']:.2f}"
+        f"slope {POWER_MODEL['slope']:.2f}, per-building 90% band x/{band:.2f}"
         + (f"; operator effect for {op}: x{10**POWER_MODEL['operator_effects'][op]:.2f}" if in_table else
            "; no operator calibration -- generic curve")
         + ")"

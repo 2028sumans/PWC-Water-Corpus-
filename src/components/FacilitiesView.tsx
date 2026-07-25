@@ -240,7 +240,7 @@ export function FacilitiesView() {
         <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_90px_90px_130px_130px_130px_150px] gap-0 px-0 py-1.5 border-b border-neutral-800 bg-black text-[10px] uppercase tracking-[0.15em] text-neutral-500 [&>*]:px-3 [&>*]:border-l [&>*]:border-neutral-900/70 [&>*:first-child]:border-l-0">
           <div>Facility</div>
           <div>Kind</div>
-          <div className="text-right" title="Effective IT load, from floor area at 8,818 sqft/MW">IT MW</div>
+          <div className="text-right" title="Effective IT load — from a VADEQ permit where observed, otherwise inferred via the fitted GFA→MW model">IT MW</div>
           <div className="text-right" title="Direct on-site cooling water, central estimate">Scope 1</div>
           <div className="text-right" title="Water consumed at the generating plant, central estimate">Scope 2</div>
           <div className="text-right" title="Embodied / supply-chain, central estimate">Scope 3</div>

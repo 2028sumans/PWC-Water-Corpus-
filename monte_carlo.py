@@ -31,6 +31,7 @@ Writes per-facility p5/p50/p95 back into facility_profiles.json and a
 county-level summary. Run AFTER build_facility_profiles.py.
 """
 import json
+import math
 import os
 
 import numpy as np
@@ -78,14 +79,26 @@ def main():
     mm = m.PJM_MARGINAL_FUEL_MIX
     blended_marg = mm["natural_gas_cc"] * cf_gas + mm["coal"] * cf_coal + mm["natural_gas_ct"] * 20.0
 
-    # Fitted-model uncertainty (fit_power_model.py): the systematic component
-    # (coefficient calibration) is drawn ONCE and shared -- it cannot average
-    # away across buildings -- while the idiosyncratic site residual is drawn
-    # per building. Both sigmas are MEASURED from the leak-free site-level fit,
-    # not assumed.
+    # Fitted-model uncertainty. PREFERRED PATH (gp_power_model.py): a per-building
+    # predictive variance from a LOO-calibrated Bayesian-linear / GP-linear fit.
+    # The regression coefficients (intercept, slope) are drawn ONCE per iteration
+    # from their posterior N(beta, s2*(X'X)^-1) and SHARED across every fitted
+    # building -- this is the systematic term, and applying the shared draw at
+    # each building's OWN log10(GFA) makes the systematic width grow with distance
+    # from the training centroid (leverage), i.e. wider for extrapolation. The
+    # idiosyncratic site residual sqrt(s2) is drawn independently per building and
+    # correctly averages down. Falls back to the old scalar split if the
+    # predictive_variance block is absent.
     pm = m.POWER_MODEL or {}
-    fit_syst = rng.normal(0.0, pm.get("sigma_systematic_log10", 0.02), N)
-    sig_idio = pm.get("sigma_idiosyncratic_log10", 0.09)
+    pv = pm.get("predictive_variance")
+    if pv:
+        fit_beta = np.asarray(pv["beta_intercept_slope"], dtype=float)
+        fit_coef_cov = pv["noise_var_log10"] * np.asarray(pv["XtX_inv"], dtype=float)
+        fit_coef_draws = rng.multivariate_normal(fit_beta, fit_coef_cov, N)  # (N,2)
+        fit_idio_sd = math.sqrt(pv["noise_var_log10"])
+    else:
+        fit_syst = rng.normal(0.0, pm.get("sigma_systematic_log10", 0.02), N)
+        sig_idio = pm.get("sigma_idiosyncratic_log10", 0.09)
 
     # per-group calibration offsets (drawn once per group, shared within it) --
     # legacy band tiers only
@@ -111,9 +124,19 @@ def main():
             # of the site's generator capacity among co-permitted buildings.
             eff = ec * permit_factor * tri(0.90, 1.0, 1.10)
         elif pw["basis"] == "fitted_gfa_model":
-            # Lognormal about the fitted prediction: shared coefficient draw +
-            # independent site residual, both measured by the fit's LOO/OLS stats.
-            eff = ec * np.power(10.0, fit_syst + rng.normal(0.0, sig_idio, N))
+            # Lognormal about the fitted prediction. With the calibrated
+            # predictive-variance block: perturb the base (intercept+slope) part
+            # by the SHARED coefficient draw evaluated at this building's own
+            # log10(GFA) -- centered at 0 so the median stays at the deterministic
+            # central ec (which already carries the fixed operator effect) -- plus
+            # an independent idiosyncratic residual. Heteroscedastic by design.
+            if pv:
+                xb = math.log10(gfa)
+                base0 = fit_beta[0] + fit_beta[1] * xb
+                syst = (fit_coef_draws[:, 0] + fit_coef_draws[:, 1] * xb) - base0
+                eff = ec * np.power(10.0, syst + rng.normal(0.0, fit_idio_sd, N))
+            else:
+                eff = ec * np.power(10.0, fit_syst + rng.normal(0.0, sig_idio, N))
         else:
             # Uncertainty is on density (sqft/MW). ehi MW <-> densest (min
             # sqft/MW); elo MW <-> sparsest (max sqft/MW). Sampling density and

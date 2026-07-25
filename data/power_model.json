@@ -123,5 +123,35 @@
    "it_mw": 35.52,
    "operator": "amazon"
   }
- ]
+ ],
+ "predictive_variance": {
+  "method": "OLS prediction interval (GP linear kernel), operator-adjusted mean, LOO-calibrated",
+  "beta_intercept_slope": [
+   -3.9308679356815768,
+   0.9981560395712176
+  ],
+  "noise_var_log10": 0.01566416872008659,
+  "XtX_inv": [
+   [
+    26.037652818580096,
+    -4.431740083965177
+   ],
+   [
+    -4.431740083965177,
+    0.7563795176720081
+   ]
+  ],
+  "variance_formula": "Var[log10 MW|x] = s2 * (1 + [1,x] (XtX)^-1 [1,x]^T); '1'=idiosyncratic (per building), leverage term=systematic (shared coefficient draw)",
+  "no_operator_variance_term": "tau2 (between-operator dispersion) ~ 0 at n=14; operator effect adjusts the mean only",
+  "loo_calibration": {
+   "rmse_log10": 0.13590825349300842,
+   "coverage_90": 0.8571428571428571,
+   "coverage_50": 0.5,
+   "mean_z2": 1.0990739625593242
+  },
+  "kernel_check": {
+   "gp_linear_loo_rmse": 0.14523736781063798,
+   "gp_linear_rbf_loo_rmse": 0.1452351865354649
+  }
+ }
 }
