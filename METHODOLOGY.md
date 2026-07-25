@@ -2102,3 +2102,27 @@ Coverage lands at nominal within n=14 sampling noise and mean squared standardiz
 
 ### 32.4 Portability
 `gp_power_model.py` needs sklearn (offline, for the kernel check) and writes a `predictive_variance` block (β, noise variance, (XᵀX)⁻¹) into `data/power_model.json`. The build and Monte Carlo consume it in pure NumPy — no sklearn at inference. Reproduce with: `fit_power_model.py` → `gp_power_model.py` → `build_facility_profiles.py` → `monte_carlo.py`.
+
+## 33. LLM structured-extraction pipeline (turning hand-harvesting into an auditable process)
+
+The attributes that most shrink the estimator's uncertainty — IT MW, PUE commitments, cooling type, water-source restrictions — live in prose inside proffer statements, special-use-permit resolutions, and thousands of building-permit descriptions. Every one used so far was read by hand (§28–30). `llm_extract.py` turns that into a repeatable, auditable pipeline. The design *is* the argument that it is evidence rather than "AI slop": extraction (fallible LLM) and verification (deterministic code) are separate, and nothing reaches the estimator unverified.
+
+### 33.1 Two separated halves
+1. **Extraction** — a schema-constrained prompt asks the model to return, for each field, the value **and the exact quote it read it from** (plus page and confidence). Backends are pluggable: `ANTHROPIC_API_KEY`→Claude (preferred), `GROQ_API_KEY`→Groq, else Ollama; `--backend file` replays pre-computed outputs so the verifier runs offline / in CI.
+2. **Verification** — pure code, identical regardless of backend:
+   - **Provenance** (the anti-hallucination guard): the quote must be a whitespace-normalized substring of the source text. A model can invent a number but not a source sentence that contains it. Fail → the record is **rejected**, never reaching the estimator.
+   - **Schema / enum / range**: field names, allowed values, PUE ∈ [1.0, 2.5], MW ∈ [1, 600], required `mandatory` boolean.
+   - **Cross-check** (non-destructive): where a structured fact already exists (a hand-coded proffer condition, a permit-derived MW), agreement is recorded, not silently overwritten.
+
+### 33.2 Validation run — it reproduces the hand-coding and catches fabrication
+Run on the parsed Hornbaker special-use permit (`SUP2025-00016`) plus a representative batch of ePortal permit descriptions, with two deliberately fabricated records seeded to test the guard:
+
+| Source | records | verified | rejected |
+|---|---|---|---|
+| Hornbaker proffer | 5 | 4 | 1 (fabricated "1.3 PUE guarantee" — quote absent from source) |
+| Permit descriptions | 10 | 9 | 1 (fabricated "evaporative cooling tower" — quote absent) |
+
+Both fabrications were caught by the provenance guard (`reject_reasons: provenance_fail`). The four verified Hornbaker records reproduced the exact facts previously hand-coded into `permit_cooling_conditions`, **including the hard judgment**: the groundwater/surface-water cooling prohibition is flagged **mandatory** (Condition 3(c)), while the 1.5 PUE cap and air/closed-loop preference are correctly flagged **non-mandatory** (items xvi/xvii of a "select ≥8 of 19" sustainability menu). The automated cross-check reported `agrees: true` against the hand value. Outputs: `data/llm_extractions.json` (verified) + `data/llm_extraction_rejects.json` (audit trail).
+
+### 33.3 Status and scope
+This is a **methods contribution**, demonstrated to reproduce hand-coding rather than to change any current estimate: the Hornbaker facts already existed in the profiles, and the pipeline recovered them with citations. Running it at scale (an API key + more parsed proffer/permit PDFs) is the path to extending PUE/cooling/source coverage beyond the handful of hand-read documents — the concrete "how disclosure would be ingested" mechanism behind the transparency-gap thesis. No estimator constant changed.

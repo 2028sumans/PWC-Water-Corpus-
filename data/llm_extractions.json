@@ -1,0 +1,63 @@
+{
+ "source": "proffers",
+ "backend": "file",
+ "n_docs": 1,
+ "n_records": 5,
+ "n_verified": 4,
+ "n_rejected": 1,
+ "records": [
+  {
+   "doc_id": "SUP2025-00016.pdf",
+   "kind": "proffer",
+   "n_pages": 73,
+   "field": "cooling_source_restriction",
+   "value": "groundwater_surface_water_prohibited",
+   "mandatory": true,
+   "quote": "Groundwater, surface water withdrawals, or surface water discharges shall not be used to cool the data center buildings on the Property.",
+   "page": 6,
+   "confidence": 0.98
+  },
+  {
+   "doc_id": "SUP2025-00016.pdf",
+   "kind": "proffer",
+   "n_pages": 73,
+   "field": "pue_cap",
+   "value": 1.5,
+   "mandatory": false,
+   "quote": "Design the data center building to operate below an annualized 1.5 PUE (Power Utilization Effectiveness) standard",
+   "page": 7,
+   "confidence": 0.9
+  },
+  {
+   "doc_id": "SUP2025-00016.pdf",
+   "kind": "proffer",
+   "n_pages": 73,
+   "field": "cooling_type_preference",
+   "value": "air_or_closed_loop",
+   "mandatory": false,
+   "quote": "Use of air or closed loop cooling rather than water-cooled alternatives",
+   "page": 7,
+   "confidence": 0.9
+  },
+  {
+   "doc_id": "SUP2025-00016.pdf",
+   "kind": "proffer",
+   "n_pages": 73,
+   "field": "reclaimed_water",
+   "value": true,
+   "mandatory": false,
+   "quote": "Use of reclaimed water for non-potable use",
+   "page": 7,
+   "confidence": 0.85
+  },
+  {
+   "doc_id": "SUP2025-00016.pdf",
+   "_cross_check": {
+    "building": "Hornbaker Road 2",
+    "hand_mandatory_source_restriction": true,
+    "extracted_mandatory_source_restriction": true,
+    "agrees": true
+   }
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+[
+ {
+  "doc_id": "SUP2025-00016.pdf",
+  "kind": "proffer",
+  "n_pages": 73,
+  "field": "pue_cap",
+  "value": 1.3,
+  "mandatory": true,
+  "quote": "The applicant shall guarantee an annualized 1.3 PUE across all data center buildings on the site.",
+  "page": 7,
+  "confidence": 0.7,
+  "reject_reasons": [
+   "provenance_fail: quote not found verbatim in source"
+  ]
+ }
+]

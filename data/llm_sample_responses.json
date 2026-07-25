@@ -1,0 +1,59 @@
+{
+ "SUP2025-00016.pdf": {"records": [
+   {"field": "cooling_source_restriction", "value": "groundwater_surface_water_prohibited", "mandatory": true,
+    "quote": "Groundwater, surface water withdrawals, or surface water discharges shall not be used to cool the data center buildings on the Property.",
+    "page": 6, "confidence": 0.98},
+   {"field": "pue_cap", "value": 1.5, "mandatory": false,
+    "quote": "Design the data center building to operate below an annualized 1.5 PUE (Power Utilization Effectiveness) standard",
+    "page": 7, "confidence": 0.9},
+   {"field": "cooling_type_preference", "value": "air_or_closed_loop", "mandatory": false,
+    "quote": "Use of air or closed loop cooling rather than water-cooled alternatives",
+    "page": 7, "confidence": 0.9},
+   {"field": "reclaimed_water", "value": true, "mandatory": false,
+    "quote": "Use of reclaimed water for non-potable use",
+    "page": 7, "confidence": 0.85},
+   {"field": "pue_cap", "value": 1.3, "mandatory": true,
+    "quote": "The applicant shall guarantee an annualized 1.3 PUE across all data center buildings on the site.",
+    "page": 7, "confidence": 0.7}
+ ]},
+ "MEC2026-01982": {"records": [
+   {"cooling_equipment": ["chiller", "cooling_tower"], "water_cooled_signal": true,
+    "quote": "THERE WILL BE TWO NEW CHILLERS WITH ASSOCIATED PUMPS AND A MATCHING COOLING TOWER.",
+    "confidence": 0.95}
+ ]},
+ "UGS2026-00028": {"records": [
+   {"cooling_equipment": ["chiller", "boiler"], "water_cooled_signal": null,
+    "quote": "Chiller and boiler plant replacement and upgrade", "confidence": 0.8}
+ ]},
+ "PLB2020-00815": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "IGLOO/CHILLER ADDITIONS - IAD 52", "confidence": 0.6}
+ ]},
+ "PLB2018-00250": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "PUTTING A NEW CHILLER INTO UTRON BUSINESS", "confidence": 0.7}
+ ]},
+ "MEC2026-00982": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "Demolish and remove existing chillers", "confidence": 0.8}
+ ]},
+ "MEC2026-00600": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "Direct Replace of Chiller Unit", "confidence": 0.8},
+   {"cooling_equipment": ["cooling_tower", "evaporative"], "water_cooled_signal": true,
+    "quote": "new evaporative cooling tower with basin makeup water", "confidence": 0.6}
+ ]},
+ "MEC2025-00404": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "IMDC VA1 CHILLER ADDITON", "confidence": 0.75}
+ ]},
+ "MEC2024-02164": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": null,
+    "quote": "Replacement of (2) 225-ton chillers and associated piping/electrical connections.",
+    "confidence": 0.85}
+ ]},
+ "MEC2024-01265": {"records": [
+   {"cooling_equipment": ["chiller"], "water_cooled_signal": false,
+    "quote": "Ground-Mounted Chiller", "confidence": 0.55}
+ ]}
+}
