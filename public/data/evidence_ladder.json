@@ -1,0 +1,57 @@
+{
+ "evidence_ladder": {
+  "purpose": "Per-building 90% CI width by power-evidence tier -- the estimator's claim that uncertainty tracks evidence, measured rather than asserted.",
+  "tiers": {
+   "1": {
+    "label": "permit generator capacity (observed)",
+    "n_buildings": 45,
+    "effective_it_mw": 1382,
+    "ci_width_pct_median": 52.0,
+    "ci_width_pct_p25": 50.0,
+    "ci_width_pct_p75": 52.0,
+    "ci_halfwidth_pct_median": 26.0
+   },
+   "3": {
+    "label": "fitted GFA->MW, operator-calibrated (inferred)",
+    "n_buildings": 57,
+    "effective_it_mw": 1745,
+    "ci_width_pct_median": 114.0,
+    "ci_width_pct_p25": 110.0,
+    "ci_width_pct_p75": 117.0,
+    "ci_halfwidth_pct_median": 57.0
+   },
+   "4": {
+    "label": "fitted GFA->MW, generic curve (inferred)",
+    "n_buildings": 141,
+    "effective_it_mw": 3341,
+    "ci_width_pct_median": 120.0,
+    "ci_width_pct_p25": 113.0,
+    "ci_width_pct_p75": 152.0,
+    "ci_halfwidth_pct_median": 60.0
+   },
+   "2": {
+    "label": "stated critical load (EMPTY -- no per-building disclosure exists)",
+    "n_buildings": 0,
+    "effective_it_mw": 0,
+    "note": "No Prince William data-center building publishes a stated critical IT load recoverable from public records (METHODOLOGY 28)."
+   }
+  },
+  "tier4_over_tier1_width_ratio": 2.3,
+  "headline": "Permit-observed buildings (tier 1, n=45) carry a median 90% interval of +/-26.0%, versus +/-60.0% for generic floor-area buildings (tier 4, n=141) -- a 2.3x wider interval for the same modelling effort, purely from the evidence available. Tier 2 (stated critical load) is EMPTY: no building discloses one."
+ },
+ "peak_day": {
+  "all_243_buildings": {
+   "annual_avg_s1_mgd": 1.76,
+   "peak_day_s1_mgd": 17.46,
+   "ratio": 9.9
+  },
+  "completed_only": {
+   "annual_avg_s1_mgd": 0.33,
+   "peak_day_s1_mgd": 3.29,
+   "ratio": 9.9,
+   "n": 54
+  },
+  "basis": "ICPRB Prince William peak-day WUP 3,060 vs annual-average 309 gal/MW/day",
+  "why_it_matters": "Utilities size infrastructure to peak day, not annual mean, and the peak coincides with the July-August streamflow minimum (METHODOLOGY 31). The annual-average framing understates the infrastructure-relevant draw by ~10x."
+ }
+}

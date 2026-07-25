@@ -293,6 +293,40 @@ def c_value_of_information():
                 f"PUE/cooling ~0={easy_zero}")
 
 
+# 14 ------------------------------------------------------------------------
+def c_evidence_ladder():
+    """Ladder is monotone in evidence (observed tier 1 tighter than inferred
+    tiers 3/4), tier 2 is empty, and peak/annual ~10x per ICPRB."""
+    e = json.load(open(os.path.join(PUB, "evidence_ladder.json")))
+    t = e["evidence_ladder"]["tiers"]
+    t1 = t["1"]["ci_width_pct_median"]; t3 = t["3"]["ci_width_pct_median"]; t4 = t["4"]["ci_width_pct_median"]
+    monotone = t1 < t3 <= t4
+    tier2_empty = t["2"]["n_buildings"] == 0
+    pk = e["peak_day"]["all_243_buildings"]["ratio"]
+    peak_ok = 8.0 <= pk <= 12.0
+    ok = monotone and tier2_empty and peak_ok
+    return ok, (f"tier1 ±{t1/2:.0f}% < tier3 ±{t3/2:.0f}% <= tier4 ±{t4/2:.0f}% (monotone={monotone}); "
+                f"tier2 empty={tier2_empty}; peak/annual={pk}x")
+
+
+# 15 ------------------------------------------------------------------------
+def c_basin_stress():
+    """Broad Run is the concentration basin; its full-buildout peak-day draw is a
+    large share of low-month flow under BOTH bracketing gages (robust to gage
+    choice); completed-only is reported and smaller."""
+    b = json.load(open(os.path.join(PUB, "basin_stress.json")))
+    br = b["basins"]["BROAD RUN"]
+    up = br["pct_of_low_month_flow_PEAK_draw"]
+    dn = br["downstream_gage_sensitivity"]["pct_of_low_month_flow_PEAK_draw"]
+    robust = min(up, dn) > 50 and abs(up - dn) < 30      # same order, both gages
+    completed_lower = br["completed_only_pct_of_low_month_flow_PEAK"] < up
+    framing = "not a withdrawal" in b["framing"].lower() or "scale comparison" in b["framing"].lower()
+    ok = robust and completed_lower and framing
+    return ok, (f"Broad Run peak-day = {up}% (upstream) / {dn}% (downstream) of low-month flow "
+                f"(robust={robust}); completed-only {br['completed_only_pct_of_low_month_flow_PEAK']}%; "
+                f"scale-comparison framing present={framing}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -308,6 +342,8 @@ def main():
     check("11 basin displacement", c_basin_displacement)
     check("12 growth scenarios", c_growth_scenarios)
     check("13 value of information", c_value_of_information)
+    check("14 evidence ladder", c_evidence_ladder)
+    check("15 basin stress", c_basin_stress)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

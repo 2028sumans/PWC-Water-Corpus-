@@ -2306,3 +2306,45 @@ The per-building predictive variance is LOO-calibrated: coverage@90 = 86% (12/14
 Every load-bearing external constant is quote-backed and machine-verified (§36, 12 quoted claims verbatim in-PDF). The full pipeline reproduces via the documented interpreter order; `verify_research_ready.py` re-computes 13 invariants from source and must pass before any number-touching deploy.
 
 **Bottom line:** the county central is most sensitive to inferred power (67%, the transparency gap itself); the probable interval is ±19%; the fallback model is cross-validated and its uncertainty is calibrated; and the distribution passes the only metered benchmark. The estimate is defensible *and* honest about what it cannot resolve.
+
+## 40. Evidence ladder and the peak-day view (V2 + S1)
+
+`evidence_ladder.py` → `public/data/evidence_ladder.json`.
+
+### 40.1 Uncertainty tracks evidence, measured not asserted
+The methodology claims throughout that a building's interval reflects the *evidence available*, not modelling effort. Measured across the fleet (per-building 90% CI widths from `monte_carlo.py`):
+
+| Tier | Basis | n | Effective IT MW | Median 90% CI |
+|---|---|---|---|---|
+| 1 | permit generator capacity (**observed**) | 45 | 1,382 | **±26%** |
+| 2 | stated critical load | **0** | 0 | *tier is empty* |
+| 3 | fitted GFA→MW, operator-calibrated (inferred) | 57 | 1,745 | ±57% |
+| 4 | fitted GFA→MW, generic curve (inferred) | 141 | 3,341 | ±60% |
+
+A building with an observed power number carries an interval **2.3× narrower** than one inferred from floor area alone — same model, same effort, different evidence. **Tier 2 is empty**: no Prince William data-center building publishes a stated critical IT load recoverable from public records (§28). The emptiness of a tier is itself a finding, and it is the tier that a disclosure requirement would populate.
+
+### 40.2 Peak day, not annual mean, is the infrastructure-relevant number
+ICPRB's Prince William peak-day WUP (3,060 gal/MW/day) is ~10× the annual-average 309. The local Scope 1 draw therefore differs enormously by framing:
+
+| Fleet | Annual average | Peak day | Ratio |
+|---|---|---|---|
+| All 243 buildings (full buildout) | 1.76 MGD | **17.46 MGD** | 9.9× |
+| 54 completed today | 0.33 MGD | 3.29 MGD | 9.9× |
+
+Utilities size infrastructure to peak day, and the peak lands in the same months as the streamflow minimum (§31). Reporting only the annual mean understates the infrastructure-relevant draw by an order of magnitude.
+
+## 41. Per-basin supply stress (B2/S2)
+
+`basin_stress.py` → `public/data/basin_stress.json`. Compares each watershed's on-site draw to that basin's USGS monthly flow climatology.
+
+**Framing, stated up front:** this is a **scale comparison, not a withdrawal attribution.** Prince William data centers are supplied by Prince William Water (Occoquan/Potomac public supply); they do not withdraw from the small streams they sit beside. The ratios answer "how large is this demand relative to the water moving through these basins" — the standard test of whether a demand is hydrologically material.
+
+| Watershed | Buildings | Draw (annual) | Draw (peak day) | Gage flow, low month | Peak draw as % of low-month flow |
+|---|---|---|---|---|---|
+| **Broad Run** | 166 (50 built) | 1.39 MGD | 13.81 MGD | 13.2 MGD (Sep) | **105%** (96% at downstream gage) |
+| Bull Run | 61 | 0.31 MGD | 3.05 MGD | 36.2 MGD (Jul) | 8.4% |
+| Quantico Creek | 2 | 0.01 MGD | 0.07 MGD | 1.7 MGD (Aug) | 4.2% |
+
+**Broad Run is the finding.** It holds 166 of 243 buildings, and at **full buildout** its peak-day on-site draw is of the same order as the *entire lowest-month mean flow* of the stream the buildings sit on — 105% at the upstream Buckland gage, 96% at the downstream Bristow gage, so the result is robust to gage choice. Today's 50 completed buildings are at 21%. The annual-average framing (4.2% of mean flow) makes this invisible.
+
+**Caveats carried in the output, not hidden:** (a) draw figures are full-buildout (built + under construction + planned), with completed-only reported alongside; (b) Broad Run is bracketed by two gages and both are reported rather than assuming one is conservative; (c) the Broad Run and Bull Run gages were discontinued (1986, 1981) so their climatologies are historical stationary references — under the current drought (PDSI −5.3, §31) actual flows are likely lower, which would raise these ratios, not lower them; (d) Powells Creek has no usable gage (~2 years of record) and is recorded as a data gap rather than estimated.
