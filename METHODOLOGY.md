@@ -2456,3 +2456,36 @@ On-site draw as % of that month's mean flow (central case):
 **The binding space-time condition is Broad Run in July, at 28.3% of that month's mean flow** — robust across the baseload sweep (22.8% at 50% baseload, 33.7% at 10%). The comparison that justifies crossing the two dimensions: on a **flat annual** basis the same basin reads **4.2%** of mean flow. The seasonal slice alone shows a July peak but not where it lands; the basin slice alone shows Broad Run's concentration but averages the timing away. Only the surface shows that the county's data-center draw concentrates into one basin in the one month that basin is driest — a ~7× amplification over the flat annual figure.
 
 (Consistency with §41: this table is monthly-mean draw vs monthly-mean flow, 28%; §41's ~105% figure is *peak-day* draw vs *lowest-month* flow. Both are reported because utilities plan against the second while hydrologists reason about the first.)
+
+## 47. Audit of the average-vs-marginal basin result (the headline claim, stress-tested)
+
+The average-vs-marginal basin flip is the project's most novel result, so it was audited link by link before being used as a paper claim. The audit changed how the claim must be stated.
+
+### 47.1 What is data-derived (verified)
+- **All Virginia nuclear water consumption is at North Anna.** Verified directly in the USGS 2008–2020 file: Surry reports **0.0 cu_mgd** (once-through cooled on the tidal James — withdrawal without consumption), North Anna **95.21 cu_mgd** pooled 2018–20. So the nuclear share of Dominion's mix maps to one reservoir.
+- **North Anna sits in the York basin.** From USGS's own `Name.of.Water.Source` field ("North Anna River" → Lake Anna), not from our judgement.
+- **The magnitude.** Under Dominion's average mix (25% nuclear), York receives **18.77 MGD = 43.3% of fleet Scope 2**. Derived from plant-level USGS consumption × the published mix.
+- **Coal and gas destinations.** Clover (Roanoke River) dominates VA coal consumption; Tenaska and Bear Garden (James) dominate gas. Both from the same USGS field.
+
+### 47.2 What is assumed (defensible, but a premise — not a finding)
+**"Nuclear is never on the margin."** `PJM_MARGINAL_FUEL_MIX` contains no nuclear term, so the York attribution goes to zero **by construction**. This is standard dispatch reasoning — nuclear is must-run baseload with near-zero marginal cost and does not respond to an added MW — and it is uncontroversial. But it must be reported as the *premise* that produces the result, not as an empirical discovery. Tested across every alternative parameterization below, York remains **0.00 in all cases**, confirming the result depends on this premise alone and on nothing fragile.
+
+### 47.3 What is unsourced (a real weakness, now labelled)
+The specific marginal split — combined-cycle 61.7%, coal 10.0%, wind 11.1%, CT 17.2%, attributed in-code to "PJM marginal-fuel data (2022)" — **is not in the provenance ledger and no supporting file exists in the corpus.** It is carried as an assumption pending a citable source. It does not affect the York result, but it strongly affects the *destination*:
+
+| Coal share (marginal) | James | Roanoke | Potomac | York |
+|---|---|---|---|---|
+| 0% | 14.42 | 0.00 | 5.38 | **0.00** |
+| 5% | 12.26 | 4.35 | 4.57 | **0.00** |
+| 10% (as-shipped) | 10.44 | 8.00 | 3.90 | **0.00** |
+| 15% | 8.90 | 11.11 | 3.32 | **0.00** |
+
+### 47.4 A methodological limit on the destination claim
+The marginal attribution maps marginal generation onto **Virginia plants only** (the USGS VA slice). PJM is a 13-state RTO, and the marginal unit — particularly marginal **coal**, given Virginia's very small remaining coal fleet — is frequently outside Virginia, in the Ohio Valley. Attributing marginal coal water to the Roanoke basin therefore likely misplaces it. **This does not affect the York→0 result** (which concerns nuclear's absence), but it means the model cannot credibly say where the marginal water lands.
+
+### 47.5 How the claim must be stated
+**Defensible (use this):** *Under average-mix (location-based) accounting, 18.8 MGD — 43% of the fleet's Scope 2 water — is attributed to a single out-of-basin reservoir, Lake Anna. Under marginal accounting the same fleet attributes **zero** water there. The water at the reservoir does not change; the accounting convention does.*
+
+**Not defensible (do not use):** any claim about the specific basins the burden *moves to*, or their proportions — §47.3 and §47.4 show the destination is parameter-sensitive and geographically under-determined.
+
+The conceptual point is fully preserved, and is arguably sharper without the destination: the finding is that a 19 MGD basin burden is **an artifact of convention**, not that it relocates somewhere specific.

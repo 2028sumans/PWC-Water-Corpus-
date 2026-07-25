@@ -26,6 +26,7 @@ Checks:
   16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
   17 triangulation         forward-load sources agree within public granularity, cap left untuned
   18 seasonal x basin      binding condition is summer+Broad Run, amplified vs flat, sweep-robust
+  19 marginal-flip        York->0 holds across all marginal-mix params; assumptions declared
 
 Exit code 0 iff every check passes.
 """
@@ -236,9 +237,17 @@ def c_provenance_ledger():
             if re.sub(r"\s+", " ", q).lower() not in pdftext(e["source_pdf"]):
                 bad.append(f"{e['id']}: quote not in {e['source_pdf']}")
         else:
-            if not (e.get("type") in ("derived", "external_citation", "external_data")
-                    and e.get("note")):
+            # Non-quoted entries must be explicitly typed AND noted. "assumption*"
+            # and "limitation" types exist so premises that produce results (e.g.
+            # nuclear-never-marginal, METHODOLOGY 47.2) and unsourced parameters
+            # are declared rather than passing as fact. An unsourced assumption
+            # must additionally say so in its source/note.
+            ok_types = ("derived", "external_citation", "external_data",
+                        "assumption", "assumption_unsourced", "limitation")
+            if not (e.get("type") in ok_types and e.get("note")):
                 bad.append(f"{e['id']}: no quote and not a typed/noted derivation")
+            elif e.get("type") == "assumption_unsourced" and "NO supporting file" not in (e.get("source") or ""):
+                bad.append(f"{e['id']}: unsourced assumption must state its lack of source")
     return (not bad), (f"{n_quoted} quoted claims all verified verbatim in-PDF; "
                        f"{len(led['entries'])-n_quoted} derivations typed+noted"
                        if not bad else f"{len(bad)} problems e.g. {bad[:2]}")
@@ -399,6 +408,46 @@ def c_seasonal_basin_surface():
                 f"baseload sweep={robust}")
 
 
+
+# 19 ------------------------------------------------------------------------
+def c_marginal_flip_robust():
+    """The headline claim (METHODOLOGY 47): York->0 under marginal accounting must
+    depend ONLY on nuclear's absence, not on the unsourced marginal-mix split. Re-runs
+    the marginal basin attribution across coal shares 0-15% and requires York==0 in
+    every case. Also requires the unsourced mix + the premise to be declared in the
+    ledger, so the result can never be presented as fully sourced."""
+    import indirect_water_footprint as m
+    from basin_analysis import load_plants
+    from collections import defaultdict
+    plants = load_plants()
+    d = _profiles()
+    bs = [b for b in d["buildings"] if b.get("scope_water_footprint")]
+    s2m = sum(b["scope_water_footprint"]["scope2_electricity"]["marginal_based"]["mgd_central"] for b in bs)
+    mcf = m.MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH
+    yorks = []
+    for coal in (0.0, 0.05, 0.10, 0.15):
+        mmix = {"natural_gas_cc": 0.617 + (0.10 - coal), "natural_gas_ct": 0.172,
+                "coal": coal, "wind": 0.111}
+        mb = sum(mmix[f] * mcf[f] for f in mmix)
+        out = defaultdict(float)
+        for fuel in mmix:
+            pf = "natural_gas_cc" if fuel.startswith("natural_gas") else fuel
+            if pf not in plants:
+                continue
+            fm = s2m * (mmix[fuel] * mcf[fuel]) / mb
+            tot = sum(p["consumption_mgd"] for p in plants[pf]) or 1
+            for p in plants[pf]:
+                out[p["basin"]] += fm * p["consumption_mgd"] / tot
+        yorks.append(out.get("York (Lake Anna)", 0.0))
+    robust = all(y < 1e-9 for y in yorks)
+    led = {e["id"]: e for e in json.load(open(os.path.join(DATA, "provenance_ledger.json")))["entries"]}
+    declared = ("pjm_marginal_fuel_mix" in led and led["pjm_marginal_fuel_mix"]["type"] == "assumption_unsourced"
+                and "nuclear_never_marginal" in led)
+    return (robust and declared), (
+        f"York across coal shares 0-15%: {[round(y,3) for y in yorks]} (all zero={robust}); "
+        f"unsourced mix + premise declared in ledger={declared}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -419,6 +468,7 @@ def main():
     check("16 exposure + monitoring gap", c_exposure_gap)
     check("17 forward-load triangulation", c_triangulation)
     check("18 seasonal x basin surface", c_seasonal_basin_surface)
+    check("19 marginal-flip robustness", c_marginal_flip_robust)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"
