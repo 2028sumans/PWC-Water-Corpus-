@@ -2151,14 +2151,17 @@ Beyond internal consistency, the load-bearing external numbers were checked verb
 
 The harness is re-run before any number-touching deploy, so the published figures can never silently drift from the code and data that produce them.
 
-## 35. Value-of-disclosure analysis (the transparency-gap thesis, quantified)
+## 35. Value of facility-level power transparency — theoretical bound vs realistic disclosure
 
-The estimator's headline is a ±19% county interval (§32). This analysis (`value_of_disclosure.py`) answers the paper's central question directly: *how much of that interval is disclosure-addressable, and what disclosure buys the most?* It is a counterfactual Monte Carlo on the same machinery — for a "disclosed" building the power central is held fixed (disclosure reveals the number, it does not move our estimate) while its uncertainty collapses from the GP predictive variance (§32) to a small independent reporting noise. This is the analysis the LLM extraction pipeline (§33) exists to feed.
+The estimator's headline is a ±19% county interval (§32). This analysis (`value_of_disclosure.py`) asks how much of that interval facility disclosure could remove — but does so *carefully*, because the answer depends entirely on what "disclosure" means.
 
-### 35.1 The value-of-disclosure curve (power)
-Disclosing fitted-power buildings largest-footprint-first, and re-running the MC at each step:
+### 35.0 The counterfactual, stated explicitly (why this is not simply "the value of disclosure")
+A building is "disclosed" by holding its power **central fixed** (disclosure reveals the number; it does not move our best estimate) and collapsing its uncertainty to a small **independent** reporting noise. That is a **perfect-information upper bound**: it assumes every reported figure is (1) facility-specific, (2) measured not modeled, (3) consistently defined across operators, (4) temporally comparable, (5) independently verifiable, and (6) actually available. Real public disclosure satisfies few of these. So §35.1–35.2 are the *theoretical value of facility-level power transparency*, an upper bound — **not** "the value of disclosure" unqualified — and §35.3 gives the realistic sensitivity.
 
-| Buildings disclosed | % of fitted floor area | County 90% CI |
+### 35.1 Theoretical curve (perfect information, power only)
+Disclosing fitted-power buildings largest-footprint-first:
+
+| Buildings disclosed | % of fitted floor area | County 90% CI (upper bound) |
 |---|---|---|
 | 0 (today) | 0% | ±19% |
 | 10 | 19% | ±16% |
@@ -2166,20 +2169,58 @@ Disclosing fitted-power buildings largest-footprint-first, and re-running the MC
 | 100 | 80% | ±11% |
 | 198 (all fitted) | 100% | ±10% |
 
-Steep diminishing returns: the ~30 largest inferred-power buildings carry most of the addressable uncertainty. Disclosure has real, quantified value — but a floor remains.
+Steep diminishing returns: the ~30 largest inferred-power buildings carry most of the addressable uncertainty, *if* the numbers are perfect.
 
-### 35.2 The layered disclosure stack — and why facility disclosure is not enough
-Collapsing each inference in turn, for *every* building:
+### 35.2 Layered stack (perfect information) — facility disclosure is not enough
+Collapsing each inference in turn, for every building:
 
-| Disclosure level | County 90% CI |
+| Disclosure level | County 90% CI (upper bound) |
 |---|---|
 | baseline (today) | ±19% |
-| + actual IT power | **±9%** |
-| + PUE | ±9% |
-| + cooling type | ±9% |
-| + grid water-intensity | **±3%** |
+| + actual IT power | ±10% |
+| + PUE | ±10% |
+| + cooling type | ±10% |
+| + grid water-intensity | **±6%** |
 
-**This is the key result.** Full facility-side power disclosure halves the interval (±19%→±9%), but adding PUE and cooling-type disclosure on top buys *almost nothing at the county scale*. The reason is structural: Scope 2 (grid electricity) is ~87% of the footprint, so the binding uncertainty is the **grid's water-intensity (gal/MWh)** — a power-plant / generation-mix property, not any data-center attribute. Only resolving *that* collapses the interval to ±3%.
+Even under perfect information, adding PUE and cooling-type disclosure buys ~nothing at county scale. Scope 2 (grid electricity) is ~87% of the footprint, so the binding uncertainty is the **grid's water-intensity (gal/MWh)** — a power-plant / generation-mix property, not a data-center attribute. Only resolving that reaches ±6%.
 
-### 35.3 What this means for the paper
-The largest transparency gap is **at the power plant, not the data center** — the displacement thesis, quantified as an uncertainty budget. Facility-level disclosure (the thing policymakers usually ask operators for) is necessary but not sufficient; the dominant lever is generation-side water accounting, which ties directly to the average-vs-marginal Scope 2 question (§16). It also sets disclosure priorities: actual IT load for the ~30 largest buildings is the highest-value facility ask, but grid water-intensity transparency dwarfs all facility disclosures combined. Output: `public/data/value_of_disclosure.json`. No estimator constant changed — this reads the shipped model.
+### 35.3 Realistic disclosure — the upper bound largely evaporates
+Real reporting is not perfect information. Relaxing conditions (3)–(5) with a **shared** definitional/temporal inconsistency (design vs actual load, nameplate vs metered, differing averaging windows) that does *not* average away across operators, and sweeping its magnitude (it is undocumented, so we do not assert one value):
+
+| Shared inconsistency (σ) | County 90% CI after full power disclosure |
+|---|---|
+| 0% (perfect info) | ±10% |
+| 5% | ±12% |
+| 10% | ±16% |
+| 15% | ±22% (worse than baseline) |
+
+At a plausible ~10% shared inconsistency, full facility-power disclosure only reaches **±16%** — barely better than today's ±19% — and at 15% it is *worse* than no disclosure, because a shared systematic error hits the whole fleet at once. **The value of disclosure is contingent on standardization and verification, not on the act of reporting.** This is the honest, load-bearing caveat.
+
+### 35.4 What this means for the paper
+Two results survive the caveat. First, the **largest transparency gap is at the power plant, not the data center** (§35.2) — the displacement thesis as an uncertainty budget; generation-side water accounting dwarfs every facility disclosure combined, tying to the average-vs-marginal Scope 2 question (§16). Second, **facility disclosure only helps if it is standardized, measured, and verifiable** (§35.3) — the perfect-information halving (±19%→±10%) is an upper bound that a mandate without definitions would not achieve. Both are policy-relevant and neither overclaims. Output: `public/data/value_of_disclosure.json`. No estimator constant changed — this reads the shipped model.
+
+## 36. Provenance ledger — claim → source → page → verbatim quote, mechanically enforced
+
+Every load-bearing external constant in the estimator is recorded in `data/provenance_ledger.json` as: the claim, the value, the exact source, the page, the section, and a **verbatim quote**. The rule is enforced, not aspirational: `verify_research_ready.py` check 10 runs `pdftotext` on each entry's source PDF and fails unless the quote is present (whitespace-normalized). **If a quote cannot be produced from the source, the claim does not enter the dataset.** Constants that are *derived* (computed from data) or *external* (a cited paper with no local PDF) are typed as such and carry their derivation or citation instead of a local quote — they are never passed off as directly quoted.
+
+Current ledger — 12 quoted claims, all verified verbatim in-PDF, plus 3 typed derivations:
+
+| Claim | Value | Source | Page |
+|---|---|---|---|
+| Air-cooled WUP | 150 gal/MW/day | ICPRB 2025 WMA study | 128 |
+| PWC observed WUP | 309 gal/MW/day | ICPRB 2025 WMA study | 127 |
+| Basin WUP | 800 gal/MW/day | ICPRB 2025 WMA study | 127 |
+| Water-cooled WUP | 1,577 gal/MW/day | ICPRB 2025 WMA study | 128 |
+| Consumptive-use factor | 0.75 | ICPRB 2025 WMA study | 126 |
+| Eq 6-3 redundancy factor | 0.5 (2N) | ICPRB 2025 WMA study | 126 |
+| Eq 6-3 utilization factor | 0.8 (EPRI 2024) | ICPRB 2025 WMA study | 126 |
+| Effective power from generator permits | — | ICPRB 2025 WMA study | 125 |
+| Typical building ≈ office | 6.7 MGY | JLARC Report 598 | 80 |
+| Buildings > 50 MGY | 11 | JLARC Report 598 | 80 |
+| Largest VA building | 243 MGY | JLARC Report 598 | 80 |
+| VA industry total | 2.1 BGY | JLARC Report 598 | 80 |
+| USGS consumption factors | nuc 391 / gas 196 / coal 474 | USGS 2008–2020 (VA) | *derived from CSV* |
+| Scope 3 fraction | 5–15% | Privette et al. AGU Advances 2026 | *external citation* |
+| Dominion generation mix | shares | EIA / Dominion | *external data* |
+
+This directly implements the reviewer discipline "every factual claim needs a source, page, and verbatim quote": the PERMIT_FACTOR 0.4 = 0.5 × 0.8 that anchors the power ladder, the four Scope-1 WUP tiers, the 0.75 consumptive factor, and the JLARC validation anchors are all now quote-backed and machine-checked on every run.

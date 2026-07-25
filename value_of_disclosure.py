@@ -1,5 +1,6 @@
 """
-Value-of-disclosure curve — the transparency-gap thesis, quantified.
+Theoretical value of facility-level power transparency (+ realistic-disclosure
+sensitivity) — the transparency-gap thesis, quantified and carefully bounded.
 
 The estimator's county 90% CI is ±19% (§32), driven mostly by the 198 buildings
 whose power is INFERRED from floor area (the GP predictive variance) rather than
@@ -7,15 +8,24 @@ observed. This asks the paper's central counterfactual: if operators disclosed
 actual IT load, how much would that interval shrink -- and for which buildings
 does disclosure buy the most?
 
+WHAT "DISCLOSED" MEANS HERE (state the counterfactual explicitly)
+A "disclosed" building holds its power CENTRAL fixed (disclosure reveals the
+number, it does not move our best estimate) and collapses its uncertainty to a
+small INDEPENDENT reporting noise. That is a PERFECT-INFORMATION UPPER BOUND: it
+assumes every reported figure is (1) facility-specific, (2) measured not modeled,
+(3) consistently defined across operators, (4) temporally comparable, (5)
+independently verifiable, and (6) actually available. Real public disclosure
+satisfies few of these, so the curve and the perfect-info stack are labelled the
+"theoretical value of facility-level power transparency," NOT "the value of
+disclosure." A separate REALISTIC scenario relaxes (3)-(5) with a SHARED
+definitional/temporal inconsistency term that does not average away across
+operators; its magnitude is SWEPT, not asserted, because operator-reporting
+variance is itself undocumented -- which is part of the point.
+
 METHOD (a counterfactual Monte Carlo)
-Same machinery as monte_carlo.py, but each fitted building can be toggled to
-"disclosed": its power central is held FIXED (disclosure reveals the number, it
-does not move our best estimate) while its uncertainty collapses from the GP
-predictive variance to the tight permit-tier treatment (the ICPRB Eq 6-3 factor
-plus a small apportionment) that the 45 permit-backed buildings already enjoy.
-We then disclose fitted buildings in order of footprint (biggest first -- the
-most uncertainty per disclosure) and re-run the MC at each step, tracing the
-county 90% CI as a function of how much of the fleet is disclosed.
+Same machinery as monte_carlo.py, toggling buildings to disclosed and re-running
+the MC at each step, tracing the county 90% CI vs how much of the fleet is
+disclosed and vs disclosure quality.
 
 WHAT THE CURVE SHOWS (and its floor)
 Power disclosure cannot drive the CI to zero: the WUP calibration, grid
@@ -80,20 +90,25 @@ def main():
     # Pre-draw the shared per-building idiosyncratic power terms ONCE so the only
     # thing that changes across disclosure levels is whether a building uses its
     # GP draw or the tight permit-tier draw -- clean apples-to-apples.
-    def power_draw(b, disclosed):
+    def power_draw(b, disclosed, shared_defn=None):
         swf = b["scope_water_footprint"]; pw = swf["power"]
         ec = pw["effective_it_mw_central"]
         gfa = pw.get("gfa_sqft")
         if pw["basis"] == "permit_generator_capacity" or not gfa or ec <= 0:
             return ec * permit_factor * tri(0.90, 1.0, 1.10)
         if disclosed:
-            # TRUE disclosure = operator publishes the actual IT load. The whole
-            # inference chain (and its shared systematic terms) disappears; only a
-            # small INDEPENDENT reporting/definitional noise remains. This is NOT
-            # the permit tier -- permit power is itself inferred from backup-
-            # generator nameplate via the shared Eq 6-3 factor (permit_factor,
-            # 0.70-1.35), a systematic that does not average away.
-            return ec * (1.0 + rng.normal(0.0, 0.05, N))
+            # Facility power transparency. PERFECT information (shared_defn=None) =
+            # a small INDEPENDENT reporting noise only -- this is a THEORETICAL
+            # UPPER BOUND, not "the value of disclosure": it assumes every reported
+            # number is facility-specific, measured (not modeled), consistently
+            # defined, temporally comparable, and verifiable. REALISTIC disclosure
+            # (shared_defn given) adds a SHARED definitional/temporal inconsistency
+            # (design vs actual load, nameplate vs metered, differing averaging
+            # windows) that does NOT average away across operators.
+            eff = ec * (1.0 + rng.normal(0.0, 0.05, N))
+            if shared_defn is not None:
+                eff = eff * (1.0 + shared_defn)
+            return eff
         if pw["basis"] == "fitted_gfa_model":
             xb = math.log10(gfa)
             base0 = fit_beta[0] + fit_beta[1] * xb
@@ -148,7 +163,13 @@ def main():
     # Each layer collapses one inference to a tight INDEPENDENT reporting noise
     # for EVERY building (including permit-backed, whose power is itself inferred
     # from generator nameplate via the shared Eq 6-3 factor).
-    def county_ci_layered(disc_power, disc_pue, disc_cool, disc_grid=False):
+    # Disclosure-quality model (§35.2): a SHARED definitional/temporal
+    # inconsistency drawn once and applied to every disclosed building. sigma=0 is
+    # the perfect-information upper bound; larger sigma is more realistic reporting.
+    # Swept, not asserted -- operator-reporting variance is itself undocumented.
+    disc_shared = {s: rng.normal(0.0, s, N) for s in (0.0, 0.05, 0.10, 0.15)}
+
+    def county_ci_layered(disc_power, disc_pue, disc_cool, disc_grid=False, shared_sigma=0.0):
         county = np.zeros(N)
         blend = float(mix["natural_gas_cc"] * cfc["natural_gas_cc"]
                       + mix["nuclear"] * cfc["nuclear"] + mix["coal"] * cfc["coal"]) \
@@ -156,7 +177,8 @@ def main():
         for b in bs:
             swf = b["scope_water_footprint"]; pw = swf["power"]
             ec = pw["effective_it_mw_central"]
-            eff = ec * (1.0 + rng.normal(0.0, 0.05, N)) if disc_power else power_draw(b, False)
+            eff = (power_draw(b, True, disc_shared[shared_sigma]) if disc_power
+                   else power_draw(b, False))
             s1c = swf["scope1_onsite_cooling"]["wup_gal_per_mw_day"]
             if disc_cool:
                 wup = s1c["central"] * (1.0 + rng.normal(0.0, 0.10, N))   # cooling type known
@@ -174,6 +196,7 @@ def main():
         p5, p50, p95 = np.percentile(county, [5, 50, 95])
         return round(float((p95 - p5) / p50 * 100), 1)
 
+    # Perfect-information layered stack (shared_sigma=0): the THEORETICAL bound.
     layered = {
         "baseline": curve[0]["ci_width_pct"],
         "power": county_ci_layered(True, False, False),
@@ -181,45 +204,61 @@ def main():
         "power_pue_cooling": county_ci_layered(True, True, True),
         "power_pue_cooling_grid": county_ci_layered(True, True, True, disc_grid=True),
     }
+    # Realistic full-power disclosure: sweep the shared definitional inconsistency.
+    realistic = {f"shared_defn_sigma_{int(s*100)}pct":
+                 county_ci_layered(True, False, False, shared_sigma=s)
+                 for s in (0.0, 0.05, 0.10, 0.15)}
 
     base_w = curve[0]["ci_width_pct"]
     floor_w = curve[-1]["ci_width_pct"]
-    # value of the top-10 disclosures specifically
     top10 = next(c for c in curve if c["n_disclosed"] == 10)
 
     out = {
-        "purpose": "Value-of-disclosure: county 90% CI as fitted-power buildings are "
-                   "disclosed (central fixed, uncertainty collapses to permit tier), "
-                   "largest-footprint first.",
+        "counterfactual_definition": (
+            "A building is 'disclosed' by holding its power CENTRAL fixed and collapsing its "
+            "uncertainty to a small INDEPENDENT reporting noise. The perfect-information / "
+            "curve results are therefore an UPPER BOUND on the value of facility-level power "
+            "transparency: they assume every reported figure is (1) facility-specific, "
+            "(2) measured not modeled, (3) consistently defined across operators, "
+            "(4) temporally comparable, (5) independently verifiable, and (6) actually "
+            "available. Realistic disclosure relaxes (3)-(5) via a SHARED definitional/temporal "
+            "inconsistency term that does not average away; see realistic_full_power_disclosure."
+        ),
+        "framing": "theoretical value of facility-level power transparency (upper bound) + a "
+                   "realistic-disclosure sensitivity; NOT 'the value of disclosure' unqualified.",
         "baseline_ci_width_pct": base_w,
-        "full_power_disclosure_floor_pct": floor_w,
-        "power_addressable_share_pct": round(100 * (base_w - floor_w) / base_w, 0),
-        "top10_buildings": {"ci_width_pct": top10["ci_width_pct"],
-                            "pct_fitted_gfa": top10["pct_fitted_gfa_disclosed"]},
-        "layered_disclosure_stack_ci_width_pct": layered,
-        "curve": curve,
+        "theoretical_full_power_transparency_pct": floor_w,
+        "power_addressable_share_pct_upper_bound": round(100 * (base_w - floor_w) / base_w, 0),
+        "top10_buildings_upper_bound": {"ci_width_pct": top10["ci_width_pct"],
+                                        "pct_fitted_gfa": top10["pct_fitted_gfa_disclosed"]},
+        "layered_stack_perfect_info_ci_width_pct": layered,
+        "realistic_full_power_disclosure_ci_width_pct": realistic,
+        "curve_perfect_info": curve,
         "headline": (
-            f"The county 90% CI is +/-{base_w/2:.0f}% today. Disclosing actual IT load for the "
-            f"10 largest inferred-power buildings ({top10['pct_fitted_gfa_disclosed']:.0f}% of "
-            f"fitted floor area) narrows it to +/-{top10['ci_width_pct']/2:.0f}%; full facility "
-            f"power disclosure reaches +/-{layered['power']/2:.0f}%. Critically, adding PUE and "
-            f"cooling-type disclosure on top buys almost nothing at the county scale "
-            f"(+/-{layered['power_pue_cooling']/2:.0f}%): Scope 2 is ~87% of the footprint, so the "
-            f"binding uncertainty is the GRID's water-intensity (gal/MWh), not any facility "
-            f"attribute. Only resolving that collapses the interval to "
-            f"+/-{layered['power_pue_cooling_grid']/2:.0f}%. The largest transparency gap is at "
-            f"the power plant, not the data center -- the displacement thesis, quantified."
+            f"Today's county 90% CI is +/-{base_w/2:.0f}%. Under a PERFECT-INFORMATION upper bound "
+            f"(facility-specific, measured, consistently defined, verifiable), full facility power "
+            f"transparency would reach +/-{layered['power']/2:.0f}%, but a realistic shared "
+            f"definitional/temporal inconsistency of ~10% only gets to "
+            f"+/-{realistic['shared_defn_sigma_10pct']/2:.0f}%. Either way, adding PUE and cooling "
+            f"disclosure buys almost nothing at county scale (+/-{layered['power_pue_cooling']/2:.0f}%): "
+            f"Scope 2 is ~87% of the footprint, so the binding uncertainty is the GRID's "
+            f"water-intensity (gal/MWh) -- a power-plant property. Only resolving that reaches "
+            f"+/-{layered['power_pue_cooling_grid']/2:.0f}%. The largest transparency gap is at the "
+            f"power plant, not the data center."
         ),
     }
     json.dump(out, open(OUT, "w"), indent=1)
     print(out["headline"], "\n")
-    print(f"{'disclosed':>10}{'%fitGFA':>9}{'p50':>7}{'p5':>7}{'p95':>7}{'CI±%':>7}")
+    print(f"{'disclosed':>10}{'%fitGFA':>9}{'p50':>7}{'p5':>7}{'p95':>7}{'CI±%':>7}  (perfect-info)")
     for c in curve:
         print(f"{c['n_disclosed']:>10}{c['pct_fitted_gfa_disclosed']:>9.0f}"
               f"{c['p50']:>7.1f}{c['p5']:>7.1f}{c['p95']:>7.1f}{c['ci_width_pct']/2:>7.0f}")
-    print("\nLayered disclosure stack (county 90% CI, ±%):")
+    print("\nPerfect-info layered stack (county 90% CI, ±%):")
     for k in ("baseline", "power", "power_pue", "power_pue_cooling", "power_pue_cooling_grid"):
-        print(f"  {k:<24} ±{layered[k]/2:.0f}%")
+        print(f"  {k:<24} +/-{layered[k]/2:.0f}%")
+    print("\nRealistic full-power disclosure vs shared definitional inconsistency (±%):")
+    for s, w in realistic.items():
+        print(f"  {s:<24} +/-{w/2:.0f}%")
     print(f"\nwrote {OUT}")
 
 

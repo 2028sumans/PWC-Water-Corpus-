@@ -29,6 +29,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 PUB = os.path.join(HERE, "public", "data")
 DATA = os.path.join(HERE, "data")
+RAW = os.path.join(DATA, "water_raw")
 METH = os.path.join(HERE, "METHODOLOGY.md")
 MEMO = os.path.join(HERE, "src", "app", "api", "memo", "route.ts")
 
@@ -202,6 +203,38 @@ def c_constants():
         if (not bad and wup_ok) else f"missing citations={bad} wup_ok={wup_ok}")
 
 
+# 10 ------------------------------------------------------------------------
+def c_provenance_ledger():
+    """Every ledger entry with a source_pdf+quote must have that quote present in
+    the PDF (whitespace-normalized). Enforces 'no quote -> claim does not enter'.
+    Entries without a quote must be typed (derived/external) with a note."""
+    import subprocess
+    led = json.load(open(os.path.join(DATA, "provenance_ledger.json")))
+    cache = {}
+
+    def pdftext(fn):
+        if fn not in cache:
+            p = os.path.join(RAW, fn)
+            cache[fn] = re.sub(r"\s+", " ", subprocess.run(
+                ["pdftotext", "-q", p, "-"], capture_output=True, text=True).stdout).lower()
+        return cache[fn]
+
+    bad, n_quoted = [], 0
+    for e in led["entries"]:
+        q = e.get("verbatim_quote")
+        if q:
+            n_quoted += 1
+            if re.sub(r"\s+", " ", q).lower() not in pdftext(e["source_pdf"]):
+                bad.append(f"{e['id']}: quote not in {e['source_pdf']}")
+        else:
+            if not (e.get("type") in ("derived", "external_citation", "external_data")
+                    and e.get("note")):
+                bad.append(f"{e['id']}: no quote and not a typed/noted derivation")
+    return (not bad), (f"{n_quoted} quoted claims all verified verbatim in-PDF; "
+                       f"{len(led['entries'])-n_quoted} derivations typed+noted"
+                       if not bad else f"{len(bad)} problems e.g. {bad[:2]}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -213,6 +246,7 @@ def main():
     check("7 JLARC validation", c_jlarc)
     check("8 seasonal invariants", c_seasonal)
     check("9 constant provenance", c_constants)
+    check("10 provenance ledger", c_provenance_ledger)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

@@ -116,7 +116,7 @@ export function AppShell() {
     { label: "PERMITS", value: "PWC data centers hold construction-stormwater permits, not operational water permits", tone: "bad" },
     { label: "VALIDATION", value: "Scope 1 distribution vs JLARC 2023 metered data: all 6 published constraints pass; shape indistinguishable after county-intensity scaling (KS p=0.09)", tone: "good" },
     { label: "SEASONAL STRESS", value: "cooling demand peaks in July at 3.9× the mean month — exactly when the Potomac (Little Falls) falls to 41% of annual-mean flow; coincidence index peaks at 9.0", tone: "bad" },
-    { label: "VALUE OF DISCLOSURE", value: "disclosing facility power would halve the county uncertainty (±19%→±9%); PUE/cooling add nothing — the gap is the grid's water-intensity, at the power plant, not the data center", tone: "neutral" },
+    { label: "VALUE OF DISCLOSURE", value: "perfect facility-power transparency could halve county uncertainty (±19%→±10%), but realistic inconsistent reporting only reaches ~±16%; the binding gap is the grid's water-intensity, at the power plant, not the data center", tone: "neutral" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);
   useEffect(() => {
