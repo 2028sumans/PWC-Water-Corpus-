@@ -1,0 +1,57 @@
+{
+ "baseline_ci_width_pct": 37.9,
+ "note": "Each acquisition scored ALONE (marginal reduction from today's baseline), common random numbers. delta_ci_pct is the reduction in the full 90% CI width (halve for +/- reduction).",
+ "acquisitions": [
+  {
+   "dataset": "per_dp_contracted_load",
+   "ci_width_after_pct": 18.0,
+   "delta_ci_pct": 19.9,
+   "delta_halfwidth_pp": 9.9,
+   "holder": "Dominion / SCC (PUR-2026-00011)",
+   "difficulty": "medium",
+   "note": "filed at the SCC but usually aggregated or confidential per delivery point; needs standardized definitions"
+  },
+  {
+   "dataset": "grid_water_intensity",
+   "ci_width_after_pct": 33.9,
+   "delta_ci_pct": 4.0,
+   "delta_halfwidth_pp": 2.0,
+   "holder": "USGS (annual) + PJM/EIA dispatch",
+   "difficulty": "hard",
+   "note": "plant-level annual water is public; the marginal/hourly water-intensity that the causal question needs is not"
+  },
+  {
+   "dataset": "operator_pue",
+   "ci_width_after_pct": 37.9,
+   "delta_ci_pct": 0.0,
+   "delta_halfwidth_pp": 0.0,
+   "holder": "operators (voluntary)",
+   "difficulty": "easy",
+   "note": "several publish fleet-wide PUE already"
+  },
+  {
+   "dataset": "utility_customer_water",
+   "ci_width_after_pct": 38.3,
+   "delta_ci_pct": -0.4,
+   "delta_halfwidth_pp": -0.2,
+   "holder": "Prince William Water / Fairfax Water",
+   "difficulty": "medium-hard",
+   "note": "metered per-customer use exists but is not public per facility; the only path to measured on-site Scope 1"
+  },
+  {
+   "dataset": "cooling_permits",
+   "ci_width_after_pct": 38.3,
+   "delta_ci_pct": -0.4,
+   "delta_halfwidth_pp": -0.2,
+   "holder": "PWC ePortal (public)",
+   "difficulty": "easy",
+   "note": "public but sparse/redacted (\u00a730)"
+  }
+ ],
+ "grid_conditional_value": {
+  "ci_after_power_pct": 18.0,
+  "ci_after_power_and_grid_pct": 7.0,
+  "grid_delta_once_power_resolved_halfwidth_pp": 5.5
+ },
+ "headline": "Scored ALONE from today's +/-19%: the single highest-value acquisition is standardized, verified facility load (per-DP), -10pp to +/-9%, because power is the current dominant uncertainty. Grid water-intensity helps little alone (-2pp) but is the BINDING gap once power is resolved (-6pp, to +/-4%). On-site water metering, PUE, and cooling permits move the county number ~0 (Scope 1 is only ~4% of the footprint). The high-value data are the hard-to-obtain ones; a policy optimized for ease targets the wrong datasets."
+}

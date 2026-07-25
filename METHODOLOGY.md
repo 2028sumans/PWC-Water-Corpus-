@@ -2251,3 +2251,22 @@ This is a **category-careful** comparison. ICPRB forecasts **on-site (Scope 1) c
 - PWC on-site 2050 central (4.0 MGD) stays well under the WMA-wide 22 MGD — directionally consistent.
 
 That our on-site is a *fraction* of the regional forecast while our *total* dwarfs it is not a discrepancy — it **is the displacement thesis**: the water that makes data centers a large consumer is consumed at the power plant, outside the basin and outside any on-site accounting. This is a second, independent out-of-sample consistency check (after JLARC, §27), and it is honest about what is and isn't comparable.
+
+## 38. Value of information — ranking real dataset acquisitions
+
+§35 gave the mechanisms abstractly; `value_of_information.py` turns them into a decision table over *named, real* datasets, each scored by its marginal reduction in the county 90% CI (common random numbers) and annotated with who holds it and how hard it is to obtain. Output: `public/data/value_of_information.json`.
+
+### 38.1 Marginal value, scored alone (from today's ±19%)
+| Acquisition | Holder | Difficulty | CI after | Δ (half-width) |
+|---|---|---|---|---|
+| Per-DP contracted load (standardized, verified) | Dominion / SCC | medium | ±9% | **−9.9 pp** |
+| Grid water-intensity (plant + marginal) | USGS + PJM/EIA | hard | ±17% | −2.0 pp |
+| Operator PUE | operators | easy | ±19% | ~0 |
+| Utility customer water meters | water utilities | medium-hard | ±19% | ~0 |
+| Cooling-equipment permits | PWC ePortal | easy | ~0 |
+
+### 38.2 The interaction — reconciling this with §35
+Scored alone, **standardized + verified facility load is the single highest-value acquisition** (−9.9 pp), because power is the *current* dominant uncertainty. Grid water-intensity barely helps alone (−2 pp) — the power uncertainty masks it — but it is the **binding gap once power is resolved**: after facility load is known, acquiring grid water-intensity takes the CI from ±18% to ±7% (−5.5 pp). So "biggest single acquisition" (facility load) and "binding floor" (grid) are both true, in sequence — not contradictory.
+
+### 38.3 The policy finding
+The high-value datasets (standardized/verified facility load; grid water-intensity) are the **hard-to-obtain** ones; the easy public asks (voluntary PUE, cooling permits) move the county number by ~0. On-site water metering also moves it ~0 — not because it's unimportant locally, but because on-site Scope 1 is only ~4% of the footprint. **A disclosure policy optimized for ease would target exactly the wrong data.** This is the actionable version of the transparency-gap thesis.

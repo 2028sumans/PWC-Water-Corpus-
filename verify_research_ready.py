@@ -277,6 +277,22 @@ def c_growth_scenarios():
                 f"today-grid {c['grid_today']['total_mgd']} ={decarb_beats}")
 
 
+# 13 ------------------------------------------------------------------------
+def c_value_of_information():
+    """VOI: per-DP load is the top single acquisition; grid's conditional value
+    (after power) exceeds its alone value; easy asks (PUE/cooling) are ~0."""
+    v = json.load(open(os.path.join(PUB, "value_of_information.json")))
+    acq = {a["dataset"]: a for a in v["acquisitions"]}
+    top = max(v["acquisitions"], key=lambda a: a["delta_halfwidth_pp"])["dataset"]
+    gc = v["grid_conditional_value"]
+    grid_alone = acq["grid_water_intensity"]["delta_halfwidth_pp"]
+    grid_cond = gc["grid_delta_once_power_resolved_halfwidth_pp"]
+    easy_zero = abs(acq["operator_pue"]["delta_halfwidth_pp"]) < 1 and abs(acq["cooling_permits"]["delta_halfwidth_pp"]) < 1
+    ok = top == "per_dp_contracted_load" and grid_cond > grid_alone and easy_zero
+    return ok, (f"top acquisition={top}; grid alone {grid_alone}pp < conditional {grid_cond}pp; "
+                f"PUE/cooling ~0={easy_zero}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -291,6 +307,7 @@ def main():
     check("10 provenance ledger", c_provenance_ledger)
     check("11 basin displacement", c_basin_displacement)
     check("12 growth scenarios", c_growth_scenarios)
+    check("13 value of information", c_value_of_information)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"
