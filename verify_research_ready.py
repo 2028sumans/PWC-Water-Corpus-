@@ -25,6 +25,7 @@ Checks:
   15 basin stress          Broad Run peak-day/low-flow robust across both bracketing gages
   16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
   17 triangulation         forward-load sources agree within public granularity, cap left untuned
+  18 seasonal x basin      binding condition is summer+Broad Run, amplified vs flat, sweep-robust
 
 Exit code 0 iff every check passes.
 """
@@ -379,6 +380,25 @@ def c_triangulation():
                 f"{t['comparisons']['teac_forward_pct_of_model_stock']}% of stock")
 
 
+# 18 ------------------------------------------------------------------------
+def c_seasonal_basin_surface():
+    """S2 surface: the binding condition is Broad Run in a summer month, the
+    crossed figure materially exceeds the flat annual one, and the finding
+    survives the baseload sweep (so it is not an artifact of the one free
+    parameter)."""
+    s = json.load(open(os.path.join(PUB, "seasonal_basin_surface.json")))
+    b = s["binding_condition"]
+    summer = b["month"] in ("Jun", "Jul", "Aug", "Sep")
+    flat = s["why_crossing_matters"]["annual_flat_pct_of_mean_flow"]
+    amplified = flat is not None and b["pct_of_monthly_flow"] > 3 * flat
+    sweep = s["surfaces"][b["watershed"]]["baseload_sweep"]
+    robust = all(v["worst_month"] == b["month"] for v in sweep.values())
+    ok = summer and amplified and robust
+    return ok, (f"binding: {b['watershed']} in {b['month']} at {b['pct_of_monthly_flow']}% "
+                f"(flat annual {flat}%, amplified={amplified}); worst month stable across "
+                f"baseload sweep={robust}")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -398,6 +418,7 @@ def main():
     check("15 basin stress", c_basin_stress)
     check("16 exposure + monitoring gap", c_exposure_gap)
     check("17 forward-load triangulation", c_triangulation)
+    check("18 seasonal x basin surface", c_seasonal_basin_surface)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

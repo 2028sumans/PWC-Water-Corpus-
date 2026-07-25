@@ -10,6 +10,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useViraStore } from "@/store/useViraStore";
 import { useFacilityProfiles, type BuildingProfile, type CampusProfile } from "@/lib/useFacilityProfiles";
 import { Building2, Search } from "lucide-react";
+import { CountyAnalysis } from "./CountyAnalysis";
 
 interface FacilityRow {
   kind: "building" | "campus";
@@ -217,6 +218,8 @@ export function FacilitiesView() {
             )}
           </div>
         )}
+        <CountyAnalysis />
+
         <div className="mt-4 text-[10px] text-neutral-600 leading-relaxed italic">
           Central estimates use Prince William Water&apos;s own observed intensity
           (309 gal/MW/day, ICPRB 2025). Campus rows are entitlements that

@@ -2428,3 +2428,21 @@ JLARC's 2023 per-building metered figures (§27) were **never used to fit anythi
 No independent per-facility measurement of data-center water use exists for Prince William County — that is the finding, not a gap in effort (§42: not one of the 243 buildings has a DEQ monitoring station within a mile; 97% have no NPDES permit). **The estimator cannot be validated at the facility level because the measurement infrastructure that would validate it does not exist.** Any paper using this data should state that, and the value-of-information analysis (§38) quantifies exactly what acquiring it would be worth.
 
 **Summary for a reviewer:** the county *magnitude* is calibration-anchored to a metered utility total (not independent); the per-building *distribution* passes a genuine out-of-sample test against metered JLARC data; the power root is corroborated by held-out permits and three independent forward-load records; and facility-level validation is impossible with the monitoring network as it exists.
+
+## 46. The seasonal × basin stress surface (S2)
+
+§31 asked *when* demand peaks relative to regional flow; §41 asked *where* the draw is large relative to basin flow. `seasonal_basin_surface.py` crosses them: for each watershed and each month, the on-site draw as a share of that basin's flow **in that month**. Output: `public/data/seasonal_basin_surface.json`.
+
+**Demand shape (the one modelled ingredient, stated).** On-site Scope 1 water is cooling-driven, so its monthly shape follows cooling degree days, not IT load: monthly draw = a small year-round baseload + a CDD-proportional component, normalized so the 12-month mean equals the building-derived annual draw. The baseload share is the one free parameter (central 30%) and is swept 10–50%, because the winter floor for evaporative makeup is undocumented per facility. Flow is the USGS monthly climatology (§41), used as-is. Framing is unchanged from §41: **scale comparison, not withdrawal attribution.**
+
+On-site draw as % of that month's mean flow (central case):
+
+| Watershed | Jan | Apr | Jun | **Jul** | Aug | Sep | Oct | Dec |
+|---|---|---|---|---|---|---|---|---|
+| **Broad Run** | 1.0 | 0.9 | 10.0 | **28.3** | 20.8 | 13.7 | 3.7 | 1.1 |
+| Bull Run | 0.1 | 0.1 | 0.7 | 2.6 | 1.9 | 0.7 | 0.2 | 0.1 |
+| Quantico Creek | 0.0 | 0.0 | 0.4 | 1.2 | 1.1 | 0.4 | 0.1 | 0.0 |
+
+**The binding space-time condition is Broad Run in July, at 28.3% of that month's mean flow** — robust across the baseload sweep (22.8% at 50% baseload, 33.7% at 10%). The comparison that justifies crossing the two dimensions: on a **flat annual** basis the same basin reads **4.2%** of mean flow. The seasonal slice alone shows a July peak but not where it lands; the basin slice alone shows Broad Run's concentration but averages the timing away. Only the surface shows that the county's data-center draw concentrates into one basin in the one month that basin is driest — a ~7× amplification over the flat annual figure.
+
+(Consistency with §41: this table is monthly-mean draw vs monthly-mean flow, 28%; §41's ~105% figure is *peak-day* draw vs *lowest-month* flow. Both are reported because utilities plan against the second while hydrologists reason about the first.)

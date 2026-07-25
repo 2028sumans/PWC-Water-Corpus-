@@ -1,0 +1,219 @@
+{
+ "framing": "SCALE COMPARISON, not withdrawal attribution. Prince William data centers are supplied by Prince William Water (Occoquan/Potomac public supply), not by direct withdrawal from these streams. Ratios express how large the local on-site draw is relative to the water moving through the basins the buildings occupy.",
+ "demand_shape": "Monthly on-site draw = small year-round baseload + CDD-proportional cooling component, normalized to the building-derived annual mean. Baseload share is the one free parameter (central 30%), swept (0.1, 0.3, 0.5) because the winter floor for evaporative makeup is undocumented per facility.",
+ "surfaces": {
+  "BROAD RUN": {
+   "n_buildings": 166,
+   "gage": "Broad Run at Buckland",
+   "annual_draw_mgd": 1.394,
+   "completed_only_annual_draw_mgd": 0.279,
+   "monthly_flow_mgd": {
+    "Jan": 42.9,
+    "Feb": 57.4,
+    "Mar": 61.4,
+    "Apr": 52.2,
+    "May": 32.5,
+    "Jun": 27.5,
+    "Jul": 15.0,
+    "Aug": 17.5,
+    "Sep": 13.2,
+    "Oct": 15.5,
+    "Nov": 23.6,
+    "Dec": 37.8
+   },
+   "central_baseload_share": 0.3,
+   "central": {
+    "monthly_draw_mgd": {
+     "Jan": 0.418,
+     "Feb": 0.418,
+     "Mar": 0.429,
+     "Apr": 0.451,
+     "May": 1.154,
+     "Jun": 2.758,
+     "Jul": 4.24,
+     "Aug": 3.636,
+     "Sep": 1.814,
+     "Oct": 0.572,
+     "Nov": 0.418,
+     "Dec": 0.418
+    },
+    "monthly_pct_of_flow": {
+     "Jan": 1.0,
+     "Feb": 0.7,
+     "Mar": 0.7,
+     "Apr": 0.9,
+     "May": 3.6,
+     "Jun": 10.0,
+     "Jul": 28.3,
+     "Aug": 20.8,
+     "Sep": 13.7,
+     "Oct": 3.7,
+     "Nov": 1.8,
+     "Dec": 1.1
+    },
+    "worst_month": "Jul",
+    "worst_pct_of_flow": 28.3
+   },
+   "baseload_sweep": {
+    "baseload_10pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 33.7
+    },
+    "baseload_30pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 28.3
+    },
+    "baseload_50pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 22.8
+    }
+   }
+  },
+  "BULL RUN": {
+   "n_buildings": 61,
+   "gage": "Bull Run near Manassas",
+   "annual_draw_mgd": 0.307,
+   "completed_only_annual_draw_mgd": 0.053,
+   "monthly_flow_mgd": {
+    "Jan": 161.5,
+    "Feb": 175.0,
+    "Mar": 188.0,
+    "Apr": 139.8,
+    "May": 81.3,
+    "Jun": 91.7,
+    "Jul": 36.2,
+    "Aug": 42.0,
+    "Sep": 57.5,
+    "Oct": 55.3,
+    "Nov": 67.9,
+    "Dec": 126.2
+   },
+   "central_baseload_share": 0.3,
+   "central": {
+    "monthly_draw_mgd": {
+     "Jan": 0.092,
+     "Feb": 0.092,
+     "Mar": 0.094,
+     "Apr": 0.099,
+     "May": 0.254,
+     "Jun": 0.607,
+     "Jul": 0.934,
+     "Aug": 0.801,
+     "Sep": 0.399,
+     "Oct": 0.126,
+     "Nov": 0.092,
+     "Dec": 0.092
+    },
+    "monthly_pct_of_flow": {
+     "Jan": 0.1,
+     "Feb": 0.1,
+     "Mar": 0.1,
+     "Apr": 0.1,
+     "May": 0.3,
+     "Jun": 0.7,
+     "Jul": 2.6,
+     "Aug": 1.9,
+     "Sep": 0.7,
+     "Oct": 0.2,
+     "Nov": 0.1,
+     "Dec": 0.1
+    },
+    "worst_month": "Jul",
+    "worst_pct_of_flow": 2.6
+   },
+   "baseload_sweep": {
+    "baseload_10pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 3.1
+    },
+    "baseload_30pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 2.6
+    },
+    "baseload_50pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 2.1
+    }
+   }
+  },
+  "QUANTICO CREEK": {
+   "n_buildings": 2,
+   "gage": "S F Quantico Creek near Independent Hill",
+   "annual_draw_mgd": 0.007,
+   "completed_only_annual_draw_mgd": null,
+   "monthly_flow_mgd": {
+    "Jan": 6.0,
+    "Feb": 7.4,
+    "Mar": 8.4,
+    "Apr": 7.4,
+    "May": 5.6,
+    "Jun": 3.1,
+    "Jul": 1.8,
+    "Aug": 1.7,
+    "Sep": 2.2,
+    "Oct": 2.2,
+    "Nov": 3.8,
+    "Dec": 5.5
+   },
+   "central_baseload_share": 0.3,
+   "central": {
+    "monthly_draw_mgd": {
+     "Jan": 0.002,
+     "Feb": 0.002,
+     "Mar": 0.002,
+     "Apr": 0.002,
+     "May": 0.006,
+     "Jun": 0.014,
+     "Jul": 0.021,
+     "Aug": 0.018,
+     "Sep": 0.009,
+     "Oct": 0.003,
+     "Nov": 0.002,
+     "Dec": 0.002
+    },
+    "monthly_pct_of_flow": {
+     "Jan": 0.0,
+     "Feb": 0.0,
+     "Mar": 0.0,
+     "Apr": 0.0,
+     "May": 0.1,
+     "Jun": 0.4,
+     "Jul": 1.2,
+     "Aug": 1.1,
+     "Sep": 0.4,
+     "Oct": 0.1,
+     "Nov": 0.1,
+     "Dec": 0.0
+    },
+    "worst_month": "Jul",
+    "worst_pct_of_flow": 1.2
+   },
+   "baseload_sweep": {
+    "baseload_10pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 1.4
+    },
+    "baseload_30pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 1.2
+    },
+    "baseload_50pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 1.0
+    }
+   }
+  }
+ },
+ "binding_condition": {
+  "watershed": "BROAD RUN",
+  "month": "Jul",
+  "pct_of_monthly_flow": 28.3,
+  "note": "Maximum of the space-time surface -- the month and basin where the on-site draw is largest relative to the water actually in the stream."
+ },
+ "why_crossing_matters": {
+  "annual_flat_pct_of_mean_flow": 4.2,
+  "seasonal_only": "county-wide demand peaks in Jul; regional flow bottoms in Aug (\u00a731)",
+  "basin_only": "Broad Run carries 166/243 buildings (\u00a741)",
+  "crossed": "BROAD RUN in Jul reaches 28.3% of that month's flow -- vs 4.2% on a flat annual basis. Neither the seasonal slice nor the basin slice shows this alone."
+ }
+}
