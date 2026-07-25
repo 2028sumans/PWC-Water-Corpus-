@@ -2270,3 +2270,39 @@ Scored alone, **standardized + verified facility load is the single highest-valu
 
 ### 38.3 The policy finding
 The high-value datasets (standardized/verified facility load; grid water-intensity) are the **hard-to-obtain** ones; the easy public asks (voluntary PUE, cooling permits) move the county number by ~0. On-site water metering also moves it ~0 — not because it's unimportant locally, but because on-site Scope 1 is only ~4% of the footprint. **A disclosure policy optimized for ease would target exactly the wrong data.** This is the actionable version of the transparency-gap thesis.
+
+## 39. Robustness & validation summary (reviewer appendix)
+
+Everything a reviewer needs to judge "how do you know the number is right," in one place. Each row links to the section/script that produces it; all are re-checked by `verify_research_ready.py` (13/13).
+
+### 39.1 Sensitivity — what actually drives the number (OAT, `sensitivity_analysis.py`)
+Base county central 49.6 MGD. One-at-a-time swings over each constant's justified range:
+
+| Constant | Low | High | Swing | % of base |
+|---|---|---|---|---|
+| GFA→power fallback model (90% residual) | 36.4 | 69.5 | 33.0 | **67%** |
+| PUE band | 43.4 | 55.8 | 12.3 | 25% |
+| Nuclear consumption factor | 45.1 | 54.1 | 9.1 | 18% |
+| Gas CC consumption factor | 45.2 | 53.9 | 8.7 | 18% |
+| Scope 1 WUP central | 48.7 | 56.6 | 7.8 | 16% |
+| Scope 3 fraction | 47.3 | 51.9 | 4.5 | 9% |
+
+Inferred power is the dominant driver (67%) — the quantitative statement of the transparency gap. OAT answers "what if the model is coherently wrong"; the Monte Carlo (below) answers "what error is probable."
+
+### 39.2 Uncertainty — the probable error (`monte_carlo.py`, §32)
+County 90% CI **±19%** (44.5–64.9 MGD); per-building 90%-width median **52%** for permit-backed buildings vs **116%** for floor-area buildings — the evidence-tier ladder made quantitative.
+
+### 39.3 Model selection — the fallback is cross-validated (`fit_power_model.py`, §26)
+Leave-one-out CV over six candidates on 14 leak-free permit sites: ridge+operator 0.108 (winner) < pure density 0.125 < OLS+operator 0.136 < OLS 0.142 < random forest 0.155 < gradient boosting 0.161. Trees lose at n=14 — the fancier model was *rejected* by CV, not chosen.
+
+### 39.4 Predictive-variance calibration (`gp_power_model.py`, §32)
+The per-building predictive variance is LOO-calibrated: coverage@90 = 86% (12/14), mean z² = 1.10; an added RBF kernel does not beat linear (0.145 either way).
+
+### 39.5 Out-of-sample validation — two independent checks
+- **JLARC 2023 metered distribution** (§27): all six published constraints pass; KS p = 0.093 after the published county-intensity scaling — distribution shape statistically indistinguishable from metered reality.
+- **ICPRB WMA on-site forecast** (§37): PWC on-site is a consistent fraction of the regional on-site total (like-for-like Scope 1), today and in 2050.
+
+### 39.6 Provenance & reproducibility
+Every load-bearing external constant is quote-backed and machine-verified (§36, 12 quoted claims verbatim in-PDF). The full pipeline reproduces via the documented interpreter order; `verify_research_ready.py` re-computes 13 invariants from source and must pass before any number-touching deploy.
+
+**Bottom line:** the county central is most sensitive to inferred power (67%, the transparency gap itself); the probable interval is ±19%; the fallback model is cross-validated and its uncertainty is calibrated; and the distribution passes the only metered benchmark. The estimate is defensible *and* honest about what it cannot resolve.
