@@ -87,8 +87,8 @@ export function CountyAnalysis() {
     const g = a.exposure.regulatory_monitoring_gap;
     cards.push({
       label: "Monitoring void",
-      value: `${g.no_deq_station_within_1mi.n} of 243 have no DEQ station within a mile — all of them`,
-      detail: `${a.exposure.exposure.within_300ft_of_stream.n} sit within 300 ft of a stream; ${g.no_npdes.n} hold no discharge permit; ${g.compound_blind_spot.n} are all three at once.`,
+      value: `Nearest state monitoring station is 1.5 mi from any facility`,
+      detail: `${a.exposure.exposure.within_300ft_of_stream.n} sit within 300 ft of a stream and ${g.no_npdes.n} hold no operational-water permit. No facility has a DEQ station within a mile (median 4.1 mi) — descriptive of monitoring geography, not evidence of avoidance (§42.2a).`,
       tone: "warn",
     });
   }

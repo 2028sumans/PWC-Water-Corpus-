@@ -126,7 +126,7 @@ export function FacilityContext({
     rows.push({
       label: "Oversight",
       value: blind ? "In the compound blind spot" : parts[0],
-      detail: `${parts.join(" · ")}. Fleet-wide: ${gap.no_npdes.n} of 243 hold no discharge permit and ${gap.no_deq_station_within_1mi.n} of 243 — every building — have no DEQ monitoring station within a mile (§42)${
+      detail: `${parts.join(" · ")}. Fleet-wide: ${gap.no_npdes.n} of 243 hold no operational-water permit; the nearest state monitoring station to any facility is 1.5 mi away (median 4.1 mi), so ambient monitoring does not observe these sites (§42)${
         blind ? `. This building is one of the ${gap.compound_blind_spot.n} that are stream-adjacent, unpermitted and unmonitored at once.` : "."
       }`,
       tone: blind ? "warn" : "neutral",

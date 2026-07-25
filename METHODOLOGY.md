@@ -2368,10 +2368,20 @@ Half the fleet is stream-adjacent. (RPA/wetland intersection is rare precisely b
 |---|---|
 | No NPDES discharge permit of their own | **235 of 243 (97%)** |
 | No Water Quality Portal station within 1 mile | 154 of 243 (63%) |
-| No VA DEQ monitoring station within 1 mile | **243 of 243 (100%)** |
+| No VA DEQ monitoring station within 1 mile | 243 of 243 (100%) — *see 42.2a: descriptive, not statistically significant* |
 | **Compound blind spot** (stream-adjacent **and** unpermitted **and** unmonitored) | **112 of 243 (46%)** |
 
-**Not one of the 243 buildings has a state DEQ monitoring station within a mile.** Combined with the 97% without NPDES coverage (they hold *construction-stormwater* permits, not operational-water permits, §7), the result is that nearly half the fleet is simultaneously adjacent to a stream, outside the discharge-permit system, and outside the monitoring network. The concentration basin is worst in absolute terms: all 166 Broad Run buildings are unmonitored, 159 of them unpermitted, carrying a 13.8 MGD full-buildout peak-day draw (§41).
+**No building has a state DEQ monitoring station within a mile** — the nearest station to any data-center parcel is 1.54 miles away, and the median distance is 4.1 miles. Combined with the 97% without NPDES coverage (they hold *construction-stormwater* permits, not operational-water permits, §7), the result is that nearly half the fleet is simultaneously adjacent to a stream, outside the discharge-permit system, and outside the monitoring network. 
+#### 42.2a How strong is this? (a correction to an earlier overstatement)
+
+This was initially written as a striking finding; on testing it is a **descriptive fact, not evidence of systematic under-monitoring.** Three checks:
+- **It is not a data artifact.** The DEQ layer is populated (1,305 stations statewide, 19 inside the county bounding box) and the proximity computation works: 8,226 of 159,181 county parcels (5.2%) *do* have a DEQ station within a mile. Zero data-center parcels do.
+- **The distances are real.** Nearest DEQ station to any of the 165 data-center parcels: **1.54 mi**; median **4.1 mi**; only 12 of 165 are within 2 mi.
+- **But it is not statistically significant.** The buildings are heavily clustered — they occupy only ~19 distinct locations at a 2-mile grid resolution (38 at 1 mile). Against the county base rate of 5.2%, the probability of observing zero monitored locations by chance is **p ≈ 0.37 (2-mi clusters) to 0.13 (1-mi)** — nowhere near significance. With n=243 treated as independent it would be p≈2×10⁻⁶, but that treatment is wrong.
+
+**The defensible claim** is therefore: *data-center water use in Prince William is not observed by the state ambient monitoring network — the nearest station to any facility is 1.5 miles away* — offered as a description of monitoring geography, **not** as evidence that monitoring avoids data centers. The mechanism that matters is regulatory (they are utility-supplied and hold construction-stormwater rather than operational-water permits, §7), not spatial.
+
+The concentration basin is worst in absolute terms: all 166 Broad Run buildings are unmonitored, 159 of them unpermitted, carrying a 13.8 MGD full-buildout peak-day draw (§41).
 
 ### 42.3 The community layer is denser than the regulatory one
 Research-grade iNaturalist observations exist within a mile of most sites (median 8, max 44) while official DEQ monitoring exists near none. The public record of what lives near these facilities is better populated than the state's. This is the concrete version of the "community observations as a monitoring input" argument: the observations already exist; no framework ingests them.
