@@ -24,6 +24,7 @@ Checks:
   14 evidence ladder       CI width monotone in evidence tier; tier 2 empty; peak/annual ~10x
   15 basin stress          Broad Run peak-day/low-flow robust across both bracketing gages
   16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
+  17 triangulation         forward-load sources agree within public granularity, cap left untuned
 
 Exit code 0 iff every check passes.
 """
@@ -361,6 +362,23 @@ def c_exposure_gap():
                 f"all unmonitored={all_unmonitored})")
 
 
+# 17 ------------------------------------------------------------------------
+def c_triangulation():
+    """Forward-load triangulation: the open-bucket cap needed for agreement must
+    be BELOW the largest campus the model estimates (i.e. the sources agree
+    within public granularity, and no cap was tuned to force the fit)."""
+    t = json.load(open(os.path.join(PUB, "pipeline_triangulation.json")))
+    s = t["comparisons"]["open_bucket_sensitivity"]
+    honest = s["cap_needed_for_model_to_fall_inside_mw"] < s["largest_single_campus_in_model_mw"]
+    untuned = s["assumed_cap_mw"] != s["cap_needed_for_model_to_fall_inside_mw"]
+    fwd = 10 <= t["comparisons"]["teac_forward_pct_of_model_stock"] <= 60
+    ok = honest and untuned and fwd
+    return ok, (f"cap needed {s['cap_needed_for_model_to_fall_inside_mw']} MW < largest campus "
+                f"{s['largest_single_campus_in_model_mw']} MW (consistent={honest}); assumed cap "
+                f"left untuned={untuned}; TEAC forward "
+                f"{t['comparisons']['teac_forward_pct_of_model_stock']}% of stock")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -379,6 +397,7 @@ def main():
     check("14 evidence ladder", c_evidence_ladder)
     check("15 basin stress", c_basin_stress)
     check("16 exposure + monitoring gap", c_exposure_gap)
+    check("17 forward-load triangulation", c_triangulation)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

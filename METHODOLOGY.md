@@ -2377,3 +2377,54 @@ Half the fleet is stream-adjacent. (RPA/wetland intersection is rare precisely b
 Research-grade iNaturalist observations exist within a mile of most sites (median 8, max 44) while official DEQ monitoring exists near none. The public record of what lives near these facilities is better populated than the state's. This is the concrete version of the "community observations as a monitoring input" argument: the observations already exist; no framework ingests them.
 
 **Why this matters for the paper:** the water-consumption estimate is unverifiable *by construction* — not because the modelling is weak, but because the measurement infrastructure that would verify it is absent at exactly the locations that matter. That is the transparency gap expressed spatially, and it is measured, not asserted.
+
+## 43. Forward-load triangulation (G3)
+
+`pipeline_triangulation.py` → `public/data/pipeline_triangulation.json`. Tests the estimator's power root against two independent public records.
+
+**These three sources measure different things, and the analysis says so first:** this model is a **stock** (243 inventoried buildings, built + under construction + planned); interconnection.fyi is a **bucketed mix** (27 operator portfolios in MW bands, no build-status split); PJM TEAC is a forward **increment** (new delivery-point requests, 2027–2031). They should not be equal; the test is whether their relationship is plausible.
+
+| Source | Quantity | Value |
+|---|---|---|
+| This model (bottom-up stock) | 6,468 effective IT MW → grid-side | **~7,990 MW** (1,678 MW built today) |
+| interconnection.fyi (27 portfolios) | registered capacity, band sum | 3,445 – 7,560 MW |
+| PJM TEAC (9 delivery points) | forward increment, 2027–31 | 1,970 MW |
+
+**The open-bucket caveat, handled without tuning.** The band's upper bound is set entirely by how the open-ended "250+ MW" bucket is capped; at an assumed 500 MW cap the model's stock sits just *above* the band. Rather than raise the cap until it fits, we solved for the threshold: the model falls inside once the cap is **≥554 MW** — far below the **1,315 MW** the model itself estimates for the single largest campus. The apparent exceedance is therefore an artifact of an arbitrarily low cap on a public bucket, not evidence of disagreement. **No parameter was tuned to force a fit**, and the reader can judge the threshold directly.
+
+The forward increment is **25% of today's inventoried stock**, independently corroborating the growth trajectory used in the 2050 scenarios (§37).
+
+## 44. Reclaimed water (B3) — a data gap, and a substitution that is not a reduction
+
+The plan flagged this as a likely data gap and it is one, verified rather than assumed: **no Prince William reclaimed-water supply dataset exists in the corpus.** The only reclaimed-water facility in the Virginia ICIS file is in Ashburn (Loudoun County). JLARC reports that just over a third of Virginia's data-center water is reclaimed (§27, ledger-quoted), but that share is driven by Loudoun's reclaimed-supplied stock, and no equivalent infrastructure is identified serving PWC's fleet. A per-facility PWC reclaimed offset therefore **cannot be computed from public records** and none is invented.
+
+**The more important point is conceptual, and ICPRB states it directly** (*Data Centers and Water Use*, March 2026):
+
+> "The use of reclaimed water can be an effective way to reduce demand for potable supply. However, it does not eliminate consumptive loss. For evaporative cooling, reclaimed water is largely lost rather than returned to the river system, reducing return flows."
+
+Reclaimed water substitutes the **source**, not the **consumption**. For evaporative cooling the water still leaves the basin as vapour; if the reclaimed supply is drawn upstream of the WMA intakes, using it still reduces return flows. So reclaimed sourcing improves potable-supply pressure — a real benefit — but does **not** reduce the consumptive quantity this estimator reports, and it should not be treated as an offset against the footprint. This matters for the paper because "we use reclaimed water" is a common operator response to water-use questions; it answers a different question than the one the consumptive estimate asks.
+
+## 45. What is and is not independent validation (R2)
+
+A reviewer's sharpest question about any estimator built on public data is: *what did you validate against, and was it independent?* Stating this precisely is more valuable than claiming more validation than exists.
+
+### 45.1 NOT independent — the ICPRB intensity (the circularity, stated plainly)
+The Scope 1 central intensity (309 gal/MW/day) was derived **by ICPRB** by dividing Prince William Water's service-area total water delivered to data centers by ICPRB's own estimate of the fleet's power demand. Our estimator then multiplies our power estimate by that same intensity. Therefore:
+- Comparing our county Scope 1 total back to Prince William Water's ~0.42 MGD service-area figure is **circular**. It tests whether our power estimate resembles ICPRB's power estimate — not whether either resembles reality. We do not claim it as validation, and the app's copy says so explicitly.
+- What the shared intensity *does* buy is that our fleet-level Scope 1 magnitude is anchored to a real metered utility total rather than to a technology assumption. That is calibration, not validation, and the distinction is load-bearing.
+
+### 45.2 Genuinely independent — the JLARC distribution test
+JLARC's 2023 per-building metered figures (§27) were **never used to fit anything** in this model. The distributional test is therefore a true out-of-sample check, and it tests the part the calibration cannot: the *shape*.
+- All six published constraints pass (median at/below the office benchmark, tail counts, maximum, mean, sub-household minimum, industry total).
+- After scaling the reference by the **published** county-intensity ratio (309/1,139 — both figures published, neither fitted), the KS test gives p = 0.093: the shapes are statistically indistinguishable.
+- **What this does and does not prove:** it shows our per-building spread is consistent with metered reality; it does *not* independently verify the county level (which remains calibration-anchored, §45.1).
+
+### 45.3 Genuinely independent — two structural cross-checks
+- **Permit-derived power vs the fitted model** (§26): the held-out trade-permit stated critical load (339,744 sqft ↔ 60 MW design) predicts 38.9 MW effective ≈ 0.81× the 48 MW implied at ICPRB's utilization — inside the 90% band, and the permit was not in the training set.
+- **ICPRB regional on-site forecast** (§37): our Scope 1 is a consistent fraction of the WMA on-site total today and in 2050. Like-for-like (on-site vs on-site), from an independently produced regional forecast.
+- **Forward load** (§43): three independent public records (bottom-up buildings, operator registrations, utility transmission filings) are mutually consistent within the granularity public bands allow.
+
+### 45.4 Not validated, and unlikely to be
+No independent per-facility measurement of data-center water use exists for Prince William County — that is the finding, not a gap in effort (§42: not one of the 243 buildings has a DEQ monitoring station within a mile; 97% have no NPDES permit). **The estimator cannot be validated at the facility level because the measurement infrastructure that would validate it does not exist.** Any paper using this data should state that, and the value-of-information analysis (§38) quantifies exactly what acquiring it would be worth.
+
+**Summary for a reviewer:** the county *magnitude* is calibration-anchored to a metered utility total (not independent); the per-building *distribution* passes a genuine out-of-sample test against metered JLARC data; the power root is corroborated by held-out permits and three independent forward-load records; and facility-level validation is impossible with the monitoring network as it exists.
