@@ -2151,53 +2151,53 @@ Beyond internal consistency, the load-bearing external numbers were checked verb
 
 The harness is re-run before any number-touching deploy, so the published figures can never silently drift from the code and data that produce them.
 
-## 35. Value of facility-level power transparency — theoretical bound vs realistic disclosure
+## 35. Value of facility power information — three distinct mechanisms
 
-The estimator's headline is a ±19% county interval (§32). This analysis (`value_of_disclosure.py`) asks how much of that interval facility disclosure could remove — but does so *carefully*, because the answer depends entirely on what "disclosure" means.
+A reviewer rightly noted that "disclosure" conflates three different interventions. `value_of_disclosure.py` now separates them, and the separation is the result. All scenarios use **common random numbers** (shared systematic variates drawn once; each building's variates from a deterministic per-building seed, byte-identical across scenarios) so a difference in the county interval is the *intervention's* effect, not Monte Carlo noise.
 
-### 35.0 The counterfactual, stated explicitly (why this is not simply "the value of disclosure")
-A building is "disclosed" by holding its power **central fixed** (disclosure reveals the number; it does not move our best estimate) and collapsing its uncertainty to a small **independent** reporting noise. That is a **perfect-information upper bound**: it assumes every reported figure is (1) facility-specific, (2) measured not modeled, (3) consistently defined across operators, (4) temporally comparable, (5) independently verifiable, and (6) actually available. Real public disclosure satisfies few of these. So §35.1–35.2 are the *theoretical value of facility-level power transparency*, an upper bound — **not** "the value of disclosure" unqualified — and §35.3 gives the realistic sensitivity.
+### 35.0 The three mechanisms (define them separately)
+- **Transparency** — is the number published at all? (moves a building from inferred power to a reported number)
+- **Standardization** — do facilities report the *same* quantity, defined and time-windowed the same way? (design vs actual load, nameplate vs metered, annual vs peak). Its absence is a **shared** error that hits the whole fleet alike and therefore does **not** average down.
+- **Verification** — can the number be independently checked against permits, meters, or utility records? Its absence is a larger **independent** reporting error (and, in reality, room for systematic gaming — which we do *not* fully model, so the value of verification here is a **lower bound**).
 
-### 35.1 Theoretical curve (perfect information, power only)
-Disclosing fitted-power buildings largest-footprint-first:
-
-| Buildings disclosed | % of fitted floor area | County 90% CI (upper bound) |
-|---|---|---|
-| 0 (today) | 0% | ±19% |
-| 10 | 19% | ±16% |
-| 30 | 40% | ±13% |
-| 100 | 80% | ±11% |
-| 198 (all fitted) | 100% | ±10% |
-
-Steep diminishing returns: the ~30 largest inferred-power buildings carry most of the addressable uncertainty, *if* the numbers are perfect.
-
-### 35.2 Layered stack (perfect information) — facility disclosure is not enough
-Collapsing each inference in turn, for every building:
-
-| Disclosure level | County 90% CI (upper bound) |
+### 35.1 The decomposition (full-fleet power disclosure, county 90% CI)
+| Intervention | County 90% CI |
 |---|---|
-| baseline (today) | ±19% |
-| + actual IT power | ±10% |
-| + PUE | ±10% |
-| + cooling type | ±10% |
-| + grid water-intensity | **±6%** |
+| baseline (today, power inferred) | ±19% |
+| Transparency only (published; modeled ~10% standardization gap; unverified) | **±19%** |
+| + Standardization | **±9%** |
+| + Verification | ±9% |
 
-Even under perfect information, adding PUE and cooling-type disclosure buys ~nothing at county scale. Scope 2 (grid electricity) is ~87% of the footprint, so the binding uncertainty is the **grid's water-intensity (gal/MWh)** — a power-plant / generation-mix property, not a data-center attribute. Only resolving that reaches ±6%.
+**Transparency alone buys nothing here.** With a modeled ~10% standardization gap and unverified reporting, publishing the numbers leaves the county interval unchanged — the shared definitional error does not average away and cancels the information gained. Essentially all the facility-side value is in **standardization**. Verification adds little *at the county scale* because independent errors average down across 243 buildings — but that understates its importance: verification is what makes any *individual* facility's number trustworthy and guards against systematic mis-reporting (which would behave like the standardization gap). This is the honest reading.
 
-### 35.3 Realistic disclosure — the upper bound largely evaporates
-Real reporting is not perfect information. Relaxing conditions (3)–(5) with a **shared** definitional/temporal inconsistency (design vs actual load, nameplate vs metered, differing averaging windows) that does *not* average away across operators, and sweeping its magnitude (it is undocumented, so we do not assert one value):
+### 35.2 Standardization-gap sensitivity (MODELED, not measured)
+The gap magnitude is a **modeled** parameter — operator-reporting variance is undocumented, which is itself part of the point — so it is swept, not asserted:
 
-| Shared inconsistency (σ) | County 90% CI after full power disclosure |
+| Modeled standardization gap (σ) | County 90% CI (transparent, unverified) |
 |---|---|
-| 0% (perfect info) | ±10% |
+| 0% (fully standardized) | ±9% |
 | 5% | ±12% |
-| 10% | ±16% |
-| 15% | ±22% (worse than baseline) |
+| 10% | ±19% (= baseline) |
+| 15% | ±26% (worse than baseline) |
 
-At a plausible ~10% shared inconsistency, full facility-power disclosure only reaches **±16%** — barely better than today's ±19% — and at 15% it is *worse* than no disclosure, because a shared systematic error hits the whole fleet at once. **The value of disclosure is contingent on standardization and verification, not on the act of reporting.** This is the honest, load-bearing caveat.
+### 35.3 Facility disclosure vs the grid (perfect information)
+Even with full, standardized, verified facility disclosure, adding PUE and cooling-type disclosure buys ~nothing at county scale; the binding gap is the grid's water-intensity:
 
-### 35.4 What this means for the paper
-Two results survive the caveat. First, the **largest transparency gap is at the power plant, not the data center** (§35.2) — the displacement thesis as an uncertainty budget; generation-side water accounting dwarfs every facility disclosure combined, tying to the average-vs-marginal Scope 2 question (§16). Second, **facility disclosure only helps if it is standardized, measured, and verifiable** (§35.3) — the perfect-information halving (±19%→±10%) is an upper bound that a mandate without definitions would not achieve. Both are policy-relevant and neither overclaims. Output: `public/data/value_of_disclosure.json`. No estimator constant changed — this reads the shipped model.
+| Disclosure level | County 90% CI |
+|---|---|
+| + power | ±9% |
+| + PUE | ±9% |
+| + cooling type | ±9% |
+| + grid water-intensity | **±3%** |
+
+Scope 2 (grid electricity) is ~87% of the footprint, so the water-intensity of generation (gal/MWh) — a power-plant property, not a facility attribute — is the largest single uncertainty. **The biggest transparency gap is at the power plant, not the data center.**
+
+### 35.4 Which buildings first (perfect information)
+If facility power *were* perfectly disclosed, the ~30 largest inferred-power buildings (40% of fitted floor area) carry most of the addressable uncertainty (±19%→±13%); all 198 → ±10%. This sets the facility-side priority list, conditional on standardization+verification actually holding.
+
+### 35.5 What this means for the paper
+Three separable, policy-relevant findings, none overclaimed: (1) **transparency without standardization and verification has little value** — a disclosure mandate that does not fix definitions and audit reports would barely move the number; (2) **the dominant facility-side lever is standardization**, not the act of publishing; (3) **the largest gap of all is generation-side** (grid water-intensity), tying to the average-vs-marginal Scope 2 question (§16). Output: `public/data/value_of_disclosure.json`. No estimator constant changed.
+
 
 ## 36. Provenance ledger — claim → source → page → verbatim quote, mechanically enforced
 

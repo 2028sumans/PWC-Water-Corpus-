@@ -1,107 +1,74 @@
 {
- "counterfactual_definition": "A building is 'disclosed' by holding its power CENTRAL fixed and collapsing its uncertainty to a small INDEPENDENT reporting noise. The perfect-information / curve results are therefore an UPPER BOUND on the value of facility-level power transparency: they assume every reported figure is (1) facility-specific, (2) measured not modeled, (3) consistently defined across operators, (4) temporally comparable, (5) independently verifiable, and (6) actually available. Realistic disclosure relaxes (3)-(5) via a SHARED definitional/temporal inconsistency term that does not average away; see realistic_full_power_disclosure.",
- "framing": "theoretical value of facility-level power transparency (upper bound) + a realistic-disclosure sensitivity; NOT 'the value of disclosure' unqualified.",
- "baseline_ci_width_pct": 38.1,
- "theoretical_full_power_transparency_pct": 20.3,
- "power_addressable_share_pct_upper_bound": 47.0,
- "top10_buildings_upper_bound": {
-  "ci_width_pct": 31.1,
-  "pct_fitted_gfa": 18.9
+ "counterfactual_definition": "A 'disclosed' building holds its power central fixed and replaces its inferred-power uncertainty with reported-number uncertainty. Three mechanisms are separated: TRANSPARENCY (published at all), STANDARDIZATION (same definition/time-window across facilities -> removes a SHARED error that does not average down), and VERIFICATION (independently checkable -> smaller INDEPENDENT error). The standardization gap is a MODELED parameter (swept), not measured. Scenarios use common random numbers.",
+ "three_mechanisms_ci_width_pct": {
+  "baseline": 37.9,
+  "transparency_only": 37.6,
+  "transparency_plus_standardization": 18.1,
+  "transparency_std_verification": 18.0
  },
- "layered_stack_perfect_info_ci_width_pct": {
-  "baseline": 38.1,
-  "power": 20.2,
-  "power_pue": 20.1,
-  "power_pue_cooling": 20.6,
-  "power_pue_cooling_grid": 11.4
+ "standardization_gap_sensitivity_ci_width_pct_MODELED": {
+  "std_gap_0pct": 18.1,
+  "std_gap_5pct": 24.5,
+  "std_gap_10pct": 37.6,
+  "std_gap_15pct": 52.8
  },
- "realistic_full_power_disclosure_ci_width_pct": {
-  "shared_defn_sigma_0pct": 20.3,
-  "shared_defn_sigma_5pct": 23.8,
-  "shared_defn_sigma_10pct": 32.8,
-  "shared_defn_sigma_15pct": 43.4
+ "facility_vs_grid_ci_width_pct_perfect_info": {
+  "power": 18.0,
+  "power_pue": 17.9,
+  "power_pue_cooling": 18.5,
+  "power_pue_cooling_grid": 6.4
  },
- "curve_perfect_info": [
+ "which_buildings_first_perfect_info": [
   {
-   "n_disclosed": 0,
-   "pct_fitted_gfa_disclosed": 0.0,
-   "p50": 53.6,
-   "p5": 44.5,
-   "p95": 65.0,
-   "ci_width_pct": 38.1
+   "n": 0,
+   "pct_gfa": 0.0,
+   "ci_pct": 37.9
   },
   {
-   "n_disclosed": 5,
-   "pct_fitted_gfa_disclosed": 11.8,
-   "p50": 53.2,
-   "p5": 45.1,
-   "p95": 62.9,
-   "ci_width_pct": 33.5
+   "n": 5,
+   "pct_gfa": 11.8,
+   "ci_pct": 33.4
   },
   {
-   "n_disclosed": 10,
-   "pct_fitted_gfa_disclosed": 18.9,
-   "p50": 53.0,
-   "p5": 45.5,
-   "p95": 62.0,
-   "ci_width_pct": 31.1
+   "n": 10,
+   "pct_gfa": 18.9,
+   "ci_pct": 31.0
   },
   {
-   "n_disclosed": 20,
-   "pct_fitted_gfa_disclosed": 31.0,
-   "p50": 52.8,
-   "p5": 45.6,
-   "p95": 61.4,
-   "ci_width_pct": 29.9
+   "n": 20,
+   "pct_gfa": 31.0,
+   "ci_pct": 29.9
   },
   {
-   "n_disclosed": 30,
-   "pct_fitted_gfa_disclosed": 40.1,
-   "p50": 52.5,
-   "p5": 46.2,
-   "p95": 59.8,
-   "ci_width_pct": 25.8
+   "n": 30,
+   "pct_gfa": 40.1,
+   "ci_pct": 25.3
   },
   {
-   "n_disclosed": 50,
-   "pct_fitted_gfa_disclosed": 53.9,
-   "p50": 52.4,
-   "p5": 46.4,
-   "p95": 59.1,
-   "ci_width_pct": 24.1
+   "n": 50,
+   "pct_gfa": 53.9,
+   "ci_pct": 23.5
   },
   {
-   "n_disclosed": 75,
-   "pct_fitted_gfa_disclosed": 67.5,
-   "p50": 52.3,
-   "p5": 46.6,
-   "p95": 58.7,
-   "ci_width_pct": 23.3
+   "n": 75,
+   "pct_gfa": 67.5,
+   "ci_pct": 22.6
   },
   {
-   "n_disclosed": 100,
-   "pct_fitted_gfa_disclosed": 79.8,
-   "p50": 52.1,
-   "p5": 46.8,
-   "p95": 58.1,
-   "ci_width_pct": 21.7
+   "n": 100,
+   "pct_gfa": 79.8,
+   "ci_pct": 20.9
   },
   {
-   "n_disclosed": 150,
-   "pct_fitted_gfa_disclosed": 95.6,
-   "p50": 51.8,
-   "p5": 46.8,
-   "p95": 57.3,
-   "ci_width_pct": 20.3
+   "n": 150,
+   "pct_gfa": 95.6,
+   "ci_pct": 19.2
   },
   {
-   "n_disclosed": 198,
-   "pct_fitted_gfa_disclosed": 100.0,
-   "p50": 51.8,
-   "p5": 46.7,
-   "p95": 57.2,
-   "ci_width_pct": 20.3
+   "n": 198,
+   "pct_gfa": 100.0,
+   "ci_pct": 19.1
   }
  ],
- "headline": "Today's county 90% CI is +/-19%. Under a PERFECT-INFORMATION upper bound (facility-specific, measured, consistently defined, verifiable), full facility power transparency would reach +/-10%, but a realistic shared definitional/temporal inconsistency of ~10% only gets to +/-16%. Either way, adding PUE and cooling disclosure buys almost nothing at county scale (+/-10%): Scope 2 is ~87% of the footprint, so the binding uncertainty is the GRID's water-intensity (gal/MWh) -- a power-plant property. Only resolving that reaches +/-6%. The largest transparency gap is at the power plant, not the data center."
+ "headline": "Separating the mechanisms: today's county 90% CI is +/-19%. TRANSPARENCY alone (published but with a modeled ~10% standardization gap, unverified) reaches only +/-19%. Adding STANDARDIZATION -> +/-9%; adding VERIFICATION -> +/-9%. So most of the value is in standardization+verification, not the act of publishing. And even perfect facility disclosure stalls at +/-9% because Scope 2 (~87% of the footprint) is bound by the GRID's water-intensity, not a facility attribute; resolving that reaches +/-3%. The largest gap is at the power plant, not the data center."
 }
