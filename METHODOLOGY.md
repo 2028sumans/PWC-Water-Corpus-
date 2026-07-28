@@ -2594,3 +2594,30 @@ Verifying that the corpus PDFs are the genuine publications, not altered copies:
 - `https://www.potomacriver.org/wp-content/uploads/2026/03/ICPRB.DataCentersandWaterUse.ICPRB_.March2026.pdf`
 
 This is the one verification step that could not be completed automatically.
+
+## 50. Line-by-line verification of the draft abstract (July 2026)
+
+Every claim in the draft abstract and plain-language summary was checked against source, including reading the **context** around each quote rather than confirming the string alone. Twelve claims verified; six required correction.
+
+### 50.1 Verified correct
+243 buildings · Scope 2 = 87.4% of a 49.60 MGD central · York 18.77 MGD = 43.3% of Scope 2 · York = 0.00 under marginal · tier-1 ±26% vs tier-4 ±60% · tier 2 empty (0 of 243) · Broad Run 4.22% annual / 28.3% July · KS p = 0.0933 with 6/6 published constraints · GP 90% coverage 0.857 · source list (air permits, utility filings, transmission plans, county GIS) all present in corpus · ICPRB brief covers on-site only.
+
+**New corroboration:** our 54 completed buildings total **11.7 M sq ft**, consistent with the independently published ~10 M sq ft operational for Prince William County.
+
+### 50.2 Corrections required
+
+| # | Claim | Finding |
+|---|---|---|
+| 1 | *"on-site … about 13% of the total"* (plain summary) | **WRONG.** On-site (Scope 1) is **3.6%**. The 13% is Scope 1 + Scope 3, i.e. everything that is not Scope 2 |
+| 2 | *"often hundreds of miles away"* | **OVERSTATED.** Lake Anna is **50 mi** from the PWC corridor; the farthest attributed plant (Clover, Roanoke) is 145 mi. Correct range: **~50–145 miles** |
+| 3 | *"provenance ledger requiring a verbatim source for every constant"* | **OVERSTATED.** 13 of 19 entries are quoted; 6 are typed derived/assumption/limitation. Correct: *"every externally sourced constant"* |
+| 4 | *"one of the world's largest clusters"* | **NEEDS REPHRASING.** Loudoun County is the current "data center capital of the world" (~25–31 M sq ft). PWC has ~10 M operational and ~90 M planned and is *projected* to overtake it. Correct: *"in Northern Virginia, the world's largest data-center region"* or *"a county projected to become the largest single hub"* |
+| 5 | *"state-audited 2023 utility data"* | **IMPRECISE.** JLARC's own attribution reads "JLARC staff analysis of **data provided by water utilities**." JLARC is Virginia's legislative audit commission, but it analyzed utility-reported data rather than auditing the measurements. Correct: *"utility-reported data compiled by Virginia's legislative audit commission"* |
+| 6 | *"genuinely independent out-of-sample validation"* (§45) | **MATERIAL QUALIFICATION.** JLARC's dataset explicitly includes **Prince William** — "water utilities serving Fairfax, Henrico, Loudoun, Mecklenburg, and Prince William counties and the Town of Wise." Since ICPRB also derived the 309 gal/MW/day from Prince William Water, calibration and validation partly trace to the **same utility records**. The test remains informative — it is on *shape* not level, JLARC's pool is dominated by non-PWC (mostly Loudoun) buildings, and nothing was fitted to JLARC — but it must be described as **partially independent**, not fully independent |
+
+### 50.3 Two useful confirmations from JLARC's fine print
+- *"Water use is on a per building, not per campus, basis"* — matches our per-building comparison exactly.
+- *"Data was not available for all data centers in Virginia but was for the large majority"* — supports the ~300-building denominator used in the tail-probability calculation.
+
+### 50.4 A disparity worth disclosing
+ICPRB's own table (p.127) gives annual-average WUP of **1,145** (Fairfax), **1,006** (Loudoun) and **309** (Prince William) — PWC is 3–4× lower — while PWC's *peak-day* WUP (3,060) *exceeds* Loudoun's (2,435). PWC's implied peak/annual ratio is therefore **9.9×** against Loudoun's **2.4×**. Our peak-day analysis (§40.2) rests on that 9.9×. It is published data and defensible, but the disparity is large and should be disclosed rather than used silently — it may indicate the PWC annual figure is low rather than the peak being unusually high.
