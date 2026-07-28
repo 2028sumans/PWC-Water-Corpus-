@@ -2573,7 +2573,24 @@ Sensitivity of the headline:
 | E3 all-VA-ish (coal 11%) | 259.6 | 49.8 | **21.0** |
 | published 2023 delivered, renormalized ex-purchases | 269.9 | 51.8 | **28.4** |
 
-**Implication for the paper:** the York figure should be reported as **~19–28 MGD depending on the generation-mix convention**, not as a single 18.8. The as-shipped value is the *conservative* end. The qualitative result is unaffected — **York remains 0.00 under marginal accounting in every scenario**, because no scenario places nuclear on the margin. This *strengthens* the central claim (the convention-dependence is larger than reported) while showing the point estimate is softer than previously presented.
+**CORRECTION (this subsection initially overstated the problem).** The model's 25% nuclear share is **not** an error: as of June 2025, nuclear is 25% of Dominion's *generation* per their 2025 IRP Update. The 29.2% figure is the **2023 delivered-to-customers** mix — a different metric (it includes 22.7% third-party purchases) from an earlier year. The as-shipped value is therefore the **current, correct** generation mix, not merely a conservative choice.
+
+**Implication for the paper:** report York as **18.8 MGD (2025 generation mix)**, and cite the sensitivity table as evidence that the figure is convention-dependent — ranging to ~28 MGD if a delivered-mix convention is used instead. The mix should still be moved from an unquoted `external_data` entry to a properly sourced one (Dominion 2025 IRP Update). The qualitative result is unaffected — **York remains 0.00 under marginal accounting in every scenario**, because no scenario places nuclear on the margin. This *strengthens* the central claim (the convention-dependence is larger than reported) while showing the point estimate is softer than previously presented.
 
 ### 49.5 Related limitation already on record
 §18 (App H) flags that **net imports are ~31% of Virginia electricity** — roughly a third of the power, and its water, comes from other PJM states whose basins the model does not attribute at all. This is a second, larger out-of-state displacement channel that remains uncounted and should be stated as a limitation.
+
+### 49.6 Source-document authenticity check
+Verifying that the corpus PDFs are the genuine publications, not altered copies:
+
+| Document | Result |
+|---|---|
+| **JLARC Report 598** | **AUTHENTICATED.** Re-downloaded from jlarc.virginia.gov; SHA-256 **identical** to the corpus copy (`d794e060d2697b41ac69aa6133cf73ea0473433736e4e1ab85d26df219383322`) |
+| **ICPRB 2025 WMA Study** | **Not byte-verified** — potomacriver.org is unreachable from the build environment (connection refused via both curl and fetch). Corroborating evidence: PDF metadata reads Title "2025 Washington Metropolitan Area Water Supply Study", Authors "S.N. Ahmed, S. Nummer, C.L. Schultz, and A. Seck", created 5 Dec 2025, 266 pages; local filename matches the official URL filename exactly. Corpus SHA-256: `2ee07c17d80fb962d9399408677522914f666bac69eaa7c739ff0cb31fb99d45` |
+| **ICPRB DataCenters brief (Mar 2026)** | Same host, same limitation |
+
+**Open action for a human:** download the two ICPRB PDFs from potomacriver.org and compare SHA-256 against the hashes above. Official URLs:
+- `https://www.potomacriver.org/wp-content/uploads/2025/12/2025_WMA_Water_Supply_Study_ICPRB_Dec-2025.pdf`
+- `https://www.potomacriver.org/wp-content/uploads/2026/03/ICPRB.DataCentersandWaterUse.ICPRB_.March2026.pdf`
+
+This is the one verification step that could not be completed automatically.
