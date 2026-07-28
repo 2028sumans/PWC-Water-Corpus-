@@ -2621,3 +2621,38 @@ Every claim in the draft abstract and plain-language summary was checked against
 
 ### 50.4 A disparity worth disclosing
 ICPRB's own table (p.127) gives annual-average WUP of **1,145** (Fairfax), **1,006** (Loudoun) and **309** (Prince William) — PWC is 3–4× lower — while PWC's *peak-day* WUP (3,060) *exceeds* Loudoun's (2,435). PWC's implied peak/annual ratio is therefore **9.9×** against Loudoun's **2.4×**. Our peak-day analysis (§40.2) rests on that 9.9×. It is published data and defensible, but the disparity is large and should be disclosed rather than used silently — it may indicate the PWC annual figure is low rather than the peak being unusually high.
+
+## 51. Assumption inventory, and which ones the abstract must disclose
+
+### 51.1 The critical one — the headline is a FULL-BUILDOUT figure
+Of the 243 buildings, only **54 are Completed**; the rest are Planned (120), Pending (36), Under Construction (31) or Under Review (2).
+
+| Fleet | Total water |
+|---|---|
+| All 243 buildings (built + under construction + planned) | **49.6 MGD** |
+| **Completed only (54 buildings, today's operating fleet)** | **10.5 MGD** — 21% of the headline |
+
+The draft abstract quoted "49.6 MGD" beside "243 data-center buildings" **without stating that ~78% of those buildings do not yet exist.** A reader would reasonably take 49.6 MGD as current consumption; it is ~4.7× current. **This must be disclosed in the abstract.** It is documented throughout the methodology, but the abstract as drafted was misleading on its own terms.
+
+### 51.2 Assumptions that affect a claim made in the abstract
+| Assumption | Value | Affects | Status |
+|---|---|---|---|
+| Nuclear is never marginal | — | the "zero under marginal" headline | Standard dispatch theory, **and confirmed** by PJM's published marginal-resource table (nuclear absent). Must be reported as premise, not discovery |
+| Dominion generation mix | 25% nuclear | scales the 18.8 MGD | Verified: Dominion 2025 IRP Update |
+| **Eq 6-3 permit-factor span** | tri(0.70, 1.00, 1.35) | **sets the ±26% for tier 1** | **ASSUMED** — derived from assumed redundancy 0.4–0.6 and utilization 0.7–0.9. The tier-1/tier-4 ratio ranges 1.6–4.3× under defensible alternatives (§49) |
+| Seasonal baseload share | 30% | the 28% July figure | Swept 10–50% → 23–34%. Report as central with range |
+| JLARC denominator | ~300 buildings | the KS reference distribution, hence p = 0.09 | Assumed from "the large majority" of ~340 |
+| Scope 3 proportion | 5–15%, central 10% | ~9% of the 49.6 total | External citation (Privette et al. 2026) |
+| Renewables water factor | 0 gal/MWh | Scope 2 magnitude | Acknowledged **floor** — hydro evaporation and panel washing excluded |
+
+### 51.3 Assumptions that do NOT affect abstract claims
+CC:CT marginal gas split (78:22) · marginal attribution to Virginia plants only · PUE vintage classes · triangular prior shapes · N = 40,000 iterations · gage-record stationarity · 24 h/day operation (utilization already in the 0.8 factor).
+
+### 51.4 Are these acceptable in an AGU abstract?
+Yes — with three exceptions. Conference abstracts do not enumerate assumptions, and every estimate of this kind rests on many; the standard is **not** "assumption-free" but "no claim is misleading without the assumption stated." By that standard:
+
+- **Must disclose: full buildout (§51.1).** Without it the headline number means something different from what a reader will take it to mean. Non-negotiable.
+- **Should soften: the ±26% vs ±60% comparison.** The ±60% is calibrated and measured; the ±26% rests on an assumed span. Lead with the measured number and the empty tier.
+- **Should range: the 28% July figure**, or label it central.
+
+Everything else is normal modelling practice, documented, and appropriate to leave to the talk, poster, and paper.
