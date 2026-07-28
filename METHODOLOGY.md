@@ -2656,3 +2656,32 @@ Yes — with three exceptions. Conference abstracts do not enumerate assumptions
 - **Should range: the 28% July figure**, or label it central.
 
 Everything else is normal modelling practice, documented, and appropriate to leave to the talk, poster, and paper.
+
+## 52. Re-verification of the two flagged items against original source context
+
+### 52.1 The ±26% — confirmed unsourced, and weaker than first stated
+Reading ICPRB pp.125–126 in full, the Equation 6-3 factors are given as **bare point values with no uncertainty range**:
+
+> "A redundancy factor of 0.5 **is assumed** to reflect that permitted generator capacity typically represents twice the actual IT power load (i.e., 2N backup systems), and a utilization factor of 0.8 is applied based on industry data (EPRI, 2024)…"
+
+ICPRB publishes **no span** for either factor. The Monte Carlo's `tri(0.70, 1.00, 1.35)` — built from our own assumed redundancy 0.4–0.6 and utilization 0.7–0.9 — is therefore **entirely our construction, unsupported by the source.**
+
+Two further consequences:
+- ICPRB itself describes the redundancy factor as *assumed*. So tier-1 power is not "observed": the **generator nameplate** is observed, but its conversion to IT load passes through two assumed factors, one of which ICPRB flags as an assumption. Calling tier 1 "permit-observed power" overstates it; "permit-documented generator capacity" is accurate.
+- **Verdict: the ±26% must not anchor the abstract.** Lead with the calibrated ±60% and the empty tier.
+
+### 52.2 The 28% July figure — no source profile exists, but the 10× is real
+ICPRB reports **only two points** — annual average and peak day — and **no monthly or seasonal profile** for data-center water use. The CDD-proportional monthly allocation with a 30% baseload is therefore **our construction**, and the 28% must be reported with its 23–34% sweep range.
+
+However, the underlying peak/annual ratio is **directly reported utility data**, not modelled:
+
+> "In the Prince William Water service area, **0.42 MGD on average and 4.2 MGD for peak day** were reported for 2023." (Loudoun: 4.5 MGD annual, 10.9 MGD peak, 2024.)
+
+PWC peak/annual = **4.2 / 0.42 = 10.0×** (matching the WUP ratio 3,060/309 = 9.9×); Loudoun = 10.9/4.5 = **2.4×**. So the striking peak-to-annual disparity between the two counties is in the *reported* data, not an artifact of our method. The seasonal *shape* is ours; the seasonal *amplitude* is ICPRB's.
+
+### 52.3 The circularity, now confirmed in the source's own words
+> "WUP was then calculated by **dividing utility reported data center water use by effective power demand**."
+
+This is the §45 circularity stated by ICPRB directly: the 309 gal/MW/day is Prince William Water's reported total divided by ICPRB's own power estimate. Comparing our county Scope 1 back to that total tests our power estimate against ICPRB's, not our water estimate against reality.
+
+**Also noted:** ICPRB sourced its facility inventory from "a dataset developed by Virginia Joint Legislative Audit and Review Commission (JLARC) consultants using VADEQ air permits" — the same VADEQ/JLARC lineage this study uses. Our inputs and ICPRB's overlap more than "independent sources" would suggest, and this should be stated.
