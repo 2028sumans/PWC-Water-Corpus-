@@ -179,10 +179,11 @@
    },
    "source": "Monitoring Analytics, 2023 State of the Market Report for PJM, Section 3 (Energy Market)",
    "source_pdf": "PJM_SOM_2023_sec3_energy_market.pdf",
-   "page": 117,
-   "section": "3 Energy Market \u2014 Marginal Resources",
+   "page": 125,
+   "section": "Section 3 Energy Market \u2014 Overview (printed p.125; PDF p.3 of the Sec.3 extract)",
    "verbatim_quote": "In 2022, coal units were 10.0 percent and natural gas units were 75.2 percent of marginal resources.",
-   "note": "2023 values (coal 9.1%, gas 83.1%) carried as a sensitivity. The SOM does not split gas into CC vs CT; that split (78:22) remains an assumption -- see pjm_marginal_gas_cc_ct_split. Neither affects the York->0 result."
+   "note": "2023 values (coal 9.1%, gas 83.1%) carried as a sensitivity. The SOM does not split gas into CC vs CT; that split (78:22) remains an assumption -- see pjm_marginal_gas_cc_ct_split. Neither affects the York->0 result. Page verified: quote appears on printed page 125 (footer '2023 State of the Market Report for PJM 125'). An earlier ledger entry said p.117; that was unverified and wrong.",
+   "pdf_page_in_extract": 3
   },
   {
    "id": "pjm_marginal_gas_cc_ct_split",

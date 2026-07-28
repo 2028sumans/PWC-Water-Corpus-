@@ -236,6 +236,16 @@ def c_provenance_ledger():
             n_quoted += 1
             if re.sub(r"\s+", " ", q).lower() not in pdftext(e["source_pdf"]):
                 bad.append(f"{e['id']}: quote not in {e['source_pdf']}")
+            elif e.get("page"):
+                # Presence is not enough -- a wrong page number is a citation error a
+                # reviewer will catch. Verify the quote is on the CLAIMED page.
+                import subprocess
+                pg = e.get("pdf_page_in_extract") or e["page"]
+                pt = subprocess.run(["pdftotext", "-q", "-f", str(pg), "-l", str(pg),
+                                     os.path.join(RAW, e["source_pdf"]), "-"],
+                                    capture_output=True, text=True).stdout
+                if re.sub(r"\s+", " ", q).lower() not in re.sub(r"\s+", " ", pt).lower():
+                    bad.append(f"{e['id']}: quote not on claimed page {pg}")
         else:
             # Non-quoted entries must be explicitly typed AND noted. "assumption*"
             # and "limitation" types exist so premises that produce results (e.g.

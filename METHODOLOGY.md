@@ -2537,3 +2537,43 @@ The §48.1–48.3 sweep stopped after three papers. Completed here; two further 
 Neither the *method* (attributional vs consequential accounting) nor the *concepts* (displacement; static accounting is inadequate; transparency is poor) are novel — all are published. What the sweep did **not** find is an **empirical, basin-resolved demonstration on a real facility fleet that switching between two standard accounting conventions relocates the single largest attributed basin to zero.**
 
 The strongest *regional* contribution is separate and concrete: **ICPRB's own study of this basin omits electricity-related water entirely**, so ~87% of the footprint falls outside the boundary the regional water authority actually assessed. That gap is specific, verifiable, and policy-relevant.
+
+## 49. Independent verification pass (self-audit, July 2026)
+
+A verification pass run at the user's request, independent of the existing harness. Four things were checked from source; two problems were found.
+
+### 49.1 Page-level citation check — one error found and fixed
+Harness check 10 verified each quote existed *somewhere* in its PDF but never that it was on the **claimed page**. Testing page-level placement: **12 of 13 quotes confirmed on the exact claimed page.** The exception was the PJM marginal-fuel quote, cited as p.117; it is actually on **printed page 125** (footer: "2023 State of the Market Report for PJM 125"), PDF page 3 of the Section-3 extract. The page number had been asserted, not verified. Ledger corrected, and **check 10 now enforces page-level placement**, so this class of citation error cannot recur.
+
+### 49.2 Derived constants — recomputed independently, exact match
+The three USGS consumption factors were recomputed with freshly written arithmetic (not by calling `usgs_va_factors.py`, so a bug in that script could not hide):
+
+> gal/MWh = (Σ cu_mgd × 10⁶ × 365) ÷ Σ annual net generation MWh, VA plants pooled 2018–20
+
+| Fuel | Recomputed | Ledger | Records |
+|---|---|---|---|
+| nuclear | **391** | 391 | 6 |
+| natural gas CC | **196** | 196 | 21 |
+| coal | **474** | 474 | 10 |
+
+Exact agreement on all three.
+
+### 49.3 Citations resolve
+Siddik/Shehabi/Marston (10.1088/1748-9326/abfba1) → 200 · Mytton (10.1038/s41545-021-00101-w) → 200 · Guidi & Dominici (arXiv:2607.02531) → 200 · Privette (10.1029/2025AV002140) → 403, which is Wiley bot-blocking; existence independently confirmed (*AGU Advances* 7:e2025AV002140).
+
+### 49.4 The Dominion generation mix is the weakest load-bearing input — quantified
+`DOMINION_GENERATION_MIX` (gas 58 / nuclear 25 / renewable 14 / coal 3) is the ledger's one unquoted external constant, and it **directly scales the headline York figure**. Dominion's published 2023 *delivered* mix is gas 36%, **nuclear 29.2%**, third-party purchases 22.7%, coal 5%, renewable 5% — not directly comparable (the purchases category has no analogue in the model), but the nuclear share is higher than the model's.
+
+Sensitivity of the headline:
+
+| Mix scenario | Blended gal/MWh | Scope 2 (MGD) | **York (MGD)** |
+|---|---|---|---|
+| as-shipped (nuclear 25%) | 225.6 | 43.3 | **18.8** |
+| nuclear 29.2% (published), gas absorbs | 233.8 | 44.9 | **21.9** |
+| E3 all-VA-ish (coal 11%) | 259.6 | 49.8 | **21.0** |
+| published 2023 delivered, renormalized ex-purchases | 269.9 | 51.8 | **28.4** |
+
+**Implication for the paper:** the York figure should be reported as **~19–28 MGD depending on the generation-mix convention**, not as a single 18.8. The as-shipped value is the *conservative* end. The qualitative result is unaffected — **York remains 0.00 under marginal accounting in every scenario**, because no scenario places nuclear on the margin. This *strengthens* the central claim (the convention-dependence is larger than reported) while showing the point estimate is softer than previously presented.
+
+### 49.5 Related limitation already on record
+§18 (App H) flags that **net imports are ~31% of Virginia electricity** — roughly a third of the power, and its water, comes from other PJM states whose basins the model does not attribute at all. This is a second, larger out-of-state displacement channel that remains uncounted and should be stated as a limitation.
