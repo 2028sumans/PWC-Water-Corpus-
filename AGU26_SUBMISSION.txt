@@ -4,46 +4,57 @@ Accounting conventions can shift the apparent water burden of data centers
 across watersheds: a verifiable evidence base for Prince William County, Virginia
 
 
-=== ABSTRACT (1976/2000 chars, excl. spaces) ===
+=== ABSTRACT (1967/2000 chars, excl. spaces) ===
 [Paste this block ONLY into the abstract-body field. Do not include the title.]
 
-Data-center growth is increasing water demand in already stressed basins, yet facility-level evidence remains limited because operators rarely disclose water use or electricity demand. We ask how much the apparent water burden of data centers depends on accounting choices rather than measurement alone. We reconstruct the water footprint of 243 data-center buildings in Prince William County, Virginia, from public records: air permits, utility filings, transmission plans, and county GIS. We adapt the carbon-accounting scope framework to water by separating on-site cooling, electricity generation, and supply-chain water use. Fifty-four buildings operate today, using an estimated 10 million gallons per day (MGD); full buildout could reach roughly 50 MGD. Electricity generation accounts for 87%, meaning most associated water use occurs away from the facilities themselves.
+Data-center growth is increasing water demand in already stressed basins, yet facility-level evidence remains limited because operators rarely disclose water use or electricity demand. We ask how much the apparent water burden of data centers depends on accounting choices rather than measurement alone. We reconstruct the consumptive water footprint — water lost, not withdrawn — of 243 data-center buildings in Prince William County, Virginia, from public records: air permits, utility filings, transmission plans, and county GIS. We adapt the carbon-accounting scope framework to water by separating on-site cooling, electricity generation, and supply-chain water use. Fifty-four buildings operate today, consuming an estimated 10 million gallons per day (MGD); full buildout could reach roughly 50 MGD. Electricity generation accounts for 88%, meaning most associated water use occurs away from the facilities themselves.
 
 We find that the accounting method determines where this burden appears. Under average accounting, which distributes the water used by all electricity generation across electricity consumers, more than 40% of electricity-related water use is assigned to Lake Anna, 80 km outside the host basin. Under marginal accounting, which asks which power plants would increase generation in response to new data-center demand, Lake Anna receives no additional attribution. Neither approach is incorrect, but they identify different watersheds, and different downstream communities, as bearing the burden.
 
-Missing information also affects confidence: power demand inferred from building floor area carries approximately ±60% uncertainty, while no operator publicly discloses the load data needed to resolve it. Annual averages likewise obscure local stress, with the basin containing most buildings experiencing a draw equivalent to 4% of mean annual flow but 23–34% of July flow. Results are consistent with utility-reported 2023 data compiled by Virginia's legislative audit commission (KS p = 0.09, n = 54). Notably, the regional water authority's own assessment of this basin addresses on-site use only, under one-twentieth of the footprint we estimate. Accounting and inference choices therefore determine not just the magnitude of a data-center water footprint, but where it is assigned and who is held responsible for managing it.
+Missing information also affects confidence: power inferred from floor area carries approximately ±60% uncertainty, and no operator discloses the load data needed to resolve it. Annual averages likewise obscure local stress, with the basin containing most buildings experiencing a draw equivalent to 3% of mean annual flow but 17–25% of July flow. Per-building estimates fall within 1.3x of utility-reported 2023 data compiled by Virginia's legislative audit commission at every quartile (n = 54). Notably, the regional water authority's own assessment of this basin covers on-site use only, under 3% of our estimate. Accounting and inference choices therefore determine not just the magnitude of a data-center water footprint, but where it is assigned and who must manage it.
 
 [If the submission form rejects the unicode "±" and "–", substitute "+/-" and
  "-". That raises the count to 1978/2000 — still within limit.]
 
 
-=== PLAIN-LANGUAGE SUMMARY (199/200 words) ===
+=== PLAIN-LANGUAGE SUMMARY (198/200 words) ===
 
-Data centers are expanding rapidly in regions where water is already stressed, yet facility-level water use is almost never reported publicly. We reconstructed the water footprint of 243 data-center buildings in Prince William County, Virginia, from public records alone. Fifty-four operate today, using an estimated 10 million gallons per day; if everything approved is built, that could reach 50 million. Our building-by-building estimates follow the same pattern as metered water data Virginia's legislature collected from utilities in 2023.
+Data centers are expanding rapidly in regions where water is already stressed, yet facility-level water use is almost never reported publicly. We reconstructed the water footprint of 243 data-center buildings in Prince William County, Virginia, from public records alone. Fifty-four operate today, consuming an estimated 10 million gallons per day; if everything approved is built, that could reach 50 million. Our building-by-building estimates fall within about 30% of water-use data Virginia's legislature collected from utilities in 2023.
 
-Most of that water is never used at the buildings; about 87% is consumed at the power plants generating their electricity, often in another river basin. Where this burden appears depends on how it is counted. One standard method assigns more than 40% to Lake Anna, a reservoir 50 miles away. A second, equally standard method, which asks which plants ramp up to serve a new data center, assigns Lake Anna none.
+Most of that water is never used at the buildings; about 88% is consumed at the power plants generating their electricity, often in another river basin. Where this burden appears depends on how it is counted. One standard method assigns more than 40% to Lake Anna, a reservoir 50 miles away. A second, equally standard method, which asks which plants ramp up to serve a new data center, assigns Lake Anna none.
 
 Neither method is wrong, but each implicates different rivers, communities, and regulators. No operator publishes the electricity data that would narrow these estimates, and the regional water authority's assessment covers only water used at the buildings. Which watershed is treated as responsible depends on an accounting choice, not measurement.
 
 
-=== NUMBERS IN THE ABSTRACT — VERIFIED 29 JUL 2026 ===
+=== NUMBERS IN THE ABSTRACT - VERIFIED 29 JUL 2026 ===
+ALL FIGURES ARE CONSUMPTIVE USE (water lost), not withdrawal. The mixed-basis
+totals the earlier draft used are shown for comparison only. See METHODOLOGY 53.
 
-243 buildings, 54 operating   facility_profiles.json status counts: Completed 54,
-                              Planned 120, Pending 36, Under Construction 31,
-                              Under Review 2
-10 MGD operating              10.49 MGD (sum of total_mgd_central, status=Completed)
-~50 MGD full buildout         49.60 MGD (all 243)
-87% electricity               43.32 / 49.60 = 87.4%  (Scope 1 = 3.6%, Scope 3 = 9.1%)
->40% to Lake Anna             18.8 MGD York-basin share of Scope 2 (43%)
-±60% uncertainty              fitted-tier (GFA-inferred) buildings, MC N=40,000
-4% annual / 23-34% July       FULL-BUILDOUT fleet (all 243). Broad Run (166 bldgs):
-                              1.394 MGD annual draw vs
-                              33.0 MGD mean monthly flow = 4.2%; July 22.8-33.7%
-                              across the baseload sweep (central 28.3%).
-                              Operating-54 only would be 0.8% annual / 4.6-6.7%
-                              July -- which is why the abstract must keep the
-                              ~50 MGD buildout figure as the antecedent.
-KS p = 0.09, n = 54           scope1_distribution_validation.json ks_pwc_scaled:
-                              D = 0.165, p = 0.0933
-1/20 of footprint             ICPRB scope = on-site only = 3.6% of total (< 5%)
+                              CONSUMPTION (reported)   mixed basis (NOT used)
+243 buildings, full buildout  49.11 MGD  -> "~50"      49.60 MGD
+54 operating                  10.40 MGD  -> "10"       10.49 MGD
+Scope 2 share                 88.2%      -> "88%"      87.4%
+Broad Run, annual             3.2%       -> "3%"       4.2%
+Broad Run, July (sweep)       17.1-25.3% -> "17-25%"   22.8-33.7%
+ICPRB on-site scope vs ours   2.7%       -> "under 3%" 3.6%
+
+  Scope 1 mgd_central is DELIVERED water (ICPRB WUP = utility billing records);
+  Scope 2 is CONSUMPTION at the plant (USGS consumption column, 391/196/474
+  gal/MWh). The 0.75 consumptive factor is uniform across all 243 buildings
+  (0 deviate), so the seasonal percentages rescale exactly.
+  Broad Run = 166 buildings; 1.394 MGD delivered annual draw, 33.0 MGD mean
+  monthly flow. Operating-54 only would be 0.6% annual / 3.5-5.0% July --
+  which is why the abstract must keep the ~50 MGD buildout figure as antecedent.
+
+>40% to Lake Anna             43% of Scope 2 (18.8 MGD). Share of a consumption
+                              total, so invariant to fleet size and basis.
++/-60% uncertainty            fitted-tier (GFA-inferred) buildings, MC N=40,000
+within 1.3x at every quartile p25 1.28x, p50 0.75x, p75 0.83x -> max 1.33x
+                              (validation_effect_size.py). DO NOT quote the KS
+                              p-value: D=0.165 is below the D=0.185 the test can
+                              detect at n=54, so non-rejection is near-automatic
+                              and p=0.09 reads as nearly-significant DISagreement.
+                              Carry verbally: Prince William is one of the six
+                              localities inside JLARC's own dataset, so the
+                              benchmark is partially, not fully, independent.
 80 km                         Lake Anna is ~50 miles from the county

@@ -178,9 +178,74 @@ def c_jlarc():
     v = json.load(open(os.path.join(DATA, "scope1_distribution_validation.json")))
     checks_ok = all(c["consistent"] for c in v["checks"])
     ks = v["ks_pwc_scaled"]["p"]
-    return (checks_ok and ks > 0.05), (
+    # The abstract must quote the EFFECT SIZE, not the p-value: a KS
+    # non-rejection at n=54 is close to guaranteed (see power_caveat) and a
+    # reader can misparse p=0.09 as nearly-significant disagreement.
+    es = v["effect_size"]
+    dep = es["max_quantile_departure_x"]
+    under_powered = es["ks_D"] < es["ks_D_detectable_at_alpha05"]
+    caveats = bool(es.get("power_caveat")) and bool(es.get("independence_caveat"))
+    abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
+    quotes_effect = f"{dep}x" in abstract or f"{dep:.1f}x" in abstract
+    quotes_p = "p = 0.09" in abstract or "KS p" in abstract
+    ok = checks_ok and ks > 0.05 and dep <= 1.5 and caveats and quotes_effect and not quotes_p
+    return ok, (
         f"all {len(v['checks'])} published constraints consistent={checks_ok}; "
-        f"KS(intensity-scaled) p={ks:.3f} (>0.05)")
+        f"quartiles within {dep}x of benchmark (abstract quotes it={quotes_effect}, "
+        f"quotes bare p={quotes_p}); KS p={ks:.3f} but D={es['ks_D']} < detectable "
+        f"{es['ks_D_detectable_at_alpha05']} (under-powered={under_powered}, "
+        f"caveats recorded={caveats})")
+
+
+# 7b ------------------------------------------------------------------------
+def c_basis():
+    """Withdrawal vs consumption must never be mixed in a reported figure.
+
+    Scope 1 mgd_central is DELIVERED water; Scope 2 is CONSUMPTION at the
+    generating plant. total_mgd_central therefore mixes bases. Every number in
+    the abstract is on the consumption basis, so this check recomputes them
+    that way and refuses to pass if the abstract has drifted back to the mixed
+    total or omits the basis statement.
+    """
+    prof = json.load(open(os.path.join(PUB, "facility_profiles.json")))
+    bs = [b for b in prof["buildings"] if b.get("scope_water_footprint")]
+    f = [b["scope_water_footprint"] for b in bs]
+    op = [b["scope_water_footprint"] for b in bs if b["status"] == "Completed"]
+    s1d = sum(x["scope1_onsite_cooling"]["mgd_central"] for x in f)
+    s1c = sum(x["scope1_onsite_cooling"]["consumptive_mgd_central"] for x in f)
+    # The 0.75 factor is applied uniformly per building, so the seasonal figures
+    # rescale exactly. Tolerance is relative: the stored values are rounded to
+    # 4 dp, and that error accumulates over 243 buildings.
+    uniform = abs(s1c - 0.75 * s1d) / (0.75 * s1d) < 5e-3
+    tot_c = sum(x["total_consumptive_mgd_central"] for x in f)
+    op_c = sum(x["total_consumptive_mgd_central"] for x in op)
+    s2 = sum(x["scope2_electricity"]["mgd_central"] for x in f)
+    s2_share = 100 * s2 / tot_c
+
+    abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
+    declares = "consumptive water footprint" in abstract and "not withdrawn" in abstract
+    # the three figures that move between bases
+    says_share = f"{s2_share:.0f}%" in abstract
+    says_op = 9.5 <= op_c <= 10.5 and "10 million gallons per day" in abstract
+    says_tot = 45 <= tot_c <= 55 and "50 MGD" in abstract
+
+    # the seasonal figure scales exactly with the 0.75 factor
+    surf = json.load(open(os.path.join(PUB, "seasonal_basin_surface.json")))["surfaces"]["BROAD RUN"]
+    mean_flow = sum(surf["monthly_flow_mgd"].values()) / 12
+    ann_c = 0.75 * 100 * surf["annual_draw_mgd"] / mean_flow
+    jul_lo = 0.75 * surf["baseload_sweep"]["baseload_50pct"]["worst_pct_of_flow"]
+    jul_hi = 0.75 * surf["baseload_sweep"]["baseload_10pct"]["worst_pct_of_flow"]
+    says_seasonal = (f"{ann_c:.0f}% of mean annual flow" in abstract
+                     and f"{jul_lo:.0f}–{jul_hi:.0f}% of July flow" in abstract)
+
+    ok = all([uniform, declares, says_share, says_op, says_tot, says_seasonal])
+    return ok, (
+        f"consumption basis: total {tot_c:.1f} MGD (mixed-basis total would be "
+        f"{sum(x['total_mgd_central'] for x in f):.1f}), operating {op_c:.1f}, "
+        f"Scope 2 {s2_share:.1f}%, Broad Run {ann_c:.1f}% annual / "
+        f"{jul_lo:.0f}-{jul_hi:.0f}% July. abstract declares basis={declares}, "
+        f"share={says_share} op={says_op} tot={says_tot} seasonal={says_seasonal}, "
+        f"0.75 factor uniform={uniform}")
 
 
 # 8 -------------------------------------------------------------------------
@@ -471,6 +536,7 @@ def main():
     check("5 GP heteroscedasticity", c_gp_hetero)
     check("6 LLM provenance", c_llm_provenance)
     check("7 JLARC validation", c_jlarc)
+    check("7b withdrawal-vs-consumption basis", c_basis)
     check("8 seasonal invariants", c_seasonal)
     check("9 constant provenance", c_constants)
     check("10 provenance ledger", c_provenance_ledger)

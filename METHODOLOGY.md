@@ -2685,3 +2685,93 @@ PWC peak/annual = **4.2 / 0.42 = 10.0×** (matching the WUP ratio 3,060/309 = 9.
 This is the §45 circularity stated by ICPRB directly: the 309 gal/MW/day is Prince William Water's reported total divided by ICPRB's own power estimate. Comparing our county Scope 1 back to that total tests our power estimate against ICPRB's, not our water estimate against reality.
 
 **Also noted:** ICPRB sourced its facility inventory from "a dataset developed by Virginia Joint Legislative Audit and Review Commission (JLARC) consultants using VADEQ air permits" — the same VADEQ/JLARC lineage this study uses. Our inputs and ICPRB's overlap more than "independent sources" would suggest, and this should be stated.
+
+## 53. Reporting basis: consumption, not withdrawal (and the effect size that replaced a p-value)
+
+Three review comments landed on the abstract at once. All three were correct.
+
+### 53.1 The abstract was mixing bases inside a single paragraph
+
+`indirect_water_footprint.py` has always tracked two totals, and the module note
+says why (lines 1105-1118):
+
+- **Scope 1 `mgd_central` is DELIVERED water.** ICPRB's WUP figures come from
+  utility billing records, so blowdown returning to the basin is included.
+- **Scope 2 `mgd_central` is CONSUMPTION at the generating plant.** USGS reports
+  withdrawal and consumption in separate columns; the 391/196/474 gal/MWh
+  factors are the *consumption* column.
+- `total_mgd_central` therefore **mixes bases**; `total_consumptive_mgd_central`
+  puts all three on a consumption basis by applying the 0.75 factor to Scope 1.
+
+The abstract had been quoting the mixed total (49.6 MGD), a Scope 2 share
+computed against it (87.4%), and a Broad Run stress ratio computed from Scope 1
+**delivered** water (4.2% annual / 22.8-33.7% July) — three figures on two
+different bases, none of them labelled. This matters most at Lake Anna: North
+Anna is pond-cooled, so its *withdrawal* dwarfs its *consumption*, and Surry
+consumes 0.0 Mgal/d despite ~1,480 Mgal/d of once-through withdrawal (§18). A
+withdrawal reading and a consumption reading of the same sentence support
+different conclusions — depletion arguments need consumption, permitting
+arguments need withdrawal.
+
+**Resolution: report consumption throughout, and say so on first mention.** The
+abstract now reads "the consumptive water footprint — water lost, not withdrawn".
+Restated figures:
+
+| Figure | Mixed basis (was) | **Consumption basis (now)** |
+|---|---|---|
+| Full buildout, 243 buildings | 49.60 MGD | **49.11 MGD** |
+| Operating, 54 buildings | 10.49 MGD | **10.40 MGD** |
+| Scope 2 share | 87.4% | **88.2%** |
+| Broad Run, annual | 4.2% | **3.2%** |
+| Broad Run, July (baseload sweep) | 22.8-33.7% | **17.1-25.3%** |
+| ICPRB's on-site scope as a share of ours | 3.6% | **2.7%** |
+
+The seasonal figures rescale *exactly*, because `CONSUMPTIVE_USE_FACTOR = 0.75`
+is applied uniformly to every building (verified: 0 of 243 deviate) and the
+streamflow denominators are unchanged. Harness check **7b** recomputes all six
+rows and fails if the abstract drifts back to a mixed-basis number or drops the
+basis statement.
+
+### 53.2 The KS test was being asked to prove the wrong thing
+
+`p = 0.09` is a **failure to reject** the null that the distributions differ. It
+is not positive evidence of agreement, and two things make it worse in an
+abstract:
+
+1. **The test is under-powered at n = 54.** The smallest CDF gap a one-sample KS
+   can reject at alpha = 0.05 is D = 1.358/sqrt(54) = **0.185**. The observed
+   D = **0.165** sits *below* that threshold, so non-rejection was close to
+   guaranteed whatever the truth.
+2. **0.09 reads as nearly-significant.** A reader scanning quickly can parse it
+   as marginal *disagreement* — the opposite of the intended claim.
+
+`validation_effect_size.py` replaces it with quantile ratios (there is no paired
+per-building comparison available — JLARC publishes statewide summary
+statistics, not building records — so MAPE is not computable):
+
+| Quantile | Ours (MGD) | Benchmark (MGD) | Ratio |
+|---|---|---|---|
+| p25 | 0.00300 | 0.00234 | 1.28 |
+| p50 | 0.00375 | 0.00498 | 0.75 |
+| p75 | 0.00885 | 0.01061 | 0.83 |
+
+Largest departure **1.33x**. The abstract now claims "within 1.3x at every
+quartile (n = 54)" and quotes no p-value; harness check 7 fails if a bare
+`p = 0.09` reappears in `ABSTRACT_AGU26.txt`.
+
+**Carry verbally, cut from the abstract for space:** Prince William is one of the
+six localities inside JLARC's own dataset, so the benchmark is partially, not
+fully, independent of our county (recorded as `independence_caveat`).
+
+### 53.3 The plain-language summary was stronger than the abstract
+
+Two unsupported strengthenings, both fixed:
+
+- **"metered water data"** -> JLARC's source line says "data provided by water
+  utilities" (Rpt598 p.80). It never says metered. Now "water-use data Virginia's
+  legislature collected from utilities."
+- **"consumed" at the power plants** — this one was right all along; the
+  *abstract* was the weaker document. Now that the abstract commits to a
+  consumption basis, the two agree.
+- "follow the same pattern as" replaced with the effect size in plain words:
+  "fall within about 30% of."

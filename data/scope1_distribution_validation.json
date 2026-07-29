@@ -78,5 +78,34 @@
   "p": 0.09332302861749153,
   "scale": 0.27122107142857144,
   "statewide_wup": 1139.2920113929201
+ },
+ "effect_size": {
+  "basis": "Scope 1 delivered MGD, 54 operating buildings",
+  "benchmark": "JLARC statewide lognormal (median = large-office 6.7 MGY, sigma from the 11/300 >50 MGY tail), rescaled by PWC's measured intensity 309.0/1139 = 0.2712",
+  "n": 54,
+  "quantile_ratios": {
+   "p25": {
+    "ours_mgd": 0.003,
+    "benchmark_mgd": 0.00234,
+    "ratio": 1.285
+   },
+   "p50": {
+    "ours_mgd": 0.00375,
+    "benchmark_mgd": 0.00498,
+    "ratio": 0.753
+   },
+   "p75": {
+    "ours_mgd": 0.00885,
+    "benchmark_mgd": 0.01061,
+    "ratio": 0.834
+   }
+  },
+  "median_ratio": 0.753,
+  "max_quantile_departure_x": 1.328,
+  "ks_D": 0.1652,
+  "ks_p": 0.0933,
+  "ks_D_detectable_at_alpha05": 0.1848,
+  "power_caveat": "At n=54 the smallest CDF gap a KS test can reject at alpha=0.05 is D=0.185. The observed D=0.165 is below that, so non-rejection (p=0.093) reflects limited power as much as agreement. Report the quantile ratios, not the p-value.",
+  "independence_caveat": "Prince William is one of the six localities inside JLARC's own dataset, so this benchmark is partially, not fully, independent of our county."
  }
 }
