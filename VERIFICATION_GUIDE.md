@@ -36,11 +36,19 @@ shasum -a 256 data/water_raw/Rpt598.pdf
 **Expect:** both `d794e060d2697b41ac69aa6133cf73ea0473433736e4e1ab85d26df219383322`
 
 ```bash
-# ICPRB — I could NOT check these (their server refused my connection). Your job.
-curl -sL "https://www.potomacriver.org/wp-content/uploads/2025/12/2025_WMA_Water_Supply_Study_ICPRB_Dec-2025.pdf" | shasum -a 256
+# ICPRB — potomacriver.org connections are INTERMITTENT. Download to a file first so
+# a failure is visible; piping curl -s straight into shasum silently hashes nothing.
+curl -L --max-time 240 --retry 3 \
+  "https://www.potomacriver.org/wp-content/uploads/2025/12/2025_WMA_Water_Supply_Study_ICPRB_Dec-2025.pdf" \
+  -o /tmp/wma.pdf -w "http=%{http_code} bytes=%{size_download}\n"
+
+# only hash it if the download actually produced a file
+[ -s /tmp/wma.pdf ] && shasum -a 256 /tmp/wma.pdf || echo "DOWNLOAD FAILED — retry, do not interpret this as a mismatch"
+shasum -a 256 data/water_raw/2025_WMA_Water_Supply_Study_ICPRB_Dec-2025.pdf
 ```
-**Expect:** `2ee07c17d80fb962d9399408677522914f666bac69eaa7c739ff0cb31fb99d45`
-**If it differs:** the file may have been revised since download — compare page numbers below before assuming a problem.
+**Expect:** `http=200 bytes=12425557`, then both hashes `2ee07c17d80fb962d9399408677522914f666bac69eaa7c739ff0cb31fb99d45`
+
+> ⚠️ **If you see `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`, that is the SHA-256 of an EMPTY file** — the download returned zero bytes. It is a network failure, **not** a hash mismatch. Retry.
 
 ---
 
@@ -218,7 +226,7 @@ for r in csv.DictReader(open('data/usgs_te_water_2008-2020_VA.csv',encoding='lat
     try: c=float(str(r.get('cu_mgd')).replace(',',''))
     except: c=0.0
     agg[r['Plant.Name']]['cu']+=c; agg[r['Plant.Name']]['src']=r['Name.of.Water.Source']
-for k,v in agg.items(): print(f'{k}: {v[\"cu\"]:.2f} cu_mgd, source = {v[\"src\"]}')
+for k,v in agg.items(): print(k, ':', round(v['cu'],2), 'cu_mgd, source =', v['src'])
 "
 ```
 **Expect:** Surry **0.00** (James River) · North Anna **95.21** (North Anna River)
