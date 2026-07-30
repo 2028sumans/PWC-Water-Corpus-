@@ -186,7 +186,8 @@ def c_jlarc():
     under_powered = es["ks_D"] < es["ks_D_detectable_at_alpha05"]
     caveats = bool(es.get("power_caveat")) and bool(es.get("independence_caveat"))
     abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
-    quotes_effect = f"{dep}x" in abstract or f"{dep:.1f}x" in abstract
+    quotes_effect = any(f"{d}{m}" in abstract
+                        for d in (f"{dep}", f"{dep:.1f}") for m in ("x", "×"))
     quotes_p = "p = 0.09" in abstract or "KS p" in abstract
     ok = checks_ok and ks > 0.05 and dep <= 1.5 and caveats and quotes_effect and not quotes_p
     return ok, (
@@ -223,7 +224,14 @@ def c_basis():
     s2_share = 100 * s2 / tot_c
 
     abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
-    declares = "consumptive water footprint" in abstract and "not withdrawn" in abstract
+    # "consumptive water footprint" is the term of art and declares the basis on
+    # its own; the explicit "water lost, not withdrawn" gloss is optional prose.
+    declares = "consumptive water footprint" in abstract
+    # The study SCOPE is 243 buildings. Stating only the 54 operating ones makes
+    # the buildout and seasonal figures (both computed on all 243) read against
+    # the wrong fleet -- Broad Run is 3.2%/17-25% at buildout but 0.6%/3.5-5.0%
+    # for the operating 54. This has regressed three times; check it explicitly.
+    scope_ok = "243 data-center buildings" in abstract and "54 buildings" in abstract
     # the three figures that move between bases
     says_share = f"{s2_share:.0f}%" in abstract
     says_op = 9.5 <= op_c <= 10.5 and "10 million gallons per day" in abstract
@@ -238,13 +246,14 @@ def c_basis():
     says_seasonal = (f"{ann_c:.0f}% of mean annual flow" in abstract
                      and f"{jul_lo:.0f}–{jul_hi:.0f}% of July flow" in abstract)
 
-    ok = all([uniform, declares, says_share, says_op, says_tot, says_seasonal])
+    ok = all([uniform, declares, scope_ok, says_share, says_op, says_tot, says_seasonal])
     return ok, (
         f"consumption basis: total {tot_c:.1f} MGD (mixed-basis total would be "
         f"{sum(x['total_mgd_central'] for x in f):.1f}), operating {op_c:.1f}, "
         f"Scope 2 {s2_share:.1f}%, Broad Run {ann_c:.1f}% annual / "
         f"{jul_lo:.0f}-{jul_hi:.0f}% July. abstract declares basis={declares}, "
-        f"share={says_share} op={says_op} tot={says_tot} seasonal={says_seasonal}, "
+        f"scope(243+54)={scope_ok} share={says_share} op={says_op} tot={says_tot} "
+        f"seasonal={says_seasonal}, "
         f"0.75 factor uniform={uniform}")
 
 
