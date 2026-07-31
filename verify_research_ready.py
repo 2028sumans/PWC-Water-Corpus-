@@ -254,9 +254,11 @@ def c_basis():
         ann = 0.75 * k * 100 * surf["annual_draw_mgd"] / mean_flow
         lo = 0.75 * k * surf["baseload_sweep"]["baseload_50pct"]["worst_pct_of_flow"]
         hi = 0.75 * k * surf["baseload_sweep"]["baseload_10pct"]["worst_pct_of_flow"]
-        says_seasonal = (f"{ann:.0f}% of mean annual flow" in abstract
-                         and any(f"{lo:.0f}{d}{hi:.0f}% of July flow" in abstract
-                                 for d in ("-", "–")))
+        # Match on the NUMBERS, not on a fixed phrase -- the wording around them
+        # is edited constantly and a literal match makes the guard brittle.
+        says_seasonal = bool(
+            re.search(rf"{ann:.0f}%\s+of\s+[\w' ]*?mean annual flow", abstract)
+            and re.search(rf"{lo:.0f}[-–]{hi:.0f}%\s+of\s+[\w' ]*?July flow", abstract))
         seas_note = (f"scope={scope} -> requires {ann:.1f}% annual / "
                      f"{lo:.0f}-{hi:.0f}% July")
 

@@ -2899,3 +2899,72 @@ pre-USGS-reanalysis values: gas CC `# 213` (actual 196), coal `# 451` (actual
 474), and blended `~180` (actual 165.7). The computation reads from the
 dictionary and was always correct, but an auditor comparing comments to the
 ledger would have found an apparent contradiction. Fixed; no number changed.
+
+## 56. Framing audit: two more prose-vs-source violations, and the class they belong to
+
+**Asked in review: how do I know there are no other errors like the Lake Anna
+one?** The honest answer is that you cannot know, but the class is
+characterizable, and once characterized it can be swept deliberately instead of
+stumbled into.
+
+### 56.1 The signature
+
+Every substantive error found in review shares one shape: **an analysis file
+declares a framing, and the prose quietly violates it.** The arithmetic
+reproduces every time. The interpretation drifts. Checks 1-20 recompute values
+from sources, so they are structurally blind to this — a sentence can contradict
+its own source file while every number in it verifies.
+
+### 56.2 Two live violations found by sweeping for it
+
+**(a) The abstract asserted a withdrawal that does not occur.**
+`seasonal_basin_surface.json` and `basin_stress.json` both open with, in
+capitals: *"SCALE COMPARISON, not withdrawal attribution. Prince William data
+centers are supplied by Prince William Water (Occoquan/Potomac public supply),
+not by direct withdrawal from these streams."* The abstract read *"the basin
+containing most buildings **experiencing a draw** equivalent to 3% of mean
+annual flow but 17-25% of July flow"* — which states that Broad Run is drawn
+from. ICPRB's own March 2026 study independently confirms the opposite:
+*"These facilities are served by public water suppliers."* A water-resources
+reader would take 17-25% of July flow as depletion of Broad Run.
+
+Fixed: *"on-site use by the buildings in one basin equivalent to 3% of that
+basin's mean annual flow but 17-25% of its July flow (a scale comparison; supply
+is from the regional system)."*
+
+**(b) The ICPRB finding was attached to the wrong basin.** The abstract said
+*"the regional water authority's own assessment of **this basin**"*, whose
+antecedent was Broad Run. ICPRB's study is **Potomac basin / WMA-wide** and
+explicitly *"distinguishes between data centers located upstream of the WMA
+drinking water intakes ... and those located within the WMA."* There is no Broad
+Run assessment. Fixed to *"basin-wide assessment"*.
+
+### 56.3 Three that remain open, deliberately
+
+`audit_framings.py` walks every abstract claim against the framing its source
+declares. It cannot pass or fail — "does this sentence honour that caveat" is a
+judgement — so it prints them side by side and forces the call. Three are
+unresolved and should be answered verbally rather than papered over:
+
+1. **"243 buildings"** — building classification is a judgement (county GIS +
+   permit records). No independent list exists to check it against. The honest
+   answer to "how do you know it is 243" is *this is what the county records
+   show*, not *we verified it*.
+2. **"88%"** — the denominator includes Scope 3, a literature range (5-15%,
+   Privette et al.) applied as a multiplier, with no PDF in the corpus and
+   flagged in the ledger as not machine-verifiable. Scope 2 / (Scope 1 + Scope 2)
+   alone is ~97%. Be ready to say which denominator is meant.
+3. **"under 3% of our estimate"** — the SCOPE claim (ICPRB covers on-site only)
+   is sound, but it compares their basin-wide assessment to our county footprint.
+   Not like-for-like geographically.
+
+Also open and not in the abstract: the seasonal **demand shape is modelled**
+(CDD-proportional, baseload swept 0.1/0.3/0.5). Only the streamflow is measured.
+
+### 56.4 What changed in the harness
+
+Check 7b matched the literal phrase `"3% of mean annual flow"` and broke the
+moment the sentence was reworded — a brittle guard that fails on correct edits
+and so trains you to ignore it. It now matches on the **numbers** via regex,
+with the surrounding wording free. Fault-injection confirmed: changing 17-25% to
+40-50% still fails it.

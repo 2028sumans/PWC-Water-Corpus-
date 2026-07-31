@@ -4,10 +4,10 @@ Accounting conventions can shift the apparent water burden of data centers
 across watersheds: a verifiable evidence base for Prince William County, Virginia
 
 
-=== ABSTRACT (1947/2000 chars, excl. spaces) ===
+=== ABSTRACT (1994/2000 chars, excl. spaces) ===
 [Paste this block ONLY into the abstract-body field. Do not include the title.]
 
-Data-center growth is increasing water demand in already stressed basins, yet facility-level evidence remains limited because operators rarely disclose water use or electricity demand. We examine how accounting choices shape the apparent water burden of data centers by reconstructing the consumptive water footprint of 243 data-center buildings in Prince William County, Virginia, using public records, adapting a carbon-accounting scope framework to distinguish on-site cooling, electricity generation, and supply-chain water use. Electricity generation accounts for 88% of the estimated footprint, indicating that most associated water use occurs away from the facilities themselves. This geographic separation makes the choice of accounting method consequential. Under average accounting, which distributes water used by all electricity generation across electricity consumers, more than 40% of electricity-related water use is assigned to Lake Anna, 80 km outside the host basin. Under short-run marginal (dispatch) accounting, by contrast, which asks which power plants would ramp to serve new data-center demand, 0% is attributed to Lake Anna. Each approach therefore identifies different watersheds — and therefore different communities — as bearing the indirect water burden. Missing information also affects confidence, with power inferred from floor area carrying about ±60% uncertainty, and no operator disclosing the load data needed to resolve it. Per-building estimates fall within 1.3x at every quartile of the intensity-rescaled 2023 utility-reported distribution compiled by Virginia's legislative audit commission. Annual averages likewise obscure local stress, with the basin containing most buildings experiencing a draw equivalent to 3% of mean annual flow but 17-25% of July flow. Notably, the regional water authority's own assessment of this basin covers on-site use only, under 3% of our estimate. Together, these results suggest that data-center water assessment should extend beyond facility-level water use to incorporate electricity-related water use, transparent load data, and seasonal watershed conditions, so that water-management and permitting decisions reflect the full geographic footprint of digital infrastructure.
+Data-center growth is increasing water demand in already stressed basins, yet facility-level evidence remains limited because operators rarely disclose water use or electricity demand. We examine how accounting choices shape the apparent water burden of data centers by reconstructing the consumptive water footprint of 243 data-center buildings in Prince William County, Virginia, using public records, adapting a carbon-accounting scope framework to distinguish on-site cooling, electricity generation, and supply-chain water use. Electricity generation accounts for 88% of the estimated footprint, indicating that most associated water use occurs away from the facilities themselves. This geographic separation makes the choice of accounting method consequential. Under average accounting, which distributes water used by all electricity generation across electricity consumers, more than 40% of electricity-related water use is assigned to Lake Anna, 80 km outside the host basin. Under short-run marginal (dispatch) accounting, by contrast, which asks which power plants would ramp to serve new data-center demand, 0% is attributed to Lake Anna. Each approach therefore identifies different watersheds — and therefore different communities — as bearing the indirect water burden. Missing information also affects confidence, with power inferred from floor area carrying about ±60% uncertainty, and no operator disclosing the load data needed to resolve it. Per-building estimates fall within 1.3x at every quartile of the intensity-rescaled 2023 utility-reported distribution compiled by Virginia's legislative audit commission. Annual averages likewise obscure local stress, with on-site use by the buildings in one basin equivalent to 3% of that basin's mean annual flow but 17-25% of its July flow (a scale comparison; supply is from the regional system). Notably, the regional water authority's own basin-wide assessment covers on-site use only, under 3% of our estimate. Together, these results suggest that data-center water assessment should extend beyond facility-level water use to incorporate electricity-related water use, transparent load data, and seasonal watershed conditions, so that water-management and permitting decisions reflect the full geographic footprint of digital infrastructure.
 
 [The abstract contains 3 non-ASCII characters. If the form rejects them,
  use "--", "-", "+/-" -- that gives 1951/2000, still within limit.
@@ -63,3 +63,20 @@ within 1.3x at every quartile p25 1.28x, p50 0.75x, p75 0.83x -> max 1.33x
                               See METHODOLOGY 54. If asked, concede the long
                               run -- the claim is about what the CHOICE between
                               conventions does, not that nuclear is blameless.
+
+
+=== THREE OPEN FRAMING QUESTIONS -- have answers ready, do not bluff ===
+Run `python3 audit_framings.py` for the full sweep.
+
+"243 buildings"        Classification is a judgement (county GIS + permits).
+                       No independent list to check against. Honest answer:
+                       "this is what the county records show", NOT "verified".
+"88%"                  Denominator includes Scope 3 -- a literature range
+                       (5-15%, Privette et al.), no PDF in corpus, ledgered as
+                       not machine-verifiable. Scope 2/(Scope 1+2) alone is
+                       ~97%. Know which denominator you mean.
+"under 3% of our       ICPRB's assessment is basin-wide; ours is one county.
+ estimate"             The SCOPE claim is sound, the geography is not
+                       like-for-like.
+seasonal demand shape  MODELLED (CDD-proportional, baseload swept .1/.3/.5).
+ (not in abstract)     Only the streamflow is measured.
