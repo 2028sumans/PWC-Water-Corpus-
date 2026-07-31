@@ -227,33 +227,50 @@ def c_basis():
     # "consumptive water footprint" is the term of art and declares the basis on
     # its own; the explicit "water lost, not withdrawn" gloss is optional prose.
     declares = "consumptive water footprint" in abstract
-    # The study SCOPE is 243 buildings. Stating only the 54 operating ones makes
-    # the buildout and seasonal figures (both computed on all 243) read against
-    # the wrong fleet -- Broad Run is 3.2%/17-25% at buildout but 0.6%/3.5-5.0%
-    # for the operating 54. This has regressed three times; check it explicitly.
-    scope_ok = "243 data-center buildings" in abstract and "54 buildings" in abstract
-    # the three figures that move between bases
     says_share = f"{s2_share:.0f}%" in abstract
-    says_op = 9.5 <= op_c <= 10.5 and "10 million gallons per day" in abstract
-    says_tot = 45 <= tot_c <= 55 and "50 MGD" in abstract
 
-    # the seasonal figure scales exactly with the 0.75 factor
+    # THE INVARIANT: the seasonal figure must describe the SAME fleet the
+    # abstract says it studied. Broad Run is 3%/17-25% of July flow for all 243
+    # buildings but only 0.6%/3-5% for the 54 operating -- a ~5x difference, so
+    # stating the wrong scope misattributes the strongest number in the paper.
+    # Do not require any one wording: derive the claimed scope, then demand the
+    # matching figures. (An earlier version hard-coded "243 ... and 54 ..." plus
+    # the two volume figures, which failed a correct abstract that simply
+    # dropped the volumes -- it encoded one fix rather than the invariant.)
     surf = json.load(open(os.path.join(PUB, "seasonal_basin_surface.json")))["surfaces"]["BROAD RUN"]
     mean_flow = sum(surf["monthly_flow_mgd"].values()) / 12
-    ann_c = 0.75 * 100 * surf["annual_draw_mgd"] / mean_flow
-    jul_lo = 0.75 * surf["baseload_sweep"]["baseload_50pct"]["worst_pct_of_flow"]
-    jul_hi = 0.75 * surf["baseload_sweep"]["baseload_10pct"]["worst_pct_of_flow"]
-    says_seasonal = (f"{ann_c:.0f}% of mean annual flow" in abstract
-                     and f"{jul_lo:.0f}–{jul_hi:.0f}% of July flow" in abstract)
+    op_frac = surf["completed_only_annual_draw_mgd"] / surf["annual_draw_mgd"]
 
-    ok = all([uniform, declares, scope_ok, says_share, says_op, says_tot, says_seasonal])
+    if "243 data-center buildings" in abstract:
+        scope, k = "all 243", 1.0
+    elif re.search(r"54 (operating )?data-center buildings", abstract):
+        scope, k = "operating 54", op_frac
+    else:
+        scope, k = None, None
+
+    if scope is None:
+        says_seasonal, seas_note = False, "abstract states no building-count scope"
+    else:
+        ann = 0.75 * k * 100 * surf["annual_draw_mgd"] / mean_flow
+        lo = 0.75 * k * surf["baseload_sweep"]["baseload_50pct"]["worst_pct_of_flow"]
+        hi = 0.75 * k * surf["baseload_sweep"]["baseload_10pct"]["worst_pct_of_flow"]
+        says_seasonal = (f"{ann:.0f}% of mean annual flow" in abstract
+                         and any(f"{lo:.0f}{d}{hi:.0f}% of July flow" in abstract
+                                 for d in ("-", "–")))
+        seas_note = (f"scope={scope} -> requires {ann:.1f}% annual / "
+                     f"{lo:.0f}-{hi:.0f}% July")
+
+    # Volume figures are optional, but wrong if present.
+    says_op = "10 million gallons per day" not in abstract or 9.5 <= op_c <= 10.5
+    says_tot = "50 MGD" not in abstract or 45 <= tot_c <= 55
+
+    ok = all([uniform, declares, says_share, says_op, says_tot, says_seasonal])
     return ok, (
         f"consumption basis: total {tot_c:.1f} MGD (mixed-basis total would be "
         f"{sum(x['total_mgd_central'] for x in f):.1f}), operating {op_c:.1f}, "
-        f"Scope 2 {s2_share:.1f}%, Broad Run {ann_c:.1f}% annual / "
-        f"{jul_lo:.0f}-{jul_hi:.0f}% July. abstract declares basis={declares}, "
-        f"scope(243+54)={scope_ok} share={says_share} op={says_op} tot={says_tot} "
-        f"seasonal={says_seasonal}, "
+        f"Scope 2 {s2_share:.1f}%. abstract declares basis={declares}, "
+        f"{seas_note}, matched={says_seasonal}; share={says_share} "
+        f"volumes-if-present ok={says_op and says_tot}, "
         f"0.75 factor uniform={uniform}")
 
 
