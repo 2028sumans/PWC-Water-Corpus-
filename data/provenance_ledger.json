@@ -156,10 +156,10 @@
   {
    "id": "nuclear_never_marginal",
    "type": "assumption",
-   "claim": "Nuclear is never the marginal generator (must-run baseload), so marginal accounting assigns it zero",
+   "claim": "Nuclear is never the SHORT-RUN marginal generator (must-run baseload), so short-run marginal accounting assigns it zero",
    "value": 0,
    "source": "standard dispatch theory (near-zero marginal cost, must-run); PJM marginal-fuel practice",
-   "note": "PREMISE, not a derived result. It is what produces the York/Lake Anna -> 0 outcome by construction (METHODOLOGY 47.2). Uncontroversial but must be reported as an assumption. Verified robust: York stays 0.00 under every alternative marginal-mix parameterization tested."
+   "note": "PREMISE, not a derived result. It is what produces the York/Lake Anna -> 0 outcome by construction (METHODOLOGY 47.2). Verified robust: York stays 0.00 under every alternative marginal-mix parameterization tested. SCOPE LIMIT (METHODOLOGY 54): this holds only for SHORT-RUN dispatch. Under a LONG-RUN marginal framework -- retirement deferral, license renewal, power uprates, new build (Dominion holds an NRC Early Site Permit for North Anna Unit 3) -- sustained data-center load growth can implicate North Anna, and the zero does not hold. Even short-run, the zero is an idealization: nuclear is occasionally curtailed at negative prices, so added baseload demand raises output slightly. An earlier version of this note called the premise 'uncontroversial'; that was too strong."
   },
   {
    "id": "marginal_attribution_in_state",

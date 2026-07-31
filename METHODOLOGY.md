@@ -2775,3 +2775,64 @@ Two unsupported strengthenings, both fixed:
   consumption basis, the two agree.
 - "follow the same pattern as" replaced with the effect size in plain words:
   "fall within about 30% of."
+
+## 54. Short-run vs long-run marginal: the scope limit on the Lake Anna zero
+
+**Raised in review, and correct.** The corpus contained no short-run/long-run
+distinction anywhere before this section. The `nuclear_never_marginal` ledger
+entry called the premise "uncontroversial." That was too strong, and the
+abstract's own definition of marginal accounting did not support the number it
+reported.
+
+### 54.1 What the 0% actually rests on
+
+The premise is that nuclear is never the marginal generator. As a claim about
+**which unit ramps in the next hour**, it is well supported: nuclear is a
+near-zero-marginal-cost price-taker, and Monitoring Analytics' 2023 SOM reports
+coal 10.0% and gas 75.2% of PJM marginal resources for 2022 with nuclear absent
+from the list entirely (ledger `pjm_marginal_fuel_mix`, printed p.125).
+
+That is **short-run dispatch marginal**. It is not the only marginal framework,
+and it is arguably not the right one for a load with a 20-year life.
+
+### 54.2 Mechanisms by which North Anna IS long-run marginal
+
+| Mechanism | Effect on Lake Anna water |
+|---|---|
+| Retirement deferral | Load growth improves energy + capacity revenue; a plant that would have retired keeps evaporating |
+| License renewal | Extended operation is justified by demand; that demand includes data centers |
+| Power uprates | Rated output rises -> more generation -> more evaporative loss at the reservoir |
+| New build | Dominion holds an NRC Early Site Permit for **North Anna Unit 3**; data-center growth is the demand case cited for new Virginia nuclear |
+
+None of these are exotic. This is precisely why NREL's Cambium publishes
+**long-run** marginal emission rates: short-run marginal systematically omits
+capacity-mix response. Under an LRMER-style water analogue, the Lake Anna
+attribution would be **non-zero**, and the headline flip would be smaller.
+
+### 54.3 Even the short-run zero is an idealization
+
+Nuclear output is very nearly, but not perfectly, inelastic to demand. PJM
+nuclear is occasionally curtailed at negative prices (overnight, shoulder
+seasons, high renewable output). Added baseload demand reduces those hours, so
+generation — and evaporation — rises slightly. The exact 0.00 assumes perfect
+inelasticity.
+
+### 54.4 What this changes
+
+- The abstract now says **"short-run marginal (dispatch) accounting"** and
+  "which power plants would **ramp** to serve new data-center demand." The
+  previous wording ("would increase generation in response to new demand") is
+  the *general* consequential question, whose long-run answer may include
+  nuclear. Same character count; the result is now true as stated.
+- The ledger entry is rescoped and the "uncontroversial" claim withdrawn.
+- **Not attempted:** a long-run marginal water analysis. There is no published
+  long-run marginal *water* intensity dataset for PJM (Cambium is carbon-only,
+  METHODOLOGY 18 constraint B1), and constructing one from Dominion's IRP
+  capacity trajectory is a separate piece of work. Flagged as the most
+  substantive open extension.
+
+**Talk-ready answer if asked "isn't nuclear implicated?":** yes, in the long
+run — retirement deferral, uprates, and North Anna 3 all trace back to this load
+growth. The zero is a short-run dispatch result, and the paper's claim is about
+what the *choice between two standard conventions* does to the attribution, not
+that nuclear bears no responsibility.
