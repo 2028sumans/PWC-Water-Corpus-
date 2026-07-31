@@ -195,6 +195,22 @@
    },
    "source": "not published by PJM/Monitoring Analytics at this granularity",
    "note": "RESIDUAL ASSUMPTION after sourcing the headline mix. Matters because CC and CT water intensities differ ~10x (213 vs ~20 gal/MWh). Does NOT affect York->0 (no nuclear term). Affects the blended marginal intensity and hence marginal-case magnitudes."
+  },
+  {
+   "id": "marginal_gas_ct_intensity_20",
+   "type": "assumption_unsourced",
+   "claim": "Simple-cycle gas turbines consume 20 gal/MWh (no steam cycle; inlet cooling / NOx water only)",
+   "value": 20,
+   "source": "author estimate -- NO supporting file in the corpus; simple-cycle consumption is not broken out in the USGS Virginia slice",
+   "note": "UNSOURCED. Carries 16.5% of the marginal mix. Literature places simple-cycle consumption near zero to a few tens of gal/MWh, so the value is plausible but not evidenced here. Sensitivity: at 0 gal/MWh the blended marginal falls 165.7 -> 162.4; at 50 it rises to 170.6 (+3%). Does NOT affect the Lake Anna zero (no nuclear term)."
+  },
+  {
+   "id": "marginal_water_is_a_proxy",
+   "type": "limitation",
+   "claim": "The marginal case uses marginal FUEL SHARES x AVERAGE per-fuel water intensity",
+   "value": null,
+   "source": "PJM SOM 2023 (fuel shares) + USGS annual plant data (intensities)",
+   "note": "No marginal water-intensity dataset exists for PJM/Dominion (Cambium is carbon-only; METHODOLOGY 18 constraint B1). Two consequences (METHODOLOGY 55): (a) 'short-run' was INHERITED from PJM's marginal-resource statistic, which reports which units set the real-time price -- it was never a modelling choice, which is why it went undocumented until review; (b) marginal units are less efficient than fleet average (higher heat rate -> more cooling water per MWh), so average intensities likely UNDERSTATE marginal water. Affects the MAGNITUDE (165.7 gal/MWh), not the Lake Anna zero."
   }
  ]
 }

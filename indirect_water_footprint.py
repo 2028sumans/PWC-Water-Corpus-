@@ -287,16 +287,31 @@ PJM_MARGINAL_FUEL_MIX = {
 # Simple-cycle combustion turbines consume almost no water (no steam cycle, no
 # cooling tower); carried at a small positive value for inlet cooling / NOx.
 MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH = {
-    "natural_gas_cc": CONSUMPTION_FACTORS_GAL_PER_MWH["natural_gas_cc"],  # 213
+    "natural_gas_cc": CONSUMPTION_FACTORS_GAL_PER_MWH["natural_gas_cc"],  # 196
     "natural_gas_ct": 20,
-    "coal": CONSUMPTION_FACTORS_GAL_PER_MWH["coal"],                       # 451
+    "coal": CONSUMPTION_FACTORS_GAL_PER_MWH["coal"],                       # 474
     "wind": 0,
 }
 MARGINAL_CONSUMPTION_GAL_PER_MWH = sum(
     PJM_MARGINAL_FUEL_MIX[f] * MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH[f]
     for f in PJM_MARGINAL_FUEL_MIX
-)  # ~180 gal/MWh -- close to the average because dropping nuclear's contribution
-   # roughly offsets the heavier gas weighting
+)  # 165.7 gal/MWh -- close to the average because dropping nuclear's contribution
+   # roughly offsets the heavier gas weighting.
+   #
+   # WHAT THIS IS, PRECISELY (METHODOLOGY 55): marginal FUEL SHARES (PJM SOM,
+   # published) x AVERAGE per-fuel water intensity (USGS annual, the same
+   # factors the average case uses). There is no marginal water-intensity
+   # dataset for PJM -- see constraint B1 -- so this is a proxy, not a
+   # measurement. Two consequences:
+   #   1. "Short-run" was INHERITED, not chosen: PJM's marginal-resource
+   #      statistic reports which units set the real-time price, which is a
+   #      short-run dispatch concept by construction.
+   #   2. Marginal units sit higher in the merit order and are generally less
+   #      efficient (higher heat rate -> more waste heat -> more cooling water
+   #      per MWh), so using fleet-average intensities likely UNDERSTATES
+   #      marginal water. Direction knowable, magnitude not.
+   # Neither affects the Lake Anna zero, which comes from nuclear's absence
+   # from the PJM marginal fuel-share list, not from any water intensity.
 
 # --- Market-based Scope 2 -------------------------------------------------
 # The GHG Protocol requires dual reporting: a LOCATION-based figure using the

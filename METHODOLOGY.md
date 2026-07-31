@@ -2836,3 +2836,66 @@ run — retirement deferral, uprates, and North Anna 3 all trace back to this lo
 growth. The zero is a short-run dispatch result, and the paper's claim is about
 what the *choice between two standard conventions* does to the attribution, not
 that nuclear bears no responsibility.
+
+## 55. What "marginal" is actually made of, and where "short-run" came from
+
+**Asked in review: if no marginal water dataset exists, how did we get a
+short-run marginal number?** Both halves of the question are fair, and the
+answer had never been written down.
+
+### 55.1 The marginal case is a two-source proxy
+
+| Component | Source | Marginal? |
+|---|---|---|
+| Marginal **fuel shares** (coal 10.0%, gas 75.2%, residual 14.8%) | Monitoring Analytics, 2023 SOM for PJM, printed p.125 | **Yes** — but it is a fuel-share statistic, not water |
+| Per-fuel **water intensity** (gas CC 196, coal 474 gal/MWh) | USGS annual plant data — *the same factors the average case uses* | **No** — annual fleet averages |
+| CC:CT split 78:22 | assumption (`pjm_marginal_gas_cc_ct_split`) | unsourced |
+| Gas CT = 20 gal/MWh | author estimate (`marginal_gas_ct_intensity_20`) | unsourced |
+
+Blended: **165.7 gal/MWh**. So "marginal" here means *marginal fuel mix x
+average water intensity*. Constraint B1 (§18) — that no marginal water-intensity
+dataset exists for PJM/Dominion — was and remains true. This is a proxy for one,
+and should be described that way in the paper.
+
+### 55.2 "Short-run" was inherited, not chosen
+
+PJM's marginal-resource statistic reports **which units set the real-time
+locational price**. That is a short-run dispatch concept by construction; the
+statistic contains no other kind of number. The model therefore produces a
+short-run marginal result because it uses the only published marginal dataset
+available, not because short-run was selected over long-run.
+
+This is why the framing went unrecorded until review. An assumption you *make*
+gets documented; an assumption that arrives **attached to a dataset** does not
+register as a decision at all. Worth stating as a general lesson for the
+methods section: inherited framings are the least visible and the least audited.
+
+### 55.3 A known directional bias
+
+Marginal units sit higher in the merit order and are generally **less
+efficient** — higher heat rate means more waste heat rejected per MWh, hence
+more cooling water. Applying *fleet-average* intensities to *marginal* units
+therefore likely **understates** marginal water. The direction is knowable; the
+magnitude is not, without unit-level heat rates.
+
+### 55.4 Sensitivity of the one unsourced water number
+
+Gas CT carries 16.5% of the marginal mix at an unsourced 20 gal/MWh:
+
+| Gas CT assumption | Blended marginal |
+|---|---|
+| 0 gal/MWh | 162.4 |
+| **20 (used)** | **165.7** |
+| 50 gal/MWh | 170.6 |
+
+A ±3% swing on the marginal magnitude. **None of this touches the Lake Anna
+zero**, which follows from nuclear's absence from the PJM fuel-share list — no
+water intensity enters that step.
+
+### 55.5 Stale comments corrected
+
+Three inline comments in `indirect_water_footprint.py` still carried
+pre-USGS-reanalysis values: gas CC `# 213` (actual 196), coal `# 451` (actual
+474), and blended `~180` (actual 165.7). The computation reads from the
+dictionary and was always correct, but an auditor comparing comments to the
+ledger would have found an apparent contradiction. Fixed; no number changed.
