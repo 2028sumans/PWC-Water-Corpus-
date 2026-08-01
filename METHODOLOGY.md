@@ -3154,3 +3154,45 @@ Loudoun holding most of the remainder.
 **This independently validates using "54 completed" in the abstract** (§57.1):
 it is the only one of our counts that is like-for-like with external sources, and
 quoting 243 beside an ICPRB figure would look absurd.
+
+## 60. What "the host basin" is, and a mis-stated distance
+
+**Asked in review: what is the host basin?** The abstract never said, and the
+distance attached to it was measuring something else.
+
+### 60.1 The host basin is the Potomac
+
+Traced from each building's own `water_context.watershed_name` (the field stores
+a numeric basin code, not a name, so the routing is stated here explicitly):
+
+| Local watershed | Buildings | Routes to |
+|---|---|---|
+| Broad Run | 166 | Occoquan River -> **Potomac** |
+| Bull Run | 61 | Occoquan River -> **Potomac** |
+| Powells Creek | 14 | tidal **Potomac** directly |
+| Quantico Creek | 2 | tidal **Potomac** directly |
+
+All 243 buildings sit in the Potomac basin. Corroborated by the ICPRB study
+being a Potomac-basin study that includes Prince William, and by harness check
+11 ("80% consumed outside Potomac").
+
+Lake Anna drains via the North Anna River to the Pamunkey and then the **York**
+(`basin_analysis.BASIN_OF_SOURCE` maps "North Anna River" -> "York (Lake Anna)").
+
+### 60.2 "80 km outside the host basin" measured the wrong thing
+
+The only place 80 km is documented (§58) defines it as **from the county**.
+Lake Anna is ~80 km from Prince William, but the Potomac basin boundary lies
+between the two — with the entire **Rappahannock** basin in between — so Lake
+Anna is *two basins over* and considerably less than 80 km beyond the Potomac
+divide. "80 km outside the host basin" asserted a distance that was never
+computed and is not the one the number describes.
+
+Corrected to: *"Lake Anna, **80 km away in the York basin rather than the host
+Potomac**."* This states the measured quantity (facility-to-reservoir distance),
+names both basins, and gives "the host basin" the referent it previously lacked.
+
+**Still not computed:** 80 km is an approximate map distance from the county to
+the reservoir, not a centroid-to-centroid calculation from the building
+coordinates — `facility_profiles.json` carries no lat/lon. It is stated as
+"~80 km" precision and should not be quoted more tightly than that.
