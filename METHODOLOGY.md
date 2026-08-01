@@ -3083,3 +3083,74 @@ was right, the prose describing it was stale. Neither affects the abstract —
 the York->0 result depends on nuclear's *absence* from the list, not on the
 split — but a reviewer comparing §16 to the code would have found them
 disagreeing.
+
+## 59. Verifying the uncertainty, disclosure and ICPRB claims — three findings
+
+Recomputed from the profiles and the source PDF, not from stored summaries.
+
+### 59.1 All three claims verify
+
+| Claim | Recomputed | Verdict |
+|---|---|---|
+| "+/-60% from floor area" | tier 4 (generic curve, n=141) median **+/-60.1%**; tiers 3+4 combined **+/-57.9%**; tier 1 permit-observed **+/-25.9%** | supported |
+| "no operator disclosing the load data" | only two power bases exist across 243 buildings: `permit_generator_capacity` (45) and `fitted_gfa_model` (198). Tier 2 (stated critical load) = **0** | supported |
+| "on-site use only, under 3%" | on-site / total for the 54 completed = **2.40%** consumptive (3.17% delivered) | supported on the declared basis |
+
+**Nuance to carry:** the group median for floor-area-inferred power is 57.9%, not
+60%. "About +/-60%" is fair because tier 4 is the majority (141 of 198) and sits
+at 60.1%, but a reviewer who pools tiers 3 and 4 gets 58%.
+
+**Nuance on disclosure:** 45 buildings *do* have operator-supplied power data —
+generator capacity in VADEQ air permits. What no operator publishes is a stated
+critical IT load. The claim is about the data that would resolve the +/-60%, and
+holds; but do not let it become "operators disclose nothing".
+
+### 59.2 ICPRB's scope is now VERBATIM-sourced, and the framing had to change
+
+The earlier basis for "on-site only" was the *absence* of terms ("power plant" 0,
+"electricity generation" 0). A term-absence argument is weak. Searching for
+"Scope 2" — which the earlier check never did — found ICPRB stating it directly:
+
+> "While this study focuses on direct, on-site consumption, data centers also
+> have an 'indirect' water footprint (often referred to as Scope 2 and 3)
+> through the water required to generate the electricity they consume and the
+> water used in the lifecycle of their hardware."
+
+So the claim is **better** supported than before. But the framing was unfair:
+the abstract said *"**Notably**, the regional water authority's own assessment
+... covers on-site use only"*, which insinuates an oversight. ICPRB scoped it
+deliberately **and flagged the indirect footprint themselves**.
+
+Rewritten to *"explicitly limited to on-site use ... the indirect remainder it
+flags as out of scope is what we quantify here"* — accurate, fairer, and
+stronger: an authoritative regional body states the gap exists and is
+unquantified, which is the motivation for this work rather than a criticism of
+theirs.
+
+### 59.3 A number collision with ICPRB's own headline
+
+ICPRB reports: *"On a basinwide scale, data centers currently account for 0.3% of
+withdrawals and **3% of total consumptive use**."* The abstract said *"under **3%**
+of our estimate"* — a completely different quantity (on-site share of our
+footprint). Anyone familiar with the ICPRB report would conflate them. Changed to
+the exact figure, **2.4%**, which removes the collision.
+
+### 59.4 Cross-check: our building count is NOT comparable to ICPRB's
+
+ICPRB: *"over 290 individual buildings in the basin"*, *"total power demand
+estimated at about 5,400 MW"* — basin-wide.
+
+| Ours (Prince William County only) | Effective IT MW |
+|---|---|
+| all 243 buildings | **6,468 MW** |
+| 54 completed | **1,358 MW** |
+
+Our all-243 figure exceeds ICPRB's **entire Potomac basin** by 1.2x, for one
+county. That is only reconcilable because ICPRB counts existing buildings while
+243 includes 189 planned/pending/under-construction. The completed-54 figure is
+**25% of ICPRB's basin-wide total**, which is plausible for Prince William with
+Loudoun holding most of the remainder.
+
+**This independently validates using "54 completed" in the abstract** (§57.1):
+it is the only one of our counts that is like-for-like with external sources, and
+quoting 243 beside an ICPRB figure would look absurd.
