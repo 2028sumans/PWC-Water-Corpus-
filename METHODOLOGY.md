@@ -1069,7 +1069,7 @@ But that is not the causal question. A **new** data-centre load is served at the
 
 ### 16.2 The marginal mix
 
-From PJM marginal-fuel data (2022): combined-cycle gas was the marginal unit **61.7%** of hours, peaking gas ~**17.2%**, coal **10.0%**, wind **11.1%**; nuclear essentially never. Applying the same Virginia-specific water factors (peaking simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **~172 gal/MWh**, against the average-mix **~225** (both on the refreshed §18 factors).
+From PJM marginal-fuel data (2022, Monitoring Analytics SOM p.125): gas was **75.2%** of marginal resources and coal **10.0%**; nuclear does not appear at all. Splitting gas 78:22 CC:CT (an assumption — see ledger `pjm_marginal_gas_cc_ct_split`) gives CC **58.7%**, CT **16.5%**, with a **14.8%** residual of wind/solar/hydro/oil. Applying the same Virginia-specific water factors (simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **165.7 gal/MWh**, against the average-mix **~225** (both on the refreshed §18 factors).
 
 ### 16.3 The result
 
@@ -3031,3 +3031,55 @@ not plumbed to Broad Run or Bull Run. Corrected.
   comparison is not like-for-like.
 - **Building classification** -- which parcels count as data centers is a
   judgement from county records, never externally validated.
+
+## 58. Verification of the ">40% to Lake Anna" claim, and a threshold fragility
+
+**Asked in review: is the 40% real?** Recomputed end-to-end from the raw USGS
+Virginia slice with no project constants:
+
+| Step | Independent result |
+|---|---|
+| North Anna, pooled 2018-20 | 47.16M MWh, **95.21 Mgal/d** consumption, source `North Anna River` |
+| Surry, pooled 2018-20 | 41.73M MWh, **0.00** consumption, source `James River` |
+| Share of VA nuclear consumption at North Anna | **100.0%** |
+| Generation-weighted nuclear factor | **391 gal/MWh** — reproduces the constant exactly |
+| Mix x factors | gas 113.7, nuclear 97.8, coal 14.2, renewables 0; blend **225.6** |
+| **Lake Anna (York) share of Scope 2 water** | **43.3%** |
+
+The claim is **true as computed**. The concentration is real and physical: Surry
+is once-through on the tidal James and consumes nothing, so the entire nuclear
+share of Virginia's water lands on one pond-cooled reservoir.
+
+### 58.1 The 40% threshold is not robust across mix conventions
+
+The single load-bearing input is `DOMINION_GENERATION_MIX` (nuclear 0.25),
+ledgered as `external_data` with **no verbatim quote**. Across the three
+conventions §49.4 already documents as defensible:
+
+| Convention | Nuclear share | York share | ">40%"? |
+|---|---|---|---|
+| 2025 IRP generation mix (used) | 25.0% | **43.3%** | holds |
+| 2023 delivered-to-customers | 29.2% | **48.5%** | holds |
+| **all-Virginia generation (coal 11%)** | 25.0% | **38.5%** | **FAILS** |
+
+Breakeven: ">40%" requires a nuclear share of **>=22.5%**. ">more than a third"
+requires only **>=17.9%** and holds under **all three** conventions (38.5 / 43.3
+/ 48.5).
+
+**Recommendation:** either state the mix convention when quoting 40%, or soften
+to "more than a third", which no documented convention breaks. The *ratio* story
+(large share -> zero) is unaffected either way; only the threshold is at risk.
+
+### 58.2 A doc/code disagreement found while verifying
+
+§16 still described the **pre-correction** marginal parameterization: "CC 61.7%,
+peaking gas 17.2%, coal 10.0%, wind 11.1% ... ~172 gal/MWh". The shipped code
+uses the **published** SOM figures (gas 75.2%, coal 10.0%) split 78:22, giving
+CC 58.7% / CT 16.5% / 14.8% residual and **165.7 gal/MWh**. The document was
+never updated when the mix was corrected to the published values. Corrected.
+
+This is the same class as the stale factor comments in §55.5: the computation
+was right, the prose describing it was stale. Neither affects the abstract —
+the York->0 result depends on nuclear's *absence* from the list, not on the
+split — but a reviewer comparing §16 to the code would have found them
+disagreeing.
