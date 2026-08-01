@@ -3196,3 +3196,53 @@ names both basins, and gives "the host basin" the referent it previously lacked.
 the reservoir, not a centroid-to-centroid calculation from the building
 coordinates — `facility_profiles.json` carries no lat/lon. It is stated as
 "~80 km" precision and should not be quoted more tightly than that.
+
+## 61. Why +/-60% does not threaten the reported shares
+
+**Asked in review: is +/-60% large enough to discredit the findings?** No, and
+the reason is structural. Every scope is linear in the *same* effective-MW
+estimate:
+
+    Scope 1 = MW x WUP
+    Scope 2 = MW x PUE x grid water intensity
+    Scope 3 = fraction x (Scope 1 + Scope 2)
+
+so MW cancels in any ratio. Demonstrated by rescaling the whole fleet:
+
+| MW scaled by | Total MGD (54 completed) | Scope 2 share | On-site share |
+|---|---|---|---|
+| 0.40x (-60%) | 4.16 | **88.4%** | **2.4%** |
+| 1.00x | 10.40 | **88.4%** | **2.4%** |
+| 1.60x (+60%) | 16.65 | **88.4%** | **2.4%** |
+
+That tests a *systematic* error. For error that differs building to building,
+4,000 Monte Carlo draws perturbing each building independently (lognormal, 90%
+interval ~ +/-60%) put the Scope 2 share in **88.40-88.49%** — a movement of
+**under 0.1 percentage points**.
+
+The other two headline numbers contain **no MW term at all**: the >40% Lake Anna
+share is fixed by the generation mix and water factors, and the marginal 0% by
+nuclear's absence from PJM's fuel-share list.
+
+### 61.1 What +/-60% does threaten
+
+Absolute volumes. Those are precisely the figures the abstract no longer reports.
+
+### 61.2 Three different uncertainties, do not confuse them
+
+| Quantity | Interval | Scope |
+|---|---|---|
+| Per-building power, floor-area-inferred | **+/-60%** | tier 4 median; tier 1 (permit) is +/-26% |
+| County total water volume | **+/-19%** | all 243 buildings, 53.6 MGD (CI 44.5-64.9) |
+| The shares the abstract reports | **~+/-0.1 pp** | w.r.t. power error only |
+
+Reporting +/-19% in place of +/-60% would be an **error, not a softer framing**:
+it is a different quantity (total volume, not power), on a different fleet (243,
+not the 54 completed), and describes something the abstract does not claim.
+
+**Important limit:** the insensitivity above covers *power* error only. It says
+nothing about error in the water factors, the generation mix, or Eq 6-3 — those
+propagate to the shares directly and are handled separately (§49.4, §58.1).
+
+The abstract now discloses the +/-60% *and* states why the shares survive it,
+which is a stronger position than omitting the number.
