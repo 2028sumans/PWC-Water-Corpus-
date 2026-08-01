@@ -868,7 +868,7 @@ This is the same class of error as §6.5 and the nuclear factor: a fleet-level c
 
 This is the analysis with the clearest hydrological claim in the project, and the one that most justifies treating the work as water science rather than infrastructure accounting.
 
-`basin_analysis.py` asks a question the per-facility totals cannot: **which basin gives up the water?** Scope 1 is withdrawn locally, from the Occoquan and Potomac headwater streams the buildings sit on. Scope 2 is consumed hundreds of kilometres away, at the generating plants — which sit in the James, York, Roanoke and Rappahannock basins. Since Scope 2 is ~87% of the total, almost the entire footprint is displaced out of the county's own watersheds.
+`basin_analysis.py` asks a question the per-facility totals cannot: **which basin gives up the water?** Scope 1 is supplied locally, by Prince William Water from the Occoquan reservoir and the Potomac — **not** drawn directly from the headwater streams the buildings sit on (§56.2). Scope 2 is consumed 80–300 km away, at the generating plants — which sit in the James, York, Roanoke and Rappahannock basins. Since Scope 2 is ~87% of the total, almost the entire footprint is displaced out of the county's own watersheds.
 
 ### 13.1 Method
 
@@ -2968,3 +2968,66 @@ moment the sentence was reworded — a brittle guard that fails on correct edits
 and so trains you to ignore it. It now matches on the **numbers** via regex,
 with the surrounding wording free. Fault-injection confirmed: changing 17-25% to
 40-50% still fails it.
+
+## 57. Second framing sweep: three more, one of them in this document
+
+Re-run of the §56 audit against the shortened (seasonal-free) abstract.
+
+### 57.1 "54 operating buildings" -> "54 completed buildings"
+
+`BuildingStatus` in the county GIS takes the values Completed / Under
+Construction / Planned / Pending / Under Review, and `permit_status` for all 54
+is `Finaled`. These are **construction** statuses -- permit finaled, occupancy
+issued. **No field anywhere in the dataset indicates energization, commissioning,
+occupancy, or IT load.**
+
+"Operating" was an inference from "Completed" that the data does not license.
+It matters more than a word usually would: the footprint applies ICPRB Eq 6-3
+with a 0.8 utilization factor, i.e. it assumes the building is *carrying load*.
+Calling the fleet "operating" turns an estimate of installed capacity into an
+apparent measurement of live facilities. A completed shell that has not been
+commissioned consumes far less than the model assigns it.
+
+Corrected to "54 completed data-center buildings". **Talk prep:** if asked how
+many are actually running, the honest answer is that county records show 54
+buildings finaled, and no public source states how many are energized.
+
+### 57.2 The abstract claimed marginal accounting identifies a watershed
+
+It said: *"Each accounting approach therefore identifies different watersheds as
+bearing the indirect water burden."* But the ledger entry
+`marginal_attribution_in_state` is typed **limitation** precisely because
+*"marginal DESTINATION basins are ... under-determined"*, ADVISOR_REVIEW says
+*"we do not claim where the marginal water goes"* (Roanoke swings 0.00-11.11
+MGD), and §47 records that the Roanoke figure is an **upper bound** because the
+marginal mix is PJM-wide rather than Dominion-zone.
+
+What marginal accounting establishes here is that Lake Anna receives **zero**.
+Where the water goes instead is not determined. Corrected to *"Whether a given
+watershed is implicated therefore depends on the accounting approach"* -- which
+is the claim the evidence supports, and is also the paper's actual thesis.
+
+### 57.3 This document overstated the displacement distance
+
+§20 read *"Scope 2 is consumed **hundreds of kilometres** away"*. North Anna --
+which carries 43% of the attributed Scope 2 -- is **80 km** from the county, the
+figure the abstract itself uses. Only Clover (Roanoke) is a few hundred km.
+Corrected to "80-300 km".
+
+The same sentence said Scope 1 is *"withdrawn locally, from the Occoquan and
+Potomac headwater streams **the buildings sit on**"*, which is the same
+withdrawal-vs-supply conflation §56.2 fixed in the abstract. Supply is from the
+Occoquan reservoir and the Potomac via Prince William Water; the buildings are
+not plumbed to Broad Run or Bull Run. Corrected.
+
+### 57.4 Still open, unchanged from 56.3
+
+- **"88%"** -- the denominator contains Scope 3, a literature range with no PDF
+  in the corpus. Scope 2 / (Scope 1 + Scope 2) alone is ~97%.
+- **"under 3% of our estimate"** -- true only on the consumption basis (2.4%
+  consumptive vs 3.2% delivered for the 54). Coupled to the word "consumptive"
+  in the opening sentence; if that word goes, this number must become "under 4%".
+- **ICPRB basin-wide vs our county** -- the scope claim is sound, the geographic
+  comparison is not like-for-like.
+- **Building classification** -- which parcels count as data centers is a
+  judgement from county records, never externally validated.
