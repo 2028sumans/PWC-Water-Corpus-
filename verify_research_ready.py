@@ -189,11 +189,20 @@ def c_jlarc():
     quotes_effect = any(f"{d}{m}" in abstract
                         for d in (f"{dep}", f"{dep:.1f}") for m in ("x", "×"))
     quotes_p = "p = 0.09" in abstract or "KS p" in abstract
-    ok = checks_ok and ks > 0.05 and dep <= 1.5 and caveats and quotes_effect and not quotes_p
+    # THE INVARIANT is not "the abstract must validate" -- whether to spend
+    # characters on the JLARC comparison is an editorial call. It is: IF the
+    # abstract makes a validation claim, it must rest on the effect size, never
+    # on the p-value (a KS non-rejection at n=54 is near-automatic; see
+    # power_caveat). An earlier version demanded quotes_effect unconditionally
+    # and so failed a correct abstract that simply dropped the sentence -- the
+    # same over-fitting that broke check 7b.
+    makes_validation_claim = quotes_effect or quotes_p or "legislative audit" in abstract
+    claim_ok = (not makes_validation_claim) or (quotes_effect and not quotes_p)
+    ok = checks_ok and ks > 0.05 and dep <= 1.5 and caveats and claim_ok
     return ok, (
         f"all {len(v['checks'])} published constraints consistent={checks_ok}; "
-        f"quartiles within {dep}x of benchmark (abstract quotes it={quotes_effect}, "
-        f"quotes bare p={quotes_p}); KS p={ks:.3f} but D={es['ks_D']} < detectable "
+        f"quartiles within {dep}x of benchmark (abstract makes a validation claim="
+        f"{makes_validation_claim}, effect-size={quotes_effect}, bare p={quotes_p}); KS p={ks:.3f} but D={es['ks_D']} < detectable "
         f"{es['ks_D_detectable_at_alpha05']} (under-powered={under_powered}, "
         f"caveats recorded={caveats})")
 
@@ -248,8 +257,16 @@ def c_basis():
     else:
         scope, k = None, None
 
-    if scope is None:
-        says_seasonal, seas_note = False, "abstract states no building-count scope"
+    # No seasonal claim in the abstract -> nothing for this check to police.
+    # (The claim was dropped in review: once restated on a consumption basis and
+    # correctly framed as a scale comparison rather than a withdrawal, it was a
+    # context statistic rather than a finding. METHODOLOGY 56.)
+    makes_seasonal_claim = bool(re.search(r"%\s+of\s+[\w' ]*?(annual|July)\s+flow", abstract))
+
+    if not makes_seasonal_claim:
+        says_seasonal, seas_note = True, "abstract makes no seasonal claim (n/a)"
+    elif scope is None:
+        says_seasonal, seas_note = False, "seasonal claim present but no building-count scope stated"
     else:
         ann = 0.75 * k * 100 * surf["annual_draw_mgd"] / mean_flow
         lo = 0.75 * k * surf["baseload_sweep"]["baseload_50pct"]["worst_pct_of_flow"]
