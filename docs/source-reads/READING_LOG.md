@@ -1310,3 +1310,226 @@ You do not recommend prohibiting something that never happens.
 nuclear ran 1.00-1.35% of marginal resources and York would reach 2.2-2.9%. The
 abstract says "using PJM marginal fuel shares" without naming a year. Either name
 the year (2022) or widen to "under 3%". Flagged, not silently resolved.
+
+### Part 2: pp.148-152 — THE MECHANISM BEHIND MARGINAL NUCLEAR, PRECISELY
+
+Table 3-12, "Dispatchable status of day-ahead energy offers: 2023", nuclear row:
+
+| Must Run | Eco Min | ($300)-$0 | $0-$25 | $25+ | **Dispatchable %** |
+|---|---|---|---|---|---|
+| **90.1%** | 6.6% | **2.4%** | 0.8% | 0.0% | **3.3%** |
+
+So **3.3% of nuclear MW is offered as dispatchable**, and **2.4 of those 3.3
+points are offered at NEGATIVE prices** (the $(300)-$0 band). That is the exact
+mechanism by which a nuclear unit can end up marginal: a thin dispatchable
+sliver, mostly bid negative to avoid cycling. It also explains why the share
+moves year to year (1.35% in 2020, 0.39% in 2022) — it depends on how much of
+that sliver is at the margin in a given year's price distribution.
+
+This is a far better citation for the paper than the summary sentence: it gives
+the magnitude, the mechanism, and the reason for variability, all in one table.
+
+Corroborating: "**Solar units, wind units, run of river hydro units, and nuclear
+units are currently not subject to parameter limits**" (p.153) — nuclear is
+outside the parameter-limit regime entirely, which is why the MMU's 2016
+recommendation to stop it setting LMP has never been implemented.
+
+**Other PJM structural facts worth having**
+- Day-ahead offers 2023: 23.2% must-run, 31.7% economic minimum, 44.6%
+  dispatchable, 0.5% emergency.
+- **2,257 MW on average (4,233 MW at the 90th percentile) failed the ICAP must-offer
+  requirement in 2023** — "larger than the reserve shortages that trigger scarcity
+  pricing and larger than most supply contingencies."
+- PJM declared **cold weather alerts on 3 days and hot weather alerts on 21 days**
+  in 2023. During those alerts **32.1% of unit hours** were committed on
+  price-based schedules less flexible than their PLS schedules.
+- 31.5% of unit hours for units failing the day-ahead TPS test were committed on
+  price schedules less flexible than cost.
+
+### Part 3: pp.144 (degree days) — THE SEASONAL ERROR, DIAGNOSED
+
+PJM's Table 3-8 gives monthly heating and cooling degree days for the whole RTO.
+2023 CDD: Jan-Mar 0, Apr 17.2, May 31.0, Jun 162.2, **Jul 387.8**, Aug 310.0,
+Sep 144.0, Oct 29.8, Nov-Dec 0. Total 1,081.8; monthly mean 90.2.
+**July carries 4.30x the monthly mean CDD.**
+
+Our `seasonal_basin_surface.py` uses f = b + (1-b) * CDD/CDDbar with the baseload
+share b swept over 0.1 / 0.3 / 0.5. Fitting b to ICPRB's *observed* monthly
+factors (Part 11):
+
+| baseload b | July factor | Aug | Jan | mean abs error vs ICPRB |
+|---|---|---|---|---|
+| 0.10 | 3.97 | 3.19 | 0.10 | 0.77 |
+| 0.30 (our central) | **3.31** | 2.71 | 0.30 | 0.55 |
+| 0.50 (our high) | 2.65 | 2.22 | 0.50 | 0.33 |
+| **0.70** | **1.99** | 1.73 | 0.70 | **0.16** |
+| **0.76** | **1.79** | 1.59 | 0.76 | **0.16** |
+
+**The baseload share implied by observed data is ~0.70-0.76. Our swept range
+(0.10-0.50) never reaches it.** That is the precise reason our July factor (3.04)
+runs ~70% above ICPRB's observed 1.5-1.8: we assumed data-center cooling is
+mostly weather-driven, when the observed data says it is mostly a constant load
+with a weather-driven component of only ~25%.
+
+Physically that is the right answer and we should have expected it: a data center
+runs its IT load year-round and rejects heat year-round. Only the *incremental*
+evaporative duty tracks temperature.
+
+**Fix:** replace the guessed sweep with a baseload calibrated to ICPRB's Table
+A.3-2, or simply use their published monthly factors directly. Then re-derive
+every seasonal number. All of our reported seasonal percentages are too high in
+summer and too low in winter by roughly this factor.
+
+**Also useful:** the paper can now cite PJM CDD (Table 3-8) as the weather driver
+and ICPRB Table A.3-2 as the observed response, which is a much better-sourced
+seasonal treatment than what we built.
+
+### PJM SOM — remaining content is market structure with no water relevance
+Confirmed by exhaustive term search across all 10,673 lines: "water" appears only
+as a fuel-type row (Hydro 0.0-0.1% of marginal units), a company name ("Water
+Strider"), and in "ambient temperature changes in fuel consumption". There is no
+consumptive-use, cooling-water or drought content in Section 3. The document's
+value to this paper is entirely: (1) Table 3-69 marginal fuel shares, (2) Table
+3-12 nuclear dispatchability, (3) Table 3-8 degree days.
+
+---
+
+## 8. Rpt598.pdf — JLARC, *Data Centers in Virginia* (Dec 2024)  [reading — 156 pp]
+### Part 1: Summary + Recommendations (pp. i-xiv) + Ch.1 start
+
+**THE "WORLD'S LARGEST" CLAIM, FINALLY SOURCED AND QUANTIFIED**
+
+> "**Northern Virginia is the largest data center market in the world, constituting
+> 13 percent of all reported data center operational capacity globally and 25
+> percent of capacity in the Americas.**"
+
+We spent an entire exchange hedging this down to "within the world's largest
+region" because it could not be sourced. JLARC states it with percentages. Note
+it is about **Northern Virginia**, while ICPRB's fact sheet says the **Potomac
+basin** — two different, mutually consistent framings, both citable.
+
+**JLARC RECOMMENDATION 6 IS OUR POLICY ASK, ALREADY DRAFTED**
+
+> "The General Assembly may wish to consider amending the Code of Virginia to
+> **expressly authorize local governments to (i) require proposed data center
+> developments to submit water use estimates and (ii) consider water use when
+> making rezoning and special use permit decisions** related to data center
+> development. (Chapter 5)"
+
+Virginia's own legislative audit commission has formally recommended exactly the
+disclosure mechanism our VOI analysis quantifies. **The paper's policy section
+should cite Recommendation 6 and supply the missing number: what that disclosure
+would actually buy (-10pp on the county interval).** That converts our result
+from a proposal into evidence for a pending legislative recommendation.
+
+**Their water finding, and where it differs from ours**
+
+> "**Data center water use is currently sustainable, but use is growing and could
+> be better managed** ... Most data centers use about the same amount of water or
+> less as an average large office building ... **while DEQ is responsible for
+> ensuring water sustainability, there is less oversight over how available water
+> should be shared across various uses in a locality.** Virginia as a whole is
+> relatively water rich, but water is more limited for some localities."
+
+JLARC assesses **on-site use only** and concludes it is sustainable. That is
+consistent with our finding that on-site is ~2.4% of the footprint — and it
+sharpens the paper's contribution: **both** authoritative Virginia assessments
+(JLARC 2024, ICPRB 2025) scope to on-site use, and both conclude the direct
+impact is modest. Neither assesses the 88%.
+
+**Energy context, from an independent forecast**
+- "**Unconstrained demand for power in Virginia would double within the next 10
+  years**, with the data center industry being the main driver." State demand was
+  flat 2006-2020.
+- Meeting even **half** of unconstrained demand would need "one large 1,500 MW
+  [gas] plant every two years for 15 consecutive years, equal to the busiest
+  period of the last decade (2012-2018)."
+- Both scenarios "**rely on energy from as yet unproven nuclear technologies**."
+- Residential Dominion customers face **+$14 to $37/month** in real
+  generation/transmission costs by 2040.
+- Consultants: Weldon Cooper Center (UVA) for economic impact and the independent
+  demand forecast; **Energy + Environmental Economics (E3)** for grid modelling.
+
+**Industry structure numbers**
+- A typical **250,000 sq ft data center has ~50 full-time workers**, half of them
+  contract; **~1,500 construction workers at peak**; 12-18 months to build.
+- Industry-wide: 74,000 jobs, $5.5B labor income, $9.1B GDP annually — "most of
+  these economic benefits derive from the construction phase."
+- **Sales tax exemption was worth $928 million in FY23** and is used by ~90% of
+  the industry; expires 2035.
+- Data center revenue is **<1% to 31% of total local revenue** in the five
+  localities with mature markets.
+- **One-third of data centers are currently located near residential areas.**
+- Backup generators: nearly all Tier 2 diesel, run only for maintenance/emergency;
+  **<4% of Northern Virginia NOx**, <=0.1% of CO and PM.
+
+**Appendices flagged for close reading:** J (PUE ratios — directly tests our PUE
+assumption), I (on-site generation — the off-grid threat ICPRB raised), K
+(additional natural resource considerations), L (**planning and zoning changes in
+Fairfax, Loudoun and Prince William**).
+
+### Part 2: Ch.5 (Natural Resources) + Appendices I, J, K, L
+
+**THE WITHDRAWAL-PERMIT FINDING, SOURCED**
+
+> "**Only two data centers have their own DEQ withdrawal permits**, and any data
+> centers that do make their own withdrawals are subject to the same regulations
+> as water utilities."
+
+Statewide. That is the authoritative version of our 235/243 no-permit finding,
+and it means the pattern is not a Prince William anomaly — it is how the industry
+is supplied everywhere in Virginia. Permit thresholds: **>10,000 gpd** non-tidal
+surface, **2 MGD** tidal surface, **300,000 gal/month** groundwater in a
+groundwater management area; renewed at least every 15 years.
+
+**Scale context that reframes the on-site number**
+- 2023 Virginia data-center industry total: **2.1 billion gallons** (~5.75 MGD),
+  just over a third reclaimed; **<0.5% of total state withdrawals**.
+- **"The state's largest industrial water user in 2023 used about 36.5 billion
+  gallons"** — the entire data-center industry is **6%** of one industrial user.
+- Industry share at the six utilities reviewed: **0.2% to 21%**; a data center was
+  the single largest customer at only **two of six**.
+
+Our all-243 on-site estimate (1.76 MGD delivered) is ~31% of the entire current
+Virginia industry's on-site use (5.75 MGD) — plausible for a county holding a
+large share of approved buildout, and a useful sanity check to state.
+
+**PUE — Appendix J directly tests our assumption, and states our thesis**
+- "large companies now report **fleetwide average PUEs of 1.1 to 1.4**" — brackets
+  our OPERATOR_DISCLOSED_PUE values (Meta 1.08, Google 1.09, AWS 1.14, MS 1.16).
+- "As recently as 10 years ago, **PUEs of 1.9 or above were common**."
+- **The water-energy tradeoff, in policy terms:** a PUE mandate "could have two
+  unintended consequences: (1) **it could encourage more water use by the
+  industry, because water-dependent cooling uses less energy**, and could make it
+  harder for companies that use dry cooling systems to comply." Germany has
+  legislated PUE limits (1.2-1.3); **similar legislation has been proposed in
+  Virginia**. This is our paper's argument arriving as a live legislative risk:
+  an energy-accounting rule that would increase water use.
+
+**Off-grid generation is not yet a threat to our method — Appendix I**
+- "**only one data center site in Virginia appears to actively rely on on-site
+  generation for a substantial share of its energy needs**"; only natural gas is
+  currently viable; SMRs "will not realistically be available until 2035."
+- So our grid-based Scope 2 attribution is safe today. ICPRB raised off-grid as a
+  future risk (Part 7); JLARC quantifies it as n=1. **Cite both.**
+
+**Appendix K — Scope 3 and discharge**
+- Servers "are replaced **every three to five years**" — the turnover rate behind
+  the embodied-water (Scope 3) term we take from Privette et al.
+- Discharges "may contain relatively large concentrations of **salts, other
+  dissolved solids, and chemical additives**"; most go to a wastewater utility,
+  which "can require the data center to pretreat."
+
+**Appendix L — the three counties**
+- "**Sites in Loudoun, Prince William, and Fairfax account for 80 percent of data
+  centers in the state.**"
+- Prince William: data-center ordinance advisory workgroup created **28 Feb 2023**;
+  Board of Supervisors votes on noise amendments spring 2025 and other policy
+  changes later in 2025; further votes planned **2026**. Fairfax: comprehensive
+  zoning update effective 1 Jul 2021, further changes 11 Sep 2024.
+- **A live policy window in our own county, with a 2026 vote pending.**
+
+**Also: DEQ's reclaimed-water regulatory review concludes September 2026** — and
+"DEQ currently permits **only two water utilities**, including Loudoun Water, to
+provide reclaimed water for evaporative cooling uses." Reclaimed water is not
+generally available in Virginia; Prince William is not one of the two.
