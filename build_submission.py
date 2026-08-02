@@ -63,15 +63,22 @@ def main():
       apparent measurement of live facilities. METHODOLOGY 57.1.
 
   "Whether a given watershed is implicated"  <->  destination is undetermined
-      Marginal accounting establishes Lake Anna = 0. It does NOT establish
+      Marginal accounting establishes Lake Anna ~= 1%. It does NOT establish
       where the water goes instead (Roanoke swings 0.00-11.11 MGD, and that
       is an upper bound). Do not let this drift back to "each approach
       identifies different watersheds". METHODOLOGY 57.2.
 
-  "short-run marginal"  <->  the 0% result
+  "under 2%"  <->  which year's PJM marginal shares
+      Nuclear is 0.39% of PJM real-time marginal resources in 2022 and
+      0.62% in 2023 -> York 0.87% and 1.38%. But it was 1.00-1.35% in
+      2019-21 -> York 2.2-2.9%. "Under 2%" is true only for recent years.
+      Name the year (2022) or widen to "under 3%".
+
+  "short-run marginal"  <->  the ~1% result
       Long-run marginal (retirement deferral, license renewal, uprates,
-      North Anna Unit 3) DOES implicate North Anna. Drop "short-run" and
-      the stated definition no longer yields 0%. METHODOLOGY 54.
+      North Anna Unit 3) implicates North Anna far more. Drop "short-run"
+      and the stated definition no longer yields a small number.
+      METHODOLOGY 54.
 
 
 === NUMBERS -- RECOMPUTED, SEE audit_framings.py FOR FRAMINGS ===
@@ -84,8 +91,13 @@ On-site share, 54 completed    3.2% delivered /  2.4% consumptive -> "under 3%"
                               Tier 1 (permit-observed, n=45) is +/-26%. Keep
                               it scoped to "inferred from floor area".
 80 km                         Lake Anna is ~50 miles from the county.
-0% to Lake Anna               Definitional: nuclear is absent from PJM's
-                              marginal fuel-share list (SOM 2023 p.125).
+under 2% to Lake Anna         NOT definitional. Nuclear IS a PJM marginal
+                              resource: 0.39% (2022), 0.62% (2023),
+                              1.00-1.35% (2019-21) of real-time marginal
+                              units -- SOM Table 3-69, printed p.200. York
+                              works out at 0.87% on 2022 shares. The old
+                              "0%" came from the p.125 summary sentence,
+                              which does not enumerate every fuel.
 
 
 === OPEN QUESTIONS -- have answers ready, do not bluff ===
