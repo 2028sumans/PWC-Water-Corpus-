@@ -544,32 +544,63 @@ def c_marginal_flip_robust():
     bs = [b for b in d["buildings"] if b.get("scope_water_footprint")]
     s2m = sum(b["scope_water_footprint"]["scope2_electricity"]["marginal_based"]["mgd_central"] for b in bs)
     mcf = m.MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH
-    yorks = []
-    for coal in (0.0, 0.05, 0.10, 0.15):
-        mmix = {"natural_gas_cc": 0.617 + (0.10 - coal), "natural_gas_ct": 0.172,
-                "coal": coal, "wind": 0.111}
+
+    def york_for(mmix):
         mb = sum(mmix[f] * mcf[f] for f in mmix)
         out = defaultdict(float)
         for fuel in mmix:
-            pf = "natural_gas_cc" if fuel.startswith("natural_gas") else fuel
+            pf = ("natural_gas_cc" if fuel.startswith("natural_gas")
+                  else ("nuclear" if fuel == "nuclear" else fuel))
             if pf not in plants:
                 continue
             fm = s2m * (mmix[fuel] * mcf[fuel]) / mb
-            tot = sum(p["consumption_mgd"] for p in plants[pf]) or 1
-            for p in plants[pf]:
-                out[p["basin"]] += fm * p["consumption_mgd"] / tot
-        yorks.append(out.get("York (Lake Anna)", 0.0))
-    robust = all(y < 1e-9 for y in yorks)
+            tot = sum(pp["consumption_mgd"] for pp in plants[pf]) or 1
+            for pp in plants[pf]:
+                out[pp["basin"]] += fm * pp["consumption_mgd"] / tot
+        return out.get("York (Lake Anna)", 0.0), mb
+
+    # REWRITTEN 31 Jul 2026. The previous version of this check ENFORCED THE
+    # ERROR it was supposed to police: it built a synthetic marginal mix with no
+    # nuclear term, confirmed York came out 0.00, and required the ledger to
+    # contain an entry named `nuclear_never_marginal`. Nuclear is in fact 0.39%
+    # (2022) to 1.35% (2019) of PJM real-time marginal resources (SOM Table 3-69,
+    # printed p.200), so the zero was true only by construction.
+    #
+    # The check now (a) uses the SHIPPED mix, (b) requires York to be small but
+    # STRICTLY NON-ZERO, (c) sweeps the nuclear share over its published
+    # five-year range to bound the result, and (d) fails if anyone sets the
+    # nuclear term back to zero.
+    base_york, base_mb = york_for(dict(m.PJM_MARGINAL_FUEL_MIX))
+    york_share = 100 * base_york / s2m if s2m else 0.0
+
+    sweep = {}
+    for label, nuc in (("2022 (0.39%)", 0.0039), ("2023 (0.62%)", 0.0062),
+                       ("2019 (1.31%)", 0.0131), ("zero (the old premise)", 0.0)):
+        mmix = dict(m.PJM_MARGINAL_FUEL_MIX)
+        delta = nuc - mmix["nuclear"]
+        mmix["nuclear"] = nuc
+        mmix["natural_gas_cc"] -= delta          # hold the shares summing to 1
+        y, _ = york_for(mmix)
+        sweep[label] = 100 * y / s2m if s2m else 0.0
+
+    nonzero = base_york > 0                      # nuclear must NOT be zeroed out
+    bounded = york_share < 2.0                   # and must stay under the abstract's "under 2%"
+    zero_case_is_zero = sweep["zero (the old premise)"] < 1e-9   # sanity: the sweep works
+
     led = {e["id"]: e for e in json.load(open(os.path.join(DATA, "provenance_ledger.json")))["entries"]}
-    # The marginal mix must now be SOURCED (verbatim quote, verified in-PDF by
-    # check 10), and the two residual assumptions -- nuclear's non-marginality and
-    # the CC:CT split the SOM does not publish -- must remain explicitly declared.
     sourced = bool(led.get("pjm_marginal_fuel_mix", {}).get("verbatim_quote"))
-    premises = ("nuclear_never_marginal" in led
-                and led.get("pjm_marginal_gas_cc_ct_split", {}).get("type") == "assumption")
-    return (robust and sourced and premises), (
-        f"York across coal shares 0-15%: {[round(y,3) for y in yorks]} (all zero={robust}); "
-        f"marginal mix sourced={sourced}; residual premises declared={premises}")
+    corrected = bool(led.get("nuclear_rarely_marginal", {}).get("verbatim_quote")) \
+        and "nuclear_never_marginal" not in led
+    abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
+    no_false_zero = "0% of electricity-related water use is attributed" not in abstract
+
+    ok = all([nonzero, bounded, zero_case_is_zero, sourced, corrected, no_false_zero])
+    return ok, (
+        f"York marginal share {york_share:.2f}% of Scope 2 (non-zero={nonzero}, "
+        f"under 2%={bounded}); nuclear-share sweep -> "
+        + ", ".join(f"{k} {v:.2f}%" for k, v in sweep.items())
+        + f"; blended marginal {base_mb:.1f} gal/MWh; mix sourced={sourced}; "
+        f"ledger corrected={corrected}; abstract free of the false 0%={no_false_zero}")
 
 
 def main():

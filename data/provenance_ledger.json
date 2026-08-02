@@ -154,12 +154,20 @@
    "note": "Public utility fuel-mix data; documented in METHODOLOGY 18. Not a single-quote source."
   },
   {
-   "id": "nuclear_never_marginal",
-   "type": "assumption",
-   "claim": "Nuclear is never the SHORT-RUN marginal generator (must-run baseload), so short-run marginal accounting assigns it zero",
-   "value": 0,
-   "source": "standard dispatch theory (near-zero marginal cost, must-run); PJM marginal-fuel practice",
-   "note": "PREMISE, not a derived result. It is what produces the York/Lake Anna -> 0 outcome by construction (METHODOLOGY 47.2). Verified robust: York stays 0.00 under every alternative marginal-mix parameterization tested. SCOPE LIMIT (METHODOLOGY 54): this holds only for SHORT-RUN dispatch. Under a LONG-RUN marginal framework -- retirement deferral, license renewal, power uprates, new build (Dominion holds an NRC Early Site Permit for North Anna Unit 3) -- sustained data-center load growth can implicate North Anna, and the zero does not hold. Even short-run, the zero is an idealization: nuclear is occasionally curtailed at negative prices, so added baseload demand raises output slightly. An earlier version of this note called the premise 'uncontroversial'; that was too strong."
+   "id": "nuclear_rarely_marginal",
+   "type": "external_data",
+   "claim": "Nuclear is RARELY but not never the PJM short-run marginal resource: 0.39% (2022), 0.62% (2023), 1.00-1.35% (2019-21) of real-time marginal units",
+   "value": {
+    "2022": 0.0039,
+    "2023": 0.0062
+   },
+   "source": "Monitoring Analytics, 2023 State of the Market Report for PJM, Section 3",
+   "note": "CORRECTS A FALSE PREMISE. The previous entry claimed 'nuclear does not appear as a marginal resource at all', sourced to the p.125 SUMMARY sentence, which does not enumerate every fuel. Table 3-69 (p.200) lists Uranium/Steam explicitly. The MMU has recommended since 2016 that PJM 'not allow nuclear generators which do not respond to prices ... to set the LMPs in the real-time market' -- status Not adopted. Lake Anna's marginal attribution is therefore ~0.87% (2022 shares) or ~1.29% (2023 shares), NOT 0.00%. The abstract now says 'under 2%'. The 43% -> ~1% relocation is unaffected.",
+   "source_pdf": "PJM_SOM_2023_sec3_energy_market.pdf",
+   "page": 201,
+   "section": "Types of Marginal Resources (printed p.201; PDF p.79 of the Sec.3 extract). Table 3-69 with the full 2019-2023 fuel breakdown is on printed p.200.",
+   "verbatim_quote": "The proportion of marginal nuclear units increased from 0.4 percent in 2022 to 0.6 percent in 2023.",
+   "pdf_page_in_extract": 79
   },
   {
    "id": "marginal_attribution_in_state",
@@ -187,14 +195,14 @@
   },
   {
    "id": "pjm_marginal_gas_cc_ct_split",
-   "type": "assumption",
-   "claim": "Marginal gas is split 78:22 between combined-cycle and simple-cycle turbines",
+   "type": "limitation",
+   "claim": "SUPERSEDED: the 78:22 CC:CT split assumption is no longer used",
    "value": {
     "cc": 0.78,
     "ct": 0.22
    },
    "source": "not published by PJM/Monitoring Analytics at this granularity",
-   "note": "RESIDUAL ASSUMPTION after sourcing the headline mix. Matters because CC and CT water intensities differ ~10x (213 vs ~20 gal/MWh). Does NOT affect York->0 (no nuclear term). Affects the blended marginal intensity and hence marginal-case magnitudes."
+   "note": "SUPERSEDED 31 Jul 2026. The 78:22 assumption is no longer used: Table 3-69 publishes the split directly (2022: CC 61.66%, CT 11.26%, steam 1.42%, RICE 0.86%). The assumption was only ever needed because we read the summary sentence rather than the table."
   },
   {
    "id": "marginal_gas_ct_intensity_20",

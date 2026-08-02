@@ -278,19 +278,43 @@ DOMINION_GENERATION_MIX = {
 # gas plant, in the James basin. So the York-basin displacement in section 13 is
 # partly an ARTIFACT of average-mix accounting; the marginal reality is even more
 # concentrated on gas and the James. See METHODOLOGY.md section 16.
+# CORRECTED 31 Jul 2026 after reading the SOM cover to cover. Two errors were in
+# the previous parameterization, both traceable to using the p.125 SUMMARY
+# sentence ("coal 10.0%, natural gas 75.2%") instead of the detailed table:
+#
+#   1. NUCLEAR IS A MARGINAL RESOURCE. Table 3-69 (printed p.200) lists
+#      Uranium/Steam at 1.31% (2019), 1.35% (2020), 1.00% (2021), 0.39% (2022),
+#      0.62% (2023). The summary sentence simply does not enumerate every fuel.
+#      "Most nuclear units are offered as fixed generation ... A small number of
+#      nuclear units were offered with a dispatchable range since 2015" (p.201).
+#      The MMU has recommended since 2016 that PJM stop letting them set LMP;
+#      status "Not adopted". So the Lake Anna marginal share is ~1%, not zero.
+#   2. THE 78:22 CC:CT SPLIT WAS NEVER NECESSARY. Table 3-69 publishes the split
+#      directly, so the assumption is dropped entirely.
+#
+# Shares below are the published 2022 row of Table 3-69 (the year matching the
+# headline sentence we cite). The 2023 row is carried in METHODOLOGY 55 as a
+# sensitivity. Rows summing to <100% are the ~0-water residual (wind, solar,
+# oil, municipal waste, hydro).
 PJM_MARGINAL_FUEL_MIX = {
-    "natural_gas_cc": 0.752 * 0.78,   # 58.7% -- published gas share x CC:CT split
-    "natural_gas_ct": 0.752 * 0.22,   # 16.5% -- peaking gas, ~dry
-    "coal": 0.100,                    # published verbatim (2022)
-    "wind": 0.148,                    # residual: wind/solar/hydro/oil, ~0 water
+    "natural_gas_cc": 0.6166,   # Gas / CC        61.66%
+    "natural_gas_steam": 0.0142,  # Gas / Steam    1.42%  (has a steam cycle)
+    "natural_gas_ct": 0.1126,   # Gas / CT        11.26%  (no steam cycle)
+    "natural_gas_rice": 0.0086,  # Gas / RICE      0.86%  (no steam cycle)
+    "coal": 0.1002,             # Coal / Steam    10.02%
+    "nuclear": 0.0039,          # Uranium / Steam  0.39%  <- was omitted entirely
+    "zero_water": 0.1439,       # wind 11.12 + oil 2.42 + other 0.79 + MW 0.04
 }
-# Simple-cycle combustion turbines consume almost no water (no steam cycle, no
-# cooling tower); carried at a small positive value for inlet cooling / NOx.
+# Simple-cycle combustion turbines and RICE consume almost no water (no steam
+# cycle, no cooling tower); carried at a small positive value for inlet cooling.
 MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH = {
     "natural_gas_cc": CONSUMPTION_FACTORS_GAL_PER_MWH["natural_gas_cc"],  # 196
+    "natural_gas_steam": CONSUMPTION_FACTORS_GAL_PER_MWH["natural_gas_cc"],
     "natural_gas_ct": 20,
+    "natural_gas_rice": 20,
     "coal": CONSUMPTION_FACTORS_GAL_PER_MWH["coal"],                       # 474
-    "wind": 0,
+    "nuclear": CONSUMPTION_FACTORS_GAL_PER_MWH["nuclear"],                 # 391
+    "zero_water": 0,
 }
 MARGINAL_CONSUMPTION_GAL_PER_MWH = sum(
     PJM_MARGINAL_FUEL_MIX[f] * MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH[f]
