@@ -115,7 +115,13 @@ export function AppShell() {
     { label: "WATER STRESS", value: "county in extreme drought — PDSI −5.3, driest 1% of months since 1895", tone: "bad" },
     { label: "PERMITS", value: "PWC data centers hold construction-stormwater permits, not operational water permits", tone: "bad" },
     { label: "VALIDATION", value: "Scope 1 distribution vs JLARC 2023 metered data: all 6 published constraints pass; shape indistinguishable after county-intensity scaling (KS p=0.09)", tone: "good" },
-    { label: "SEASONAL STRESS", value: "cooling demand peaks in July at 3.9× the mean month — exactly when the Potomac (Little Falls) falls to 41% of annual-mean flow; coincidence index peaks at 9.0", tone: "bad" },
+    // Cite the OBSERVED water shape (ICPRB WMA Study Table A.3-2), not the
+    // cooling-degree-day curve. CDD peaks in July at 3.9x the mean month, but
+    // that is a degree-day statistic; read as a water shape on this site it
+    // overstates the swing by ~70% (METHODOLOGY 31, superseded note). Measured
+    // utility data peaks in August at 1.8x -- the same month the Potomac
+    // bottoms, which is a tighter coincidence than the CDD framing claimed.
+    { label: "SEASONAL STRESS", value: "on-site water peaks in August at 1.8× the mean month (ICPRB measured utility data) — the same month the Potomac at Little Falls bottoms at 41% of annual-mean flow; the binding case is Broad Run in September, at 15.8% of that month's flow", tone: "bad" },
     { label: "VALUE OF DISCLOSURE", value: "transparency alone barely moves county uncertainty (±19%); standardized + verified facility power gets to ±9% — but the binding gap is the grid's water-intensity, at the power plant, not the data center", tone: "neutral" },
   ];
   const [tickerIdx, setTickerIdx] = useState(0);

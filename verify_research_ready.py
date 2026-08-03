@@ -597,13 +597,25 @@ def c_seasonal_basin_surface():
     auditable = (sup.get("former_central_baseload_share") == 0.30
                  and all("cdd_model_sensitivity" in v for v in s["surfaces"].values()))
 
+    # 6. the CORRECTION REACHED THE UI. The superseded CDD amplitude (July at
+    # 3.9x the mean month) is a true degree-day statistic, which is exactly why
+    # it survives sweeps for "wrong numbers" -- but presented as a water shape on
+    # a water atlas it overstates the swing by ~70%. It sat in the site's
+    # seasonal ticker for a full day after the model was corrected, the same way
+    # METHODOLOGY 31 kept presenting the superseded model as current.
+    shell = open(os.path.join(HERE, "src", "components", "AppShell.tsx")).read()
+    ticker = next((ln for ln in shell.splitlines()
+                   if '"SEASONAL STRESS"' in ln), "")
+    ui_ok = bool(ticker) and "3.9×" not in ticker and "1.8×" in ticker
+
     ok = (matches_source and central_is_observed and ptt_ok and normalized
-          and summer and amplified and auditable)
+          and summer and amplified and auditable and ui_ok)
     return ok, (f"central shape=observed({central_is_observed}) matches ICPRB A.3-2"
                 f"({matches_source}) normalized({normalized}) peak/trough={ptt}"
                 f"(~3 not ~10: {ptt_ok}); binding {b['watershed']} in {b['month']} at "
                 f"{b['pct_of_monthly_flow']}% vs flat {flat}% (amplified={amplified}); "
-                f"superseded model retained={auditable}")
+                f"superseded model retained={auditable}; UI ticker cites observed "
+                f"shape not CDD={ui_ok}")
 
 
 
