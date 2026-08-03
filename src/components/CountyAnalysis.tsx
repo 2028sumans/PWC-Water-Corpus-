@@ -43,14 +43,23 @@ export function CountyAnalysis() {
 
   const cards: Array<React.ComponentProps<typeof Card>> = [];
 
-  // Seasonal coincidence (§31)
+  // Seasonal coincidence (§31, as corrected)
+  //
+  // `demand_cdd.peak_month` is the cooling-degree-day peak (July). That is a
+  // degree-day statistic, not the water shape, and the two do not fall in the
+  // same month: measured utility data (ICPRB Table A.3-2) puts the on-site
+  // water peak in August, which is also when the rivers bottom. Reporting the
+  // CDD month here overstated the swing and, ironically, understated the
+  // coincidence it was pointing at. Label the curve for what it is and lead
+  // with the month that actually matters.
   if (a.seasonal) {
     const pot = Object.values(a.seasonal.supply_streamflow)[0];
+    const lowMonth = pot?.low_flow_month ?? "Aug";
     cards.push({
       label: "Seasonal coincidence",
-      value: `Demand peaks ${a.seasonal.demand_cdd.peak_month} · rivers at ${pot?.low_flow_pct_of_annual}% of mean flow`,
+      value: `On-site water peaks ${lowMonth} · rivers at ${pot?.low_flow_pct_of_annual}% of mean flow the same month`,
       detail:
-        "Cooling demand and the streamflow minimum land in the same weeks (NOAA CDD × USGS gages). Both curves measured.",
+        `Measured utility data puts the water peak at 1.8× the mean month (ICPRB Table A.3-2), and the ${pot?.name ?? "Potomac"} bottoms in ${lowMonth} — demand and scarcity land together. The cooling-degree-day curve peaks a month earlier, in ${a.seasonal.demand_cdd.peak_month}; it is a temperature signal, not the water shape.`,
       tone: "warn",
     });
   }
