@@ -1,12 +1,74 @@
 {
  "framing": "SCALE COMPARISON, not withdrawal attribution. Prince William data centers are supplied by Prince William Water (Occoquan/Potomac public supply), not by direct withdrawal from these streams. Ratios express how large the local on-site draw is relative to the water moving through the basins the buildings occupy.",
- "demand_shape": "Monthly on-site draw = small year-round baseload + CDD-proportional cooling component, normalized to the building-derived annual mean. Baseload share is the one free parameter (central 30%), swept (0.1, 0.3, 0.5) because the winter floor for evaporative makeup is undocumented per facility.",
+ "demand_shape": "CENTRAL: observed monthly data-center water-use factors from ICPRB Table A.3-2, normalized to the building-derived annual mean. Peak August 1.8x, trough February 0.6x, peak-to-trough 3.0x. SENSITIVITY: the superseded baseload + CDD-proportional model, swept over baseload shares (0.3, 0.5, 0.75). The CDD model at its former central baseload of 30% gives 3.04x in July and 10.1x peak-to-trough -- roughly 70% too peaky in summer and less than half the observed winter floor.",
+ "demand_shape_source": "ICPRB, 2025 Washington Metropolitan Area Water Supply Study (ICP-596, Dec 2025), Appendix A.3, Table A.3-2 -- monthly data-center water-use factors derived from observed utility-reported usage in the Loudoun Water and Prince William Water service areas. Peak month August (1.8x annual mean); peak-to-trough 3.0x. Supersedes the CDD-proportional model used here through 2026-08-02, which gave 3.04x in July and 10.1x peak-to-trough.",
+ "observed_monthly_factors": {
+  "Jan": 0.7,
+  "Feb": 0.6,
+  "Mar": 0.6,
+  "Apr": 0.7,
+  "May": 0.9,
+  "Jun": 1.0,
+  "Jul": 1.5,
+  "Aug": 1.8,
+  "Sep": 1.5,
+  "Oct": 1.0,
+  "Nov": 0.9,
+  "Dec": 0.8
+ },
+ "observed_peak_to_trough": 3.0,
+ "superseded_cdd_model": {
+  "note": "Retained as a sensitivity so the 2026-08-03 correction is auditable.",
+  "former_central_baseload_share": 0.3,
+  "best_fit_baseload_share": 0.75,
+  "corroboration": "JLARC Rpt598 p.39: data centers 'do not currently participate in demand response programs' because 'energy use is driven by computing activity' -- an independent reason to expect a high, near-constant baseload."
+ },
+ "timing_leg": {
+  "claim": "Data-center demand is roughly six times peakier than the municipal demand the supply system was engineered around, and it peaks in the same months regional flows bottom.",
+  "municipal_peak_day_factors": {
+   "WSSC Water": 1.6,
+   "Washington Aqueduct": 1.7,
+   "Fairfax Water": 1.9,
+   "Loudoun Water": 1.5,
+   "Combined CO-OP": 1.6
+  },
+  "municipal_peak_day_range": [
+   1.5,
+   1.9
+  ],
+  "datacenter_peak_day_icprb": 10.0,
+  "datacenter_peak_day_ours": 9.9,
+  "peakiness_ratio_vs_municipal_mean": 6.0,
+  "municipal_monthly_factors": {
+   "Fairfax Water": {
+    "Jan": 0.89,
+    "Jul": 1.18
+   },
+   "WSSC Water": {
+    "Jan": 0.97,
+    "Jul": 1.1
+   },
+   "Washington Aqueduct": {
+    "Jan": 0.94,
+    "Jul": 1.14
+   },
+   "Loudoun Water": {
+    "Jan": 0.8,
+    "Jul": 1.31
+   }
+  },
+  "source": "ICPRB, 2025 WMA Water Supply Study (ICP-596, Dec 2025): peak-day factors from Ch.2; monthly production factors from Table 4-3, derived from 11 years of daily production data 2013-2023 for four suppliers.",
+  "why_the_load_is_flat": "JLARC Rpt598 p.39: 'Data center companies in Virginia do not currently participate in demand response programs' because 'energy use is driven by computing activity'. p.41: 'at the end of the day, a 200 MW data center is going to be a 200 MW data center.' A year-round IT load rejects heat year-round; only the incremental evaporative duty tracks temperature.",
+  "NOT_AN_INDEPENDENT_REPRODUCTION": "CORRECTED 2026-08-03. An earlier version of this block claimed our 9.9x peak-day factor was an INDEPENDENT reproduction of ICPRB's ~10x. It is not. Our 9.9 = WUP_PEAK_GAL_PER_MW_DAY['pwc_observed'] (3,060) / WUP_GAL_PER_MW_DAY['pwc_observed'] (309), and BOTH of those constants are ICPRB figures derived from the SAME source -- Prince William Water's reported 2023 use of 0.42 MGD average and 4.2 MGD peak day (ratio 10.0). We are dividing ICPRB's two numbers by each other. It is a consistency check on our own arithmetic, NOT external validation. Do not present it as an out-of-sample check.",
+  "what_IS_independent": "The COINCIDENCE is independent. The demand peak (Jul-Sep) comes from ICPRB/utility water data; the flow minimum (Aug) comes from USGS gage records -- Potomac at Little Falls bottoms at 41% of annual mean in August, Cedar Run at 47%. Two unrelated measurement systems. The claim 'demand peaks when flow bottoms' is therefore genuinely supported; the claim 'we independently reproduced the peak factor' is not.",
+  "honest_limitation": "ICPRB's own regressions 'tend to under-predict the highest demands', and all six of their models show negative mean residuals. Peak estimates in this literature -- including the WUP figures this model borrows -- are therefore systematically conservative."
+ },
  "surfaces": {
   "BROAD RUN": {
    "n_buildings": 166,
    "gage": "Broad Run at Buckland",
    "annual_draw_mgd": 1.394,
-   "completed_only_annual_draw_mgd": 0.279,
+   "completed_only_annual_draw_mgd": 0.183,
    "monthly_flow_mgd": {
     "Jan": 42.9,
     "Feb": 57.4,
@@ -21,51 +83,70 @@
     "Nov": 23.6,
     "Dec": 37.8
    },
-   "central_baseload_share": 0.3,
+   "central_shape": "observed_icprb_a32",
    "central": {
     "monthly_draw_mgd": {
-     "Jan": 0.418,
-     "Feb": 0.418,
-     "Mar": 0.429,
-     "Apr": 0.451,
-     "May": 1.154,
-     "Jun": 2.758,
-     "Jul": 4.24,
-     "Aug": 3.636,
-     "Sep": 1.814,
-     "Oct": 0.572,
-     "Nov": 0.418,
-     "Dec": 0.418
+     "Jan": 0.976,
+     "Feb": 0.836,
+     "Mar": 0.836,
+     "Apr": 0.976,
+     "May": 1.255,
+     "Jun": 1.394,
+     "Jul": 2.091,
+     "Aug": 2.509,
+     "Sep": 2.091,
+     "Oct": 1.394,
+     "Nov": 1.255,
+     "Dec": 1.115
     },
     "monthly_pct_of_flow": {
-     "Jan": 1.0,
-     "Feb": 0.7,
-     "Mar": 0.7,
-     "Apr": 0.9,
-     "May": 3.6,
-     "Jun": 10.0,
-     "Jul": 28.3,
-     "Aug": 20.8,
-     "Sep": 13.7,
-     "Oct": 3.7,
-     "Nov": 1.8,
-     "Dec": 1.1
+     "Jan": 2.3,
+     "Feb": 1.5,
+     "Mar": 1.4,
+     "Apr": 1.9,
+     "May": 3.9,
+     "Jun": 5.1,
+     "Jul": 13.9,
+     "Aug": 14.3,
+     "Sep": 15.8,
+     "Oct": 9.0,
+     "Nov": 5.3,
+     "Dec": 3.0
     },
-    "worst_month": "Jul",
-    "worst_pct_of_flow": 28.3
+    "worst_month": "Sep",
+    "worst_pct_of_flow": 15.8
    },
-   "baseload_sweep": {
-    "baseload_10pct": {
-     "worst_month": "Jul",
-     "worst_pct_of_flow": 33.7
+   "drought_denominator_sweep": {
+    "flow_x1.00": {
+     "worst_month": "Sep",
+     "worst_pct_of_flow": 15.8
     },
-    "baseload_30pct": {
+    "flow_x0.90": {
+     "worst_month": "Sep",
+     "worst_pct_of_flow": 17.6
+    },
+    "flow_x0.80": {
+     "worst_month": "Sep",
+     "worst_pct_of_flow": 19.8
+    },
+    "flow_x0.70": {
+     "worst_month": "Sep",
+     "worst_pct_of_flow": 22.6
+    }
+   },
+   "drought_denominator_source": "OBSERVED CONDITION, not a hypothetical sensitivity. NOAA/NCEI county PDSI 1895-2026 shows the longest unbroken severe-or-worse run in the record -- 23 months, 202406-202604, still open at data cutoff; severe-drought return period has fallen from 1-in-3.9 yr (full record) to 1-in-2.5 yr (since 1976). Direction of change corroborated by AECOM, FINAL Vulnerability Assessment Report, Prince William County (9 Jan 2023), Table 7 -- used for direction only, since AECOM's modelled baseline is 2.6x (severe) to 6.7x (extreme) below the observed record. Multipliers remain a denominator sweep, not a rainfall-runoff projection.",
+   "cdd_model_sensitivity": {
+    "cdd_baseload_30pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 28.3
     },
-    "baseload_50pct": {
+    "cdd_baseload_50pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 22.8
+    },
+    "cdd_baseload_75pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 16.1
     }
    }
   },
@@ -73,7 +154,7 @@
    "n_buildings": 61,
    "gage": "Bull Run near Manassas",
    "annual_draw_mgd": 0.307,
-   "completed_only_annual_draw_mgd": 0.053,
+   "completed_only_annual_draw_mgd": 0.026,
    "monthly_flow_mgd": {
     "Jan": 161.5,
     "Feb": 175.0,
@@ -88,51 +169,70 @@
     "Nov": 67.9,
     "Dec": 126.2
    },
-   "central_baseload_share": 0.3,
+   "central_shape": "observed_icprb_a32",
    "central": {
     "monthly_draw_mgd": {
-     "Jan": 0.092,
-     "Feb": 0.092,
-     "Mar": 0.094,
-     "Apr": 0.099,
-     "May": 0.254,
-     "Jun": 0.607,
-     "Jul": 0.934,
-     "Aug": 0.801,
-     "Sep": 0.399,
-     "Oct": 0.126,
-     "Nov": 0.092,
-     "Dec": 0.092
+     "Jan": 0.215,
+     "Feb": 0.184,
+     "Mar": 0.184,
+     "Apr": 0.215,
+     "May": 0.276,
+     "Jun": 0.307,
+     "Jul": 0.461,
+     "Aug": 0.553,
+     "Sep": 0.461,
+     "Oct": 0.307,
+     "Nov": 0.276,
+     "Dec": 0.246
     },
     "monthly_pct_of_flow": {
      "Jan": 0.1,
      "Feb": 0.1,
      "Mar": 0.1,
-     "Apr": 0.1,
+     "Apr": 0.2,
      "May": 0.3,
-     "Jun": 0.7,
-     "Jul": 2.6,
-     "Aug": 1.9,
-     "Sep": 0.7,
-     "Oct": 0.2,
-     "Nov": 0.1,
-     "Dec": 0.1
+     "Jun": 0.3,
+     "Jul": 1.3,
+     "Aug": 1.3,
+     "Sep": 0.8,
+     "Oct": 0.6,
+     "Nov": 0.4,
+     "Dec": 0.2
     },
-    "worst_month": "Jul",
-    "worst_pct_of_flow": 2.6
+    "worst_month": "Aug",
+    "worst_pct_of_flow": 1.3
    },
-   "baseload_sweep": {
-    "baseload_10pct": {
-     "worst_month": "Jul",
-     "worst_pct_of_flow": 3.1
+   "drought_denominator_sweep": {
+    "flow_x1.00": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 1.3
     },
-    "baseload_30pct": {
+    "flow_x0.90": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 1.5
+    },
+    "flow_x0.80": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 1.6
+    },
+    "flow_x0.70": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 1.9
+    }
+   },
+   "drought_denominator_source": "OBSERVED CONDITION, not a hypothetical sensitivity. NOAA/NCEI county PDSI 1895-2026 shows the longest unbroken severe-or-worse run in the record -- 23 months, 202406-202604, still open at data cutoff; severe-drought return period has fallen from 1-in-3.9 yr (full record) to 1-in-2.5 yr (since 1976). Direction of change corroborated by AECOM, FINAL Vulnerability Assessment Report, Prince William County (9 Jan 2023), Table 7 -- used for direction only, since AECOM's modelled baseline is 2.6x (severe) to 6.7x (extreme) below the observed record. Multipliers remain a denominator sweep, not a rainfall-runoff projection.",
+   "cdd_model_sensitivity": {
+    "cdd_baseload_30pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 2.6
     },
-    "baseload_50pct": {
+    "cdd_baseload_50pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 2.1
+    },
+    "cdd_baseload_75pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 1.5
     }
    }
   },
@@ -155,65 +255,84 @@
     "Nov": 3.8,
     "Dec": 5.5
    },
-   "central_baseload_share": 0.3,
+   "central_shape": "observed_icprb_a32",
    "central": {
     "monthly_draw_mgd": {
-     "Jan": 0.002,
-     "Feb": 0.002,
-     "Mar": 0.002,
-     "Apr": 0.002,
+     "Jan": 0.005,
+     "Feb": 0.004,
+     "Mar": 0.004,
+     "Apr": 0.005,
      "May": 0.006,
-     "Jun": 0.014,
-     "Jul": 0.021,
-     "Aug": 0.018,
-     "Sep": 0.009,
-     "Oct": 0.003,
-     "Nov": 0.002,
-     "Dec": 0.002
+     "Jun": 0.007,
+     "Jul": 0.011,
+     "Aug": 0.013,
+     "Sep": 0.011,
+     "Oct": 0.007,
+     "Nov": 0.006,
+     "Dec": 0.006
     },
     "monthly_pct_of_flow": {
-     "Jan": 0.0,
-     "Feb": 0.0,
+     "Jan": 0.1,
+     "Feb": 0.1,
      "Mar": 0.0,
-     "Apr": 0.0,
+     "Apr": 0.1,
      "May": 0.1,
-     "Jun": 0.4,
-     "Jul": 1.2,
-     "Aug": 1.1,
-     "Sep": 0.4,
-     "Oct": 0.1,
-     "Nov": 0.1,
-     "Dec": 0.0
+     "Jun": 0.2,
+     "Jul": 0.6,
+     "Aug": 0.7,
+     "Sep": 0.5,
+     "Oct": 0.3,
+     "Nov": 0.2,
+     "Dec": 0.1
     },
-    "worst_month": "Jul",
-    "worst_pct_of_flow": 1.2
+    "worst_month": "Aug",
+    "worst_pct_of_flow": 0.7
    },
-   "baseload_sweep": {
-    "baseload_10pct": {
-     "worst_month": "Jul",
-     "worst_pct_of_flow": 1.4
+   "drought_denominator_sweep": {
+    "flow_x1.00": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 0.7
     },
-    "baseload_30pct": {
+    "flow_x0.90": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 0.8
+    },
+    "flow_x0.80": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 0.9
+    },
+    "flow_x0.70": {
+     "worst_month": "Aug",
+     "worst_pct_of_flow": 1.1
+    }
+   },
+   "drought_denominator_source": "OBSERVED CONDITION, not a hypothetical sensitivity. NOAA/NCEI county PDSI 1895-2026 shows the longest unbroken severe-or-worse run in the record -- 23 months, 202406-202604, still open at data cutoff; severe-drought return period has fallen from 1-in-3.9 yr (full record) to 1-in-2.5 yr (since 1976). Direction of change corroborated by AECOM, FINAL Vulnerability Assessment Report, Prince William County (9 Jan 2023), Table 7 -- used for direction only, since AECOM's modelled baseline is 2.6x (severe) to 6.7x (extreme) below the observed record. Multipliers remain a denominator sweep, not a rainfall-runoff projection.",
+   "cdd_model_sensitivity": {
+    "cdd_baseload_30pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 1.2
     },
-    "baseload_50pct": {
+    "cdd_baseload_50pct": {
      "worst_month": "Jul",
      "worst_pct_of_flow": 1.0
+    },
+    "cdd_baseload_75pct": {
+     "worst_month": "Jul",
+     "worst_pct_of_flow": 0.7
     }
    }
   }
  },
  "binding_condition": {
   "watershed": "BROAD RUN",
-  "month": "Jul",
-  "pct_of_monthly_flow": 28.3,
+  "month": "Sep",
+  "pct_of_monthly_flow": 15.8,
   "note": "Maximum of the space-time surface -- the month and basin where the on-site draw is largest relative to the water actually in the stream."
  },
  "why_crossing_matters": {
   "annual_flat_pct_of_mean_flow": 4.2,
   "seasonal_only": "county-wide demand peaks in Jul; regional flow bottoms in Aug (\u00a731)",
   "basin_only": "Broad Run carries 166/243 buildings (\u00a741)",
-  "crossed": "BROAD RUN in Jul reaches 28.3% of that month's flow -- vs 4.2% on a flat annual basis. Neither the seasonal slice nor the basin slice shows this alone."
+  "crossed": "BROAD RUN in Sep reaches 15.8% of that month's flow -- vs 4.2% on a flat annual basis. Neither the seasonal slice nor the basin slice shows this alone."
  }
 }

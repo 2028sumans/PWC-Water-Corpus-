@@ -5,7 +5,7 @@
 
 This document exists to be attacked. Section 6 lists the errors and soft spots found so far — including one retraction, one circular validation, and one constant that the source document uses in the opposite direction from this tool.
 
-> **Current headline (as of the §32 predictive-variance upgrade).** County-wide total: **53.6 MGD, 90% credible interval 44.5–64.9** (Monte Carlo median, average grid mix; plug-in central 49.6 MGD; marginal-mix median 41.8). Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression whose per-building predictive variance is now LOO-calibrated and heteroscedastic (§32; wider for floor areas far from the training data). The county CI is **±19%**, corrected upward from the earlier ±11% once the systematic coefficient component was propagated honestly (it does not average away). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 18.8 MGD** (average-mix accounting; **0 under marginal dispatch**, §16) — outside the Potomac basin the buildings sit in; **80% of the footprint is consumed outside the Potomac basin entirely** (§13). Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals.** Where an early section's number conflicts with §16–§18, the later section wins.
+> **Current headline (as of the §32 predictive-variance upgrade).** County-wide total: **49.9 MGD, 90% credible interval 41.4–60.5** (Monte Carlo median, average grid mix; plug-in central 46.2 MGD; marginal-mix median 38.7). These are **post-fit-out-ramp** figures (§62): a Certificate of Occupancy is granted with unfitted floor area, so installed capacity is carried to energized load on a 4-year ramp. The ramp is applied identically to every scope, so it moved the volumes and left every reported share unchanged. Pre-ramp equivalents were 53.6 / 44.5–64.9 / 49.6. Power is the model's root via a per-building evidence ladder — 45 permit-observed, 198 from a fitted GFA→MW regression whose per-building predictive variance is now LOO-calibrated and heteroscedastic (§32; wider for floor areas far from the training data). The county CI is **±19%**, corrected upward from the earlier ±11% once the systematic coefficient component was propagated honestly (it does not average away). Scope 2 is ~87% of the total. The single largest affected water body is **North Anna / Lake Anna in the York basin at 18.8 MGD** (average-mix accounting; **0 under marginal dispatch**, §16) — outside the Potomac basin the buildings sit in; **80% of the footprint is consumed outside the Potomac basin entirely** (§13). Sections 0–14 were written earlier in the project's evolution and some carry pre-refresh illustrative numbers; **§18 states what changed and is authoritative on the Scope 2 factors, §16 on average-vs-marginal, §17 on the credible intervals, §62 on the fit-out ramp and the absolute level.** Where an early section's number conflicts with §16–§18, the later section wins.
 
 ---
 
@@ -918,7 +918,7 @@ The York total is essentially **North Anna alone**: Virginia's other nuclear sta
 
 Two consequences follow, and they are the paper's argument:
 
-1. **North Anna alone gives up 18.77 MGD to serve these buildings — 10.6× the entire local Scope 1 draw of 1.76 MGD** (average-mix accounting). A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres under location-based accounting, and it is affected roughly *eleven times* more than the streams the buildings actually sit on — yet under marginal dispatch (§16) that same reservoir gives up nothing, and the causal water lands on the James gas fleet. Which basin "bears" the footprint is itself an accounting choice.
+1. **North Anna alone gives up 18.77 MGD to serve these buildings — 11.5× the entire local Scope 1 draw of 1.64 MGD** (average-mix accounting). A reservoir in a different basin, in a different county, is the single largest water body affected by Prince William's data centres under location-based accounting, and it is affected roughly *eleven times* more than the streams the buildings actually sit on — yet under marginal dispatch (§16) that same reservoir gives up nothing, and the causal water lands on the James gas fleet. Which basin "bears" the footprint is itself an accounting choice.
 
 2. **The reviewing body and the affected basin do not overlap.** Every one of these facilities was approved through Prince William County land-use review — rezonings, special use permits, site plans, all Potomac-basin instruments. That process has authority over the ~11% and almost none over the ~88%. The Lake Anna shoreline had no standing in any of the hearings recorded in §8.
 
@@ -1069,7 +1069,40 @@ But that is not the causal question. A **new** data-centre load is served at the
 
 ### 16.2 The marginal mix
 
-From PJM marginal-fuel data (2022, Monitoring Analytics SOM p.125): gas was **75.2%** of marginal resources and coal **10.0%**; nuclear does not appear at all. Splitting gas 78:22 CC:CT (an assumption — see ledger `pjm_marginal_gas_cc_ct_split`) gives CC **58.7%**, CT **16.5%**, with a **14.8%** residual of wind/solar/hydro/oil. Applying the same Virginia-specific water factors (simple-cycle gas carried at ~20 gal/MWh — no steam cycle) gives a marginal intensity of **165.7 gal/MWh**, against the average-mix **~225** (both on the refreshed §18 factors).
+**Corrected 2026-07-31; text refreshed 2026-08-03.** This paragraph previously read
+"gas was 75.2% of marginal resources and coal 10.0%; **nuclear does not appear at
+all**," and derived a 165.7 gal/MWh marginal intensity from an assumed 78:22 CC:CT
+gas split. Both were wrong. The 75.2%/10.0% sentence on SOM printed p.125 is a
+summary that does not enumerate every fuel; **Table 3-69 on printed p.200 of the
+same document lists Uranium/Steam explicitly.**
+
+**The mix now used is PJM's published 2022 row of Table 3-69, verbatim** — the
+year is named deliberately, because the nuclear share moves and the claim is
+year-sensitive:
+
+| fuel | 2022 share of real-time marginal resources |
+|---|---:|
+| gas CC | 61.66% |
+| gas CT | 11.26% |
+| coal steam | 10.02% |
+| gas steam | 1.42% |
+| gas RICE | 0.86% |
+| **uranium steam** | **0.39%** |
+| zero-water residual (wind/solar/hydro/oil) | 14.39% |
+
+The assumed 78:22 CC:CT split is **deleted** — the SOM publishes the split
+directly, so it was never needed (the published ratio is closer to 83:17).
+Blended marginal intensity moves **165.7 → 175.1 gal/MWh**, against the
+average-mix ~225.
+
+**Why the year matters.** Nuclear's marginal share ranges 0.39%–1.35% over
+2019–2023, and Lake Anna's share of Scope 2 tracks it: **0.87% on 2022 shares,
+1.38% on 2023, but 2.90% on 2019.** The "under 2%" claim holds for 2022 and 2023
+and fails for 2019–21. **Any statement of the marginal result must name its year
+(2022) or widen to "under 3%".** The mechanism is Table 3-12: only 3.3% of nuclear
+MW is offered dispatchable, and 2.4 of those 3.3 points are bid at negative prices
+to avoid cycling — a thin sliver whose position in the price distribution varies
+year to year.
 
 ### 16.3 The result
 
@@ -1509,7 +1542,9 @@ below an Unnamed-column banner row. Low direct value to the water model.
 
 Most are already used (Data_Center_Buildings/Projects, Watersheds, Stream,
 Parcel, RPA, Soil, Zoning, Use_Permits, Planning_Pending_Cases, HV lines,
-Stormwater, Tidal, WQP stations, Springs distance). New/under-used:
+Stormwater, Tidal, WQP stations). Springs_Groundwater_Layers was used for a
+distance and a chemistry join and has since been dropped entirely — see below.
+New/under-used:
 
 ### SURFACE_WATER_TEMPERATURE.geojson (413 stations) 🟡 — unused, thermal-stress
 Per-station **Theil-Sen temperature trends** (Variable CTEMP, Year1→Year2, Tau,
@@ -1534,9 +1569,42 @@ two cases).
 Per-area average GFA/employment/activity-density for developable land — buildout
 modelling inputs; tangential to the water footprint.
 
-### Springs_Groundwater_Layers.geojson (2,916) ⚪
+### Springs_Groundwater_Layers.geojson (2,916) ⚪ — DROPPED, wrong aquifer
 Groundwater QUALITY geochemistry (Al, As, Ba, radionuclides, alkalinity…), not
-quantity. Model only uses distance-to-spring.
+quantity. **The model no longer uses this layer at all** — neither the chemistry
+nor the distance-to-spring it previously carried.
+
+The problem is hydrogeologic, not just geographic. The archive is Shenandoah
+Valley carbonate karst: GPROV is Valley and Ridge 1,648 / Blue Ridge 1,091
+against Piedmont 48; CNTYSDB is Clarke 651, Page 559, Rockingham 286; LITH is
+C-O-CARBONATES 467, O-BEEKMANTOWN 341, C-DOLOMITES 340; mean ALTITUDE 1,578 ft
+where Prince William tops out near 640 ft. Prince William is Piedmont
+crystalline/saprolite and Triassic-basin sediment. Hardness, specific
+conductance and pH from a dolomite aquifer are **biased high in a known
+direction** for a Piedmont parcel, so shipping them as "the last documented
+reading" was misleading, not conservative.
+
+Measured against the 159,181-parcel layer, the nearest-neighbour join never
+actually reached the karst — it collapsed onto one well. 158,790 parcels (99.8%)
+resolved to the single PWC point (Piedmont, LITH MPT) sampled **24 Jun 1980**;
+391 resolved to one Caroline County Coastal Plain point. `PH` and `SPCOND`
+resolved to a value for **zero** parcels; `NO3NO2` for 391, every one of them the
+−0.01 below-detection sentinel. `HARD` attached **260 mg/L — that one 1980
+number — to all 158,790**. The shipped chemistry was a single 46-year-old
+hardness reading broadcast countywide beside two permanently empty columns.
+
+Restricting the source to Piedmont + Coastal Plain was tested and is a **verified
+no-op**: both points the join lands on already pass that filter, leaving all
+159,181 parcels with identical values. Of the 158 Piedmont/Coastal Plain points
+statewide only 70 carry any of PH/SPCOND/HARD, at a median 93 mi from the county
+— there is no local subset to substitute. `d_spring_ft` was dropped with the
+chemistry: at 99.8% single-point resolution it is a radius around one 1980 well
+(0.2–23.2 mi), not proximity to a monitored groundwater feature, which is how it
+read in the facility dossier's water context.
+
+No source in this corpus supplies Piedmont groundwater chemistry for Prince
+William at parcel resolution, so the model reports none. See the comment block
+in `preprocess_score_parcels.py` (§ hydrology proximity) and READING_LOG 41.3.
 
 ---
 
@@ -1571,7 +1639,8 @@ ICPRB 2025 WMA study; ICPRB DataCenters&WaterUse (Mar 2026); JLARC Rpt598;
 Dominion GS-5 Large-Load rate class; Dominion SCC PUR-2026-00011; LBNL QueuedUp
 2025; EconBulletin. Plus doc JSONs: Reference Manual, FY2026 SUP App Package,
 SUP2025-00016, prince_william_cesmp_full, Data_Center_Projects. station.csv,
-observations-759582.csv (iNaturalist), rt_hrl_lmps.csv (empty, 0 rows).
+observations-759582.csv (iNaturalist). [rt_hrl_lmps.csv was a corrupt 15-byte
+stub, not data; deleted 2 Aug 2026 — see below.]
 
 ---
 
@@ -1608,7 +1677,18 @@ USGS + VA DEQ water-quality monitoring station registry for the region (Neabsco
 Creek, S F Quantico Creek, Broad Run DEQ trend stations; HUC, drainage area,
 aquifer). Source behind water_context monitoring counts.
 
-### rt_hrl_lmps.csv ⚪ empty/failed export (15 bytes, "[object Object]").
+### rt_hrl_lmps.csv 🔴 DELETED 2 Aug 2026 — never contained data.
+15 bytes, contents `[object Object]`: a failed browser fetch that stringified a JS
+object instead of writing CSV. It was meant to hold PJM real-time hourly LMPs.
+**This repo has no locational-marginal-price data and no way to obtain it** — PJM
+Data Miner 2 (`api.pjm.com/api/v1/rt_hrl_lmps`) returns 401 without an
+`Ocp-Apim-Subscription-Key`, and no PJM key is provisioned here. Deleted rather
+than left in place, because a 15-byte stub in a data directory reads as data.
+No analysis depended on it: the marginal-generation work (§16, and
+`PJM_MARGINAL_FUEL_MIX` in indirect_water_footprint.py) is sourced from **Table
+3-69 of the 2023 PJM State of the Market Report** — marginal *fuel shares*, not
+marginal *prices* — and that PDF is in-repo. Any future claim requiring price
+formation, congestion, or $/MWh must be scoped as unavailable.
 ### observations-759582.csv ⚪ iNaturalist research-grade species observations (biodiversity).
 
 ## STATUS
@@ -2045,6 +2125,27 @@ Like the power harvests (§28–29), the cooling harvest resolves the unknown at
 
 ## 31. Seasonal water-stress model — demand and scarcity coincide in calendar time (Track-2 analysis)
 
+> **Superseded in part — read with §42.** The monthly *water* shape below is derived by
+> assuming cooling water is proportional to cooling-degree days. Measured utility data
+> says otherwise: ICPRB WMA Study Table A.3-2 (Loudoun + PWC) gives observed monthly
+> factors peaking at **1.8× in August** with a **3.0× peak/trough**, against the **3.04×
+> July / 10.1× peak-trough** this CDD mapping produces — i.e. this section is roughly
+> **70% too peaky**. `seasonal_basin_surface.py` now uses the observed factors as its
+> central case and retains the CDD model only as a sensitivity. JLARC p.39 corroborates
+> the flatter shape independently: data centers *"do not currently participate in demand
+> response programs."*
+>
+> What survives unchanged: §31.1's CDD and streamflow climatologies (both measured
+> series, correctly described), the §31.2 coincidence in calendar time, and the direction
+> of §31.4's conclusion. What does not: the amplitude of the monthly water swing, and the
+> §31.3 overlay table, which is retained below as the superseded sensitivity it now is.
+>
+> Note also that ICPRB's own two documents disagree — their fact sheet says "close to
+> three times the average annual demand" (matching this CDD result) while their technical
+> appendix caps the monthly factor at 1.8. We follow the appendix, because it is observed
+> data rather than a summary statistic, and we state the disagreement rather than take
+> the convenient number.
+
 The estimator is an annual average. That average hides a timing fact the ICPRB study treats as its central supply concern (2025 WMA Study §6.2; ICPRB *Data Centers & Water Use*, March 2026): data-center water demand is cooling-driven and therefore summer-concentrated, and it peaks in the same months the region's rivers run lowest. `seasonal_stress.py` makes that coincidence quantitative from measured data. Output: `public/data/seasonal_stress.json`.
 
 ### 31.1 Two measured curves
@@ -2057,13 +2158,16 @@ The estimator is an annual average. That average hides a timing fact the ICPRB s
 Defining a monthly stress index as (normalized CDD demand ÷ normalized Potomac flow) — how demand-heavy a month is relative to the supply it has — the index peaks in **July at ~9.0** and stays above 8 through August, versus ≈0 in winter. Peak cooling-water demand and minimum river flow are not merely both "in summer"; they land in the *same weeks*. This is measured, not modeled: both inputs are observational series.
 
 ### 31.3 Banded fleet-water overlay
-To translate the demand shape into gallons, the fleet's annual-mean total (**49.6 MGD central**, buildings only) is split into a flat baseload (IT-driven Scope 2 + Scope 3, present every month) plus a cooling-variable component distributed across months in proportion to CDD. The cooling-variable **share** is the one free parameter, so it is swept rather than fixed:
+To translate the demand shape into gallons, the fleet's annual-mean total (**46.2 MGD central**, buildings only) is split into a flat baseload (IT-driven Scope 2 + Scope 3, present every month) plus a cooling-variable component distributed across months in proportion to CDD. The cooling-variable **share** is the one free parameter, so it is swept rather than fixed:
 
 | Cooling-variable share | Summer peak | Winter trough | Peak : trough |
 |---|---|---|---|
-| 15% | 71 MGD | 42 MGD | 1.7× |
-| 30% | 93 MGD | 35 MGD | 2.7× |
-| 45% | 115 MGD | 27 MGD | 4.2× |
+| 15% | 66 MGD | 39 MGD | 1.7× |
+| 30% | 87 MGD | 32 MGD | 2.7× |
+| 45% | 107 MGD | 25 MGD | 4.2× |
+
+*(Superseded — see the note opening §31. These are the CDD-proportional figures, retained
+as the audit trail for the correction, not as the shipped seasonal shape.)*
 
 The share is banded because PWC's air/closed-loop-dominant fleet (§30) has a *modest* direct-water seasonal amplitude, while the thermoelectric water behind its electricity (Scope 2) is more strongly summer-peaked; the true blended amplitude sits inside this band. The point of the overlay is the *shape and swing*, not a precise gallons-per-month figure.
 
@@ -2229,7 +2333,7 @@ This directly implements the reviewer discipline "every factual claim needs a so
 
 ## 37. Growth scenarios to 2050 — buildout and the grid, not facility efficiency
 
-`growth_scenarios.py` projects the county footprint forward on three anchors: today's shipped fleet (~6,470 effective IT MW, 49.6 MGD), the committed ~1,970 MW PJM TEAC forward pipeline (§29, in-service 2027–2031), and 2050 buildout **scenarios** (multiples of today's effective IT MW — *scenarios, not forecasts*). Output: `public/data/growth_scenarios.json`.
+`growth_scenarios.py` projects the county footprint forward on three anchors: today's shipped fleet (~6,030 effective IT MW, 46.2 MGD), the committed ~1,970 MW PJM TEAC forward pipeline (§29, in-service 2027–2031), and 2050 buildout **scenarios** (multiples of today's effective IT MW — *scenarios, not forecasts*). Output: `public/data/growth_scenarios.json`.
 
 ### 37.1 The projection
 | Horizon | Effective IT MW | On-site Scope 1 | Total (today's grid) | Total (decarbonized grid) |
@@ -2240,7 +2344,9 @@ This directly implements the reviewer discipline "every factual claim needs a so
 | 2050 central (~2×, JLARC doubling) | 12,940 | 4.0 MGD | 97 MGD | 45 MGD |
 | 2050 high (~3×, queue-driven) | 19,410 | 6.0 MGD | 145 MGD | 68 MGD |
 
-The model reproduces today's plug-in central (50.0 vs 49.6 MGD) as a calibration check.
+The model reproduces today's plug-in central (46.6 vs 46.2 MGD) as a calibration check. That
+check is bound to the live estimator in `verify_research_ready.py` (check 12), not to the
+copy of the total cached alongside it — see §64.
 
 ### 37.2 The two levers — and which one matters
 The dominant drivers are **buildout** (how much gets built) and **grid water-intensity**, not facility efficiency. Because Scope 2 is ~87% of the footprint, **decarbonizing the grid cuts the central 2050 case from ~97 to ~45 MGD** — a larger reduction than any facility PUE/cooling measure could deliver (consistent with §35: facility levers barely move the county total; the grid dominates). Facility efficiency is held at central precisely because the value-of-disclosure analysis showed it is not the lever.
@@ -2273,10 +2379,15 @@ The high-value datasets (standardized/verified facility load; grid water-intensi
 
 ## 39. Robustness & validation summary (reviewer appendix)
 
-Everything a reviewer needs to judge "how do you know the number is right," in one place. Each row links to the section/script that produces it; all are re-checked by `verify_research_ready.py` (13/13).
+Everything a reviewer needs to judge "how do you know the number is right," in one place. Each row links to the section/script that produces it; all are re-checked by `verify_research_ready.py` (24/24).
 
 ### 39.1 Sensitivity — what actually drives the number (OAT, `sensitivity_analysis.py`)
-Base county central 49.6 MGD. One-at-a-time swings over each constant's justified range:
+Base county central **48.2 MGD**. Note this is deliberately *not* the shipped plug-in
+central of 46.2 MGD: the OAT sweep re-derives each building from its own band midpoints
+(PUE, density) rather than reading the shipped central, so its base sits ~4% high. The
+sweep reports *relative* sensitivity, so the offset does not affect the ranking below —
+but the base is not quotable as the fleet total. One-at-a-time swings over each
+constant's justified range:
 
 | Constant | Low | High | Swing | % of base |
 |---|---|---|---|---|
@@ -2328,8 +2439,8 @@ ICPRB's Prince William peak-day WUP (3,060 gal/MW/day) is ~10× the annual-avera
 
 | Fleet | Annual average | Peak day | Ratio |
 |---|---|---|---|
-| All 243 buildings (full buildout) | 1.76 MGD | **17.46 MGD** | 9.9× |
-| 54 completed today | 0.33 MGD | 3.29 MGD | 9.9× |
+| All 243 buildings (full buildout) | 1.64 MGD | **16.24 MGD** | 9.9× |
+| 54 completed today | 0.21 MGD | 2.06 MGD | 9.9× |
 
 Utilities size infrastructure to peak day, and the peak lands in the same months as the streamflow minimum (§31). Reporting only the annual mean understates the infrastructure-relevant draw by an order of magnitude.
 
@@ -2366,12 +2477,14 @@ Half the fleet is stream-adjacent. (RPA/wetland intersection is rare precisely b
 ### 42.2 The gap — the oversight is not close to the buildings
 | Metric | Value |
 |---|---|
-| No NPDES discharge permit of their own | **235 of 243 (97%)** |
+| No NPDES discharge permit of their own | **243 of 243 (100%)** |
 | No Water Quality Portal station within 1 mile | 154 of 243 (63%) |
 | No VA DEQ monitoring station within 1 mile | 243 of 243 (100%) — *see 42.2a: descriptive, not statistically significant* |
-| **Compound blind spot** (stream-adjacent **and** unpermitted **and** unmonitored) | **112 of 243 (46%)** |
+| **Compound blind spot** (stream-adjacent **and** unpermitted **and** unmonitored) | **118 of 243 (49%)** |
 
-**No building has a state DEQ monitoring station within a mile** — the nearest station to any data-center parcel is 1.54 miles away, and the median distance is 4.1 miles. Combined with the 97% without NPDES coverage (they hold *construction-stormwater* permits, not operational-water permits, §7), the result is that nearly half the fleet is simultaneously adjacent to a stream, outside the discharge-permit system, and outside the monitoring network. 
+**No building has a state DEQ monitoring station within a mile** — the nearest station to any data-center parcel is 1.54 miles away, and the median distance is 4.1 miles. Combined with the complete absence of NPDES coverage (they hold *construction-stormwater* permits, not operational-water permits, §7), the result is that half the fleet is simultaneously adjacent to a stream, outside the discharge-permit system, and outside the monitoring network.
+
+> **Corrected 2026-08-03.** This table previously read 235 of 243 (97%) without NPDES and 112 (46%) compound. Recomputation from the current profiles gives **243 (100%)** and **118 (49%)**. The revision is corroborated independently: EPA's ECHO county extract for Prince William (year 2026, county 51153) lists **32 permitted dischargers and not one data center** among them, and EPA ICIS shows only **one individual VPDES permit for a data center in the entire Commonwealth** (Amazon Northeast Creek, Louisa County) — see `docs/source-reads/READING_LOG.md` Parts 29.3, 30.1. Two independent federal sources agree with the recomputed 100%.
 #### 42.2a How strong is this? (a correction to an earlier overstatement)
 
 This was initially written as a striking finding; on testing it is a **descriptive fact, not evidence of systematic under-monitoring.** Three checks:
@@ -2396,7 +2509,7 @@ Research-grade iNaturalist observations exist within a mile of most sites (media
 
 | Source | Quantity | Value |
 |---|---|---|
-| This model (bottom-up stock) | 6,468 effective IT MW → grid-side | **~7,990 MW** (1,678 MW built today) |
+| This model (bottom-up stock) | 6,031 effective IT MW → grid-side | **~7,450 MW** (1,138 MW built today) |
 | interconnection.fyi (27 portfolios) | registered capacity, band sum | 3,445 – 7,560 MW |
 | PJM TEAC (9 delivery points) | forward increment, 2027–31 | 1,970 MW |
 
@@ -2629,8 +2742,8 @@ Of the 243 buildings, only **54 are Completed**; the rest are Planned (120), Pen
 
 | Fleet | Total water |
 |---|---|
-| All 243 buildings (built + under construction + planned) | **49.6 MGD** |
-| **Completed only (54 buildings, today's operating fleet)** | **10.5 MGD** — 21% of the headline |
+| All 243 buildings (built + under construction + planned) | **46.2 MGD** |
+| **Completed only (54 buildings, today's operating fleet)** | **7.1 MGD** — 15% of the headline |
 
 The draft abstract quoted "49.6 MGD" beside "243 data-center buildings" **without stating that ~78% of those buildings do not yet exist.** A reader would reasonably take 49.6 MGD as current consumption; it is ~4.7× current. **This must be disclosed in the abstract.** It is documented throughout the methodology, but the abstract as drafted was misleading on its own terms.
 
@@ -3142,8 +3255,8 @@ estimated at about 5,400 MW"* — basin-wide.
 
 | Ours (Prince William County only) | Effective IT MW |
 |---|---|
-| all 243 buildings | **6,468 MW** |
-| 54 completed | **1,358 MW** |
+| all 243 buildings | **6,031 MW** |
+| 54 completed | **921 MW** |
 
 Our all-243 figure exceeds ICPRB's **entire Potomac basin** by 1.2x, for one
 county. That is only reconcilable because ICPRB counts existing buildings while
@@ -3246,3 +3359,488 @@ propagate to the shares directly and are handled separately (§49.4, §58.1).
 
 The abstract now discloses the +/-60% *and* states why the shares survive it,
 which is a stronger position than omitting the number.
+
+---
+
+## 62. The fit-out ramp: installed capacity is not energized load
+
+### 62.1 What was wrong
+
+Every rung of the power evidence ladder (§20) answers *how much IT load can this
+building hold* — permitted generator capacity through ICPRB Eq 6-3, or floor area
+through the 8,818 sqft/MW bridge. None of them answers *how much is it drawing*.
+For a mature building those converge. For a new one they do not, and until now
+the model treated them as the same number.
+
+The mechanism is in Prince William County's own building policy, "New Structure —
+Data Center Buildings" (Development Services, effective 2021-04-05):
+
+> "The building areas that are not intended for immediate use will be designed to
+> meet the **Storage (S-1) Use Group's** minimum requirements… **After the
+> Certificate of Occupancy is issued, an Alteration/Repair Building Permit will be
+> issued to convert or 'fit-out'** the unused Storage (S-1) Use Group and Business
+> (B) Use Group areas."
+
+So a data-center building receives its Certificate of Occupancy — and therefore
+reads `BuildingStatus = Completed/Finaled`, which is the field this model keys on
+— **while an unstated share of its floor area is still permitted as empty
+storage.** The data halls are populated afterwards, under separate permits. A CO
+marks the *start* of fit-out, not the end.
+
+This is a sharper version of a coupling already recorded in `build_submission.py`
+("completed" ≠ "operating"). That note said no field indicates energization. The
+county policy says something stronger: energization is *known* to be incomplete
+at CO, by design.
+
+### 62.2 How large the error was
+
+JLARC Rpt598 Ch.1 supplies the first external check on the **level** rather than
+the shape. Virginia data centers use ~5,050 MW (2024 utility peak-load forecasts);
+Loudoun is "approximately half" the state; Loudoun's market is "three times larger
+than Prince William's" — corroborated by JLARC's own site counts, Loudoun 71 vs
+Prince William 24 (ratio 2.96). That chains to **~842 MW for Prince William, as of
+2024**.
+
+The unramped model gave 1,659 MW of site load for the 54 occupied buildings — 2.0×
+the anchor. Two things were compounding:
+
+1. **Vintage mismatch.** Twenty of the 54 received their CO *after* JLARC's
+   snapshot. Comparing a 2026 fleet against a 2024 number is not like-for-like.
+2. **The fit-out ramp.** 22 of 54 buildings (41%) were occupied in 2024–2026.
+
+Correcting both, vintage-matched at 2024-07-01:
+
+| | site load | vs JLARC ~842 MW |
+|---|---:|---:|
+| unramped | 1,033 MW | 1.23× |
+| **ramped** | **779 MW** | **0.93×** |
+
+### 62.3 The ramp
+
+Linear from the Certificate of Occupancy to full load over **4 years**. The length
+is taken from Dominion's own contract structure for exactly these customers — the
+GS-5 large-load tariff approved by the Virginia SCC runs a 14-year term
+"**inclusive of a four-year ramp period**" (Dominion Energy, *GS-5 Large-Load Rate
+Class Report*, May 2026). Dominion prices that ramp because large loads do not
+arrive at contracted demand on day one.
+
+Bounds use 3-year (fast) and 5-year (slow) ramps, which widens the interval for
+young buildings — correct, since those are the ones whose true load is least
+knowable.
+
+Two scoping rules, both deliberate:
+
+- **Only buildings that reached a Certificate of Occupancy are ramped.** A
+  building with no CO has nothing to ramp: today it draws nothing, and in the
+  full-buildout hypothetical it is assumed mature. Ramping it would conflate "not
+  built yet" with "built but still filling up."
+- **A missing occupancy date means no ramp** (factor 1.0), so a data gap can only
+  make the estimate larger, never silently smaller.
+
+The ramp multiplies effective IT MW, and every scope is proportional to IT MW, so
+it flows through all three **identically**. This is what lets the absolute volumes
+move while every reported share stays put — verified numerically, not assumed
+(harness check 20, and `validate_occupancy_ramp.py` step 6).
+
+### 62.4 What changed
+
+| | pre-ramp | post-ramp |
+|---|---:|---:|
+| 54 occupied — installed IT | 1,358.5 MW | 1,358.5 MW (unchanged: capacity) |
+| 54 occupied — energized IT | 1,358.5 MW | **920.8 MW** (68%) |
+| 54 occupied — total | 10.49 MGD | **7.09 MGD** |
+| 54 occupied — consumptive | 10.40 MGD | **7.03 MGD** |
+| All 243 — total | 49.60 MGD | **46.19 MGD** |
+| All 243 — consumptive | 49.11 MGD | **45.74 MGD** |
+| County MC median / 90% CI | 53.6 / 44.5–64.9 | **49.9 / 41.4–60.5** |
+| Scope 2 share, 54 occupied | 87.7% del / 88.5% cons | 88.0% / 88.7% |
+| On-site share, 54 occupied | 3.2% del / 2.4% cons | 2.9% / 2.2% |
+
+The share rows are the point: they moved by less than half a percentage point.
+"88%" and "under 3%" survive — and "under 3%" is now true on **both** the
+delivered and consumptive basis, where before it held only on the consumptive one.
+
+Only 26 of the 243 buildings are actively ramping; the other 28 occupied buildings
+are past 4 years and unaffected. The 243-building total falls by 7% rather than
+32% because the unbuilt majority is unramped by construction.
+
+### 62.5 A second, independent plausibility check
+
+ICPRB's March 2026 fact sheet puts the whole Potomac basin at **~5,400 MW across
+~56 million sq ft**, "predominantly located within Loudoun County." Unramped,
+Prince William alone would be **31.4%** of the entire basin — not credible against
+that description. Ramped, it is **21.3%**.
+
+The same figures imply **10,370 sqft/MW** basin-wide against our **8,818** — an
+independent corroboration of the density bridge within 15%, from a source that
+does not use it.
+
+### 62.6 What this does not fix
+
+The ramp is a **shape assumption**, not a measurement. Linear-to-4-years is
+Dominion's contractual ramp, not an observed per-building fill curve, and no
+operator publishes the latter. Three known limits:
+
+- Real fit-out is probably **not linear** — it is likely stepwise, hall by hall.
+  The linear form is a defensible central case, not a claim about any one building.
+- The ICPRB comparison is **not fully independent**: ICPRB derives facility power
+  from the same VADEQ air permits this model uses. What *is* independent is their
+  calibration against utility-reported water use.
+- The remaining 0.93× against JLARC is **within** the ±60% band, so this fixes a
+  systematic bias but does not narrow the interval. Only load disclosure does that
+  (§27).
+
+---
+
+## 63. What the county's own documents settle — and what they sharpen
+
+Four findings from Prince William's Community Energy and Sustainability Master
+Plan (Oct 2023) and its Appendix G vulnerability assessment (AECOM, 9 Jan 2023).
+Together they change what this paper should claim.
+
+### 63.1 The contribution claim, sharpened
+
+CESMP **End Note 17**, p.198:
+
+> "MWCOG uses a **location-based method** to calculate electricity emissions…
+> Alternatively, the **market-based method** allocates electricity emissions from
+> energy generators to consumers based on '**contractual instruments**.' The
+> emissions reduction impact of any clean electricity purchasing recommendation
+> in the CESMP, such as community choice aggregation or purchasing RECs, **would
+> not be reflected through the location-based accounting method, but would be
+> reflected through the market-based method.** The County will work with MWCOG to
+> determine if the market-based electricity emissions can be calculated along
+> with location-based emissions in the future."
+
+The county states this paper's mechanism outright — same physical electricity,
+different accounted answer, and its flagship climate action is invisible under
+one convention and visible under the other. **For carbon.**
+
+That is not a scoop; it is the strongest available support, because carbon has
+already institutionalised the fix. The GHG Protocol Scope 2 Guidance requires
+**dual reporting** of location-based and market-based figures precisely so the
+choice cannot be made silently, and here the county commits to adopting it.
+
+**Water has no equivalent norm.** So the claim moves from the weak form ("two
+conventions disagree") to the strong form:
+
+> Carbon resolved the convention problem with mandatory dual reporting. Water has
+> not. And for water the divergence is not merely numeric — it is **geographic**,
+> so the convention decides which basin, and therefore which regulator, is
+> implicated.
+
+The abstract's closing was rewritten to this. It is a better claim because it is
+falsifiable (a dual-reporting norm for water either exists or does not), it is
+constructive (it names the remedy rather than only the problem), and it is
+supported by the regulator's own text rather than only by our arithmetic.
+
+### 63.2 The drought framing, rebuilt on the observed record
+
+**Rewritten 2026-08-03.** This section previously led with AECOM's projected
+percentage changes in months-per-year in drought (+114% to +350% severe, +201% to
++1534% extreme). Those percentages are arithmetically correct and substantively
+misleading, because they come off a near-zero modelled baseline.
+
+**Backing AECOM's own baseline out of AECOM's own table.** Table 7 reports change
+in months/yr *alongside* percent change. Severe: +0.289 months = +114%, implying a
+baseline of **0.25 severe months/yr**. Extreme: +0.114 = +201%, implying **0.057
+extreme months/yr**.
+
+The observed county record, 1895–2026 (`data/water_raw/PDSI.json`, 1,576 monthly
+values, computed in `climate_context.drought_return_periods()`):
+
+| PDSI class | **observed months/yr** | AECOM implied baseline | ratio |
+|---|---:|---:|---:|
+| moderate (−2 to −3) | 1.16 | ~1.07 | 1.1× |
+| **severe (−3 to −4)** | **0.66** | **0.25** | **2.6×** |
+| **extreme (< −4)** | **0.38** | **0.057** | **6.7×** |
+
+AECOM's baseline is a 1950–2005 downscaled-GCM construction, not observations.
+"+1534%" is not a claim that extreme drought becomes fifteen times more common
+than the county has actually experienced.
+
+**What replaces it: observed return periods.** Annual worst monthly PDSI,
+empirical exceedance, no model:
+
+| threshold | full record (132 yr) | **since 1976** |
+|---|---:|---:|
+| moderate (≤ −2) | 1 in 2.0 yr | 1 in 1.5 yr |
+| **severe (≤ −3)** | **1 in 3.9 yr** | **1 in 2.5 yr** |
+| **extreme (≤ −4)** | **1 in 8.2 yr** | **1 in 4.6 yr** |
+
+**The return period has roughly halved within the instrumental record.** That is a
+measured non-stationarity, not a projected one, and it is county-specific.
+
+Corroborating, severe-or-worse months per year by 30-year epoch: 1896–1925
+**0.23**, 1926–1955 0.83, 1956–1985 0.60, 1986–2015 **1.33** — a 5.8× increase.
+
+**And the condition is current, not hypothetical.** The longest unbroken run of
+severe-or-worse months in the 132-year record is **23 months, 202406 through
+202604 — and it is still open at the data cutoff.** The run does not end; the data
+does. 2025 is the only year on record in which *every* month was severe drought or
+worse.
+
+**Consequence for `DROUGHT_FLOW_SWEEP`.** The sweep (×1.00 / 0.90 / 0.80 / 0.70)
+was documented as "a sensitivity, NOT a projection." It is neither: the county is
+in an unprecedented drought as of the data cutoff, so the reduced-flow branches
+describe a **current condition**, not a tail scenario.
+
+| watershed | ×1.00 (observed climatology) | ×0.90 | ×0.80 | ×0.70 |
+|---|---:|---:|---:|---:|
+| **Broad Run (Sep)** | **15.8%** | 17.6% | 19.8% | **22.6%** |
+| Bull Run (Jul) | 1.3% | 1.4% | 1.6% | 1.8% |
+| Quantico Creek (Aug) | 0.7% | 0.7% | 0.8% | 0.9% |
+
+These figures use the **corrected observed monthly demand shape** (§63.5). Under
+the superseded CDD model the Broad Run entry read 28.3%→40.4% in July; the binding
+month moved to September and the magnitude roughly halved when the shape was
+corrected. The binding month is stable across the flow sweep, so the *condition* is
+robust and only its severity moves.
+
+AECOM is retained as a **forward-looking** statement — their mechanism ("precipitation
+will fall in more intense bursts followed by longer dry periods") and their demand-side
+projection (days ≥95 °F rising +13 to +15 by 2050, +21 to +32 by 2075) both stand.
+What is demoted is the use of their percentages as a measure of how common drought is.
+
+### 63.2a The county municipal denominator — get the table right
+
+**Added 2026-08-03.** The most legible framing of the displacement result compares
+the fleet's total footprint to the entire municipal water demand of the county it
+sits in. That comparison went through three wrong denominators before landing, and
+the wrong ones are still circulating in earlier drafts, so the correct sourcing is
+recorded here.
+
+**Use ICPRB Tables A.2-15 and A.2-23. Not Table 3-15.**
+
+| source | what it actually is | 2023 | 2050 |
+|---|---|---:|---:|
+| Table 3-15 "Prince William Water" | **Fairfax Water purchased portion only** — incomplete | 26.8 | 32.3 |
+| **Table A.2-15** | Prince William Water **total** (incl. City of Manassas purchase and Manassas Park sales) | **32.21** | **36.97** |
+| **Table A.2-23** | **VAWC Dale City** — the county's *second* municipal supplier | **4.94** | **5.16** |
+| **county total** | A.2-15 + A.2-23 | **37.15** | **42.13** |
+
+Prince William County is served by **two** municipal suppliers, not one. Using
+Table 3-15 alone understates the denominator by ~28% and produced the superseded
+1.54× and 1.34× multiples that appear in earlier notes.
+
+**Current comparison, on the post-ramp model (§62):**
+
+| model total | MGD | vs county municipal demand |
+|---|---:|---:|
+| completed only (54 buildings) | 7.09 | **19.1%** of county 2023 |
+| **all 243 (full buildout)** | **46.20** | **1.10×** county **2050** |
+| all 243 (full buildout) | 46.20 | 1.24× county 2023 |
+
+**The claim survives every revision: at full buildout the fleet's water footprint
+exceeds the entire municipal water demand of the county it sits in — while only
+about 3% of it ever appears in that county's pipes.** The multiple has fallen
+1.54× → 1.34× → 1.18× → **1.10×** as the denominator was corrected and the
+occupancy ramp (§62) reduced the numerator. Quote 1.10×, cite A.2-15 and A.2-23,
+and state the buildout basis explicitly — 46.20 MGD is full buildout of all 243
+approved buildings, not a present-day figure.
+
+### 63.3 The county rates water supply highly sensitive — and its water action lowest
+
+AECOM §4.3.3 gives Food, Water and Shelter a **High** sensitivity rating for
+drought ("water resources are significantly impacted… drinking water restrictions
+may be triggered") and **High** for extreme temperature ("extended periods of
+extreme temperature can make **drinking water resource management significantly
+more challenging**"). Adaptive capacity is capped at **Medium** because these
+assets "lack significant redundancy and have inherent limitations to their
+ability to adapt (e.g., **reservoir storage**)."
+
+The category still lands at **Medium overall** only because *exposure* scores Low
+(2050) / Medium (2075). High sensitivity, limited adaptive capacity, rescued by
+an exposure score.
+
+Against that, CESMP Appendix A: of **60 actions**, exactly one targets
+commercial/industrial water demand — **A.21, "Encourage Businesses to Reduce
+Water Usage… with a focus on industrial and commercial properties" — rated LOW
+priority**, the plan's bottom tier ("much lower GHG reduction or climate risk
+reduction impacts" or "not favored (or… disfavored) by stakeholder groups").
+
+This is the policy finding, and it is not our inference — it is two of the
+county's own documents read side by side. It pairs exactly with ICPRB's finding
+that utility-supplied data centers "do not fall under existing consumptive use
+regulations and mitigation requirements."
+
+### 63.4 The county's risk framework structurally cannot see this
+
+AECOM §3 files **data centers under "Communications"**, alongside radio towers and
+cable systems. Communications scores **Low combined vulnerability in both 2050 and
+2075** — joint-lowest of eight asset categories.
+
+The framework is strictly one-directional: for each asset it asks *what climate
+threatens this*, never *what does this do to another asset*. So a data center is
+a low-vulnerability communications node, while the water supply it draws on is a
+separately-assessed high-sensitivity asset, and no part of the method connects
+them.
+
+That is the institutional gap this paper occupies, stated structurally rather
+than rhetorically: **the county has a water-supply risk assessment and a
+data-center inventory, and no instrument that joins them.** It is also why
+"reach beyond on-site use" is the right ask — the missing link is not data, it is
+a scope boundary.
+
+---
+
+### 64 The convention table — the central result, computed
+
+**Added 2026-08-03.** `convention_table.py` → `public/data/convention_table.json`.
+
+The paper's claim is that *which basin* bears a data center's electricity-related
+water is set by accounting convention rather than measurement. Testing it needs
+more than the two conventions the abstract compares. Six standard conventions
+exist for the same physical electricity:
+
+| # | convention | nuclear in mix | Lake Anna share of Scope 2 |
+|---|---|---:|---:|
+| 1 | Dominion utility-average (shipped default) | 25.0% | **43.32%** |
+| 2 | PJM RTO-wide average | 33.3% | **5.31%** |
+| 3 | eGRID SERC Virginia/Carolina — **the county's own basis** | 38.8% | *not computable* |
+| 4 | Market-based (PPA / VPPA / REC) | contractual | *not computable* |
+| 5 | Short-run marginal (PJM real-time, 2022) | 0.39% | **0.87%** |
+| 6 | Long-run marginal (JLARC/E3 capacity expansion) | — | *not computable* |
+
+**Across 3 computable conventions the share ranges
+0.87%–43.32% —
+a factor of 50, for identical physics.**
+
+#### 64.1 The geography trap, and why it nearly produced a wrong number
+
+The plant→basin map in this repo covers **Virginia plants only**. A first
+implementation applied the PJM-wide nuclear share (33.3%) directly to that map and
+returned **45.4%** for Lake Anna — *higher* than the Dominion convention, which
+inverts the expected direction. The error is that most PJM nuclear is in
+Pennsylvania, New Jersey, Illinois and Maryland, not at North Anna.
+
+The fix is to scale by Virginia's share of the convention's nuclear generation.
+Both sides are separately sourced: **32 TWh** (JLARC Rpt598 Appendix H, Virginia
+nuclear baseline, flat in every scenario) over **273,489 GWh** (PJM SOM Table 3-63,
+PJM nuclear 2023) = **11.7%**. Scaled, the PJM convention gives **5.31%**.
+
+For **eGRID SERC Virginia/Carolina no such split is sourceable** — the subregion
+spans VA + NC + SC and its 38.8% nuclear includes Duke's Carolina fleet, which no
+document in this corpus apportions. The direction is certain (Lake Anna's share
+*falls* below the Dominion figure, because the nuclear denominator gains
+out-of-state plants) but the magnitude is **declared non-computable rather than
+invented**. Harness check 22 fails if either the scaling is dropped or an unsourced
+split is supplied.
+
+#### 64.2 Two conventions that cannot be computed, and why they still matter
+
+**Market-based.** No dataset records which operators hold clean-energy contracts
+for which buildings. The county states the practice exists — CESMP p.26: *"some
+existing data centers in the county are already procuring 100% clean electricity
+for their operations"* — but not who or how much. For a 100%-clean buyer the share
+is ~0 by construction. Reported as a bound.
+
+**Long-run marginal.** Cited from JLARC's E3 capacity-expansion model, not
+recomputed. Virginia nuclear goes 32 → 56 TWh by 2040 under unconstrained demand
+and stays flat at 32 with no new data-center load: **data centers account for the
+entire projected increase, +24 TWh/yr.** The same tables attribute **+79 to +92 TWh
+of imports** to them, so roughly three-quarters of the incremental energy is
+generated outside Virginia altogether. **Mandatory caveat: E3's new nuclear is
+unsited and assumed unavailable until 2035 — presumably SMRs, not North Anna
+uprates. This quantifies long-run marginal *nuclear*, never long-run marginal
+*Lake Anna*.**
+
+---
+
+### 65 The entitlement pathway — the paper's second leg
+
+**Added 2026-08-03.** `entitlement_pathway.py` → `public/data/entitlement_pathway.json`.
+
+> **0 of 243 data-center buildings in Prince William County has a Special Use Permit as its planning case.**
+
+Every populated planning case is a **REZ** (92) or **PLN** (12). Not one SUP.
+139 buildings (57.2%) carry no planning case at all.
+172 of 243 (70.8%) sit inside the Data Center Opportunity Overlay District.
+
+The SUP is the county's **only discretionary review** — the instrument through
+which conditions attach to a specific proposed use. Inside the overlay the use is
+permitted **by right**; a SUP is triggered only by exceeding the by-right envelope
+(height or FAR), never by the use itself. **A data center built to 75 feet at
+0.5 FAR inside the overlay generates no SUP, no conditions, no staff report, and no
+water discussion of any kind.**
+
+This reframes every regulatory finding in this document. It is not that water
+review is done badly — §42, §63.3, §63.4 — it is that **the entitlement pathway
+never invokes one**.
+
+#### 65.1 And for part of the fleet there is no open approval to condition
+
+**32 buildings (13.2%) are entitled under pre-1990 approvals**, including
+**19 under `REZ1958-0021`** and one under `REZ1958-0034` — rezonings adopted in
+**1958**. Among them Microsoft Azure 3 (633,333 sq ft), still Pending. The status
+mix under REZ1958-0021 is 9 Planned, 6 Pending, 3 Under Construction, 1 Completed:
+**these are mostly still being built, today, under a 1958 approval.**
+
+An entitlement runs with the land. Where the approval predates the industry, no
+water condition could have been contemplated and none can be retrofitted. This is
+the answer to the obvious question — *why doesn't the county simply attach water
+conditions?* — for a meaningful share of the fleet, **it cannot**.
+
+#### 65.2 The price of water, in the county's own schedules
+
+From the Amazon Gainesville East staff report (SUP2023-00006), Level of Service table:
+
+| item | rate | total |
+|---|---|---:|
+| **Water Quality** | $75.00 / acre | **$4,390.50** |
+| Fire and Rescue | $0.61 / sq ft | $791,292.00 |
+
+**Fire and rescue is charged at 180.2× the water contribution; water is
+0.55% of total exactions.** Meanwhile the same conditions require a
+**licensed acoustical study of the cooling system twice per building** — before
+each building permit and again one month after each occupancy permit — and impose
+no condition whatsoever on how much water that cooling system consumes.
+
+Review fees run the same way: SUP application (Category I) **$17,209.06**, traffic
+impact study **$2,059.13**, **Prince William Water review $86.25** — traffic review
+costs **23.9×** what water review costs. Data centers sit in fee **Category I**,
+the county's *highest* environmental-hazard tier, alongside asphalt plants and
+HAZMAT storage. The county has not misclassified them as benign; it charges the top
+fee and still collects no water quantity.
+
+
+## 64. Derived-file staleness: why three green checks were not evidence
+
+A defect worth recording, because it is the kind that survives a green test suite.
+
+The pipeline is deliberately staged: the estimator writes `facility_profiles.json`, and
+a set of derived analyses (`growth_scenarios.py`, `evidence_ladder.py`,
+`pipeline_triangulation.py`, `basin_stress.py`, `seasonal_stress.py`, the two
+value-of-information scripts) read that file and write their own JSON. Each derived file
+caches the fleet aggregates it needs — the plug-in total, effective IT MW, annual Scope 1.
+
+Harness checks 12, 14 and 17 validated those files **against themselves**. Check 12, for
+instance, compared `calibration.model_today_total_mgd` with
+`calibration.actual_plug_in_total_mgd` — two fields stored side by side in the same file.
+That assertion is true whenever the file is internally coherent, which it always is on the
+run that produces it. It carries no information about whether the file still describes the
+current model.
+
+The consequence was concrete. The fit-out ramp (§62) moved the fleet from 49.6 to 46.2 MGD
+and from 6,468 to 6,031 effective IT MW. The derived files were not regenerated. Checks
+12, 14 and 17 stayed green for five days against pre-ramp data, and the deployed site
+served the pre-ramp numbers — including "8 of 243 hold NPDES permits," a figure the
+current code has never produced.
+
+**The fix.** A `_live_totals()` helper recomputes the aggregates from
+`facility_profiles.json`, and every check that reads a derived JSON now binds its cached
+headline figures back to it: total MGD within 0.5, effective MW within 25, annual Scope 1
+within 0.05. A stale file now fails rather than passing quietly.
+
+**Fault injection**, per the discipline in §39.2: each of the three pre-ramp files was
+restored in turn and the harness re-run. Each produced a FAIL on its own check and only
+its own check. Notably, in checks 14 and 17 *every original assertion still passed* —
+monotone tiers, empty tier 2, untuned cap — and only the new freshness binding caught the
+staleness. That is the measure of how little the original checks were testing.
+
+**The general lesson.** A check that reads one file and compares its fields to each other
+tests serialization, not science. Any derived artifact must be validated against the thing
+it was derived *from*. This is the same failure mode recorded in the occupancy-ramp check
+(§62), which initially tested self-consistency rather than the abstract's actual claims,
+and it reappeared here in three places — which suggests it is the default mistake, not an
+unlucky one.

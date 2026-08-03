@@ -13,8 +13,8 @@
    "draw_annual_mgd": 1.394,
    "draw_peak_day_mgd": 13.81,
    "completed_only_n": 50,
-   "completed_only_peak_day_mgd": 2.76,
-   "completed_only_pct_of_low_month_flow_PEAK": 20.9,
+   "completed_only_peak_day_mgd": 1.81,
+   "completed_only_pct_of_low_month_flow_PEAK": 13.7,
    "flow_annual_mean_mgd": 33.0,
    "flow_low_month": "Sep",
    "flow_low_month_mgd": 13.2,
@@ -54,8 +54,8 @@
    "draw_annual_mgd": 0.307,
    "draw_peak_day_mgd": 3.05,
    "completed_only_n": 4,
-   "completed_only_peak_day_mgd": 0.53,
-   "completed_only_pct_of_low_month_flow_PEAK": 1.5,
+   "completed_only_peak_day_mgd": 0.26,
+   "completed_only_pct_of_low_month_flow_PEAK": 0.7,
    "flow_annual_mean_mgd": 101.9,
    "flow_low_month": "Jul",
    "flow_low_month_mgd": 36.2,
@@ -114,5 +114,5 @@
  "data_gaps": [
   "POWELLS CREEK (gage 01657895 has ~2 years of record -- insufficient)"
  ],
- "headline": "Broad Run carries the county's data-center concentration (166 buildings, 50 built today). On an annual-average basis the on-site draw is only 4.22% of the basin's mean flow. But on an ICPRB peak summer day at FULL BUILDOUT it reaches 104.7% of the basin's lowest-month mean flow (95.6% at the downstream gage) -- i.e. of the same order as the entire low flow of the stream the buildings sit on, and in the month that flow is lowest (METHODOLOGY 31). Today's completed fleet is 20.9%. This is a scale comparison, not a withdrawal: the water is supplied from the Occoquan/Potomac system. The binding constraint is peak-day-on-low-flow, not the annual mean."
+ "headline": "Broad Run carries the county's data-center concentration (166 buildings, 50 built today). On an annual-average basis the on-site draw is only 4.22% of the basin's mean flow. But on an ICPRB peak summer day at FULL BUILDOUT it reaches 104.7% of the basin's lowest-month mean flow (95.6% at the downstream gage) -- i.e. of the same order as the entire low flow of the stream the buildings sit on, and in the month that flow is lowest (METHODOLOGY 31). Today's completed fleet is 13.7%. This is a scale comparison, not a withdrawal: the water is supplied from the Occoquan/Potomac system. The binding constraint is peak-day-on-low-flow, not the annual mean."
 }

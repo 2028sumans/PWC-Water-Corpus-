@@ -52,15 +52,29 @@ def main():
 === COUPLINGS -- if you edit one, check the other ===
 
   "consumptive" (opening)  <->  "under 3% of our estimate"
-      On the DELIVERED basis the on-site share of the 54 is 3.2%, not under
-      3% (2.4% consumptive). Drop "consumptive" and this must become
-      "under 4%". METHODOLOGY 53.
+      Since the fit-out ramp (METHODOLOGY 62) this holds on BOTH bases --
+      2.9% delivered, 2.2% consumptive. It used to hold only on the
+      consumptive basis (3.2% delivered), so this coupling is now slack
+      rather than binding. Keep "consumptive" anyway: it is what makes the
+      88% and the ICPRB comparison like-for-like.
 
-  "completed" (NOT "operating")  <->  the 0.8 utilization factor
+  "completed" (NOT "operating")  <->  the fit-out ramp
       BuildingStatus is a CONSTRUCTION status; all 54 are Completed/Finaled.
-      NO field in the dataset indicates energization, commissioning or IT
-      load. "Operating" turns an estimate of installed capacity into an
-      apparent measurement of live facilities. METHODOLOGY 57.1.
+      NO field indicates energization. Stronger than that: PWC's own building
+      policy grants the Certificate of Occupancy with unfitted floor area
+      permitted as Storage (S-1) and defers data-hall fit-out to a separate
+      Alteration/Repair permit. So a CO marks the START of fit-out. The model
+      now carries installed capacity to energized load on Dominion's
+      contractual 4-year ramp. "Operating" would turn an estimate of
+      installed capacity into an apparent measurement of live facilities.
+      METHODOLOGY 57.1, 62.
+
+  the ramp  <->  every share in the abstract
+      The ramp multiplies IT power and every scope is proportional to IT
+      power, so it moves VOLUMES and leaves SHARES untouched (verified,
+      harness 20 + validate_occupancy_ramp.py step 6). If anyone ever makes
+      it scope-specific, 88% / under 3% / >40% / under 2% all become live
+      again and must be rechecked. METHODOLOGY 62.3.
 
   "Whether a given watershed is implicated"  <->  destination is undetermined
       Marginal accounting establishes Lake Anna ~= 1%. It does NOT establish
@@ -83,8 +97,17 @@ def main():
 
 === NUMBERS -- RECOMPUTED, SEE audit_framings.py FOR FRAMINGS ===
 
-Scope 2 share, 54 completed   87.7% delivered / 88.5% consumptive -> "88%"
-On-site share, 54 completed    3.2% delivered /  2.4% consumptive -> "under 3%"
+Scope 2 share, 54 completed   88.0% delivered / 88.7% consumptive -> "88%"
+On-site share, 54 completed    2.9% delivered /  2.2% consumptive -> "under 3%"
+absolute volumes              54 occupied = 7.09 MGD (7.03 consumptive);
+                              all 243 = 46.19 (45.74). POST-RAMP. Pre-ramp
+                              these were 10.49 and 49.60 -- if anyone quotes
+                              the old numbers they are quoting installed
+                              capacity as if it were energized load.
+fleet level, cross-checked    54 occupied = 921 MW energized of 1,359 MW
+                              installed. Vintage-matched to 2024 this is
+                              0.93x JLARC's independent ~842 MW anchor
+                              (1.23x before the ramp). METHODOLOGY 62.2.
 >40% to Lake Anna             43% of Scope 2. Share of a consumption total,
                               so invariant to fleet size and basis.
 +/-60% uncertainty            tier-4 median (generic fitted curve, n=141).

@@ -113,64 +113,64 @@
   "definition": "normalized CDD demand / normalized Potomac flow; >1 = demand-heavy relative to supply that month"
  },
  "fleet_water_overlay": {
-  "annual_mean_total_mgd": 49.6,
+  "annual_mean_total_mgd": 46.2,
   "note": "baseload (flat) + cooling-variable (CDD-shaped); the cooling-variable share is swept because PWC's air/closed-loop dominant fleet has a modest direct-water seasonal amplitude, while its Scope-2 thermoelectric water is more summer-peaked.",
   "scenarios": {
    "cooling_var_share_15pct": {
     "monthly_mgd": {
-     "Jan": 42.2,
-     "Feb": 42.2,
-     "Mar": 42.2,
-     "Apr": 42.4,
-     "May": 47.8,
-     "Jun": 60.0,
-     "Jul": 71.3,
-     "Aug": 66.7,
-     "Sep": 52.8,
-     "Oct": 43.3,
-     "Nov": 42.2,
-     "Dec": 42.2
+     "Jan": 39.3,
+     "Feb": 39.3,
+     "Mar": 39.3,
+     "Apr": 39.5,
+     "May": 44.5,
+     "Jun": 55.9,
+     "Jul": 66.4,
+     "Aug": 62.1,
+     "Sep": 49.2,
+     "Oct": 40.4,
+     "Nov": 39.3,
+     "Dec": 39.3
     },
-    "summer_peak_mgd": 71.3,
-    "winter_trough_mgd": 42.2,
+    "summer_peak_mgd": 66.4,
+    "winter_trough_mgd": 39.3,
     "peak_to_trough_ratio": 1.69
    },
    "cooling_var_share_30pct": {
     "monthly_mgd": {
-     "Jan": 34.7,
-     "Feb": 34.7,
-     "Mar": 34.9,
-     "Apr": 35.2,
-     "May": 45.9,
-     "Jun": 70.4,
-     "Jul": 93.0,
-     "Aug": 83.8,
-     "Sep": 56.0,
-     "Oct": 37.1,
-     "Nov": 34.7,
-     "Dec": 34.7
+     "Jan": 32.3,
+     "Feb": 32.3,
+     "Mar": 32.5,
+     "Apr": 32.8,
+     "May": 42.8,
+     "Jun": 65.6,
+     "Jul": 86.6,
+     "Aug": 78.1,
+     "Sep": 52.2,
+     "Oct": 34.5,
+     "Nov": 32.3,
+     "Dec": 32.3
     },
-    "summer_peak_mgd": 93.0,
-    "winter_trough_mgd": 34.7,
+    "summer_peak_mgd": 86.6,
+    "winter_trough_mgd": 32.3,
     "peak_to_trough_ratio": 2.68
    },
    "cooling_var_share_45pct": {
     "monthly_mgd": {
-     "Jan": 27.3,
-     "Feb": 27.3,
-     "Mar": 27.5,
-     "Apr": 28.0,
-     "May": 44.1,
-     "Jun": 80.8,
-     "Jul": 114.7,
-     "Aug": 100.9,
-     "Sep": 59.2,
-     "Oct": 30.8,
-     "Nov": 27.3,
-     "Dec": 27.3
+     "Jan": 25.4,
+     "Feb": 25.4,
+     "Mar": 25.6,
+     "Apr": 26.1,
+     "May": 41.1,
+     "Jun": 75.3,
+     "Jul": 106.8,
+     "Aug": 94.0,
+     "Sep": 55.1,
+     "Oct": 28.7,
+     "Nov": 25.4,
+     "Dec": 25.4
     },
-    "summer_peak_mgd": 114.7,
-    "winter_trough_mgd": 27.3,
+    "summer_peak_mgd": 106.8,
+    "winter_trough_mgd": 25.4,
     "peak_to_trough_ratio": 4.21
    }
   }

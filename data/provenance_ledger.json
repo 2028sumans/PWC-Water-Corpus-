@@ -132,7 +132,7 @@
    },
    "source": "USGS Thermoelectric Water Use 2008-2020 (Virginia plants)",
    "derived_from": "data/water_raw/usgs_te_water_2008-2020_VA.csv via usgs_va_factors.py",
-   "note": "Computed (generation-weighted, pooled 2018-2020) from USGS plant-level data, not a verbatim quote; reproducible by re-running usgs_va_factors.py."
+   "note": "Computed (generation-weighted, pooled 2018-2020) from USGS plant-level data, not a verbatim quote; reproducible by re-running usgs_va_factors.py. \n\nMANDATORY CAVEAT ON THE NUCLEAR FIGURE (added 2026-08-03): 391 gal/MWh is a TWO-PLANT FLEET AVERAGE, not a plant intensity. North Anna alone runs 735.6-741.2 gal/MWh, stable across all 13 years 2008-2020; Surry consumes 0.00 because it is once-through saline on the tidal James. The fleet figure is 391 only because North Anna is ~53% of Virginia nuclear generation. Anyone who looks up North Anna directly and compares it to 391 will conclude the model is 2x wrong unless this is stated. It must therefore accompany the constant wherever the constant appears (METHODOLOGY 18, 45.2). \n\nINDEPENDENT VALIDATION (READING_LOG Part 31.3): pooling all 302 Virginia plant-years in the same USGS release gives nuclear 387.9 gal/MWh (bounds 302.6-473.2) and gas 191.5 (155.8-232.8) -- the shipped 391 and 196 land within 0.8% and 2.3% respectively, well inside the published uncertainty."
   },
   {
    "id": "scope3_fraction_5_15pct",
@@ -219,6 +219,160 @@
    "value": null,
    "source": "PJM SOM 2023 (fuel shares) + USGS annual plant data (intensities)",
    "note": "No marginal water-intensity dataset exists for PJM/Dominion (Cambium is carbon-only; METHODOLOGY 18 constraint B1). Two consequences (METHODOLOGY 55): (a) 'short-run' was INHERITED from PJM's marginal-resource statistic, which reports which units set the real-time price -- it was never a modelling choice, which is why it went undocumented until review; (b) marginal units are less efficient than fleet average (higher heat rate -> more cooling water per MWh), so average intensities likely UNDERSTATE marginal water. Affects the MAGNITUDE (165.7 gal/MWh), not the Lake Anna zero."
+  },
+  {
+   "id": "gs5_four_year_ramp",
+   "claim": "Large data-center loads ramp to contracted demand over 4 years; used as the fit-out ramp length",
+   "value": 4,
+   "units": "years",
+   "source": "Dominion Energy, GS-5 Large-Load Rate Class Report (May 2026)",
+   "source_pdf": "Dominion_GS-5_LargeLoad_RateClass.pdf",
+   "page": 6,
+   "section": "Dominion Energy's High-Load Customer Proposal",
+   "verbatim_quote": "an extended, 14-year contract term (inclusive of a four-year ramp period)"
+  },
+  {
+   "id": "pwc_co_granted_with_unfitted_area",
+   "claim": "A data-center Certificate of Occupancy is granted with unfitted floor area permitted as Storage (S-1); data-hall fit-out happens later under a separate Alteration/Repair permit. This is the mechanism the fit-out ramp models.",
+   "value": null,
+   "source": "Prince William County Development Services, Building Development Division, 'New Structure - Data Center Buildings', effective 2021-04-05",
+   "source_pdf": null,
+   "section": "Overview",
+   "type": "external_citation",
+   "source_file": "PP-NewStructure-DataCenterBuildings.json",
+   "note": "Source is held in the corpus as a JSON text extract (PP-NewStructure-DataCenterBuildings.json, page 2), not as a PDF, so the in-PDF quote verifier cannot reach it. Quote, verbatim from that extract: \"The building areas that are not intended for immediate use will be designed to meet the Storage (S-1) Use Group's minimum requirements.\" and \"After the Certificate of Occupancy is issued, an Alteration/Repair Building Permit will be issued to convert or 'fit-out' the unused Storage (S-1) Use Group and Business (B) Use Group areas.\" This is the mechanism the fit-out ramp models; the ramp LENGTH comes from gs5_four_year_ramp, which is PDF-verified."
+  },
+  {
+   "id": "jlarc_va_datacenter_mw_5050",
+   "claim": "Virginia data-center sites use ~5,050 MW (2024 utility peak-load forecasts). Chained with Loudoun ~= half the state and Loudoun ~= 3x Prince William, this implies ~842 MW for Prince William in 2024 -- the top-down anchor the fit-out ramp is validated against.",
+   "value": 5050,
+   "units": "MW",
+   "source": "JLARC, Data Centers in Virginia (Report 598, Dec 2024)",
+   "source_pdf": "Rpt598.pdf",
+   "page": 5,
+   "section": "Chapter 1: Overview of the Data Center Industry",
+   "verbatim_quote": "approximately 5,050 megawatts of power",
+   "pdf_page_in_extract": 23,
+   "note": "Printed page 5 = PDF page 23. pdftotext interleaves the marginal sidebar with the body column, so only the contiguous fragment is quoted; the full sentence reads 'In total, Virginia data center sites use approximately 5,050 megawatts of power (sidebar).'"
+  },
+  {
+   "id": "icprb_basin_power_and_floorspace",
+   "claim": "Potomac basin data centers: ~5,400 MW across ~56 million sq ft, implying 10,370 sqft/MW -- an independent cross-check on the 8,818 sqft/MW density bridge (agrees within 15%).",
+   "value": [
+    5400,
+    56000000
+   ],
+   "units": [
+    "MW",
+    "sqft"
+   ],
+   "source": "ICPRB, Data Centers and Water Use in the Potomac River Basin (March 2026)",
+   "source_pdf": "ICPRB.DataCentersandWaterUse.ICPRB_.March2026.pdf",
+   "page": 1,
+   "section": "FAQS -- How many data centers are in the Potomac basin?",
+   "verbatim_quote": "total power demand (estimated at about 5,400 MW) and total floor space (estimated at 56 million square feet) currently operating within the basin"
+  },
+  {
+   "id": "icprb_excludes_scope_2_3",
+   "claim": "ICPRB's Potomac assessment is explicitly limited to direct on-site consumption and names Scope 2 and 3 as out of scope. This is the source-side verification of the abstract's 'limited to Scope 1' claim -- and establishes that ICPRB published the scope framing in March 2026, so it must be cited rather than presented as novel.",
+   "value": null,
+   "source": "ICPRB, Data Centers and Water Use in the Potomac River Basin (March 2026)",
+   "source_pdf": "ICPRB.DataCentersandWaterUse.ICPRB_.March2026.pdf",
+   "page": 1,
+   "section": "FAQS -- How do data centers use water?",
+   "verbatim_quote": "While this study focuses on direct, on-site consumption, data centers also have an \"indirect\" water footprint (often referred to as Scope 2 and 3) through the water required to generate the electricity they consume and the water used in the lifecycle of their hardware."
+  },
+  {
+   "id": "icprb_regional_wup_800",
+   "claim": "Regional average water-use-per-power for existing basin data centers is 800 gal/MW/day with a 0.75 consumptive-use factor. Resolves the long-standing question of what the 800 constant represents: a regional fleet average, not a technology tier.",
+   "value": 800,
+   "units": "gal/MW/day",
+   "source": "ICPRB, Data Centers and Water Use in the Potomac River Basin (March 2026)",
+   "source_pdf": "ICPRB.DataCentersandWaterUse.ICPRB_.March2026.pdf",
+   "page": 2,
+   "section": "METHODOLOGY -- Current data center water use",
+   "verbatim_quote": "The estimated regional average WUP for all existing data centers in the basin is 800 gallons/day/MW with an assumed consumptive-use factor of 75%."
+  },
+  {
+   "id": "icprb_observed_monthly_factors_a32",
+   "claim": "CENTRAL monthly demand shape for on-site data-center water use: ICPRB's OBSERVED monthly factors (Jan 0.7 ... Jul 1.5, Aug 1.8 ... Dec 0.8; peak-to-trough 3.0x). Supersedes the CDD-proportional model used through 2026-08-02, which gave July 3.04x and peak-to-trough 10.1x -- roughly 70% too peaky in summer and less than half the observed winter floor.",
+   "value": {
+    "Jan": 0.7,
+    "Feb": 0.6,
+    "Mar": 0.6,
+    "Apr": 0.7,
+    "May": 0.9,
+    "Jun": 1.0,
+    "Jul": 1.5,
+    "Aug": 1.8,
+    "Sep": 1.5,
+    "Oct": 1.0,
+    "Nov": 0.9,
+    "Dec": 0.8
+   },
+   "source": "ICPRB 2025 WMA Water Supply Study, Appendix A.3, Table A.3-2",
+   "source_pdf": "2025_WMA_Water_Supply_Study_ICPRB_Dec-2025.pdf",
+   "section": "Appendix A.3, Table A.3-2: Monthly Factors for Seasonal Variation in Data Center Water Use",
+   "verbatim_quote": "Seasonal variation in data center water use is determined by applying monthly factors to the annual averages, based on observed usage patterns in Loudoun and Prince William Counties",
+   "note": "SOURCE-INTERNAL DISAGREEMENT, disclosed rather than resolved silently: ICPRB's March 2026 two-page fact sheet says summer monthly use 'can be close to three times the average annual demand', which matches the SUPERSEDED CDD model's 3.04x. The technical appendix (this entry) caps the observed monthly factor at 1.8. We follow the appendix because it is observed data rather than a summary sentence, and because 'three times' is almost certainly summer-versus-winter (1.8/0.6 = 3.0), not summer-versus-annual-average. The separate peak-DAY claim ('as much as 10 times') is unaffected. CORROBORATION: JLARC Rpt598 p.39 -- data centers 'do not currently participate in demand response programs' because 'energy use is driven by computing activity' -- an independent reason to expect a high, near-constant baseload (back-fitted b ~ 0.70-0.76, outside the old swept range of 0.10-0.50).",
+   "page": 230
+  },
+  {
+   "id": "pjm_rto_generation_mix",
+   "type": "external_data",
+   "claim": "PJM RTO-wide 2023 generation mix used as a location-based accounting convention",
+   "value": {
+    "nuclear": 0.333,
+    "natural_gas_cc": 0.443,
+    "coal": 0.147,
+    "renewable": 0.068,
+    "other": 0.009
+   },
+   "source": "Monitoring Analytics, 2023 State of the Market Report for PJM, Sec. 3, Table 3-63",
+   "source_pdf": "PJM_SOM_2023_sec3_energy_market.pdf",
+   "note": "PJM-wide 2023 generation: nuclear 273,488.6 GWh (33.3%), gas 363,660 (44.3%), coal 120,876 (14.7%), wind 28,937 (3.5%), solar 11,098 (1.4%), hydro 15,489 (1.9%). GEOGRAPHY WARNING: the plant->basin map in this repo is VIRGINIA-only. Applying this mix without scaling distributes a PJM-wide nuclear share across North Anna and Surry alone, which INVERTS the result (Lake Anna 45% instead of 5%). See pjm_va_share_of_nuclear."
+  },
+  {
+   "id": "pjm_va_share_of_nuclear",
+   "type": "derived",
+   "claim": "Virginia's share of PJM nuclear generation = 11.7%, used to scale the PJM-wide convention",
+   "value": 0.117,
+   "source": "JLARC Rpt598 Appendix H (VA nuclear 32 TWh baseline) / PJM SOM Table 3-63 (PJM nuclear 273,488.6 GWh, 2023)",
+   "derived_from": "32,000 GWh / 273,488.6 GWh",
+   "note": "Both numerator and denominator are separately sourced. Required because the plant->basin map covers Virginia only; without it the PJM-wide convention reports 45.41% for Lake Anna instead of 5.31%."
+  },
+  {
+   "id": "egrid_serc_vacar_mix",
+   "type": "external_data",
+   "claim": "eGRID SERC Virginia/Carolina resource mix -- THE COUNTY'S OWN GHG accounting basis",
+   "value": {
+    "nuclear": 0.388,
+    "natural_gas_cc": 0.381,
+    "coal": 0.134,
+    "renewable": 0.093,
+    "other": 0.004
+   },
+   "source": "Prince William County Community Energy and Sustainability Master Plan (Oct 2023), Appendix F.2; confirmed by End Note 23",
+   "source_pdf": "prince_william_cesmp_full.json",
+   "note": "2021 mix: coal 13.4%, oil 0.2%, gas 38.1%, other fossil 0.2%, nuclear 38.8%, hydro 1.9%, biomass 2.3%, wind 0.4%, solar 4.7%. This is the basis the county uses to measure progress against its own Board-adopted climate goals, which is why it belongs in the convention table. NOT COMPUTABLE for a Lake Anna share: the subregion spans VA + NC + SC and its nuclear includes Duke's Carolina fleet; no source in this corpus splits it. Direction is certain (share falls below the Dominion figure); magnitude is declared non-computable rather than invented."
+  },
+  {
+   "id": "jlarc_e3_longrun_nuclear_24twh",
+   "type": "external_data",
+   "claim": "Long-run marginal: data centers account for the entire projected increase in Virginia nuclear generation, +24 TWh/yr by 2040",
+   "value": 24,
+   "source": "JLARC, Data Centers in Virginia (Rpt598, Dec 2024), Appendix H, Tables H-4 / H-5 / H-6",
+   "source_pdf": "Rpt598.pdf",
+   "note": "Scenario 1 (unconstrained demand) puts VA nuclear at 56 TWh in 2040; Scenario 3 (no new data-center demand) holds it at the 32 TWh baseline, flat in every year. Difference = +24 TWh, i.e. ALL of it. Table 3-1 p.29 additionally attributes +79 to +92 TWh of IMPORTS to data centers by 2040, so roughly three-quarters of the incremental energy is generated outside Virginia entirely. MANDATORY CAVEAT: E3's new nuclear is UNSITED and assumed unavailable until 2035 -- presumably SMRs, NOT North Anna uprates. This quantifies long-run marginal NUCLEAR, not long-run marginal LAKE ANNA, and must never be presented as a Lake Anna share."
+  },
+  {
+   "id": "egrid_va_share_of_srvc_nuclear",
+   "type": "derived",
+   "claim": "Virginia's share of eGRID SERC Virginia/Carolina nuclear generation = 23.24%, used to scale the county's own accounting convention",
+   "value": 0.2324,
+   "source": "EPA eGRID2023 (egrid2023_data_rev2.xlsx, sheet PLNT23, released June 2025)",
+   "derived_from": "29,662,935 MWh Virginia nuclear / 127,621,001 MWh SRVC subregion nuclear; derivation vendored at data/egrid2023_srvc_nuclear.csv",
+   "note": "SRVC holds 9 nuclear plants: SC 55,622,340 MWh (43.6%) Oconee/Catawba/V C Summer/H B Robinson; NC 42,335,726 (33.2%) McGuire/Brunswick/Harris; VA 29,662,935 (23.2%) North Anna 15,828,266 + Surry 13,834,669. Required because the plant->basin map in this repo is Virginia-only: without the scaling, a SERC-wide nuclear share would be distributed across North Anna and Surry alone and INFLATE Lake Anna instead of deflating it. Scaled result 12.16%; unscaled 52.33%. INDEPENDENT CROSS-CHECK on egrid_serc_vacar_mix: eGRID2023 puts SRVC nuclear at 39.9% of subregion generation against the CESMP's 38.8% (2021 vintage) -- two different years, ~1 point apart."
   }
  ]
 }

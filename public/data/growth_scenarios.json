@@ -1,82 +1,82 @@
 {
  "framing": "Buildout scenarios (multiples of today's effective IT MW), not forecasts. TOTAL is Scope 1+2+3 (~87% off-site Scope 2); ON-SITE is Scope 1 only (the ICPRB-comparable quantity).",
  "baseline_today": {
-  "effective_it_mw": 6468,
-  "total_mgd": 49.6,
-  "onsite_s1_mgd": 1.76
+  "effective_it_mw": 6031,
+  "total_mgd": 46.2,
+  "onsite_s1_mgd": 1.64
  },
  "pipeline_mw_grid": 1970.0,
  "pipeline_mw_effective": 1642,
  "scenarios": {
   "today": {
-   "effective_it_mw": 6468,
+   "effective_it_mw": 6031,
    "grid_today": {
-    "scope1_onsite_mgd": 2.0,
-    "scope2_mgd": 42.04,
-    "total_mgd": 48.44
+    "scope1_onsite_mgd": 1.86,
+    "scope2_mgd": 39.2,
+    "total_mgd": 45.17
    }
   },
   "2030_31_pipeline": {
-   "effective_it_mw": 8110,
+   "effective_it_mw": 7673,
    "grid_today": {
-    "scope1_onsite_mgd": 2.51,
-    "scope2_mgd": 52.71,
-    "total_mgd": 60.73
+    "scope1_onsite_mgd": 2.37,
+    "scope2_mgd": 49.86,
+    "total_mgd": 57.46
    }
   },
   "2050_low": {
-   "effective_it_mw": 8110,
+   "effective_it_mw": 7673,
    "grid_today": {
-    "scope1_onsite_mgd": 2.51,
-    "scope2_mgd": 52.71,
-    "total_mgd": 60.73
+    "scope1_onsite_mgd": 2.37,
+    "scope2_mgd": 49.86,
+    "total_mgd": 57.46
    },
    "grid_decarbonized": {
-    "scope1_onsite_mgd": 2.51,
-    "scope2_mgd": 23.36,
-    "total_mgd": 28.45
+    "scope1_onsite_mgd": 2.37,
+    "scope2_mgd": 22.1,
+    "total_mgd": 26.92
    }
   },
   "2050_central": {
-   "effective_it_mw": 12937,
+   "effective_it_mw": 12063,
    "grid_today": {
-    "scope1_onsite_mgd": 4.0,
-    "scope2_mgd": 84.07,
-    "total_mgd": 96.88
+    "scope1_onsite_mgd": 3.73,
+    "scope2_mgd": 78.39,
+    "total_mgd": 90.33
    },
    "grid_decarbonized": {
-    "scope1_onsite_mgd": 4.0,
-    "scope2_mgd": 37.26,
-    "total_mgd": 45.38
+    "scope1_onsite_mgd": 3.73,
+    "scope2_mgd": 34.74,
+    "total_mgd": 42.31
    }
   },
   "2050_high": {
-   "effective_it_mw": 19406,
+   "effective_it_mw": 18094,
    "grid_today": {
-    "scope1_onsite_mgd": 6.0,
-    "scope2_mgd": 126.11,
-    "total_mgd": 145.32
+    "scope1_onsite_mgd": 5.59,
+    "scope2_mgd": 117.59,
+    "total_mgd": 135.5
    },
    "grid_decarbonized": {
-    "scope1_onsite_mgd": 6.0,
-    "scope2_mgd": 55.89,
-    "total_mgd": 68.07
+    "scope1_onsite_mgd": 5.59,
+    "scope2_mgd": 52.11,
+    "total_mgd": 63.47
    }
   }
  },
  "calibration": {
-  "model_today_total_mgd": 50.0,
-  "actual_plug_in_total_mgd": 49.6,
-  "actual_onsite_s1_mgd": 1.76
+  "model_today_total_mgd": 46.6,
+  "actual_plug_in_total_mgd": 46.2,
+  "actual_onsite_s1_mgd": 1.64
  },
  "icprb_cross_check_onsite": {
   "note": "ICPRB forecasts ON-SITE (Scope 1) consumptive use for the whole Washington Metro Area; PWC is a subset. Only our Scope 1 is comparable -- our TOTAL is ~87% Scope 2 (off-site power-plant water) that ICPRB's on-site number excludes. That our on-site is a fraction of the WMA total, while our total dwarfs it, IS the displacement thesis.",
-  "pwc_onsite_today_mgd": 1.76,
+  "pwc_onsite_today_mgd": 1.64,
   "icprb_wma_onsite_2025_mgd": 4.0,
-  "pwc_onsite_2050_central_mgd": 4.0,
+  "pwc_onsite_2050_central_mgd": 3.73,
   "icprb_wma_onsite_2050_mgd": 22.0,
-  "pwc_share_of_wma_onsite_today_pct": 44,
+  "pwc_share_of_wma_onsite_today_pct": 41,
   "consistent_direction": true
  },
- "headline": "Today ~50 MGD total (1.8 MGD on-site). The committed ~1970 MW pipeline lifts the total to ~61 MGD by 2030-31. By 2050 the total spans ~61 (pipeline only) to ~145 MGD (3x buildout) on today's grid -- but DECARBONIZING the grid cuts the central case from ~97 to ~45 MGD, a bigger lever than any facility measure because Scope 2 dominates. On-site Scope 1 rises to ~4 MGD, still a fraction of ICPRB's ~22 MGD WMA-wide on-site forecast (consistent)."
+ "headline": "Today ~46 MGD total (1.6 MGD on-site). The committed ~1970 MW pipeline lifts the total to ~57 MGD by 2030-31. By 2050 the total spans ~57 (pipeline only) to ~136 MGD (3x buildout) on today's grid -- but DECARBONIZING the grid cuts the central case from ~90 to ~42 MGD, a bigger lever than any facility measure because Scope 2 dominates. On-site Scope 1 rises to ~4 MGD, still a fraction of ICPRB's ~22 MGD WMA-wide on-site forecast (consistent)."
 }

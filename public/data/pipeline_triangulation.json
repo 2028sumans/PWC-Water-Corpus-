@@ -6,11 +6,11 @@
   "caution": "These are a stock, a bucketed mix, and an increment -- they should NOT be equal. The test is plausibility of relationship, not equality."
  },
  "this_model": {
-  "effective_it_mw_all": 6468,
-  "effective_it_mw_completed": 1358,
+  "effective_it_mw_all": 6031,
+  "effective_it_mw_completed": 921,
   "mean_pue": 1.235,
-  "grid_side_mw_all": 7990,
-  "grid_side_mw_completed": 1678,
+  "grid_side_mw_all": 7450,
+  "grid_side_mw_completed": 1138,
   "n_buildings": 243
  },
  "interconnection_fyi": {
@@ -26,20 +26,20 @@
   "in_service": "2027-2031"
  },
  "comparisons": {
-  "model_grid_mw_within_ifyi_band": false,
-  "model_grid_mw": 7990,
+  "model_grid_mw_within_ifyi_band": true,
+  "model_grid_mw": 7450,
   "ifyi_band_mw": [
    3445,
    7560
   ],
-  "teac_forward_pct_of_model_stock": 25,
+  "teac_forward_pct_of_model_stock": 26,
   "open_bucket_sensitivity": {
    "n_open_ended_sites": 8,
    "assumed_cap_mw": 500.0,
-   "cap_needed_for_model_to_fall_inside_mw": 554,
+   "cap_needed_for_model_to_fall_inside_mw": 486,
    "largest_single_campus_in_model_mw": 1315,
-   "interpretation": "The band's upper bound is set entirely by how the open-ended '250+ MW' bucket is capped. The model falls inside once that cap is ~554 MW -- far below the 1,315 MW the model estimates for the single largest campus. So the apparent exceedance is an artifact of an arbitrarily low cap, not evidence of disagreement. No cap was tuned to force a fit."
+   "interpretation": "The band's upper bound is set entirely by how the open-ended '250+ MW' bucket is capped. The model falls inside once that cap is ~486 MW -- far below the 1,315 MW the model estimates for the single largest campus. So the apparent exceedance is an artifact of an arbitrarily low cap, not evidence of disagreement. No cap was tuned to force a fit."
   }
  },
- "headline": "Bottom-up, the model puts the inventoried fleet at ~7,990 MW grid-side (6,468 effective IT MW across 243 buildings; ~1,678 MW built today). Independently, 27 operator portfolios registered on interconnection.fyi span ~3,445-7,560 MW under a 500 MW cap on the open-ended top bucket; raising that cap to ~554 MW (still far below the 1,315 MW largest campus the model itself estimates) brings the two into agreement -- so the sources are consistent within the granularity the public bands allow. Separately, PJM's utility filings commit ~1,970 MW of NEW delivery-point capacity for 2027-2031, ~25% of today's inventoried stock -- independent corroboration of the growth trajectory used in the 2050 scenarios (METHODOLOGY 37)."
+ "headline": "Bottom-up, the model puts the inventoried fleet at ~7,450 MW grid-side (6,031 effective IT MW across 243 buildings; ~1,138 MW built today). Independently, 27 operator portfolios registered on interconnection.fyi span ~3,445-7,560 MW under a 500 MW cap on the open-ended top bucket; raising that cap to ~486 MW (still far below the 1,315 MW largest campus the model itself estimates) brings the two into agreement -- so the sources are consistent within the granularity the public bands allow. Separately, PJM's utility filings commit ~1,970 MW of NEW delivery-point capacity for 2027-2031, ~26% of today's inventoried stock -- independent corroboration of the growth trajectory used in the 2050 scenarios (METHODOLOGY 37)."
 }

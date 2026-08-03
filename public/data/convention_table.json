@@ -1,0 +1,141 @@
+{
+ "purpose": "Which basin bears a data center's electricity-related water, under each standard accounting convention. The spread IS the result: the physics is identical in every row.",
+ "fleet_basis": "all 243 buildings, full buildout",
+ "scope2_location_based_mgd": 40.36,
+ "scope2_marginal_based_mgd": 31.31,
+ "conventions": {
+  "dominion_utility_average": {
+   "label": "Dominion utility-average (shipped default)",
+   "family": "location_based",
+   "computable": true,
+   "geography": "Dominion Energy Virginia generation fleet",
+   "source": "METHODOLOGY 18; ledger dominion_generation_mix",
+   "nuclear_share_of_mix_pct": 25.0,
+   "blended_intensity_gal_per_mwh": 225.6,
+   "scope2_mgd": 40.36,
+   "lake_anna_pct_of_scope2": 43.32,
+   "by_basin_mgd": {
+    "York (Lake Anna)": 17.482,
+    "James": 8.891,
+    "unresolved (purchased municipal water)": 6.806,
+    "Potomac": 3.318,
+    "Roanoke": 2.237,
+    "Tennessee/Clinch": 1.316,
+    "Rappahannock": 0.306
+   },
+   "unassigned_fuel_share": 0
+  },
+  "pjm_rto_average": {
+   "label": "PJM RTO-wide average",
+   "family": "location_based",
+   "computable": true,
+   "geography": "entire PJM Interconnection footprint (13 states + DC)",
+   "source": "Monitoring Analytics 2023 SOM Sec.3 Table 3-63 (2023 generation)",
+   "nuclear_share_of_mix_pct": 33.3,
+   "blended_intensity_gal_per_mwh": 286.7,
+   "scope2_mgd": 40.36,
+   "lake_anna_pct_of_scope2": 5.31,
+   "by_basin_mgd": {
+    "York (Lake Anna)": 18.327,
+    "Roanoke": 8.627,
+    "James": 5.345,
+    "unresolved (purchased municipal water)": 4.091,
+    "Potomac": 1.994,
+    "Rappahannock": 1.181,
+    "Tennessee/Clinch": 0.791
+   },
+   "unassigned_fuel_share": 0.009,
+   "geography_scaling": {
+    "va_share_of_convention_nuclear": 0.117,
+    "source": "JLARC Rpt598 Appendix H (VA nuclear 32 TWh baseline) over Monitoring Analytics 2023 SOM Table 3-63 (PJM nuclear 273,488.6 GWh, 2023)",
+    "unscaled_pct": 45.41,
+    "note": "Unscaled figure assumes every nuclear plant in the convention's geography is in Virginia, which is false and would invert the result."
+   }
+  },
+  "egrid_serc_vacar": {
+   "label": "eGRID SERC Virginia/Carolina (the county's own basis)",
+   "family": "location_based",
+   "computable": true,
+   "geography": "EPA eGRID SERC Virginia/Carolina subregion (VA + NC + SC)",
+   "source": "PWC CESMP Appendix F.2 (2021 mix), End Note 23; EPA eGRID",
+   "nuclear_share_of_mix_pct": 38.8,
+   "blended_intensity_gal_per_mwh": 289.9,
+   "scope2_mgd": 40.36,
+   "lake_anna_pct_of_scope2": 12.16,
+   "by_basin_mgd": {
+    "York (Lake Anna)": 21.119,
+    "Roanoke": 7.777,
+    "James": 4.546,
+    "unresolved (purchased municipal water)": 3.48,
+    "Potomac": 1.696,
+    "Rappahannock": 1.065,
+    "Tennessee/Clinch": 0.673
+   },
+   "unassigned_fuel_share": 0.004,
+   "geography_scaling": {
+    "va_share_of_convention_nuclear": 0.2324,
+    "source": "EPA eGRID2023 (egrid2023_data_rev2.xlsx, PLNT23), Virginia nuclear net generation 29,662,935 MWh over SRVC subregion nuclear 127,621,001 MWh; derivation vendored at data/egrid2023_srvc_nuclear.csv",
+    "unscaled_pct": 52.33,
+    "note": "Unscaled figure assumes every nuclear plant in the convention's geography is in Virginia, which is false and would invert the result."
+   }
+  },
+  "short_run_marginal": {
+   "label": "Short-run marginal (PJM real-time marginal fuel shares, 2022)",
+   "family": "marginal",
+   "computable": true,
+   "geography": "PJM real-time dispatch stack",
+   "source": "Monitoring Analytics 2023 SOM Sec.3 Table 3-69, published 2022 row. YEAR IS LOAD-BEARING: nuclear's marginal share runs 0.39-1.35% over 2019-2023, so Lake Anna moves 0.87% (2022) / 1.38% (2023) / 2.90% (2019). 'Under 2%' holds for 2022-23 and fails for 2019-21.",
+   "nuclear_share_of_mix_pct": 0.39,
+   "blended_intensity_gal_per_mwh": 175.1,
+   "scope2_mgd": 31.31,
+   "lake_anna_pct_of_scope2": 0.87,
+   "by_basin_mgd": {
+    "James": 9.453,
+    "Roanoke": 7.472,
+    "unresolved (purchased municipal water)": 7.236,
+    "Potomac": 3.527,
+    "Tennessee/Clinch": 1.4,
+    "Rappahannock": 1.023,
+    "York (Lake Anna)": 0.273
+   },
+   "unassigned_fuel_share": 0
+  },
+  "market_based": {
+   "label": "Market-based (PPA / VPPA / unbundled REC)",
+   "family": "market_based",
+   "computable": false,
+   "geography": "contractual, not geographic",
+   "lake_anna_pct_of_scope2": null,
+   "why_not_computable": "No dataset in this corpus, or in any public source located, records WHICH operators hold clean-energy contracts for WHICH buildings. The county states the practice exists -- CESMP p.26: 'some existing data centers in the county are already procuring 100% clean electricity for their operations', and Action E.4 notes 'Both Dominion and NOVEC offer 100% renewable electricity options' -- but not who or how much. For a buyer at 100% clean the market-based Lake Anna share is ~0 by construction; for a non-participant it is the location-based figure. Reported as a bound, not a number.",
+   "bound": "0% for 100%-clean contract holders; location-based otherwise",
+   "source": "PWC CESMP p.26 and Action E.4",
+   "note": "The GHG Protocol REQUIRES dual location- and market-based reporting for Scope 2 carbon. Water has no equivalent norm -- which is the paper's closing argument."
+  },
+  "long_run_marginal": {
+   "label": "Long-run marginal (capacity expansion)",
+   "family": "marginal",
+   "computable": false,
+   "geography": "Virginia + PJM imports",
+   "lake_anna_pct_of_scope2": null,
+   "why_not_computable": "This requires a capacity-expansion model, which this project does not have. JLARC commissioned one (Energy + Environmental Economics, E3) and published its output, so the figure is CITED rather than recomputed.",
+   "cited_result": {
+    "va_nuclear_twh_2040_unconstrained": 56,
+    "va_nuclear_twh_2040_no_new_datacenter": 32,
+    "datacenter_attributable_twh": 24,
+    "datacenter_attributable_imports_twh_2040": "79 to 92",
+    "reading": "Under E3's model data centers are responsible for the ENTIRE projected increase in Virginia nuclear generation (+24 TWh/yr by 2040 on a flat 32 TWh baseline) -- and simultaneously for +79 to +92 TWh of imports, meaning roughly three-quarters of the incremental energy is generated outside Virginia entirely."
+   },
+   "source": "JLARC Rpt598 (Dec 2024) Appendix H, Tables H-4 / H-5 / H-6; Table 3-1 p.29",
+   "MANDATORY_CAVEAT": "E3's new nuclear is UNSITED and assumed unavailable until 2035 -- presumably SMRs, NOT North Anna uprates. This quantifies long-run marginal NUCLEAR, not long-run marginal LAKE ANNA. It must not be presented as a Lake Anna share."
+  }
+ },
+ "lake_anna_share_range_pct": {
+  "min": 0.87,
+  "max": 43.32,
+  "spread_factor": 49.8
+ },
+ "n_computable": 4,
+ "n_documented_not_computable": 2,
+ "headline": "Across 4 computable standard conventions, Lake Anna's share of the same physical electricity-related water ranges from 0.9% to 43.3% -- a factor of 50. 2 further conventions are documented but not computable from this corpus: market-based (driven to ~0 by contract for participants) and long-run marginal (attributes the entire projected Virginia nuclear build to this load). Every row describes the same physical electricity.",
+ "the_ordering_is_the_point": "The computable conventions sort by the GEOGRAPHIC BREADTH of the accounting boundary, and Lake Anna's share falls monotonically as that boundary widens: Dominion's Virginia-only fleet 43.32%, the three-state eGRID SERC Virginia/Carolina subregion 12.16%, the thirteen-state PJM footprint 5.31%. The mechanism is simple -- a wider boundary admits more non-Virginia nuclear plants to share the load, and Virginia holds only 23.2% of SRVC nuclear and 11.7% of PJM nuclear. Short-run marginal (0.87%) sits lowest for a different reason entirely: it is not a boundary question at all, but a causal one -- nuclear is baseload and almost never the generator that responds to new demand. So three of the four differ only in where the line is drawn, and the fourth differs in what question is being asked."
+}

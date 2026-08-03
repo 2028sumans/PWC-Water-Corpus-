@@ -254,6 +254,97 @@ DOMINION_GENERATION_MIX = {
     "coal": 0.03,
 }
 
+# --- Two further LOCATION-BASED averages, added 2026-08-03 ------------------
+# The paper's thesis is that the accounting convention, not the physics, decides
+# which basin is implicated. Testing that requires more than one average. Neither
+# of these is a modelling preference: each is the convention some real institution
+# actually uses.
+#
+# 1. PJM RTO-WIDE AVERAGE. Monitoring Analytics 2023 SOM Sec.3 Table 3-63,
+#    PJM-wide 2023 generation: nuclear 273,489 GWh (33.3%), gas 363,660 (44.3%),
+#    coal 120,876 (14.7%), wind 28,937 (3.5%), solar 11,098 (1.4%),
+#    hydro 15,489 (1.9%). This is the right average for load served from the PJM
+#    market rather than from a single utility's fleet -- which matters here
+#    because NOVEC, a co-op serving part of this county, purchases wholesale
+#    (JLARC Rpt598 p.35) and owns no transmission (HIFLD).
+PJM_RTO_GENERATION_MIX = {
+    "natural_gas_cc": 0.443,
+    "nuclear": 0.333,
+    "coal": 0.147,
+    "renewable": 0.068,   # wind 3.5 + solar 1.4 + hydro 1.9
+    "other": 0.009,       # oil, municipal waste, other -- no water factor assigned
+}
+
+# 2. eGRID SERC VIRGINIA/CAROLINA. This is THE COUNTY'S OWN accounting basis:
+#    Prince William's Community Energy and Sustainability Master Plan does its
+#    GHG accounting on EPA eGRID data for the SERC Virginia/Carolina subregion
+#    (CESMP Appendix F.2, confirmed by End Note 23). 2021 resource mix:
+#    coal 13.4%, oil 0.2%, gas 38.1%, other fossil 0.2%, NUCLEAR 38.8%,
+#    hydro 1.9%, biomass 2.3%, wind 0.4%, solar 4.7%.
+#
+#    Note what this geography does: it spans Virginia AND the Carolinas, so its
+#    38.8% nuclear includes Duke's North Carolina fleet, not just North Anna and
+#    Surry. More nuclear in total, spread over more plants in two states -- so a
+#    LARGER nuclear share but a SMALLER Lake Anna share. That divergence is the
+#    point: the regulator's own convention gives a third distinct answer.
+EGRID_SERC_VACAR_MIX = {
+    "natural_gas_cc": 0.381,
+    "nuclear": 0.388,
+    "coal": 0.134,
+    "renewable": 0.093,   # hydro 1.9 + biomass 2.3 + wind 0.4 + solar 4.7
+    "other": 0.004,       # oil 0.2 + other fossil 0.2 -- no water factor assigned
+}
+
+# Registry consumed by basin_analysis / convention_table. Keys are stable ids.
+LOCATION_BASED_CONVENTIONS = {
+    "dominion_utility_average": {
+        "label": "Dominion utility-average (shipped default)",
+        "mix": DOMINION_GENERATION_MIX,
+        "geography": "Dominion Energy Virginia generation fleet",
+        "source": "METHODOLOGY 18; ledger dominion_generation_mix",
+    },
+    "pjm_rto_average": {
+        "label": "PJM RTO-wide average",
+        "mix": PJM_RTO_GENERATION_MIX,
+        "geography": "entire PJM Interconnection footprint (13 states + DC)",
+        "source": "Monitoring Analytics 2023 SOM Sec.3 Table 3-63 (2023 generation)",
+        # The plant->basin map in this repo covers VIRGINIA plants only. A
+        # PJM-wide nuclear share must NOT be distributed over North Anna and
+        # Surry alone -- most PJM nuclear is in PA, NJ, IL, MD. Scale by
+        # Virginia's share of PJM nuclear generation, which is sourceable on
+        # both sides: 32 TWh (JLARC Rpt598 App.H, VA baseline, flat in every
+        # scenario) / 273,489 GWh (SOM Table 3-63, PJM 2023 nuclear) = 11.7%.
+        "va_share_of_nuclear": 32_000 / 273_488.6,
+        "va_share_source": ("JLARC Rpt598 Appendix H (VA nuclear 32 TWh baseline) over "
+                            "Monitoring Analytics 2023 SOM Table 3-63 (PJM nuclear "
+                            "273,488.6 GWh, 2023)"),
+    },
+    "egrid_serc_vacar": {
+        "label": "eGRID SERC Virginia/Carolina (the county's own basis)",
+        "mix": EGRID_SERC_VACAR_MIX,
+        "geography": "EPA eGRID SERC Virginia/Carolina subregion (VA + NC + SC)",
+        "source": "PWC CESMP Appendix F.2 (2021 mix), End Note 23; EPA eGRID",
+        # RESOLVED 2026-08-03. Same geography problem as PJM, and now computed
+        # rather than declared: EPA eGRID publishes plant-level generation with a
+        # subregion tag, so Virginia's share of SRVC nuclear is directly
+        # calculable. eGRID2023 SRVC holds 9 nuclear plants, 127,621,001 MWh:
+        #     SC 55,622,340 (43.6%)  -- Oconee, Catawba, V C Summer, H B Robinson
+        #     NC 42,335,726 (33.2%)  -- McGuire, Brunswick, Harris
+        #     VA 29,662,935 (23.2%)  -- North Anna 15,828,266 + Surry 13,834,669
+        # Derivation vendored at data/egrid2023_srvc_nuclear.csv so the 21 MB
+        # source workbook need not be.
+        #
+        # Cross-check on the mix constant above: eGRID2023 puts SRVC nuclear at
+        # 39.9% of subregion generation against the CESMP's 38.8% (2021 vintage).
+        # Two independent years, ~1 point apart -- the mix is right.
+        "va_share_of_nuclear": 29_662_935 / 127_621_001,
+        "va_share_source": ("EPA eGRID2023 (egrid2023_data_rev2.xlsx, PLNT23), "
+                            "Virginia nuclear net generation 29,662,935 MWh over "
+                            "SRVC subregion nuclear 127,621,001 MWh; derivation "
+                            "vendored at data/egrid2023_srvc_nuclear.csv"),
+    },
+}
+
 # --- Marginal generation mix (the generator that answers an added MW) -------
 # The average mix above describes the grid's whole output. But a NEW data-centre
 # load is served at the MARGIN -- by whatever unit is next in the dispatch
@@ -264,8 +355,12 @@ DOMINION_GENERATION_MIX = {
 # resources." (2023: coal 9.1%, gas 83.1% -- carried as a sensitivity.) The
 # residual 14.8% is wind/solar/hydro/oil/other, which consume ~no cooling water.
 # Nuclear does not appear as a marginal resource -- it is must-run baseload.
+#   ^^^ THIS SENTENCE IS FALSE AND IS SUPERSEDED -- see the CORRECTED block below.
+#       Kept only so the error is legible. Nuclear IS a marginal resource in PJM
+#       (0.39-1.35% of real-time marginal resources, 2019-2023).
 #
-# ONE ASSUMPTION REMAINS: the SOM does not split marginal gas into combined-cycle
+# ONE ASSUMPTION REMAINS [ALSO SUPERSEDED -- the split is published; see below]:
+# the SOM does not split marginal gas into combined-cycle
 # vs simple-cycle, and their water intensities differ ~10x (213 vs ~20 gal/MWh).
 # We split the published 75.2% in the ratio 78:22 CC:CT, reflecting that CTs are
 # peakers marginal in far fewer hours. Flagged in the ledger as the residual
@@ -319,7 +414,7 @@ MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH = {
 MARGINAL_CONSUMPTION_GAL_PER_MWH = sum(
     PJM_MARGINAL_FUEL_MIX[f] * MARGINAL_CONSUMPTION_FACTORS_GAL_PER_MWH[f]
     for f in PJM_MARGINAL_FUEL_MIX
-)  # 165.7 gal/MWh -- close to the average because dropping nuclear's contribution
+)  # 175.1 gal/MWh on the published 2022 row (was 165.7 under the deleted 78:22 split)
    # roughly offsets the heavier gas weighting.
    #
    # WHAT THIS IS, PRECISELY (METHODOLOGY 55): marginal FUEL SHARES (PJM SOM,
@@ -560,6 +655,7 @@ def density_class(year_built, status=None):
 # leave-one-out CV -- replaces the former hand-set density bands. Its measured
 # LOO residual (x/1.28 at 1 sigma, x/1.51 at 90%) IS the fallback tier's
 # uncertainty; nothing about it is assumed.
+import datetime as _dt
 import json as _json
 import os as _os
 _PM_PATH = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "data", "power_model.json")
@@ -684,6 +780,70 @@ def effective_power_from_permit(site_generator_mw, gfa_share):
     return (round(base * PERMIT_FACTOR_CENTRAL, 1),
             round(base * PERMIT_FACTOR_LOW, 1),
             round(base * PERMIT_FACTOR_HIGH, 1))
+
+
+# ---------------------------------------------------------------------------
+# OCCUPANCY RAMP
+#
+# Every rung of the power ladder above answers "how much IT load can this
+# building hold", not "how much is it drawing". Those are different quantities
+# for a new building, and Prince William's own building policy is explicit
+# about why:
+#
+#   "The building areas that are not intended for immediate use will be
+#    designed to meet the Storage (S-1) Use Group's minimum requirements...
+#    After the Certificate of Occupancy is issued, an Alteration/Repair
+#    Building Permit will be issued to convert or 'fit-out' the unused
+#    Storage (S-1) Use Group and Business (B) Use Group areas."
+#       -- PWC Development Services, "New Structure - Data Center Buildings",
+#          effective 2021-04-05
+#
+# So a Certificate of Occupancy is granted while an unstated share of the floor
+# area is still permitted as empty storage. BuildingStatus = Completed/Finaled
+# therefore marks the START of fit-out, not the end of it. Applying a full IT
+# density to the whole assessed floor area of a freshly occupied building
+# overstates its load, and the overstatement decays as the halls fill.
+#
+# The ramp length is taken from Dominion's own contract structure for exactly
+# these customers: the GS-5 large-load tariff approved by the Virginia SCC runs
+# a 14-year term "inclusive of a FOUR-YEAR RAMP PERIOD" (Dominion Energy, GS-5
+# Large-Load Rate Class Report, May 2026). Dominion prices that ramp because
+# large loads do not arrive at contracted demand on day one.
+#
+# Central case is a linear ramp to full load over 4 years from the Certificate
+# of Occupancy. The interval spans 3-5 years, which widens the band for young
+# buildings -- correct, since those are the ones whose true load is least
+# knowable. The ramp multiplies effective IT MW and therefore flows through
+# every scope IDENTICALLY, so it moves absolute volumes and leaves every
+# reported share untouched.
+#
+# Buildings with no Certificate of Occupancy are NOT ramped (factor 1.0). The
+# 243-building figure is an explicit "if everything approved is built"
+# hypothetical, and that hypothetical is of a mature fleet.
+RAMP_YEARS_CENTRAL = 4.0
+RAMP_YEARS_FAST = 3.0   # -> higher load sooner, used for the upper bound
+RAMP_YEARS_SLOW = 5.0   # -> lower load for longer, used for the lower bound
+RAMP_SOURCE = (
+    "Dominion Energy GS-5 Large-Load Rate Class Report (May 2026): 14-year term "
+    "'inclusive of a four-year ramp period'. Mechanism: PWC Development Services "
+    "'New Structure - Data Center Buildings' (eff. 2021-04-05), which grants the "
+    "Certificate of Occupancy with unfitted area permitted as Storage (S-1) and "
+    "defers data-hall fit-out to a separate Alteration/Repair permit."
+)
+
+
+def occupancy_ramp(years_since_occupancy, ramp_years=RAMP_YEARS_CENTRAL):
+    """Fraction of installed IT capacity plausibly energized, 0.0-1.0.
+
+    Linear from the Certificate of Occupancy to full load at `ramp_years`.
+    Returns 1.0 when the age is unknown, so a missing date can only ever make
+    the estimate larger -- never silently smaller.
+    """
+    if years_since_occupancy is None:
+        return 1.0
+    if ramp_years <= 0:
+        return 1.0
+    return max(0.0, min(1.0, years_since_occupancy / ramp_years))
 
 
 # Interconnection-queue operator ranges. Retained ONLY as a cross-check --
@@ -1073,6 +1233,8 @@ def estimate_scope_water_footprint(
     permit_power=None,
     status=None,
     operator_density=None,
+    occupancy_date=None,
+    as_of=None,
 ):
     """
     Returns the Scope 1/2/3 estimate for one facility, or None if there is no
@@ -1082,6 +1244,9 @@ def estimate_scope_water_footprint(
     pue_cap          -- an annualized PUE ceiling from a binding proffer, if any
     cooling_disclosure -- {"air_or_closed_loop": bool, "source": str} from a
                         permit/proffer condition, if any
+    occupancy_date   -- datetime.date of the Certificate of Occupancy. Drives the
+                        fit-out ramp (see occupancy_ramp). None => no ramp.
+    as_of            -- datetime.date the estimate is made for; defaults to today.
     """
     # MW-source precedence. A permit-derived figure comes from ICPRB's own
     # input (air-permit generator capacity) run through their Equation 6-3, in
@@ -1128,6 +1293,54 @@ def estimate_scope_water_footprint(
     if eff is None:
         return None
     eff_mw, eff_lo, eff_hi = eff
+    installed_mw, installed_lo, installed_hi = eff_mw, eff_lo, eff_hi
+
+    # Fit-out ramp. Installed capacity -> energized load. Applied identically to
+    # the central value and both bounds, so every scope share is invariant to it
+    # and only absolute volumes move. The bounds use the fast/slow ramp lengths,
+    # which widens the interval for young buildings.
+    _as_of = as_of or _dt.date.today()
+    age_years = None
+    if occupancy_date is not None:
+        age_years = (_as_of - occupancy_date).days / 365.25
+    ramp_c = occupancy_ramp(age_years, RAMP_YEARS_CENTRAL)
+    ramp_lo = occupancy_ramp(age_years, RAMP_YEARS_SLOW)   # slower ramp -> less load
+    ramp_hi = occupancy_ramp(age_years, RAMP_YEARS_FAST)   # faster ramp -> more load
+    eff_mw = round(installed_mw * ramp_c, 2)
+    eff_lo = round(installed_lo * ramp_lo, 2)
+    eff_hi = round(installed_hi * ramp_hi, 2)
+
+    ramp_meta = {
+        "applied": occupancy_date is not None,
+        "occupancy_date": occupancy_date.isoformat() if occupancy_date else None,
+        "as_of": _as_of.isoformat(),
+        "years_since_occupancy": round(age_years, 2) if age_years is not None else None,
+        "ramp_years_central": RAMP_YEARS_CENTRAL,
+        "ramp_years_range": [RAMP_YEARS_FAST, RAMP_YEARS_SLOW],
+        "energized_fraction_central": round(ramp_c, 3),
+        "energized_fraction_range": [round(ramp_lo, 3), round(ramp_hi, 3)],
+        "installed_it_mw_central": installed_mw,
+        "installed_it_mw_range": [installed_lo, installed_hi],
+        "source": RAMP_SOURCE,
+        "note": (
+            (
+                f"Occupied {age_years:.1f} y ago; on a 4-year fit-out ramp about "
+                f"{ramp_c:.0%} of installed IT capacity is plausibly energized, so "
+                f"{installed_mw} MW installed is carried as {eff_mw} MW energized. "
+                f"A Certificate of Occupancy is granted with unfitted floor area "
+                f"permitted as Storage (S-1); it marks the start of fit-out, not the end."
+            )
+            if occupancy_date is not None and ramp_c < 1.0 else
+            (
+                f"Occupied {age_years:.1f} y ago, past the 4-year fit-out ramp: "
+                f"treated as fully energized."
+                if occupancy_date is not None else
+                "No Certificate of Occupancy date; NOT ramped (treated as fully "
+                "energized). For unbuilt buildings this is deliberate -- the "
+                "full-buildout scenario is a mature-fleet hypothetical."
+            )
+        ),
+    }
 
     operator_commitment = match_operator_commitment(name)
     operator_match = match_operator(name)
@@ -1159,10 +1372,13 @@ def estimate_scope_water_footprint(
     # Cross-check the GFA-derived power against the operator's interconnection
     # span. This can CONFIRM or FLAG, but never widen -- the operator figure is
     # portfolio-wide and less specific than this building's own floor area.
+    # NB: compared against INSTALLED capacity, not the ramped energized figure --
+    # interconnection-queue MW are contracted/installed quantities, so ramping one
+    # side of the comparison would manufacture a disagreement.
     xcheck = None
     if operator_match:
         op, (op_lo, op_hi) = operator_match
-        overlap = not (eff_hi < op_lo or eff_lo > op_hi)
+        overlap = not (installed_hi < op_lo or installed_lo > op_hi)
         xcheck = {
             "operator": op,
             "operator_mw_range": [op_lo, op_hi],
@@ -1184,6 +1400,9 @@ def estimate_scope_water_footprint(
         "power": {
             "effective_it_mw_range": [eff_lo, eff_hi],
             "effective_it_mw_central": eff_mw,
+            "installed_it_mw_central": installed_mw,
+            "installed_it_mw_range": [installed_lo, installed_hi],
+            "ramp": ramp_meta,
             "basis": power_basis,
             "evidence_tier": evidence_tier,
             "sqft_per_effective_mw": SQFT_PER_EFFECTIVE_MW,

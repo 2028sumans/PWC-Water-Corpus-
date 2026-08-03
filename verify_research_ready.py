@@ -26,7 +26,13 @@ Checks:
   16 exposure + gap        exposure/monitoring counts recomputed from profiles match published
   17 triangulation         forward-load sources agree within public granularity, cap left untuned
   18 seasonal x basin      binding condition is summer+Broad Run, amplified vs flat, sweep-robust
-  19 marginal-flip        York->0 robust to params; mix sourced; residual premises declared
+  19 marginal-flip         York marginal share non-zero and <2%; mix sourced; year named
+  20 occupancy ramp        fit-out ramp scoped to occupied buildings; level reconciles to JLARC
+  21 drought denominator   sweep is labelled an OBSERVED condition; dual-reporting claim present
+  22 convention table      >10x spread across computable conventions; broader geographies
+                           scaled-or-declared; long-run SMR caveat intact
+  23 entitlement pathway   ZERO buildings have a SUP (recomputed); by-right majority;
+                           pre-1990 entitlements still producing buildings
 
 Exit code 0 iff every check passes.
 """
@@ -57,6 +63,29 @@ def check(name, fn):
 
 def _profiles():
     return json.load(open(os.path.join(PUB, "facility_profiles.json")))
+
+
+def _live_totals():
+    """Fleet aggregates recomputed from facility_profiles.json — the live model.
+
+    The derived analyses (growth_scenarios, evidence_ladder,
+    pipeline_triangulation) each cache their own copy of these figures. A check
+    that compares such a file only against itself proves the file is internally
+    consistent and nothing more: it stays green while the estimator moves
+    underneath it. That is not hypothetical — the occupancy-ramp correction took
+    the fleet from 49.6 to 46.2 MGD and 6,468 to 6,031 effective MW, and checks
+    12, 14 and 17 all passed against the pre-ramp files for five days.
+
+    Every check that reads a derived JSON binds its headline figures back to
+    this, so a stale file fails instead of passing quietly.
+    """
+    swf = [b["scope_water_footprint"] for b in _profiles()["buildings"]
+           if b.get("scope_water_footprint")]
+    return {
+        "total_mgd": sum(s["total_mgd_central"] for s in swf),
+        "scope1_mgd": sum(s["scope1_onsite_cooling"]["mgd_central"] for s in swf),
+        "effective_it_mw": sum(s["power"]["effective_it_mw_central"] for s in swf),
+    }
 
 
 # 1 -------------------------------------------------------------------------
@@ -96,9 +125,9 @@ def c_headline():
     # recomputed vs documented, 0.2 MGD tolerance
     okmed = abs(p50 - h_med) <= 0.2
     okci = abs(p5 - h_lo) <= 0.3 and abs(p95 - h_hi) <= 0.3
-    okplug = abs(plug - 49.6) <= 0.3
+    okplug = abs(plug - 46.2) <= 0.3   # post-fit-out-ramp (METHODOLOGY 62)
     return (okmed and okci and okplug), (
-        f"recomputed plug-in {plug:.1f} (doc 49.6), MC p50 {p50:.1f}/CI [{p5:.1f},{p95:.1f}] "
+        f"recomputed plug-in {plug:.1f} (doc 46.2), MC p50 {p50:.1f}/CI [{p5:.1f},{p95:.1f}] "
         f"vs headline {h_med}/[{h_lo},{h_hi}] -> med:{okmed} ci:{okci} plug:{okplug}")
 
 
@@ -404,15 +433,23 @@ def c_growth_scenarios():
     beats today's grid (the paper's mitigation claim)."""
     g = json.load(open(os.path.join(PUB, "growth_scenarios.json")))
     cal = g["calibration"]
-    calib_ok = abs(cal["model_today_total_mgd"] - cal["actual_plug_in_total_mgd"]) <= 2.0
+    live = _live_totals()
+    # Calibrate the per-MW model against the LIVE plug-in total, not against the
+    # copy of it cached in this same file (see _live_totals).
+    calib_ok = abs(cal["model_today_total_mgd"] - live["total_mgd"]) <= 2.0
+    fresh_ok = (abs(cal["actual_plug_in_total_mgd"] - live["total_mgd"]) <= 0.5
+                and abs(g["baseline_today"]["effective_it_mw"] - live["effective_it_mw"]) <= 25)
     icprb = g["icprb_cross_check_onsite"]["consistent_direction"]
     c = g["scenarios"]["2050_central"]
     decarb_beats = c["grid_decarbonized"]["total_mgd"] < c["grid_today"]["total_mgd"]
-    ok = calib_ok and icprb and decarb_beats
-    return ok, (f"model today {cal['model_today_total_mgd']} vs actual "
-                f"{cal['actual_plug_in_total_mgd']} (calib={calib_ok}); ICPRB on-site "
-                f"consistent={icprb}; 2050 decarb {c['grid_decarbonized']['total_mgd']} < "
-                f"today-grid {c['grid_today']['total_mgd']} ={decarb_beats}")
+    ok = calib_ok and fresh_ok and icprb and decarb_beats
+    return ok, (f"model today {cal['model_today_total_mgd']} vs live plug-in "
+                f"{live['total_mgd']:.1f} (calib={calib_ok}); file fresh vs live "
+                f"({cal['actual_plug_in_total_mgd']} MGD / {g['baseline_today']['effective_it_mw']} MW "
+                f"vs {live['total_mgd']:.1f} / {live['effective_it_mw']:.0f})={fresh_ok}; "
+                f"ICPRB on-site consistent={icprb}; 2050 decarb "
+                f"{c['grid_decarbonized']['total_mgd']} < today-grid "
+                f"{c['grid_today']['total_mgd']} ={decarb_beats}")
 
 
 # 13 ------------------------------------------------------------------------
@@ -442,9 +479,16 @@ def c_evidence_ladder():
     tier2_empty = t["2"]["n_buildings"] == 0
     pk = e["peak_day"]["all_243_buildings"]["ratio"]
     peak_ok = 8.0 <= pk <= 12.0
-    ok = monotone and tier2_empty and peak_ok
+    # Bind the ladder to the live model: its annual Scope 1 base must still be
+    # the fleet's (see _live_totals), or the tiers describe a superseded run.
+    live = _live_totals()
+    fresh_ok = abs(e["peak_day"]["all_243_buildings"]["annual_avg_s1_mgd"]
+                   - live["scope1_mgd"]) <= 0.05
+    ok = monotone and tier2_empty and peak_ok and fresh_ok
     return ok, (f"tier1 ±{t1/2:.0f}% < tier3 ±{t3/2:.0f}% <= tier4 ±{t4/2:.0f}% (monotone={monotone}); "
-                f"tier2 empty={tier2_empty}; peak/annual={pk}x")
+                f"tier2 empty={tier2_empty}; peak/annual={pk}x; annual S1 base "
+                f"{e['peak_day']['all_243_buildings']['annual_avg_s1_mgd']} vs live "
+                f"{live['scope1_mgd']:.2f} MGD (fresh={fresh_ok})")
 
 
 # 15 ------------------------------------------------------------------------
@@ -502,30 +546,64 @@ def c_triangulation():
     honest = s["cap_needed_for_model_to_fall_inside_mw"] < s["largest_single_campus_in_model_mw"]
     untuned = s["assumed_cap_mw"] != s["cap_needed_for_model_to_fall_inside_mw"]
     fwd = 10 <= t["comparisons"]["teac_forward_pct_of_model_stock"] <= 60
-    ok = honest and untuned and fwd
+    # The whole triangulation is a statement about the model's stock, so that
+    # stock must still be the live one (see _live_totals).
+    live = _live_totals()
+    fresh_ok = abs(t["this_model"]["effective_it_mw_all"] - live["effective_it_mw"]) <= 25
+    ok = honest and untuned and fwd and fresh_ok
     return ok, (f"cap needed {s['cap_needed_for_model_to_fall_inside_mw']} MW < largest campus "
                 f"{s['largest_single_campus_in_model_mw']} MW (consistent={honest}); assumed cap "
                 f"left untuned={untuned}; TEAC forward "
-                f"{t['comparisons']['teac_forward_pct_of_model_stock']}% of stock")
+                f"{t['comparisons']['teac_forward_pct_of_model_stock']}% of stock; stock "
+                f"{t['this_model']['effective_it_mw_all']} vs live {live['effective_it_mw']:.0f} MW "
+                f"(fresh={fresh_ok})")
 
 
 # 18 ------------------------------------------------------------------------
 def c_seasonal_basin_surface():
-    """S2 surface: the binding condition is Broad Run in a summer month, the
-    crossed figure materially exceeds the flat annual one, and the finding
-    survives the baseload sweep (so it is not an artifact of the one free
-    parameter)."""
+    """S2 surface, CORRECTED 2026-08-03.
+
+    Bound to the substantive claim, not to self-consistency: the central monthly
+    shape must be ICPRB's OBSERVED Table A.3-2 series (peak/trough 3.0x), not the
+    superseded CDD-proportional model (peak/trough 10.1x, ~70% too peaky in
+    summer). Reverting to the CDD model as central must fail this check.
+    """
     s = json.load(open(os.path.join(PUB, "seasonal_basin_surface.json")))
     b = s["binding_condition"]
+
+    # 1. the central shape is the observed one, and matches ICPRB A.3-2 exactly
+    ICPRB_A32 = {"Jan": 0.7, "Feb": 0.6, "Mar": 0.6, "Apr": 0.7,
+                 "May": 0.9, "Jun": 1.0, "Jul": 1.5, "Aug": 1.8,
+                 "Sep": 1.5, "Oct": 1.0, "Nov": 0.9, "Dec": 0.8}
+    obs = s.get("observed_monthly_factors") or {}
+    matches_source = obs == ICPRB_A32
+    central_is_observed = all(
+        v.get("central_shape") == "observed_icprb_a32" for v in s["surfaces"].values())
+
+    # 2. peak/trough is the observed ~3x, NOT the superseded ~10x
+    ptt = s.get("observed_peak_to_trough")
+    ptt_ok = ptt is not None and 2.8 <= ptt <= 3.2
+
+    # 3. the observed series is normalized (mean 1.0 over 12 months)
+    normalized = abs(sum(obs.values()) - 12.0) < 1e-9 if obs else False
+
+    # 4. the binding condition is still a late-summer month in the fleet's basin
     summer = b["month"] in ("Jun", "Jul", "Aug", "Sep")
     flat = s["why_crossing_matters"]["annual_flat_pct_of_mean_flow"]
     amplified = flat is not None and b["pct_of_monthly_flow"] > 3 * flat
-    sweep = s["surfaces"][b["watershed"]]["baseload_sweep"]
-    robust = all(v["worst_month"] == b["month"] for v in sweep.values())
-    ok = summer and amplified and robust
-    return ok, (f"binding: {b['watershed']} in {b['month']} at {b['pct_of_monthly_flow']}% "
-                f"(flat annual {flat}%, amplified={amplified}); worst month stable across "
-                f"baseload sweep={robust}")
+
+    # 5. the superseded model is retained and labelled, so the fix stays auditable
+    sup = s.get("superseded_cdd_model") or {}
+    auditable = (sup.get("former_central_baseload_share") == 0.30
+                 and all("cdd_model_sensitivity" in v for v in s["surfaces"].values()))
+
+    ok = (matches_source and central_is_observed and ptt_ok and normalized
+          and summer and amplified and auditable)
+    return ok, (f"central shape=observed({central_is_observed}) matches ICPRB A.3-2"
+                f"({matches_source}) normalized({normalized}) peak/trough={ptt}"
+                f"(~3 not ~10: {ptt_ok}); binding {b['watershed']} in {b['month']} at "
+                f"{b['pct_of_monthly_flow']}% vs flat {flat}% (amplified={amplified}); "
+                f"superseded model retained={auditable}")
 
 
 
@@ -603,6 +681,294 @@ def c_marginal_flip_robust():
         f"ledger corrected={corrected}; abstract free of the false 0%={no_false_zero}")
 
 
+def c_occupancy_ramp():
+    """The fit-out ramp must reconcile the LEVEL against an outside anchor, and
+    must not touch any share.
+
+    Every other check in this harness tests distributional shape. This one tests
+    magnitude, which went untested until JLARC Ch.1 supplied a top-down number
+    derived from utility peak-load forecasts -- a completely different
+    measurement path from our floor-area ladder.
+
+    Guards against three specific regressions:
+      * the ramp silently disappearing (all buildings back at 100%)
+      * the ramp being applied to buildings that never reached occupancy, which
+        would conflate "not built" with "built but filling up"
+      * the ramp leaking into the reported shares, which would invalidate the
+        abstract's 88% / under-3% claims
+    """
+    import datetime
+    from indirect_water_footprint import RAMP_YEARS_CENTRAL, occupancy_ramp
+
+    prof = json.load(open(os.path.join(PUB, "facility_profiles.json")))["buildings"]
+    comp = [b for b in prof if b.get("status") in ("Completed", "Finaled")]
+    other = [b for b in prof if b.get("status") not in ("Completed", "Finaled")]
+
+    def ramp_of(b):
+        return b["scope_water_footprint"]["power"]["ramp"]
+
+    # applied to occupied buildings only
+    applied_comp = sum(1 for b in comp if ramp_of(b)["applied"])
+    applied_other = sum(1 for b in other if ramp_of(b)["applied"])
+    scoped = applied_comp == len(comp) and applied_other == 0
+
+    # the ramp is actually biting on recently-occupied buildings
+    on_ramp = sum(1 for b in comp
+                  if ramp_of(b)["energized_fraction_central"] < 1.0)
+    biting = on_ramp > 0
+
+    # installed >= energized, never the reverse
+    monotone = all(
+        b["scope_water_footprint"]["power"]["installed_it_mw_central"]
+        >= b["scope_water_footprint"]["power"]["effective_it_mw_central"] - 1e-9
+        for b in prof
+    )
+
+    # vintage-matched level check against the JLARC-derived anchor
+    JLARC_PWC_MW, AS_OF, PUE = 5050.0 * 0.5 / 3.0, datetime.date(2024, 7, 1), 1.25
+    inst = ener = 0.0
+    for b in comp:
+        r = ramp_of(b)
+        if not r.get("occupancy_date"):
+            continue
+        occ = datetime.date.fromisoformat(r["occupancy_date"])
+        if occ > AS_OF:
+            continue
+        mw = b["scope_water_footprint"]["power"]["installed_it_mw_central"]
+        inst += mw
+        ener += mw * occupancy_ramp((AS_OF - occ).days / 365.25, RAMP_YEARS_CENTRAL)
+    raw_ratio = inst * PUE / JLARC_PWC_MW
+    ramp_ratio = ener * PUE / JLARC_PWC_MW
+    reconciles = 0.70 <= ramp_ratio <= 1.40
+    improves = abs(ramp_ratio - 1.0) < abs(raw_ratio - 1.0)
+
+    # shares must be invariant
+    def shares(unramp):
+        s1 = s2 = s3 = 0.0
+        for b in comp:
+            sw = b["scope_water_footprint"]
+            f = 1.0
+            if unramp:
+                r = sw["power"]["ramp"]["energized_fraction_central"]
+                if r <= 0:
+                    continue
+                f = 1.0 / r
+            s1 += sw["scope1_onsite_cooling"]["mgd_central"] * f
+            s2 += sw["scope2_electricity"]["mgd_central"] * f
+            s3 += sw["scope3_embodied"]["mgd_central"] * f
+        t = s1 + s2 + s3
+        return (s2 / t, s1 / t) if t else (0, 0)
+    s2r, s1r = shares(False)
+    s2u, s1u = shares(True)
+    invariant = abs(s2r - s2u) < 5e-3 and abs(s1r - s1u) < 5e-3
+
+    # Invariance alone is too weak: scaling one scope uniformly across every
+    # building passes it (both sides of the comparison move together) while
+    # silently breaking the abstract. So ALSO bind the recomputed shares to what
+    # the abstract actually claims. This is the assertion with teeth.
+    s1c = sum(b["scope_water_footprint"]["scope1_onsite_cooling"]["consumptive_mgd_central"]
+              for b in comp)
+    tot_c = sum(b["scope_water_footprint"]["total_consumptive_mgd_central"] for b in comp)
+    s1_cons_share = s1c / tot_c if tot_c else 0
+    supports_88 = 0.870 <= s2r <= 0.890            # abstract says "88%"
+    supports_under3 = s1r < 0.030 and s1_cons_share < 0.030   # "under 3%", both bases
+    invariant = invariant and supports_88 and supports_under3
+
+    led = {e["id"]: e for e in json.load(
+        open(os.path.join(DATA, "provenance_ledger.json")))["entries"]}
+    # The ramp LENGTH and the LEVEL anchor must both be PDF-quote-verified. The
+    # county fit-out policy is held in the corpus only as a JSON text extract, so
+    # it cannot be quote-verified against a PDF; it must instead be explicitly
+    # typed and noted, which is the same standard c_provenance_ledger applies.
+    sourced = all(bool(led.get(k, {}).get("verbatim_quote")) for k in
+                  ("gs5_four_year_ramp", "jlarc_va_datacenter_mw_5050"))
+    mech = led.get("pwc_co_granted_with_unfitted_area", {})
+    sourced = sourced and mech.get("type") == "external_citation" and bool(mech.get("note"))
+
+    ok = all([scoped, biting, monotone, reconciles, improves, invariant, sourced])
+    return ok, (
+        f"ramp scoped to occupied buildings only ({applied_comp}/{len(comp)} completed, "
+        f"{applied_other} non-completed)={scoped}; {on_ramp} actively ramping; "
+        f"installed>=energized={monotone}; vintage-matched vs JLARC anchor "
+        f"{JLARC_PWC_MW:.0f} MW: unramped {raw_ratio:.2f}x -> ramped {ramp_ratio:.2f}x "
+        f"(reconciles={reconciles}, improves={improves}); shares invariant + still "
+        f"support the abstract (Scope2 {s2r*100:.2f}% vs unramped {s2u*100:.2f}%, "
+        f"on-site {s1r*100:.2f}% del / {s1_cons_share*100:.2f}% cons)={invariant}; "
+        f"ledger sourced={sourced}")
+
+
+def c_drought_denominator():
+    """The seasonal surface must carry a swept low-flow denominator, and the
+    abstract must make the sharpened dual-reporting claim.
+
+    Two regressions this guards:
+      * the drought sweep being dropped, which would let the historical low-flow
+        denominator pass as if it were stationary when the county's own
+        vulnerability assessment projects severe-drought months up 114-350%
+      * the abstract sliding back to the weak "two conventions disagree" claim
+        after End Note 17 supplied the strong one
+    """
+    d = json.load(open(os.path.join(PUB, "seasonal_basin_surface.json")))
+    surf = d["surfaces"]
+
+    have = [ws for ws, v in surf.items() if v.get("drought_denominator_sweep")]
+    present = len(have) == len(surf) and bool(surf)
+
+    # monotone: shrinking the denominator can only raise the ratio
+    monotone, worst_stable, spread = True, True, {}
+    for ws, v in surf.items():
+        sw = v.get("drought_denominator_sweep") or {}
+        pcts = [x["worst_pct_of_flow"] for x in sw.values()]
+        months = {x["worst_month"] for x in sw.values()}
+        if pcts != sorted(pcts):
+            monotone = False
+        if len(months) != 1:
+            worst_stable = False          # binding month must not move
+        if pcts:
+            spread[ws] = (pcts[0], pcts[-1])
+
+    # RE-BOUND 2026-08-03. The sweep used to be labelled "a sensitivity, NOT a
+    # projection". It is neither: the county is in the longest severe drought of
+    # its 132-year record, still open at the data cutoff, so the reduced-flow
+    # branches describe a CURRENT CONDITION. Require the source string to (a) rest
+    # on the OBSERVED record, (b) say so explicitly, (c) still disclaim being a
+    # rainfall-runoff model, and (d) mark AECOM as direction-only. Reverting to the
+    # old "sensitivity" framing, or dropping the observed basis, must fail.
+    def _src_ok(v):
+        s = (v.get("drought_denominator_source") or "")
+        return ("OBSERVED CONDITION" in s
+                and "not a hypothetical sensitivity" in s
+                and "PDSI" in s
+                and "still open at data cutoff" in s
+                and "not a rainfall-runoff projection" in s
+                and "direction only" in s)
+    sourced = all(_src_ok(v) for v in surf.values())
+
+    abstract = open(os.path.join(HERE, "ABSTRACT_AGU26.txt")).read()
+    strong = ("dual location- and market-based reporting" in abstract
+              and "no equivalent norm" in abstract
+              and "geographic" in abstract)
+    weak_gone = "two equally standard conventions" not in abstract
+
+    ok = all([present, monotone, worst_stable, sourced, strong, weak_gone])
+    return ok, (
+        f"drought denominator swept for {len(have)}/{len(surf)} basins "
+        f"(present={present}, monotone={monotone}, binding month stable={worst_stable}, "
+        f"sourced+caveated={sourced}); "
+        + "; ".join(f"{ws} {lo:.1f}%->{hi:.1f}%" for ws, (lo, hi) in spread.items())
+        + f"; abstract makes the dual-reporting claim={strong}, weak form removed={weak_gone}")
+
+
+# 23 ------------------------------------------------------------------------
+def c_convention_table():
+    """The paper's central result: which basin bears the electricity-related
+    water is set by CONVENTION, not measurement.
+
+    Bound to substantive claims, not self-consistency:
+      - the spread across computable conventions must be large (>10x), else the
+        thesis is not supported by our own numbers;
+      - the utility-average and short-run-marginal endpoints must still bracket
+        it (the abstract's two conventions);
+      - any convention whose geography is broader than the Virginia plant map
+        must EITHER carry a sourced VA-share scaling OR be declared
+        non-computable. Silently distributing a PJM-wide nuclear share across
+        North Anna and Surry inverts the result (45% instead of 5%) and must
+        fail this check;
+      - the long-run row must carry its SMR caveat so it cannot drift into a
+        Lake Anna claim.
+    """
+    import indirect_water_footprint as m
+    c = json.load(open(os.path.join(PUB, "convention_table.json")))
+    rows = c["conventions"]
+
+    computed = {k: v for k, v in rows.items() if v.get("computable")}
+    shares = {k: v["lake_anna_pct_of_scope2"] for k, v in computed.items()}
+    lo, hi = min(shares.values()), max(shares.values())
+    spread_ok = lo > 0 and (hi / lo) > 10
+
+    # endpoints are the abstract's own two conventions
+    brackets = (rows["dominion_utility_average"].get("lake_anna_pct_of_scope2") == hi
+                and rows["short_run_marginal"].get("lake_anna_pct_of_scope2") == lo)
+
+    # geography discipline: broader-than-Virginia conventions are handled honestly
+    geo_ok = True
+    for cid, spec in m.LOCATION_BASED_CONVENTIONS.items():
+        if "va_share_of_nuclear" not in spec:
+            continue                              # geography == Virginia, fine
+        r = rows[cid]
+        if spec["va_share_of_nuclear"] is None:
+            if r.get("computable") or not r.get("why_not_computable"):
+                geo_ok = False
+        else:
+            g = r.get("geography_scaling") or {}
+            if not g.get("source") or g.get("unscaled_pct", 0) <= r["lake_anna_pct_of_scope2"]:
+                geo_ok = False                    # scaling must actually reduce it
+
+    # the long-run row must keep its caveat
+    lr = rows.get("long_run_marginal", {})
+    caveat_ok = "SMR" in (lr.get("MANDATORY_CAVEAT") or "") and not lr.get("computable")
+
+    ok = spread_ok and brackets and geo_ok and caveat_ok
+    return ok, (f"{len(computed)} computable conventions span {lo:.2f}%-{hi:.2f}% "
+                f"(spread {hi/lo:.0f}x, >10x={spread_ok}); endpoints are "
+                f"utility-average/short-run-marginal={brackets}; broader-geography "
+                f"conventions scaled-or-declared={geo_ok}; long-run SMR caveat "
+                f"present={caveat_ok}")
+
+
+# 23 ------------------------------------------------------------------------
+def c_entitlement_pathway():
+    """The paper's second leg: the entitlement pathway never asks for water.
+
+    Bound to the substantive claims, recomputed from the county's own layer
+    rather than trusting the stored JSON:
+      - ZERO buildings have a SUP (the only discretionary review);
+      - a majority sit inside the DCOOD, where the use is by right;
+      - pre-1990 entitlements exist and are still producing buildings, so the
+        'just add conditions' remedy is unavailable for part of the fleet;
+      - the price and fee asymmetries are arithmetically consistent.
+    Recomputing means a stale or hand-edited JSON cannot pass.
+    """
+    import re as _re
+    from collections import Counter as _C
+    e = json.load(open(os.path.join(PUB, "entitlement_pathway.json")))
+    gj = json.load(open(os.path.join(RAW, "Data_Center_Buildings.geojson"),
+                        encoding="utf-8", errors="replace"))
+    feats = [f["properties"] for f in gj["features"]]
+
+    def _case(p):
+        c = str(p.get("PlanningCaseNumber") or "").strip()
+        return c if c and c.lower() not in ("none", "<null>") else None
+    cases = [c for c in (_case(p) for p in feats) if c]
+    pref = _C(_re.match(r"([A-Z]+)", c).group(1) for c in cases if _re.match(r"([A-Z]+)", c))
+    n_sup_recomputed = pref.get("SUP", 0)
+
+    zero_sup = (n_sup_recomputed == 0
+                and e["THE_FINDING"]["buildings_with_a_sup"] == 0)
+
+    dcood = _C(str(p.get("DCOOD")) for p in feats)
+    by_right = dcood.get("Yes", 0)
+    majority_by_right = by_right > len(feats) / 2
+    matches = e["by_right_eligibility"]["inside_dcood"] == by_right
+
+    def _yr(c):
+        m = _re.search(r"((?:19|20)\d{2})", c)
+        return int(m.group(1)) if m else None
+    pre1990 = sum(1 for c in cases if _yr(c) and _yr(c) < 1990)
+    old_alive = pre1990 > 0 and e["entitlement_vintage"]["pre_1990_buildings"] == pre1990
+
+    pa = e["price_asymmetry"]
+    ratio_ok = abs(pa["fire_and_rescue_contribution_usd"] / pa["water_quality_contribution_usd"]
+                   - pa["ratio_fire_to_water"]) < 0.5 and pa["ratio_fire_to_water"] > 100
+
+    ok = zero_sup and majority_by_right and matches and old_alive and ratio_ok
+    return ok, (f"SUPs recomputed from the county layer={n_sup_recomputed} (zero={zero_sup}); "
+                f"{by_right}/{len(feats)} inside DCOOD (majority={majority_by_right}, "
+                f"matches stored={matches}); pre-1990 entitlements={pre1990} "
+                f"(still producing buildings={old_alive}); fire:water exaction ratio "
+                f"{pa['ratio_fire_to_water']}x (consistent={ratio_ok})")
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -625,6 +991,10 @@ def main():
     check("17 forward-load triangulation", c_triangulation)
     check("18 seasonal x basin surface", c_seasonal_basin_surface)
     check("19 marginal-flip robustness", c_marginal_flip_robust)
+    check("20 occupancy ramp + level anchor", c_occupancy_ramp)
+    check("21 drought denominator + dual-reporting claim", c_drought_denominator)
+    check("22 convention table", c_convention_table)
+    check("23 entitlement pathway", c_entitlement_pathway)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

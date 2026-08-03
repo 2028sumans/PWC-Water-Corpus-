@@ -24,12 +24,12 @@
  },
  "regulatory_monitoring_gap": {
   "holds_own_npdes_permit": {
-   "n": 8,
-   "pct": 3
+   "n": 0,
+   "pct": 0
   },
   "no_npdes": {
-   "n": 235,
-   "pct": 97
+   "n": 243,
+   "pct": 100
   },
   "no_wqp_station_within_1mi": {
    "n": 154,
@@ -41,27 +41,27 @@
   },
   "compound_blind_spot": {
    "definition": "within 300 ft of a mapped stream AND no own NPDES permit AND no DEQ monitoring station within 1 mile",
-   "n": 112,
-   "pct": 46
+   "n": 118,
+   "pct": 49
   }
  },
  "by_watershed": {
   "BROAD RUN": {
    "n": 166,
    "near": 75,
-   "no_npdes": 159,
+   "no_npdes": 166,
    "no_deq": 166,
-   "s1": 1.394,
-   "peak": 13.81,
+   "s1": 1.298,
+   "peak": 12.86,
    "pct_near_stream": 45
   },
   "BULL RUN": {
    "n": 61,
    "near": 28,
-   "no_npdes": 60,
+   "no_npdes": 61,
    "no_deq": 61,
-   "s1": 0.307,
-   "peak": 3.05,
+   "s1": 0.279,
+   "peak": 2.77,
    "pct_near_stream": 46
   },
   "POWELLS CREEK": {
@@ -91,5 +91,5 @@
   },
   "note": "Research-grade community observations exist near most sites while official monitoring does not -- the citizen layer is denser than the regulatory one."
  },
- "headline": "The buildings sit a median 303 ft from a mapped stream (49% within 300 ft, closest 1 ft), yet 97% hold no NPDES discharge permit of their own and 100% have no VA DEQ monitoring station within a mile -- in fact NOT ONE of the 243 buildings does. 112 buildings (46%) are simultaneously stream-adjacent, unpermitted for discharge, and unmonitored. Proximity to water is high; proximity of oversight to the water is nil."
+ "headline": "The buildings sit a median 303 ft from a mapped stream (49% within 300 ft, closest 1 ft), yet 100% hold no NPDES discharge permit of their own and 100% have no VA DEQ monitoring station within a mile -- in fact NOT ONE of the 243 buildings does. 118 buildings (49%) are simultaneously stream-adjacent, unpermitted for discharge, and unmonitored. Proximity to water is high; proximity of oversight to the water is nil."
 }

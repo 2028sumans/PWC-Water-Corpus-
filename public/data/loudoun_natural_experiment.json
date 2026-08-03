@@ -1,0 +1,22 @@
+{
+ "purpose": "A natural experiment sitting unused in ICPRB's own table: every WMA water supplier is flat or declining except the one whose service area holds the world's largest data-center concentration.",
+ "daily_production_trend_2013_2023_pct_per_yr": {
+  "Loudoun Water": 2.27,
+  "Fairfax Water": 0.51,
+  "WSSC Water": -0.08,
+  "Washington Aqueduct": -0.34
+ },
+ "source": "ICPRB 2025 WMA Water Supply Study, Table 4-1 (long-term trend in daily production)",
+ "corroboration_employee_unit_use_gpd_2023": {
+  "Loudoun": 48.8,
+  "Dale City (VAWC)": 66.2,
+  "WSSC": 41.5,
+  "DC Water": 39.5,
+  "Prince William": 36.9,
+  "Fairfax retail": 29.0,
+  "Vienna": 23.0
+ },
+ "corroboration_note": "ICPRB records that Loudoun's employee unit use 'includes industrial, e.g., data centers', with a separate 'Reclaimed Data Centers' line reflecting potable use. The data-center signal is visible in the employee unit-use series.",
+ "caveat": "Prince William's own employee unit use FELL from 46.4 gpd (2014) to 36.9 (2023) while its data-center stock grew -- consistent with on-site use being small relative to commercial employment, which is this paper's Scope 1 finding. So the Loudoun signal reflects Loudoun's much larger and more water-cooled fleet, not a universal law. State it as suggestive, not causal.",
+ "statement": "Every WMA supplier is flat or declining except Loudoun Water, at +2.27%/yr -- the one serving the world's largest data-center concentration. Neither ICPRB nor this project has used it. Worth a figure."
+}

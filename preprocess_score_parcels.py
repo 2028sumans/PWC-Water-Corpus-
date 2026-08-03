@@ -263,13 +263,12 @@ t(f"  max DCs sharing one watershed: {int(parcels['n_dc_in_watershed'].max())}; 
 
 # -- 4. Hydrology proximity (nearest-distance) ----------------------------
 
-t("Loading stream / hydrology / springs / surface-temp / RPA layers...")
+t("Loading stream / hydrology / surface-temp / RPA layers...")
 stream = gpd.read_file(p("Stream.geojson")).to_crs("EPSG:5070")
 hydro = gpd.read_file(p("Hydrological_Features.geojson")).to_crs("EPSG:5070")
-springs = gpd.read_file(p("Springs_Groundwater_Layers.geojson")).to_crs("EPSG:5070")
 surftemp = gpd.read_file(p("SURFACE_WATER_TEMPERATURE.geojson")).to_crs("EPSG:5070")
 rpa = gpd.read_file(p("Resource_Protection_Areas_(RPA).geojson")).to_crs("EPSG:5070")
-t(f"  stream={len(stream)} hydro={len(hydro)} springs={len(springs)} surftemp={len(surftemp)} rpa={len(rpa)}")
+t(f"  stream={len(stream)} hydro={len(hydro)} surftemp={len(surftemp)} rpa={len(rpa)}")
 
 t("Computing distance to nearest stream (RPA buffer trigger ~100ft)...")
 parcels["d_stream_ft"] = nearest_distance_ft(parcels, stream)
@@ -294,27 +293,56 @@ if stream_cols:
 t("Computing distance to nearest hydrological feature...")
 parcels["d_hydro_ft"] = nearest_distance_ft(parcels, hydro)
 
-t("Computing distance to nearest spring/groundwater feature + its historical water chemistry...")
-parcels["d_spring_ft"] = nearest_distance_ft(parcels, springs)
-# Springs_Groundwater_Layers is a STATEWIDE VA DEQ ambient monitoring
-# dataset (2,916 points spanning the whole state; only ~2 fall inside PWC).
-# Nearest-neighbor distance is still geometrically valid regardless (it
-# naturally finds the closest point wherever it is), but the underlying
-# lab chemistry (pH, nitrate, specific conductance) is real, historical
-# DEQ data that was previously discarded — attach it as evidence, clearly
-# labeled by its (often old) sample date so it reads as "here's the last
-# documented reading," not a current condition.
-spring_val_cols = [c for c in ["PH", "SPCOND", "NO3NO2", "HARD", "COLLDATE"] if c in springs.columns]
-if spring_val_cols:
-    parc_pts_sp = gpd.GeoDataFrame({"_pidx": parcels.index}, geometry=parcels["centroid"].values, crs="EPSG:5070")
-    sp_nearest = gpd.sjoin_nearest(parc_pts_sp, springs[spring_val_cols + ["geometry"]], how="left", distance_col="_d")
-    sp_nearest = sp_nearest.drop_duplicates(subset="_pidx")
-    rename = {"PH": "spring_ph", "SPCOND": "spring_spcond", "NO3NO2": "spring_no3no2", "HARD": "spring_hardness", "COLLDATE": "spring_sample_date"}
-    for c in spring_val_cols:
-        vals = sp_nearest.set_index("_pidx")[c]
-        if c != "COLLDATE":
-            vals = pd.to_numeric(vals, errors="coerce").replace(-9999, None)
-        parcels[rename[c]] = parcels.index.map(vals)
+# Springs_Groundwater_Layers.geojson is deliberately NOT joined here — neither
+# its chemistry nor a distance-to-spring. Both were attached by an earlier pass
+# and have been removed.
+#
+# The layer is a statewide VA ambient groundwater-geochemistry archive (2,916
+# points, median sample date 2002, oldest 1928), and it is not merely "mostly
+# outside PWC" — it is a different hydrogeologic province:
+#
+#   GPROV    Valley and Ridge 1,648 · Blue Ridge 1,091 · Coastal Plain 110 ·
+#            Piedmont 48
+#   CNTYSDB  Clarke 651 · Page 559 · Rockingham 286 · Rappahannock 203 · Warren 193
+#   LITH     C-O-CARBONATES 467 · O-BEEKMANTOWN 341 · C-DOLOMITES 340
+#   ALTITUDE mean 1,578 ft (Prince William tops out near 640 ft)
+#
+# That is Shenandoah Valley carbonate karst. Prince William is Piedmont
+# crystalline/saprolite and Triassic-basin sediment. Hardness, specific
+# conductance and pH from a dolomite aquifer are not just uninformative about a
+# PWC parcel, they are biased high in a known direction, so labelling them "the
+# last documented reading" for that parcel is misleading rather than cautious.
+#
+# The join's actual behaviour is worse than the province mismatch suggests.
+# Measured against Parcel.geojson (159,181 parcels), nearest-neighbour never
+# reaches the karst — it collapses onto a single well:
+#
+#   158,790 parcels (99.8%) resolve to ONE point, the lone PWC well
+#           (GPROV PIEDMONT, LITH MPT), sampled 24 Jun 1980
+#       391 parcels  (0.2%) resolve to one Caroline County Coastal Plain point
+#   PH and SPCOND resolve to a non-null value for 0 parcels; NO3NO2 for 391,
+#           all of them the -0.01 below-detection sentinel (which the old code
+#           scrubbed -9999 but not -0.01, so it shipped as a nitrate reading)
+#   HARD    attaches 260 mg/L — that one 1980 number — to all 158,790
+#
+# So the shipped "chemistry" was a single 46-year-old hardness value broadcast
+# countywide as a per-parcel attribute, flanked by two permanently empty columns.
+#
+# Restricting the source to GPROV in ("PIEDMONT", "COASTAL PLAIN") was tested
+# and is a verified no-op: both points the join lands on already pass that
+# filter, so all 159,181 parcels keep an identical distance and an identical
+# hardness. Restriction cannot fix this; only removal can. Of the 158
+# Piedmont/Coastal Plain points statewide just 70 carry any of PH/SPCOND/HARD,
+# at a median 93 mi from the county, so there is no local subset to fall back to.
+#
+# d_spring_ft went with the chemistry. With 99.8% of parcels resolving to that
+# one 1980 well it is a radial coordinate around a single arbitrary point
+# (0.2-23.2 mi), not proximity to a monitored groundwater feature — and it read
+# as the latter in the facility dossier, where it was carried as water context.
+#
+# Nothing in this corpus supplies Piedmont groundwater chemistry for PWC at
+# parcel resolution. The honest output is no column. Do not re-add either
+# feature from this layer.
 
 t("Computing distance to nearest surface-water-temperature station + its warming trend...")
 parcels["d_surftemp_ft"] = nearest_distance_ft(parcels, surftemp)
@@ -798,10 +826,9 @@ out_cols = [
     "City", "ZipCode", "SubdivisionName", "zoning", "lrlu",
     "_inside_dc_campus", "_inside_dc_building", "dc_campus_name", "dc_building_name", "n_dc_buildings",
     "watershed_id", "watershed_name", "watershed_acres", "watershed_major_basin", "watershed_mgmt_plan_number", "n_dc_in_watershed", "n_dc_in_major_basin",
-    "d_stream_ft", "d_hydro_ft", "d_spring_ft", "d_surftemp_ft", "_rpa", "_wetland", "_in_tidal_flow_path",
+    "d_stream_ft", "d_hydro_ft", "d_surftemp_ft", "_rpa", "_wetland", "_in_tidal_flow_path",
     "stream_order", "stream_name", "tidal_class", "tidal_zone",
     "surftemp_trend", "surftemp_tau", "surftemp_theilsen_slope", "surftemp_pvalcovs", "surftemp_stream",
-    "spring_ph", "spring_spcond", "spring_no3no2", "spring_hardness", "spring_sample_date",
     "_dam", "dam_haz_class", "soil_cat", "hsg", "erosion_susceptibility", "soil_permeability", "land_cover",
     "sw_segments", "sw_structures", "sw_facilities",
     "n_wqp_stations_1mi", "n_deq_monitoring_1mi", "n_deq_gage_1mi", "nearest_benthic_n", "n_inat_1mi", "n_inat_research_1mi",
@@ -825,15 +852,12 @@ _cent = out.geometry.centroid
 out["cx"] = _cent.x.round(5)
 out["cy"] = _cent.y.round(5)
 out["acres_calc"] = out["acres_calc"].round(2)
-for c in ["d_stream_ft", "d_hydro_ft", "d_spring_ft", "d_surftemp_ft", "d_transmission_ft", "d_hv_transmission_ft"]:
+for c in ["d_stream_ft", "d_hydro_ft", "d_surftemp_ft", "d_transmission_ft", "d_hv_transmission_ft"]:
     if c in out.columns:
         out[c] = pd.to_numeric(out[c], errors="coerce").round(0)
 for c in ["surftemp_tau", "surftemp_theilsen_slope", "surftemp_pvalcovs", "erosion_susceptibility", "soil_permeability"]:
     if c in out.columns:
         out[c] = pd.to_numeric(out[c], errors="coerce").round(3)
-for c in ["spring_ph", "spring_spcond", "spring_no3no2", "spring_hardness"]:
-    if c in out.columns:
-        out[c] = pd.to_numeric(out[c], errors="coerce").round(2)
 
 out = out.rename(columns={
     "acres_calc": "acres",
@@ -864,11 +888,15 @@ for c in ["n_dc_buildings", "n_dc_in_watershed", "n_dc_in_major_basin", "sw_segm
 # Sort-bootstrap hints — a cheap Data Depth proxy (fraction of the key
 # scoring-relevant fields populated) and a neutral 50 for readiness (the
 # real Water Legibility Score is computed client-side by synthesizeSubScores.ts).
+# Dropping the two spring fields took this from 19 fields to 17 and raises every
+# parcel's conviction slightly. Both were constants, not signal: spring_ph was
+# null for 100% of parcels (a fixed drag on the numerator) and d_spring_ft was
+# non-null for 100% (a fixed lift), so each cancelled to noise in the ratio.
 DEPTH_FIELDS = [
-    "watershed_id", "d_stream_ft", "d_spring_ft", "d_hydro_ft", "soil_cat",
+    "watershed_id", "d_stream_ft", "d_hydro_ft", "soil_cat",
     "sw_segments", "sw_structures", "dam_haz_class", "has_npdes", "has_deq_permit",
     "n_wqp_stations_1mi", "n_inat_1mi", "phdi", "d_surftemp_ft",
-    "hsg", "erosion_susceptibility", "surftemp_trend", "spring_ph", "watershed_major_basin",
+    "hsg", "erosion_susceptibility", "surftemp_trend", "watershed_major_basin",
 ]
 present = out[[c for c in DEPTH_FIELDS if c in out.columns]].notna().sum(axis=1)
 out["conviction"] = ((present / len(DEPTH_FIELDS)) * 100).round(0).astype("int32")

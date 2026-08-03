@@ -45,7 +45,13 @@ RAG_DOCS = [
     "Dominion_GS-5_LargeLoad_RateClass.pdf",
     "LBNL_QueuedUp_2025.pdf",
     "Dominion_LargeLoad_SCC_PUR-2026-00011.pdf",
-    "EconBulletin_LaunchCost_2022.pdf",
+    # REMOVED 2026-08-03: "EconBulletin_LaunchCost_2022.pdf" -- Adilov et al. (2022),
+    # "An analysis of launch cost reductions for low Earth orbit satellites",
+    # Economics Bulletin 42(3):1561-1574. Per-kilogram satellite launch costs,
+    # 2000-2020. Nothing to do with water, data centers, Virginia or electricity;
+    # it was indexed by mistake and the assistant could retrieve satellite launch
+    # economics when answering questions about data-center water. No computed
+    # number depends on it. See READING_LOG Part 4 / 18.4.
     "prince_william_cesmp_full.json",
     "Res No 20-773 Climate Mitigation and Resiliency Goals.json",
     "FY2026 Application Package for Special Use Permits.pdf.json",

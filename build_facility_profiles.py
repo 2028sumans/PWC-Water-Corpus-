@@ -20,6 +20,7 @@ Two record types, one per row:
 
 Output: public/data/facility_profiles.json
 """
+import datetime
 import json
 import re
 import os
@@ -63,6 +64,41 @@ def clean(v):
     return v
 
 
+def _occupancy_date(props):
+    """Certificate-of-Occupancy date for a building, as a datetime.date.
+
+    Prefers OCCDate (epoch ms, the actual CO). Falls back to YearBuilt at
+    mid-year, which is what the county records when the CO date itself was
+    never keyed. Returns None if neither is present, in which case the
+    estimator applies no fit-out ramp.
+
+    Only buildings that have actually been occupied are eligible. The ramp
+    models fit-out AFTER a Certificate of Occupancy, so a building that has not
+    reached CO has nothing to ramp: in the present-day view it is not drawing
+    load at all, and in the full-buildout hypothetical it is assumed mature.
+    Ramping it would conflate "not built yet" with "built but still filling up".
+    """
+    status = (clean(props.get("BuildingStatus")) or "").strip().lower()
+    if status not in ("completed", "finaled"):
+        return None
+    ms = clean(props.get("OCCDate"))
+    if ms:
+        try:
+            return datetime.datetime.fromtimestamp(
+                float(ms) / 1000, datetime.timezone.utc
+            ).date()
+        except (TypeError, ValueError, OSError, OverflowError):
+            pass
+    yb = clean(props.get("YearBuilt"))
+    try:
+        yb = int(yb)
+    except (TypeError, ValueError):
+        return None
+    if not (1900 < yb < 2100):
+        return None
+    return datetime.date(yb, 7, 1)
+
+
 t("Loading parcel water/disclosure context (from preprocess_score_parcels.py output)...")
 with open(os.path.join(OUT_ROOT, "parcels_scored.json")) as f:
     parcels_scored = json.load(f)
@@ -80,7 +116,12 @@ t(f"  buildings={len(dc_buildings)} projects={len(dc_projects)} use_permits={len
 
 WATER_CONTEXT_FIELDS = [
     "watershed_name", "watershed_acres", "n_dc_in_watershed", "watershed_major_basin", "n_dc_in_major_basin",
-    "d_stream_ft", "stream_order", "stream_name", "d_hydro_ft", "d_spring_ft", "rpa", "wetland",
+    # No d_spring_ft: Springs_Groundwater_Layers is Shenandoah Valley karst and
+    # the nearest-neighbour join collapsed 99.8% of parcels onto a single 1980
+    # PWC well, making the distance a radius around that one point rather than
+    # groundwater-monitoring proximity. Dropped upstream in
+    # preprocess_score_parcels.py — see the comment block there.
+    "d_stream_ft", "stream_order", "stream_name", "d_hydro_ft", "rpa", "wetland",
     "in_tidal_flow_path", "tidal_class", "tidal_zone",
     "dam", "dam_haz_class", "soil_cat", "hsg", "erosion_susceptibility", "soil_permeability",
     "near_h2oquality_protected_land",
@@ -609,6 +650,7 @@ for _, b in dc_buildings.iterrows():
                 if _permit_power_index.get(clean(b.get("BuildingName")))
                 else _operator_density_index.get(_operator(b.get("BuildingName")))
             ),
+            occupancy_date=_occupancy_date(b),
         ),
     }
     building_profiles.append(profile)

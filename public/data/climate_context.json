@@ -34,6 +34,146 @@
    "n_months": 1576
   }
  },
+ "drought_return_periods": {
+  "record": {
+   "first_year": 1895,
+   "last_year": 2026,
+   "n_years": 132,
+   "n_months": 1576
+  },
+  "return_periods_full_record": {
+   "any_drought": {
+    "years_with_event": 109,
+    "p_any_year": 0.8258,
+    "return_period_years": 1.2
+   },
+   "moderate": {
+    "years_with_event": 66,
+    "p_any_year": 0.5,
+    "return_period_years": 2.0
+   },
+   "severe": {
+    "years_with_event": 34,
+    "p_any_year": 0.2576,
+    "return_period_years": 3.9
+   },
+   "extreme": {
+    "years_with_event": 16,
+    "p_any_year": 0.1212,
+    "return_period_years": 8.2
+   },
+   "pdsi_le_5": {
+    "years_with_event": 6,
+    "p_any_year": 0.0455,
+    "return_period_years": 22.0
+   },
+   "pdsi_le_6": {
+    "years_with_event": 3,
+    "p_any_year": 0.0227,
+    "return_period_years": 44.0
+   }
+  },
+  "return_periods_since_1976": {
+   "any_drought": {
+    "years_with_event": 45,
+    "p_any_year": 0.8824,
+    "return_period_years": 1.1
+   },
+   "moderate": {
+    "years_with_event": 35,
+    "p_any_year": 0.6863,
+    "return_period_years": 1.5
+   },
+   "severe": {
+    "years_with_event": 20,
+    "p_any_year": 0.3922,
+    "return_period_years": 2.5
+   },
+   "extreme": {
+    "years_with_event": 11,
+    "p_any_year": 0.2157,
+    "return_period_years": 4.6
+   },
+   "pdsi_le_5": {
+    "years_with_event": 4,
+    "p_any_year": 0.0784,
+    "return_period_years": 12.8
+   },
+   "pdsi_le_6": {
+    "years_with_event": 1,
+    "p_any_year": 0.0196,
+    "return_period_years": 51.0
+   }
+  },
+  "observed_months_per_year": {
+   "moderate": 2.19,
+   "severe": 1.04,
+   "extreme": 0.38
+  },
+  "aecom_implied_baseline_months_per_year": {
+   "severe": 0.25,
+   "extreme": 0.057,
+   "note": "Backed out of AECOM Table 7 itself: +0.289 severe months = +114% implies a 0.25 baseline; +0.114 extreme = +201% implies 0.057. Observed is 0.66 and 0.38 -- AECOM's baseline is 2.6x low for severe and 6.7x low for extreme."
+  },
+  "longest_severe_run": {
+   "months": 23,
+   "from": "202406",
+   "to": "202604",
+   "still_open_at_data_cutoff": true,
+   "note": "Longest unbroken run of severe-or-worse (PDSI <= -3) months in the record. If still_open, the run does not end -- the data does."
+  },
+  "severe_or_worse_by_epoch": {
+   "1896-1925": {
+    "severe_or_worse_months": 7,
+    "per_year": 0.23
+   },
+   "1926-1955": {
+    "severe_or_worse_months": 25,
+    "per_year": 0.83
+   },
+   "1956-1985": {
+    "severe_or_worse_months": 18,
+    "per_year": 0.6
+   },
+   "1986-2015": {
+    "severe_or_worse_months": 40,
+    "per_year": 1.33
+   }
+  },
+  "worst_years_by_min_monthly_pdsi": [
+   {
+    "year": 1931,
+    "min_monthly_pdsi": -6.96,
+    "severe_or_worse_months": 9
+   },
+   {
+    "year": 1930,
+    "min_monthly_pdsi": -6.54,
+    "severe_or_worse_months": 6
+   },
+   {
+    "year": 2025,
+    "min_monthly_pdsi": -6.13,
+    "severe_or_worse_months": 12
+   },
+   {
+    "year": 2024,
+    "min_monthly_pdsi": -5.46,
+    "severe_or_worse_months": 7
+   },
+   {
+    "year": 2026,
+    "min_monthly_pdsi": -5.3,
+    "severe_or_worse_months": 4
+   },
+   {
+    "year": 2008,
+    "min_monthly_pdsi": -5.22,
+    "severe_or_worse_months": 4
+   }
+  ],
+  "source": "NOAA/NCEI Climate at a Glance, Prince William County VA, monthly PDSI, 1895-2026 (data/water_raw/PDSI.json). Observed record, not a projection."
+ },
  "cooling_degree_days": {
   "annual_by_decade": {
    "1890s": 1011,

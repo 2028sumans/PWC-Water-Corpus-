@@ -1,0 +1,80 @@
+{
+ "purpose": "Broad Run is the one basin where four independent sources converge. It should be a named case in the paper, not a row in a basin table.",
+ "concentration": {
+  "buildings_in_basin": 166,
+  "buildings_total": 243,
+  "pct_of_fleet": 72.5,
+  "basin_acres": 45997,
+  "county_acres": 230709,
+  "pct_of_county_land": 19.9,
+  "concentration_factor": 3.64,
+  "comparison": {
+   "BULL RUN": {
+    "pct_fleet": 26.6,
+    "pct_land": 22.9,
+    "factor": 1.16
+   },
+   "QUANTICO CREEK": {
+    "pct_fleet": 0.9,
+    "pct_land": 11.1,
+    "factor": 0.08
+   }
+  },
+  "source": "Watersheds.geojson (county layer) x basin_stress.json building attribution",
+  "statement": "72.5% of the county's data centers sit on 19.9% of its land -- a 3.6x concentration. Bull Run, the LARGER watershed, is at parity. Every other basin is essentially empty."
+ },
+ "the_gage_problem": {
+  "gage": "Broad Run at Buckland",
+  "decommissioned": 1986,
+  "issue": "The flow denominator for the basin carrying 72.5% of the fleet comes from a gage decommissioned in 1986. It never observed any part of the 23-month severe drought now underway, and stopped forty years before the demand it is being used to assess.",
+  "consequence": "Both sides of the basin-stress ratio are anchored to different and mutually inconsistent periods: demand is indexed to a cooling-degree-day series that has risen 27-33% over the record, while supply is divided by a gage record that ended in 1986."
+ },
+ "warming": {
+  "station": "1ABRB002.15",
+  "theil_sen_slope_c_per_yr": 0.094,
+  "p_value": 0.03,
+  "n_obs": 111,
+  "period": "2002/2003-2022",
+  "implied_change_c": 1.9,
+  "second_station": {
+   "station": "1ABRU001.59",
+   "slope": 0.09,
+   "p": 0.09
+  },
+  "context": "Of 17 stations in the Prince William / Occoquan group, 15 have positive slopes, 1 is exactly 0.000 (Catoctin Creek 1ACAX004.57) and 1 is negative (Pohick Creek 1APOH005.36). A sign test on the 16 non-ties gives 15 of 16, two-tailed p = 0.0005. Broad Run 1ABRB002.15 is the ONLY station individually significant at p<0.05.",
+  "statewide": "Across all 413 Virginia stations only 49 (12%) are individually significant -- but 47 of those 49 are warming and 2 cooling. State the 12% honestly; the 47:2 split carries the inference.",
+  "source": "SURFACE_WATER_TEMPERATURE.geojson (VA DEQ Theil-Sen trend analysis)",
+  "sign_test": {
+   "positive": 15,
+   "negative": 1,
+   "exactly_zero": 1,
+   "n_excluding_ties": 16,
+   "two_tailed_p": 0.00052,
+   "CORRECTION": "An earlier draft claimed '16 of 17 positive, p ~ 0.0001'. Recounted from the source layer: 15 positive, not 16, and the correct two-tailed sign-test p is 0.0005, not 0.0001."
+  }
+ },
+ "binding_condition": {
+  "month": "Sep",
+  "pct_of_monthly_flow": 15.8,
+  "drought_sweep": {
+   "flow_x1.00": {
+    "worst_month": "Sep",
+    "worst_pct_of_flow": 15.8
+   },
+   "flow_x0.90": {
+    "worst_month": "Sep",
+    "worst_pct_of_flow": 17.6
+   },
+   "flow_x0.80": {
+    "worst_month": "Sep",
+    "worst_pct_of_flow": 19.8
+   },
+   "flow_x0.70": {
+    "worst_month": "Sep",
+    "worst_pct_of_flow": 22.6
+   }
+  },
+  "note": "Computed on the CORRECTED observed monthly shape. Under the superseded CDD model this read 28.3% in July; the binding month moved to September and the magnitude roughly halved when the shape was fixed."
+ },
+ "convergence": "Broad Run carries 72.5% of the fleet on 19.9% of the land; its flow denominator comes from a gage dead since 1986; it is the only county stream with a statistically significant warming trend; and it is in the worst drought of the 132-year instrumental record. Four independent sources, one basin, all pointing the same way."
+}

@@ -1,0 +1,38 @@
+{
+ "purpose": "Bound the buildout scenario with COUNTY-SOURCED entitlement figures and EMPIRICAL completion rates, replacing any assumed multiplier.",
+ "county_entitlement": {
+  "campuses": 51,
+  "planned_gfa_sqft": 85132982,
+  "remaining_gfa_sqft": 69095336,
+  "built_gfa_sqft": 16037646,
+  "pct_unbuilt": 81.2,
+  "source": "Data_Center_Projects.geojson, RemainingGFA field (county-maintained: Completed campuses correctly read 0)"
+ },
+ "long_range_plan_headroom": {
+  "industrial_polygons": 93,
+  "developable_acres": 2064,
+  "avg_nonres_gfa_sqft": 26669549,
+  "high_nonres_gfa_sqft": 40803626,
+  "source": "LRLU_Developable_Areas.geojson (county Long Range Land Use capacity model)",
+  "note": "The 20 industrial polygons flagged EnvironmentalResource=Yes carry exactly 0 developable acres -- the county zeroes capacity where environmental resources are mapped, upstream in the plan rather than at site review."
+ },
+ "empirical_completion_rates": {
+  "lbnl_capacity_pct": 13,
+  "lbnl_projects_pct": 19,
+  "lbnl_source": "LBNL Queued Up 2025: 2000-2019 interconnection requests reaching COD by end-2024",
+  "pjm_capacity_weighted_pct": 14.6,
+  "pjm_source": "LBNL Ix Queue Data File thru 2025, sheet 25: PJM 83,242 MW operational vs 486,990 MW withdrawn",
+  "MANDATORY_CAVEAT": "These are GENERATOR INTERCONNECTION completion rates, not data-center construction rates. They are the only empirical base rates available for 'most approved things do not get built' and must be labelled as analogous, not equivalent."
+ },
+ "model_totals_mgd": {
+  "completed_only": 7.09,
+  "full_buildout_all_243": 46.2,
+  "buildout_multiple": 6.5
+ },
+ "entitlements_are_long_lived": {
+  "example": "Amazon Wellington South is entitled under REZ1989-0069 (a 1989 rezoning)",
+  "pre_1990_buildings": 32,
+  "implication": "Unbuilt entitlement in this county should not be discounted as speculative. Approvals from 1958, 1969, 1985 and 1989 are still producing buildings today."
+ },
+ "headline": "81.2% of entitled data-center floor area in the county is unbuilt (69,095,336 of 85,132,982 sq ft), with a further 26.7-40.8M sq ft of industrial capacity in the county's long-range plan. The model's full-buildout total is 6.5x its completed-only total."
+}

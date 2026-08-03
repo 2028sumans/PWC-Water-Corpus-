@@ -1,0 +1,222 @@
+{
+ "purpose": "Whether the entitlement pathway ever asks how much water a data center will use. It does not, and this quantifies why.",
+ "n_buildings": 243,
+ "planning_case": {
+  "populated": 104,
+  "absent": 139,
+  "absent_pct": 57.2,
+  "by_type": {
+   "REZ": 92,
+   "PLN": 12
+  },
+  "case_type_meanings": {
+   "SUP": "Special Use Permit -- DISCRETIONARY; conditions can be attached",
+   "REZ": "Rezoning -- changes the district; conditions via proffers, often decades old",
+   "PLN": "Plan case",
+   "PFR": "Public Facilities Review",
+   "CPA": "Comprehensive Plan Amendment",
+   "PRA": "Proffer Amendment"
+  }
+ },
+ "THE_FINDING": {
+  "buildings_with_a_sup": 0,
+  "of_total": 243,
+  "statement": "0 of 243 data-center buildings in Prince William County has a Special Use Permit as its planning case. The SUP is the county's only discretionary review -- the instrument through which conditions are attached to a specific proposed use. It was never invoked.",
+  "mechanism": "Data centers are permitted BY RIGHT in the Data Center Opportunity Overlay District in the O(L), O(H), O(M), O(F), M-1, M-2 and M/T zoning districts, and in designated office or industrial land bays in PBD and PMD. A SUP is triggered only by exceeding the by-right envelope -- height or floor-area ratio -- not by the use itself. A data center built to 75 feet at 0.5 FAR inside the overlay generates no SUP, no conditions, no staff report, and no water discussion of any kind.",
+  "source": "PWC Planning Office staff report, SUP2023-00006 Gainesville East Data Center (Dec 2024), Comprehensive Plan Consistency Analysis; PWC Zoning Ordinance Sec. 32-509.02"
+ },
+ "by_right_eligibility": {
+  "inside_dcood": 172,
+  "outside_dcood": 71,
+  "inside_pct": 70.8
+ },
+ "building_status": {
+  "Planned": 120,
+  "Completed": 54,
+  "Pending": 36,
+  "Under Construction": 31,
+  "Under Review": 2
+ },
+ "entitlement_vintage": {
+  "by_year": {
+   "1958": 20,
+   "1969": 3,
+   "1985": 4,
+   "1987": 4,
+   "1989": 1,
+   "1990": 1,
+   "1994": 2,
+   "1996": 3,
+   "1998": 1,
+   "2004": 3,
+   "2007": 8,
+   "2008": 1,
+   "2017": 4,
+   "2018": 14,
+   "2019": 3,
+   "2020": 1,
+   "2022": 2,
+   "2023": 7,
+   "2024": 7,
+   "2025": 5,
+   "2026": 10
+  },
+  "pre_1990_buildings": 32,
+  "pre_1990_pct": 13.2,
+  "oldest_entitlements": [
+   {
+    "case": "REZ1958-0021",
+    "n_buildings": 19,
+    "year": 1958,
+    "status_mix": {
+     "Pending": 6,
+     "Under Construction": 3,
+     "Planned": 9,
+     "Completed": 1
+    },
+    "total_gfa": 9849019,
+    "examples": [
+     "Microsoft Azure 3",
+     "Amazon AWS IAD A",
+     "Amazon AWS IAD B",
+     "Digital Realty VA4"
+    ]
+   },
+   {
+    "case": "REZ1958-0034",
+    "n_buildings": 1,
+    "year": 1958,
+    "status_mix": {
+     "Planned": 1
+    },
+    "total_gfa": 311000,
+    "examples": [
+     "Hansen Farm North"
+    ]
+   },
+   {
+    "case": "REZ1969-0021",
+    "n_buildings": 3,
+    "year": 1969,
+    "status_mix": {
+     "Planned": 3
+    },
+    "total_gfa": 668265,
+    "examples": [
+     "Patriot Business Center",
+     "Century Park 2",
+     "Century Park 1"
+    ]
+   },
+   {
+    "case": "REZ1985-0048",
+    "n_buildings": 4,
+    "year": 1985,
+    "status_mix": {
+     "Planned": 4
+    },
+    "total_gfa": 943500,
+    "examples": [
+     "Manassas Tech Park North 1",
+     "Manassas Tech Park North 2",
+     "Redstone Tech Park North B",
+     "Manassas Tech Park II South"
+    ]
+   },
+   {
+    "case": "REZ1987-0021",
+    "n_buildings": 3,
+    "year": 1987,
+    "status_mix": {
+     "Planned": 3
+    },
+    "total_gfa": 1120991,
+    "examples": [
+     "B",
+     "C",
+     "A"
+    ]
+   },
+   {
+    "case": "REZ1987-0015",
+    "n_buildings": 1,
+    "year": 1987,
+    "status_mix": {
+     "Planned": 1
+    },
+    "total_gfa": 155610,
+    "examples": [
+     "Exeter Property Group"
+    ]
+   },
+   {
+    "case": "REZ1989-0038",
+    "n_buildings": 1,
+    "year": 1989,
+    "status_mix": {
+     "Planned": 1
+    },
+    "total_gfa": 460740,
+    "examples": [
+     "Manassas Data Center"
+    ]
+   }
+  ],
+  "why_it_matters": "An entitlement runs with the land. Where the approval predates the industry, no water condition could have been contemplated and none can now be retrofitted -- there is no open approval to condition. This is the answer to the obvious question 'why doesn't the county just attach water conditions?': for a substantial share of the fleet, it cannot."
+ },
+ "instrument_chain": [
+  {
+   "stage": "pre-submission",
+   "instrument": "Perennial Flow Determination",
+   "captures": "whether a perennial stream exists on the parcel"
+  },
+  {
+   "stage": "application form",
+   "instrument": "SUP Supplemental Information",
+   "captures": "NOTHING -- the form has no field for water use or power. It asks for maximum number of children and automotive bays."
+  },
+  {
+   "stage": "plans",
+   "instrument": "Environmental Constraints Analysis",
+   "captures": "wetlands, RPA, floodplain, soils, specimen trees"
+  },
+  {
+   "stage": "narrative",
+   "instrument": "Potable Water guideline",
+   "captures": "how water will be PROVIDED TO the site -- supply, not demand"
+  },
+  {
+   "stage": "narrative",
+   "instrument": "SB 549 impact identification",
+   "captures": "n/a -- residential rezonings only"
+  },
+  {
+   "stage": "review",
+   "instrument": "Prince William Water review ($86.25)",
+   "captures": "pipe diameter"
+  },
+  {
+   "stage": "approval",
+   "instrument": "proffers / SUP conditions",
+   "captures": "$75/acre water QUALITY; water QUANTITY unpriced"
+  }
+ ],
+ "price_asymmetry": {
+  "case": "SUP2023-00006, Amazon Data Services, Gainesville East",
+  "building_area_sqft": 1297200,
+  "water_quality_contribution_usd": 4390.5,
+  "fire_and_rescue_contribution_usd": 791292.0,
+  "ratio_fire_to_water": 180.2,
+  "water_share_of_total_exactions_pct": 0.55,
+  "note": "The county requires a licensed acoustical study of the cooling system TWICE per building -- before each building permit and again one month after each occupancy permit -- and imposes no condition whatsoever on how much water that same cooling system consumes.",
+  "source": "PWC staff report SUP2023-00006, Level of Service table, p.4"
+ },
+ "review_fee_asymmetry": {
+  "sup_application_data_center_category_I_usd": 17209.06,
+  "traffic_impact_study_first_submission_usd": 2059.13,
+  "prince_william_water_review_usd": 86.25,
+  "traffic_to_water_ratio": 23.9,
+  "note": "Data centers sit in fee Category I -- the county's HIGHEST environmental-hazard tier, alongside asphalt plants, HAZMAT storage and motor vehicle graveyards. The county has not misclassified them as benign; it charges the top fee and still collects no water quantity.",
+  "source": "PWC FY2026 Application Package for Special Use Permits (July 2025), fee schedule"
+ }
+}

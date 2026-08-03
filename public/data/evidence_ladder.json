@@ -5,7 +5,7 @@
    "1": {
     "label": "permit generator capacity (observed)",
     "n_buildings": 45,
-    "effective_it_mw": 1382,
+    "effective_it_mw": 1208,
     "ci_width_pct_median": 52.0,
     "ci_width_pct_p25": 50.0,
     "ci_width_pct_p75": 52.0,
@@ -14,16 +14,16 @@
    "3": {
     "label": "fitted GFA->MW, operator-calibrated (inferred)",
     "n_buildings": 57,
-    "effective_it_mw": 1745,
+    "effective_it_mw": 1566,
     "ci_width_pct_median": 114.0,
-    "ci_width_pct_p25": 111.0,
+    "ci_width_pct_p25": 110.0,
     "ci_width_pct_p75": 117.0,
     "ci_halfwidth_pct_median": 57.0
    },
    "4": {
     "label": "fitted GFA->MW, generic curve (inferred)",
     "n_buildings": 141,
-    "effective_it_mw": 3341,
+    "effective_it_mw": 3257,
     "ci_width_pct_median": 120.0,
     "ci_width_pct_p25": 113.0,
     "ci_width_pct_p75": 152.0,
@@ -41,13 +41,13 @@
  },
  "peak_day": {
   "all_243_buildings": {
-   "annual_avg_s1_mgd": 1.76,
-   "peak_day_s1_mgd": 17.46,
+   "annual_avg_s1_mgd": 1.64,
+   "peak_day_s1_mgd": 16.24,
    "ratio": 9.9
   },
   "completed_only": {
-   "annual_avg_s1_mgd": 0.33,
-   "peak_day_s1_mgd": 3.29,
+   "annual_avg_s1_mgd": 0.21,
+   "peak_day_s1_mgd": 2.06,
    "ratio": 9.9,
    "n": 54
   },

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="658.090047pt" height="399.3896pt" viewBox="0 0 658.090047 399.3896" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-08-03T15:20:53.350571</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 399.3896 
+L 658.090047 399.3896 
+L 658.090047 0 
+L 0 0 
+z
+" style="fill: #fcfcfb"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 161.771031 277.7696 
+L 574.691031 277.7696 
+L 574.691031 56.0096 
+L 161.771031 56.0096 
+z
+" style="fill: #fcfcfb"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 161.771031 277.7696 
+L 161.771031 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="m4288a529f1" d="M 0 0 
+L 0 2.5 
+" style="stroke: #898781; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#m4288a529f1" x="161.771031" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="161.771031" y="290.3616" transform="rotate(-0 161.771031 290.3616)">0%</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 241.178724 277.7696 
+L 241.178724 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m4288a529f1" x="241.178724" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="241.178724" y="290.3616" transform="rotate(-0 241.178724 290.3616)">10%</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 320.586416 277.7696 
+L 320.586416 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m4288a529f1" x="320.586416" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="320.586416" y="290.3616" transform="rotate(-0 320.586416 290.3616)">20%</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 399.994108 277.7696 
+L 399.994108 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m4288a529f1" x="399.994108" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="399.994108" y="290.3616" transform="rotate(-0 399.994108 290.3616)">30%</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 479.4018 277.7696 
+L 479.4018 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m4288a529f1" x="479.4018" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="479.4018" y="290.3616" transform="rotate(-0 479.4018 290.3616)">40%</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_11">
+      <path d="M 558.809493 277.7696 
+L 558.809493 56.0096 
+" clip-path="url(#p0260faffee)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m4288a529f1" x="558.809493" y="277.7696" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="558.809493" y="290.3616" transform="rotate(-0 558.809493 290.3616)">50%</text>
+     </g>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="368.231031" y="304.2641" transform="rotate(-0 368.231031 304.2641)">Share of the fleet's electricity-related water attributed to Lake Anna (York basin)</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_13">
+      <defs>
+       <path id="m45f1eef842" d="M 0 0 
+L -2.5 0 
+" style="stroke: #898781; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="75.253236" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(68.421469 74.322536)">Dominion utility-average</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(91.144437 84.105136)">(Virginia fleet only)</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="111.907782" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(47.265469 110.977082)">eGRID SERC Virginia/Carolina</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(12.96 120.759682)">(VA+NC+SC — the county's own basis)</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="148.562327" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(69.947437 147.631627)">PJM RTO-wide average</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(98.279719 157.414227)">(13 states + DC)</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="185.216873" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(105.930062 184.286173)">Market-based</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(86.221875 194.068773)">(PPA / VPPA / REC)</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="221.871418" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(90.211687 220.940718)">Long-run marginal</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(82.100094 230.723318)">(capacity expansion)</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m45f1eef842" x="161.771031" y="258.525964" style="fill: #898781; stroke: #898781; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(88.851 257.595264)">Short-run marginal</text>
+      <text style="font-size: 8.2px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #52514e" transform="translate(79.035344 267.377864)">(PJM real-time, 2022)</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 161.771031 194.380509 
+L 574.691031 194.380509 
+L 574.691031 176.053236 
+L 161.771031 176.053236 
+z
+" clip-path="url(#p0260faffee)" style="fill: #f2f1ed"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 161.771031 231.035055 
+L 574.691031 231.035055 
+L 574.691031 212.707782 
+L 161.771031 212.707782 
+z
+" clip-path="url(#p0260faffee)" style="fill: #f2f1ed"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 161.771031 277.7696 
+L 574.691031 277.7696 
+" style="fill: none; stroke: #c3c2b7; stroke-width: 0.6; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 161.771031 84.416873 
+L 505.765154 84.416873 
+L 505.765154 66.0896 
+L 161.771031 66.0896 
+z
+" clip-path="url(#p0260faffee)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 161.771031 121.071418 
+L 258.330785 121.071418 
+L 258.330785 102.744145 
+L 161.771031 102.744145 
+z
+" clip-path="url(#p0260faffee)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 161.771031 157.725964 
+L 203.936516 157.725964 
+L 203.936516 139.398691 
+L 161.771031 139.398691 
+z
+" clip-path="url(#p0260faffee)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 161.771031 267.6896 
+L 168.6795 267.6896 
+L 168.6795 249.362327 
+L 161.771031 249.362327 
+z
+" clip-path="url(#p0260faffee)" style="fill: #2a78d6"/>
+   </g>
+   <g id="text_14">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="161.771031" y="23.685" transform="rotate(-0 161.771031 23.685)">Which basin is charged is set by convention, not measurement</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #52514e" x="161.771031" y="44.1134" transform="rotate(-0 161.771031 44.1134)">The same physical electricity, attributed six standard ways — ordered by how wide the accounting boundary is drawn</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 6.9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(161.771031 330.352869)">Computable conventions span 0.87%–43.32% — a factor of 50. Fleet: all 243 buildings, full buildout.</text>
+    <text style="font-size: 6.9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(161.771031 343.214469)">The three averages differ only in where the boundary is drawn, and Lake Anna's share falls as it widens: Virginia holds 23.2% of eGRID SERC nuclear</text>
+    <text style="font-size: 6.9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(161.771031 356.076069)">(EPA eGRID2023) and 11.7% of PJM nuclear (JLARC App. H ÷ PJM SOM Table 3-63), so each convention is scaled by that share — unscaled, a Virginia-only</text>
+    <text style="font-size: 6.9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(161.771031 368.937669)">plant map returns 52.3% and 45.4% and inverts the result. Short-run marginal is lowest for a different reason: nuclear is baseload and rarely responds to</text>
+    <text style="font-size: 6.9px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(161.771031 381.799269)">new demand. Long-run marginal is cited from JLARC/E3, not recomputed; its new nuclear is unsited SMRs, not North Anna.</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="161.771031" y="26.0096" transform="rotate(-0 161.771031 26.0096)"> </text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="512.911847" y="78.474736" transform="rotate(-0 512.911847 78.474736)">43.32%</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="265.477477" y="115.129282" transform="rotate(-0 265.477477 115.129282)">12.16%</text>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="211.083208" y="151.783827" transform="rotate(-0 211.083208 151.783827)">5.31%</text>
+   </g>
+   <g id="text_21">
+    <text style="font-style: italic; font-size: 7.6px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #898781" x="169.7118" y="188.044073" transform="rotate(-0 169.7118 188.044073)">≈0 for 100%-clean contract holders</text>
+   </g>
+   <g id="text_22">
+    <text style="font-style: italic; font-size: 7.6px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #898781" x="169.7118" y="224.698618" transform="rotate(-0 169.7118 224.698618)">attributes the entire +24 TWh VA nuclear build</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="175.826193" y="261.747464" transform="rotate(-0 175.826193 261.747464)">0.87%</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_10">
+     <path d="M 168.971031 318.088 
+L 179.371031 318.088 
+L 179.371031 312.488 
+L 168.971031 312.488 
+z
+" style="fill: #2a78d6"/>
+    </g>
+    <g id="text_24">
+     <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start" x="183.371031" y="318.088" transform="rotate(-0 183.371031 318.088)">computed from the shipped model</text>
+    </g>
+    <g id="patch_11">
+     <path d="M 320.081031 318.088 
+L 330.481031 318.088 
+L 330.481031 312.488 
+L 320.081031 312.488 
+z
+" style="fill: #f2f1ed"/>
+    </g>
+    <g id="text_25">
+     <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start" x="334.481031" y="318.088" transform="rotate(-0 334.481031 318.088)">documented; not computable from this corpus</text>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p0260faffee">
+   <rect x="161.771031" y="56.0096" width="412.92" height="221.76"/>
+  </clipPath>
+ </defs>
+</svg>

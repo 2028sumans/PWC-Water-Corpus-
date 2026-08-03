@@ -1,0 +1,110 @@
+{
+ "purpose": "Package the external validations that already succeeded, and state the independence limits before a reviewer finds them.",
+ "usgs_thermoelectric_validation": {
+  "source": "USGS Thermoelectric Water Use model, Virginia plants 2008-2020",
+  "file": "data/usgs_te_water_2008-2020_VA.csv",
+  "n_plant_years": 302,
+  "independence": "Constructed by USGS independently of anything used to set this model's constants. A genuine out-of-sample check.",
+  "comparison": {
+   "nuclear": {
+    "empirical": 387.9,
+    "shipped": 391,
+    "error_pct": 0.8,
+    "bounds": [
+     302.6,
+     473.2
+    ]
+   },
+   "natural_gas_cc": {
+    "empirical": 191.5,
+    "shipped": 196,
+    "error_pct": 2.3,
+    "bounds": [
+     155.8,
+     232.8
+    ]
+   }
+  },
+  "all_fuels": {
+   "coal": {
+    "gal_per_mwh": 340.4,
+    "lower": 278.1,
+    "upper": 402.7,
+    "plant_years": 122
+   },
+   "multi-fuel": {
+    "gal_per_mwh": 110.6,
+    "lower": 87.1,
+    "upper": 134.0,
+    "plant_years": 30
+   },
+   "nuclear": {
+    "gal_per_mwh": 387.9,
+    "lower": 302.6,
+    "upper": 473.2,
+    "plant_years": 26
+   },
+   "gas": {
+    "gal_per_mwh": 191.5,
+    "lower": 155.8,
+    "upper": 232.8,
+    "plant_years": 68
+   },
+   "biomass": {
+    "gal_per_mwh": 763.9,
+    "lower": 626.4,
+    "upper": 901.5,
+    "plant_years": 55
+   },
+   "oil": {
+    "gal_per_mwh": 237.7,
+    "lower": 194.9,
+    "upper": 280.4,
+    "plant_years": 1
+   }
+  },
+  "MANDATORY_CAVEAT_ON_NUCLEAR": {
+   "north_anna_gal_per_mwh_range": [
+    735.6,
+    741.2
+   ],
+   "north_anna_years": 13,
+   "surry_gal_per_mwh": 0.0,
+   "explanation": "391 is a TWO-PLANT FLEET AVERAGE. North Anna alone runs 735.6-741.2 gal/MWh, stable across all 13 years; Surry consumes 0.00 (once-through saline, tidal James). The fleet figure is 391 only because North Anna is ~53% of Virginia nuclear generation. Anyone checking North Anna directly against 391 concludes the model is 2x wrong unless this is stated alongside the constant."
+  }
+ },
+ "other_external_checks": {
+  "jlarc_site_count": {
+   "jlarc_pwc_sites": 24,
+   "model_buildings_per_site": 2.25,
+   "statewide_buildings_per_site": 2.27,
+   "reading": "two independent counts of fleet structure agree"
+  },
+  "icprb_floor_area_density": {
+   "icprb_sqft_per_mw": 10370,
+   "model_sqft_per_mw": 8818,
+   "difference_pct": 15.0
+  },
+  "peak_day_factor": {
+   "icprb": 10.0,
+   "model": 9.9
+  },
+  "parcel_level_gfa": {
+   "gpin": "7497-41-7199",
+   "model_sqft": 943981,
+   "entitled_sqft": 1297200,
+   "captured_pct": 72.8
+  },
+  "jlarc_level_anchor": {
+   "jlarc_pwc_mw": 842,
+   "model_vintage_matched_ratio": 0.93,
+   "note": "the ONLY external check on the LEVEL; every other validation tests shape"
+  }
+ },
+ "INDEPENDENCE_LIMITS": {
+  "icprb_shares_our_power_input": "ICPRB is NOT an independent check on our power estimates. Both derive facility power from the JLARC/VADEQ air-permit database. ICPRB's own methodology says so: power was taken from 'a database developed by the Virginia Joint Legislative Audit and Review Commission (JLARC), using Virginia Department of Environmental Quality (VADEQ) air permits'. What IS independent is their calibration against utility-reported actual water use in Loudoun and Prince William service areas.",
+  "jlarc_validation_partly_in_sample": "JLARC's water-use distribution INCLUDES Prince William buildings (Rpt598 Appendix B: 2023 usage from utilities serving Fairfax, Henrico, Loudoun, Mecklenburg and Prince William counties). Our distributional validation against it is therefore partly in-sample and must be described as such.",
+  "wup_309_circularity": "The 309 gal/MW/day Prince William WUP is derived by ICPRB from Prince William Water's own reported use divided by JLARC permit capacity -- the same two inputs this model uses. Using it to validate this model is circular; it is an anchor, not a test.",
+  "novec_dominion_dual_service": "DOCUMENTED, not inferred: PFR2025-00012 (Stinger Substation) shows a single Amazon parcel carrying BOTH a Dominion switching station (max 110 ft) and a NOVEC substation (max 75 ft) on a shared 6.25-acre pad. Attributing 100% of Scope 2 to Dominion's generation mix is therefore wrong at FACILITY level, not merely county level. It cannot be quantified -- neither substation's capacity is given -- so this is a stated limitation with a documented direction of error, not a correction."
+ }
+}

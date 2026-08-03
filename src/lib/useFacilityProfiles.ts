@@ -40,7 +40,6 @@ export interface FacilityWaterContext {
   stream_order: number | null;
   stream_name: string | null;
   d_hydro_ft: number | null;
-  d_spring_ft: number | null;
   rpa: number | null;
   wetland: number | null;
   in_tidal_flow_path: number | null;
