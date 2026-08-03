@@ -969,6 +969,38 @@ def c_entitlement_pathway():
                 f"{pa['ratio_fire_to_water']}x (consistent={ratio_ok})")
 
 
+# 25 ------------------------------------------------------------------------
+def c_data_version():
+    """The client's cache-busting DATA_VERSION matches the shipped model.
+
+    vercel.json serves /data with stale-while-revalidate=604800, so a browser
+    may render a cached copy for up to a week after a deploy. src/lib/
+    dataVersion.ts appends a version query string to defeat that, which only
+    works if the constant is bumped whenever the data is. Forgetting to bump it
+    reproduces the exact failure this harness exists to prevent: a corrected
+    number that never reaches the page.
+    """
+    src = open(os.path.join(HERE, "src", "lib", "dataVersion.ts")).read()
+    m = re.search(r'DATA_VERSION\s*=\s*"([^"]+)"', src)
+    if not m:
+        return False, "DATA_VERSION not found in src/lib/dataVersion.ts"
+    declared = m.group(1)
+    actual = _profiles()["generated_at"]
+    ok = declared == actual
+    # Every hook that pulls from /data must route through versioned().
+    unversioned = []
+    for fn in ("useFacilityProfiles.ts", "useCountyAnalysis.ts", "usePolicyIndex.ts"):
+        body = open(os.path.join(HERE, "src", "lib", fn)).read()
+        for call in re.findall(r'fetch\(\s*([^)]*?/data/[^)]*?)\)', body, re.S):
+            if "versioned(" not in call:
+                unversioned.append(f"{fn}:{call.strip()[:40]}")
+    ok = ok and not unversioned
+    return ok, (f"DATA_VERSION {declared} vs model generated_at {actual} "
+                f"(match={declared == actual}); all /data fetches versioned="
+                f"{not unversioned}"
+                + (f" — unversioned: {unversioned}" if unversioned else ""))
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -995,6 +1027,7 @@ def main():
     check("21 drought denominator + dual-reporting claim", c_drought_denominator)
     check("22 convention table", c_convention_table)
     check("23 entitlement pathway", c_entitlement_pathway)
+    check("25 client data version", c_data_version)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

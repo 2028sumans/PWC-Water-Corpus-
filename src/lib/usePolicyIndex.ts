@@ -12,6 +12,7 @@
  * and (later) by the LLM RAG memo to surface citation links.
  */
 import { useEffect, useState } from "react";
+import { versioned } from "./dataVersion";
 
 export interface PolicyDoc {
   file: string;
@@ -42,7 +43,7 @@ export function usePolicyIndex() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch("/data/policy_index.json")
+    fetch(versioned("/data/policy_index.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then((data: PolicyIndex | null) => {
         if (cancelled || !data) return;

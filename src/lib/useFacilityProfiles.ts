@@ -12,6 +12,7 @@
  * facility granularity instead of parcel granularity.
  */
 import { useEffect, useState } from "react";
+import { versioned } from "./dataVersion";
 
 export interface FacilityCaseRecord {
   ZoningCaseNumber?: string;
@@ -354,7 +355,7 @@ export function useFacilityProfiles() {
   useEffect(() => {
     if (_cache) return;
     let cancelled = false;
-    fetch("/data/facility_profiles.json")
+    fetch(versioned("/data/facility_profiles.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then((d: FacilityProfilesFile | null) => {
         if (cancelled || !d) return;

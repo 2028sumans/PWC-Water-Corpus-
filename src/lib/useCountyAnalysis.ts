@@ -11,6 +11,7 @@
  * file degrades to a hidden row rather than an error.
  */
 import { useEffect, useState } from "react";
+import { versioned } from "./dataVersion";
 
 export interface SeasonalStress {
   demand_cdd: { peak_month: string; jun_sep_share_pct: number };
@@ -141,7 +142,7 @@ export function useCountyAnalysis() {
     let cancelled = false;
     Promise.all(
       FILES.map(([key, file]) =>
-        fetch(`/data/${file}.json`)
+        fetch(versioned(`/data/${file}.json`))
           .then((r) => (r.ok ? r.json() : null))
           .then((v) => [key, v] as const)
           .catch(() => [key, null] as const),
