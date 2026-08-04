@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useViraStore } from "@/store/useViraStore";
 import { useFacilityProfiles } from "@/lib/useFacilityProfiles";
+import { useCountyAnalysis } from "@/lib/useCountyAnalysis";
 import { usePolicyIndex } from "@/lib/usePolicyIndex";
 import { useUrlStateSync } from "@/lib/useUrlStateSync";
 import { FacilitiesView } from "./FacilitiesView";
@@ -15,7 +16,9 @@ export function AppShell() {
   const setSelectedGpin = useViraStore((s) => s.setSelectedGpin);
 
   // Preload facility dossiers at app start so clicks resolve immediately.
-  const data = useFacilityProfiles();
+  useFacilityProfiles();
+  // County analyses, for the headline line below and the panel in the sidebar.
+  const analysis = useCountyAnalysis();
   // Bidirectional URL ↔ store sync so refreshes preserve the session.
   useUrlStateSync();
   // Preload policy-corpus index so the right panel can show citation counts.
@@ -63,76 +66,30 @@ export function AppShell() {
     return () => clearInterval(id);
   }, []);
 
-  // Rotating mini-tickers — derived live from the same Scope 1/2/3 water
-  // footprint estimates (indirect_water_footprint.py) the right panel shows,
-  // so the headline numbers always match what the analyst sees on click.
-  // BUILDINGS ONLY: a campus's entitlement GFA is not net of the buildings
-  // already built on it, so summing buildings + campuses double-counts.
-  const tickerStats = useMemo(() => {
-    if (!data) return null;
-    let topName = "";
-    let topCentral = -1;
-    let completedS1 = 0;
-    let completedN = 0;
-    let allCentral = 0;
-    let noNpdesCount = 0;
-    let npdesCount = 0;
-    let n = 0;
-    for (const f of data.buildings) {
-      const swf = f.scope_water_footprint;
-      if (!swf) continue;
-      n++;
-      allCentral += swf.total_mgd_central;
-      if (f.status === "Completed") {
-        completedS1 += swf.scope1_onsite_cooling.mgd_central;
-        completedN++;
-      }
-      if (f.water_context?.has_npdes === 1) npdesCount++;
-      else noNpdesCount++;
-      if (swf.total_mgd_central > topCentral) {
-        topCentral = swf.total_mgd_central;
-        topName = f.name ?? "Unnamed building";
-      }
+  // ONE static headline, not a carousel.
+  //
+  // This bar used to rotate nine claims on a 4s timer. That is hostile to the
+  // reader in a way that is easy to miss while building it: a fact you cannot
+  // finish reading, cannot re-read, and cannot point at is worse than no fact,
+  // and motion in the chrome competes with the table that is the actual work.
+  // It also buried the result -- the convention spread got 4 seconds in 36.
+  //
+  // So: state the headline result and leave it on screen. Everything the
+  // rotation used to carry is either in the sidebar summary (fleet total, NPDES
+  // coverage, narrowed count) or in the county-analysis panel below it, where a
+  // reader can go at their own pace.
+  const headline = useMemo(() => {
+    const r = analysis?.conventions?.lake_anna_share_range_pct;
+    if (!r) {
+      return { label: "SCOPE 2 DOMINATES", value: "grid water, not on-site cooling, is the bulk of the footprint" };
     }
-    return { topName, topCentral, completedS1, completedN, allCentral, noNpdesCount, npdesCount, n };
-  }, [data]);
-
-  const topCandidateValue = tickerStats && tickerStats.topName
-    ? `${tickerStats.topName} · ~${tickerStats.topCentral.toFixed(2)} MGD central est.`
-    : "loading…";
-  const npdesValue = tickerStats
-    ? `${tickerStats.noNpdesCount} of ${tickerStats.n} buildings with NO NPDES coverage · ${tickerStats.npdesCount} with permits`
-    : "loading…";
-  const totalValue = tickerStats
-    ? `${tickerStats.completedS1.toFixed(2)} MGD direct on-site, ${tickerStats.completedN} completed buildings (validated vs. PWC Water 2023)`
-    : "loading…";
-
-  const TICKERS: Array<{ label: string; value: string; tone?: "good" | "bad" | "neutral" }> = [
-    { label: "LARGEST ESTIMATED FOOTPRINT", value: topCandidateValue, tone: "bad" },
-    { label: "COMPLETED FLEET, DIRECT WATER", value: totalValue },
-    { label: "NPDES COVERAGE", value: npdesValue, tone: "bad" },
-    { label: "RAG CORPUS", value: "policy + methodology docs" },
-    { label: "WATER STRESS", value: "county in extreme drought — PDSI −5.3, driest 1% of months since 1895", tone: "bad" },
-    { label: "PERMITS", value: "PWC data centers hold construction-stormwater permits, not operational water permits", tone: "bad" },
-    { label: "VALIDATION", value: "Scope 1 distribution vs JLARC 2023 metered data: all 6 published constraints pass; shape indistinguishable after county-intensity scaling (KS p=0.09)", tone: "good" },
-    // Cite the OBSERVED water shape (ICPRB WMA Study Table A.3-2), not the
-    // cooling-degree-day curve. CDD peaks in July at 3.9x the mean month, but
-    // that is a degree-day statistic; read as a water shape on this site it
-    // overstates the swing by ~70% (METHODOLOGY 31, superseded note). Measured
-    // utility data peaks in August at 1.8x -- the same month the Potomac
-    // bottoms, which is a tighter coincidence than the CDD framing claimed.
-    { label: "SEASONAL STRESS", value: "on-site water peaks in August at 1.8× the mean month (ICPRB measured utility data) — the same month the Potomac at Little Falls bottoms at 41% of annual-mean flow; the binding case is Broad Run in September, at 15.8% of that month's flow", tone: "bad" },
-    { label: "VALUE OF DISCLOSURE", value: "transparency alone barely moves county uncertainty (±19%); standardized + verified facility power gets to ±9% — but the binding gap is the grid's water-intensity, at the power plant, not the data center", tone: "neutral" },
-  ];
-  const [tickerIdx, setTickerIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => {
-      setTickerIdx((i) => (i + 1) % TICKERS.length);
-    }, 4000);
-    return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const currentTicker = TICKERS[tickerIdx];
+    return {
+      label: "WHICH BASIN GETS CHARGED",
+      value: `Lake Anna carries ${r.min}%–${r.max}% of the same electricity-related water — a ${Math.round(
+        r.spread_factor,
+      )}× swing on accounting convention alone, before anything physical changes`,
+    };
+  }, [analysis]);
 
   return (
     <div className="flex h-screen w-screen flex-col bg-neutral-950 text-neutral-100">
@@ -157,19 +114,8 @@ export function AppShell() {
         <div className="flex items-center gap-3 tabular-nums min-w-0">
           <span className="text-amber-400/70 shrink-0">▸ FACILITIES</span>
           <span className="text-neutral-800 shrink-0">·</span>
-          <span className="text-neutral-600 shrink-0">{currentTicker.label}</span>
-          <span
-            className={`truncate transition-colors duration-300 ${
-              currentTicker.tone === "good"
-                ? "text-emerald-400/90"
-                : currentTicker.tone === "bad"
-                  ? "text-amber-400/90"
-                  : "text-neutral-300"
-            }`}
-            key={tickerIdx}
-          >
-            {currentTicker.value}
-          </span>
+          <span className="text-neutral-600 shrink-0">{headline.label}</span>
+          <span className="truncate text-neutral-300">{headline.value}</span>
         </div>
         <div className="flex items-center gap-3 tabular-nums shrink-0">
           <span>{clock ?? "—"}</span>

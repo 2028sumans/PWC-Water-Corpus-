@@ -600,13 +600,24 @@ def c_seasonal_basin_surface():
     # 6. the CORRECTION REACHED THE UI. The superseded CDD amplitude (July at
     # 3.9x the mean month) is a true degree-day statistic, which is exactly why
     # it survives sweeps for "wrong numbers" -- but presented as a water shape on
-    # a water atlas it overstates the swing by ~70%. It sat in the site's
-    # seasonal ticker for a full day after the model was corrected, the same way
+    # a water atlas it overstates the swing by ~70%. It survived in two separate
+    # UI surfaces for a full day after the model was corrected, the same way
     # METHODOLOGY 31 kept presenting the superseded model as current.
-    shell = open(os.path.join(HERE, "src", "components", "AppShell.tsx")).read()
-    ticker = next((ln for ln in shell.splitlines()
-                   if '"SEASONAL STRESS"' in ln), "")
-    ui_ok = bool(ticker) and "3.9×" not in ticker and "1.8×" in ticker
+    #
+    # The specific defect was the seasonal card sourcing its headline month from
+    # demand_cdd.peak_month (July, a temperature signal) instead of the observed
+    # water peak (August). Naming the CDD curve in the DETAIL text is correct and
+    # wanted -- it is the disclaimer -- so this asserts on the `value:` line only.
+    ca = open(os.path.join(HERE, "src", "components", "CountyAnalysis.tsx")).read()
+    # Anchor on the LABEL, not the section comment above it -- the comment
+    # explains the CDD trap at length, and anchoring there spends the window on
+    # prose before reaching the card body being asserted on.
+    anchor = 'label: "Seasonal coincidence"'
+    seasonal = ca.split(anchor, 1)[-1][:900] if anchor in ca else ""
+    value_line = next((ln for ln in seasonal.splitlines() if ln.strip().startswith("value:")), "")
+    ui_ok = (bool(value_line)
+             and "demand_cdd" not in value_line      # headline month is not the CDD peak
+             and "1.8×" in seasonal)                 # measured amplitude is stated
 
     ok = (matches_source and central_is_observed and ptt_ok and normalized
           and summer and amplified and auditable and ui_ok)
@@ -1013,6 +1024,42 @@ def c_data_version():
                 + (f" — unversioned: {unversioned}" if unversioned else ""))
 
 
+# 26 ------------------------------------------------------------------------
+def c_analyses_are_wired():
+    """Every analysis shipped to /public/data is actually rendered somewhere.
+
+    Six analyses -- including convention_table, the project's headline result --
+    shipped as JSON for days with zero references anywhere in src/. They
+    deployed, they served 200, and no page ever read them. A result the site
+    does not display is not a result the reader has; the file existing is not
+    the deliverable.
+
+    Ships-but-unread is invisible to every other check here, because each of
+    those validates the FILE and none of them ask whether anything consumes it.
+    """
+    data_dir = os.path.join(HERE, "public", "data")
+    # Analysis outputs only: skip the corpus/index/tile assets the UI loads by
+    # other means, and skip the per-facility file the dossier reads directly.
+    skip = {"facility_profiles", "rag_chunks", "policy_index", "climate_baselines",
+            "parcels_scored", "parcels_scored.geojson"}
+    shipped = sorted(
+        f[:-5] for f in os.listdir(data_dir)
+        if f.endswith(".json") and f[:-5] not in skip
+    )
+    src_dir = os.path.join(HERE, "src")
+    blob = []
+    for root, _dirs, files in os.walk(src_dir):
+        for fn in files:
+            if fn.endswith((".ts", ".tsx")):
+                blob.append(open(os.path.join(root, fn)).read())
+    blob = "\n".join(blob)
+
+    unwired = [name for name in shipped if name not in blob]
+    ok = not unwired
+    return ok, (f"{len(shipped) - len(unwired)}/{len(shipped)} shipped analyses referenced in src/"
+                + (f"; UNWIRED: {unwired}" if unwired else " (none orphaned)"))
+
+
 def main():
     print("RESEARCH-READINESS HARNESS\n" + "=" * 60)
     check("1 data integrity", c_integrity)
@@ -1040,6 +1087,7 @@ def main():
     check("22 convention table", c_convention_table)
     check("23 entitlement pathway", c_entitlement_pathway)
     check("25 client data version", c_data_version)
+    check("26 analyses wired to UI", c_analyses_are_wired)
     n_fail = sum(1 for _, ok, _ in results if not ok)
     print("=" * 60)
     print(f"{len(results)-n_fail}/{len(results)} checks passed"

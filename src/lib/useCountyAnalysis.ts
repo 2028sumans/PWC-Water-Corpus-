@@ -108,7 +108,80 @@ export interface PipelineTriangulation {
   headline: string;
 }
 
+/** The paper's headline result: the same physical electricity, charged to a
+ *  different basin depending only on which standard convention you apply. */
+export interface ConventionTable {
+  conventions: Record<string, {
+    label: string;
+    family: string;
+    computable: boolean;
+    geography: string;
+    lake_anna_pct_of_scope2: number | null;
+    why_not_computable?: string;
+  }>;
+  lake_anna_share_range_pct: { min: number; max: number; spread_factor: number };
+  n_computable: number;
+  n_documented_not_computable: number;
+  the_ordering_is_the_point: string;
+  headline: string;
+}
+
+export interface EntitlementPathway {
+  THE_FINDING: { buildings_with_a_sup: number; of_total: number; statement: string };
+  planning_case: { populated: number; absent: number; absent_pct: number; by_type: Record<string, number> };
+  by_right_eligibility: { inside_dcood: number; outside_dcood: number; inside_pct: number };
+  entitlement_vintage: { by_year: Record<string, number> };
+  price_asymmetry: {
+    case: string; water_quality_contribution_usd: number;
+    fire_and_rescue_contribution_usd: number; ratio_fire_to_water: number;
+  };
+}
+
+export interface BroadRunCase {
+  concentration: {
+    buildings_in_basin: number; buildings_total: number; pct_of_fleet: number;
+    pct_of_county_land: number; concentration_factor: number;
+  };
+  warming: { station: string; theil_sen_slope_c_per_yr: number; p_value: number; implied_change_c: number };
+  the_gage_problem: { gage: string; decommissioned: number; issue: string };
+  binding_condition: { month: string; pct_of_monthly_flow: number };
+}
+
+export interface GrowthEnvelope {
+  county_entitlement: { planned_gfa_sqft: number; remaining_gfa_sqft: number; pct_unbuilt: number };
+  empirical_completion_rates: { lbnl_capacity_pct: number; pjm_capacity_weighted_pct: number };
+  headline: string;
+}
+
+export interface LoudounExperiment {
+  daily_production_trend_2013_2023_pct_per_yr: Record<string, number>;
+  statement: string;
+  caveat: string;
+}
+
+export interface ValidationIndependence {
+  usgs_thermoelectric_validation: {
+    n_plant_years: number;
+    comparison: Record<string, { empirical: number; shipped: number; error_pct: number }>;
+  };
+  INDEPENDENCE_LIMITS: Record<string, string>;
+}
+
+export interface ClimateContext {
+  drought: {
+    PDSI: {
+      latest_month: string; latest_value: number; min_ever: number;
+      percentile_of_record: number; n_months: number;
+    };
+  };
+  drought_return_periods: {
+    record: { first_year: number; last_year: number; n_years: number };
+    return_periods_full_record: Record<string, { return_period_years: number }>;
+  };
+}
+
 export interface CountyAnalysis {
+  climate?: ClimateContext;
   seasonal?: SeasonalStress;
   disclosure?: ValueOfDisclosure;
   voi?: ValueOfInformation;
@@ -118,9 +191,17 @@ export interface CountyAnalysis {
   exposure?: ExposureGap;
   surface?: SeasonalBasinSurface;
   triangulation?: PipelineTriangulation;
+  conventions?: ConventionTable;
+  entitlement?: EntitlementPathway;
+  broadRun?: BroadRunCase;
+  envelope?: GrowthEnvelope;
+  loudoun?: LoudounExperiment;
+  validation?: ValidationIndependence;
 }
 
 const FILES: Array<[keyof CountyAnalysis, string]> = [
+  ["conventions", "convention_table"],
+  ["climate", "climate_context"],
   ["seasonal", "seasonal_stress"],
   ["disclosure", "value_of_disclosure"],
   ["voi", "value_of_information"],
@@ -130,6 +211,11 @@ const FILES: Array<[keyof CountyAnalysis, string]> = [
   ["exposure", "exposure_gap"],
   ["surface", "seasonal_basin_surface"],
   ["triangulation", "pipeline_triangulation"],
+  ["entitlement", "entitlement_pathway"],
+  ["broadRun", "broad_run_case"],
+  ["envelope", "growth_envelope"],
+  ["loudoun", "loudoun_natural_experiment"],
+  ["validation", "validation_and_independence"],
 ];
 
 let _cache: CountyAnalysis | null = null;
