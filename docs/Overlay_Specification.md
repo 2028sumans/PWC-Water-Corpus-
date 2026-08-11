@@ -17,7 +17,7 @@ Every data file plays one or more of these roles:
 | **MAP** | Renders as a layer on the Spatial Map. Includes geometry style. |
 | **TABLE** | Feeds a column in the Decision Terminal parcel intelligence table. |
 | **SCORE** | Inputs to one or more of the 9 Vira Readiness Index sub-scores. Comes with a role (`hard-block` / `modifier` / `enabler` / `measurement`) and a quality flag (`M`easured / `Md`odeled / `I`nferred). |
-| **LLM** | Chunked into the RAG corpus. The LLM retrieves from these for memo generation + Q&A. |
+| **LLM** | Chunked into the RAG corpus. The LLM retrieves from these to ground the one-line verdict. |
 | **TIMELINE** | Drives forward-state recomputation as the timeline slider moves 2026 → 2050. |
 | **JOIN** | Hidden infrastructure — used to spatially join other layers to parcels but doesn't render itself. |
 | **CONVICTION** | Counts toward a parcel's data-depth meta-score (the Conviction badge). |

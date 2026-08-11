@@ -13,7 +13,7 @@ dossier and the water-footprint estimate, full stop.
 | **Facilities view** — virtualized table of every DC building/campus, sorted by total Scope 1+2+3 MGD descending | `facility_profiles.json` |
 | **Right Panel** — Scope 1/2/3 breakdown, power-estimate audit, facility dossier (permits/BZA/pending cases), water & site context | `build_facility_profiles.py` + `indirect_water_footprint.py` |
 | **What's Unresolved** — the disclosure audit: a per-facility, deterministically computed list of what's on record, what's dark, its effect on the estimate, and what would close it | computed client-side in `RightPanel.tsx` from the facility record — **no LLM** |
-| **LLM Memo / Q&A / Verdict** — streamed Llama 3.3 70B output with BM25-retrieved citations | `/api/memo` → Groq Cloud + `rag_chunks.json` (871 chunks, 15 docs) |
+| **LLM Verdict** — a one-sentence, streamed Llama 3.3 70B summary of what is modeled vs. unresolved, auto-fired on selection | `/api/memo` → Groq Cloud + `rag_chunks.json` (871 chunks, 15 docs) |
 
 ## The methodology
 
@@ -54,9 +54,9 @@ through an LLM would add latency and risk paraphrasing numbers we computed
 exactly. Each item states four things: what is **on record**, what is
 **dark**, its **effect on the estimate**, and what **would resolve** it.
 
-The memo endpoint receives this same audit and is instructed to restate it
-verbatim under `[U#]` markers rather than re-derive it. For the same
-reason there is deliberately no adversarial "counter-memo" mode.
+For the same reason the long-form memo, the free-form Q&A box, and the
+adversarial "counter-memo" mode have all been removed. The only generated
+text left in the app is the one-sentence verdict at the top of the panel.
 
 ## Local dev
 
@@ -116,8 +116,8 @@ vercel env add GROQ_API_KEY production
 vercel --prod
 ```
 
-`vercel.json` configures: a 60s function max-duration for `/api/memo` (to
-cover slow Groq runs), cache headers for the static data files, and pins to
+`vercel.json` configures: a 60s function max-duration for `/api/memo` (the
+verdict endpoint, to cover slow Groq runs), cache headers for the static data files, and pins to
 `iad1` (us-east) to minimize round-trip latency to Groq's east-coast
 endpoints.
 
@@ -139,13 +139,10 @@ endpoints.
    for, `[U3]` whether the power estimate was cross-checked by two methods
    or rests on one, and so on. This is the argument the tool exists to
    make, so it is stated rather than generated.
-4. **Click Generate Memo.** Llama 3.3 70B streams an 8-section narrative
-   (Executive Summary through Recommendation for Further Diligence) — every
-   factual claim carries a `[N]` citation chip linking back to the actual
-   policy document that supports it, and its "What's Unresolved" section
-   restates the audit above under `[U#]` markers rather than improvising.
-5. **Ask a question** in the Q&A box — free-form, grounded in the same
-   facility context and policy corpus.
+4. **Read the verdict at the top of the panel.** It streams in on its own
+   the moment a facility is selected: one sentence from Llama 3.3 70B, over
+   the same policy corpus, naming what is modeled and what stays dark. It is
+   the only generated text in the app — everything below it is computed.
 
 ## Demo prep checklist
 
@@ -154,7 +151,7 @@ Before any live demo session:
 - [ ] `npm run dev` is running in a Terminal window the demoer controls
       directly (don't rely on a backgrounded process)
 - [ ] `.env.local` has `GROQ_API_KEY=gsk_…`
-- [ ] One trial memo + Q&A generated end-to-end against a built data
+- [ ] One trial verdict streamed end-to-end against a built data
       center — confirms the LLM round-trip is warm
 - [ ] Browser opened to `http://localhost:3000`
 - [ ] Search bar starts cleared, no rows pre-selected (clean slate)

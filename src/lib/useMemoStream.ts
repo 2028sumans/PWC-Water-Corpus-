@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Hook for streaming a Vira memo (or counter-memo, or Q&A) from /api/memo.
+ * Hook for streaming the one-line Vira verdict from /api/memo.
  *
  * The endpoint returns a text/plain stream with this shape:
  *
@@ -11,16 +11,16 @@
  *   ...
  *   \n
  *   VIRA-CONTENT:
- *   <streamed memo text with [N] citation markers>
+ *   <streamed verdict text>
  *
  * We parse the header once when it arrives, then append each subsequent chunk
- * to `text`. The caller can read `citations` for the chunk metadata (used to
- * resolve [N] markers in the rendered output) and `text` for the live memo.
+ * to `text`. The caller can read `citations` for the chunk metadata the
+ * verdict was retrieved against, and `text` for the live sentence.
  *
  * Usage:
- *   const memo = useMemoStream();
- *   memo.generate({ facilityId, mode: "memo", facilityContext });
- *   // memo.text grows incrementally; memo.citations populates after header parse
+ *   const verdict = useMemoStream();
+ *   verdict.generate({ facilityId, mode: "verdict", facilityContext });
+ *   // verdict.text grows incrementally; citations populate after header parse
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -51,24 +51,8 @@ export interface FacilityContext {
 
 export interface MemoRequest {
   facilityId: string;
-  mode: "memo" | "qa" | "verdict";
+  mode: "verdict";
   facilityContext: FacilityContext;
-  /**
-   * The deterministic disclosure audit computed client-side from the
-   * facility record + indirect_water_footprint.py's output. Passed into the
-   * memo prompt so the narrative cites these exact findings by [U#] rather
-   * than re-deriving (and potentially misstating) them.
-   */
-  unresolved?: Array<{
-    id: string;
-    title: string;
-    severity: "structural" | "high" | "moderate";
-    onRecord: string;
-    gap: string;
-    impact: string | null;
-    wouldResolve: string;
-  }>;
-  question?: string;
 }
 
 export interface MemoState {

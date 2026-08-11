@@ -21,9 +21,8 @@ import {
   type FacilityWaterContext,
   type ScopeWaterFootprint,
 } from "@/lib/useFacilityProfiles";
-import { CitedText } from "./CitedText";
 import { FacilityContext } from "./FacilityContext";
-import { X, ExternalLink, MessageSquare, Loader2, Check, Minus, FileText } from "lucide-react";
+import { X, ExternalLink, Check, Minus, FileText } from "lucide-react";
 
 function EvidenceRow({ label, value }: { label: string; value: string | number | null | undefined }) {
   const present = value !== null && value !== undefined && value !== "";
@@ -373,13 +372,11 @@ export function RightPanel() {
   // as a reactive dependency anyway).
   const unresolved = swf ? unresolvedItems(swf, waterContext, buildingProfile) : [];
 
-  // LLM streaming state — one stream instance per output. All of this state
-  // is per-facility; AppShell keys this component on the selected GPIN so a
-  // new selection remounts it fresh, rather than resetting via an effect.
-  const memo = useMemoStream();
-  const qa = useMemoStream();
+  // LLM streaming state — the one-line verdict is the only generated output
+  // left. It is per-facility; AppShell keys this component on the selected
+  // GPIN so a new selection remounts it fresh, rather than resetting via an
+  // effect.
   const verdict = useMemoStream();
-  const [qaQuestion, setQaQuestion] = useState("");
   const [methodologyOpen, setMethodologyOpen] = useState(false);
 
   function buildFacilityContext(): MemoRequest["facilityContext"] | null {
@@ -423,18 +420,6 @@ export function RightPanel() {
     return () => window.clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGpin]);
-
-  // Listen for the global "g" keyboard shortcut (dispatched by AppShell).
-  useEffect(() => {
-    const onGenerate = () => {
-      if (!facility || !swf || memo.isLoading) return;
-      const ctx = buildFacilityContext();
-      if (!ctx) return;
-      memo.generate({ facilityId: selectedGpin!, mode: "memo", facilityContext: ctx, unresolved });
-    };
-    window.addEventListener("vira:generate-memo", onGenerate);
-    return () => window.removeEventListener("vira:generate-memo", onGenerate);
-  });
 
   if (!facility) return null;
 
@@ -808,97 +793,6 @@ export function RightPanel() {
             </div>
           </div>
         )}
-
-        {/* LLM Q&A */}
-        <div className="border-b border-neutral-800 px-5 py-4">
-          <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2 flex items-center gap-1.5">
-            <MessageSquare className="h-3 w-3" />
-            Ask about this facility
-          </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const ctx = buildFacilityContext();
-              if (!qaQuestion.trim() || qa.isLoading || !ctx) return;
-              qa.generate({ facilityId: selectedGpin!, mode: "qa", facilityContext: ctx, question: qaQuestion.trim() });
-            }}
-            className="flex gap-1.5"
-          >
-            <input
-              type="text"
-              value={qaQuestion}
-              onChange={(e) => setQaQuestion(e.target.value)}
-              placeholder="e.g. Why is Scope 1 reported as a range instead of a number?"
-              className="flex-1 rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-xs text-neutral-100 placeholder:text-neutral-600 focus:outline-none focus:border-amber-500"
-              disabled={qa.isLoading}
-            />
-            <button
-              type="submit"
-              disabled={!qaQuestion.trim() || qa.isLoading}
-              className="rounded bg-amber-500 px-3 py-2 text-[11px] font-medium text-neutral-950 hover:bg-amber-400 disabled:bg-neutral-700 disabled:text-neutral-500"
-            >
-              {qa.isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Ask"}
-            </button>
-          </form>
-          {qa.error && (
-            <div className="mt-2 text-[10px] text-red-400 bg-red-950/40 border border-red-900/50 px-2 py-1 rounded leading-snug">
-              {qa.error}
-            </div>
-          )}
-          {(qa.text || qa.isLoading) && (
-            <div className="mt-3 rounded border border-neutral-800 bg-neutral-900/40 px-3 py-2">
-              <CitedText text={qa.text} citations={qa.citations} />
-              {qa.isLoading && <Loader2 className="h-3 w-3 animate-spin text-amber-400 mt-2" />}
-            </div>
-          )}
-        </div>
-
-        {/* Water Footprint Memo */}
-        <div className="border-b border-neutral-800 px-5 py-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-[10px] uppercase tracking-wider text-neutral-500">Water Footprint Memo</div>
-            <button
-              onClick={() => {
-                const ctx = buildFacilityContext();
-                if (ctx) memo.generate({ facilityId: selectedGpin!, mode: "memo", facilityContext: ctx, unresolved });
-              }}
-              disabled={memo.isLoading || !swf}
-              title="Generate Memo — press G"
-              className="rounded bg-amber-500 px-2 py-1 text-[10px] font-medium text-neutral-950 hover:bg-amber-400 disabled:bg-neutral-700 disabled:text-neutral-500 flex items-center gap-1"
-            >
-              {memo.isLoading ? (
-                <>
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  {memo.text ? "Regenerate" : "Generate Memo"}
-                  <kbd className="ml-0.5 text-[8px] px-1 border border-neutral-900/40 text-neutral-900/60">G</kbd>
-                </>
-              )}
-            </button>
-          </div>
-          {memo.error && (
-            <div className="text-[10px] text-red-400 bg-red-950/40 border border-red-900/50 px-2 py-1 rounded leading-snug mb-2">
-              {memo.error}
-            </div>
-          )}
-          {memo.text ? (
-            <CitedText text={memo.text} citations={memo.citations} />
-          ) : !memo.isLoading ? (
-            <p className="text-[11px] text-neutral-500 italic leading-relaxed">
-              Click <em>Generate Memo</em> to produce a Scope 1/2/3 water-footprint
-              narrative grounded in the methodology above. Generated by Llama 3.3
-              70B (Groq) over the PWC water-policy corpus.
-            </p>
-          ) : (
-            <div className="text-[11px] text-amber-400 flex items-center gap-2">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Retrieving relevant policy chunks + streaming from Groq...
-            </div>
-          )}
-        </div>
 
         {/* What's Unresolved — the disclosure audit. Deterministic, always
             visible: these gaps are known to the pipeline, not discovered by

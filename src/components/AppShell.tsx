@@ -24,25 +24,12 @@ export function AppShell() {
   // Preload policy-corpus index so the right panel can show citation counts.
   usePolicyIndex();
 
-  // Single-letter keyboard shortcuts.
+  // Escape closes the right panel and clears the selection.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement | null)?.tagName ?? "";
-      const typing = tag === "INPUT" || tag === "TEXTAREA";
-      const key = e.key.toLowerCase();
-
-      if (e.key === "Escape") {
-        closeRightPanel();
-        setSelectedGpin(null);
-        return;
-      }
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (typing) return;
-
-      if (key === "g") {
-        e.preventDefault();
-        window.dispatchEvent(new CustomEvent("vira:generate-memo"));
-      }
+      if (e.key !== "Escape") return;
+      closeRightPanel();
+      setSelectedGpin(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -128,7 +115,7 @@ export function AppShell() {
           <FacilitiesView />
         </div>
         {/* Keyed on the selection so switching facilities remounts the panel
-            with fresh per-facility state (memo/Q&A streams, open popovers). */}
+            with fresh per-facility state (the verdict stream, open popovers). */}
         {rightPanelOpen && <RightPanel key={selectedGpin} />}
       </div>
 
